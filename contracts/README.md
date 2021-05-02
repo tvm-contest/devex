@@ -1,0 +1,1 @@
+The Solidity code of smart contracts resides in this folder. 

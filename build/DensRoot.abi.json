@@ -1,0 +1,518 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addBalance",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "installPlatform",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "installCertificate",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "installAuction",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgrade",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "requestCertificateUpgrade",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "reserveName",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"until","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "resolve",
+			"inputs": [
+				{"name":"name","type":"bytes"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "resolveRPC",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"name","type":"bytes"},
+				{"name":"cert","type":"address"},
+				{"name":"ptype","type":"uint8"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "resolveSub",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"cert","type":"address"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "auction",
+			"inputs": [
+				{"name":"name","type":"bytes"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "gc",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "regName",
+			"inputs": [
+				{"name":"callbackFunctionId","type":"uint32"},
+				{"components":[{"name":"name","type":"bytes"},{"name":"duration","type":"uint32"},{"name":"hash","type":"uint256"}],"name":"request","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionProcessCallback",
+			"inputs": [
+				{"name":"rhash","type":"uint128"},
+				{"name":"res","type":"bool"},
+				{"name":"expiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "certificateProcessCallback",
+			"inputs": [
+				{"name":"rhash","type":"uint128"},
+				{"name":"expiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionParticipationCallback",
+			"inputs": [
+				{"name":"rhash","type":"uint128"},
+				{"name":"res","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "ensureExpiry",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"expiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionFailed",
+			"inputs": [
+				{"name":"name","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionSucceeded",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"winner","type":"address"},
+				{"name":"expiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionSink",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "certAuctProcessCallback",
+			"inputs": [
+				{"name":"value0","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "certAuctProcessCallbackDummy",
+			"inputs": [
+				{"name":"value0","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "directlyDeploy",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"_owner","type":"address"},
+				{"name":"expiry","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "directlyReconfigure",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"_owner","type":"address"},
+				{"name":"expiry","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "generateHash",
+			"inputs": [
+				{"name":"amount","type":"uint128"},
+				{"name":"nonce","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "subCertRequest",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"subname","type":"bytes"},
+				{"name":"_owner","type":"address"},
+				{"name":"expiry","type":"uint32"},
+				{"name":"_par","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subCertSync",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"subname","type":"bytes"},
+				{"name":"_owner","type":"address"},
+				{"name":"expiry","type":"uint32"},
+				{"name":"_par","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getOwner",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "transferOwner",
+			"inputs": [
+				{"name":"new_owner","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "acceptOwner",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getPendingOwner",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "withdraw",
+			"inputs": [
+				{"name":"dest","type":"address"},
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "platform_code",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"platform_code","type":"cell"}
+			]
+		},
+		{
+			"name": "certificate_code",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"certificate_code","type":"cell"}
+			]
+		},
+		{
+			"name": "auction_code",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"auction_code","type":"cell"}
+			]
+		},
+		{
+			"name": "owner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"owner","type":"uint256"}
+			]
+		},
+		{
+			"name": "pending_owner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"pending_owner","type":"uint256"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+		{
+			"name": "platformCodeUpdated",
+			"inputs": [
+				{"name":"hash","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "certificateCodeUpdated",
+			"inputs": [
+				{"name":"hash","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionCodeUpdated",
+			"inputs": [
+				{"name":"hash","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "rootCodeUpdated",
+			"inputs": [
+				{"name":"hash","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "balanceAdded",
+			"inputs": [
+				{"name":"donor","type":"address"},
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "certCodeUpgraded",
+			"inputs": [
+				{"name":"cert","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "prepareOwnerTransfer",
+			"inputs": [
+				{"name":"to","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "ownerTransferred",
+			"inputs": [
+				{"name":"from","type":"uint256"},
+				{"name":"to","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdrawn",
+			"inputs": [
+				{"name":"dest","type":"address"},
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receivedAuction",
+			"inputs": [
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "certificateDeployed",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"owner","type":"address"},
+				{"name":"expiry","type":"uint32"},
+				{"name":"parent","type":"address"},
+				{"name":"cert","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionDeployed",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"duration","type":"uint32"},
+				{"name":"sender","type":"address"},
+				{"name":"auct","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "certificateReconfigured",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"owner","type":"address"},
+				{"name":"expiry","type":"uint32"},
+				{"name":"cert","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionSuccess",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"winner","type":"address"},
+				{"name":"expiry","type":"uint32"},
+				{"name":"auct","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionFail",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"auct","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "garbage_collected",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "regNameRequest",
+			"inputs": [
+				{"name":"sender","type":"address"},
+				{"name":"name","type":"bytes"},
+				{"name":"duration","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "regNameRejected",
+			"inputs": [
+				{"name":"sender","type":"address"},
+				{"name":"name","type":"bytes"},
+				{"name":"duration","type":"uint32"},
+				{"name":"reason","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "nameReserved",
+			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"until","type":"uint32"}
+			],
+			"outputs": [
+			]
+		}
+	]
+}

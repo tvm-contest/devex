@@ -1,0 +1,2397 @@
+.globl	constructor
+.public	constructor
+.type	constructor, @function
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7_with_init_storage$
+}
+;; constructor protection
+GETGLOB 6
+THROWIF 51
+PUSHINT 1
+SETGLOB 6
+;; end constructor protection
+; Decode input parameters
+ENDS
+; constructor DensAuction
+THROW 100
+; end constructor DensAuction
+CALLREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	fallback
+.type	fallback, @function
+; function fallback
+THROW 100
+; end function fallback
+IFREF {
+	CALL $c7_to_c4$
+}
+
+.globl	addBalance
+.public	addBalance
+.type	addBalance, @function
+; Decode input parameters
+ENDS
+; function addBalance
+;; emit balanceAdded
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x2a1cc7aa
+;; donor
+;; get member sender
+GETGLOB 9
+STSLICER
+;; value
+;; get member value
+CALLREF {
+	CALL $message_balance_macro$
+}
+STUR 128
+ENDC
+PUSHINT 0
+SENDRAWMSG
+; end function addBalance
+IFREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.internal-alias :onCodeUpgrade,        2
+.internal	:onCodeUpgrade
+PUSHINT 1
+CALL 1
+;; param: data
+; function onCodeUpgrade
+;; set default state vars
+PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+SETGLOB 10
+NEWC
+ENDC
+SETGLOB 11
+PUSHINT 0
+SETGLOB 12
+PUSHINT 0
+SETGLOB 13
+PUSHINT 0
+SETGLOB 14
+PUSHINT 0
+SETGLOB 15
+PUSHINT 0
+SETGLOB 16
+NEWDICT
+SETGLOB 17
+NEWDICT
+SETGLOB 18
+NEWDICT
+SETGLOB 19
+PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+SETGLOB 20
+PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+SETGLOB 21
+;; end set default state vars
+;; push identifier data
+DUP
+CTOS
+;; decl: s
+; expValue
+DUP
+; end expValue
+;; decode address
+LDMSGADDR
+;; decode string
+LDREF
+; colValue
+POP S3
+; end colValue
+SWAP
+; expValue
+; end expValue
+; colValue
+SETGLOB 10
+; end colValue
+; expValue
+; end expValue
+; colValue
+SETGLOB 11
+; end colValue
+; expValue
+; end expValue
+PUSHINT 0
+; colValue
+SETGLOB 12
+; end colValue
+; expValue
+; end expValue
+PUSHINT 0
+; colValue
+SETGLOB 13
+; end colValue
+; expValue
+; end expValue
+PUSHINT 0
+; colValue
+SETGLOB 14
+; end colValue
+; expValue
+; end expValue
+PUSHINT 0
+; colValue
+SETGLOB 15
+; end colValue
+;; emit deployed
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x2238c767
+;; root
+;; push identifier root
+GETGLOB 10
+STSLICER
+;; name
+;; push identifier name
+GETGLOB 11
+STREFR
+ENDC
+PUSHINT 0
+SENDRAWMSG
+DROP2
+; end function onCodeUpgrade
+CALLREF {
+	CALL $c7_to_c4$
+}
+COMMIT
+THROW 0
+
+.globl	inquiryRequest
+.public	inquiryRequest
+.type	inquiryRequest, @function
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+LDU 32
+GETGLOB 4
+ROT
+SETINDEXQ 5
+SETGLOB 4
+; Decode input parameters
+; Decode rhash
+LDUQ 128
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 128
+}
+IFNOT
+; Decode _expiry
+LDUQ 32
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 32
+}
+IFNOT
+ENDS
+;; param: rhash
+;; param: _expiry
+; modifier onlyRoot
+;; get member sender
+GETGLOB 9
+;; push identifier root
+GETGLOB 10
+SDEQ
+THROWIFNOT 99
+; function inquiryRequest
+;; return
+GETGLOB 4
+PUSHINT 0
+SETINDEXQ 2
+TRUE
+SETINDEXQ 1
+PUSHINT 64
+SETINDEXQ 4
+SETGLOB 4
+;; push identifier rhash
+PUSH S1
+;; push identifier endBid
+GETGLOB 13
+EQINT 0
+;; short-circuiting ||
+DUP
+PUSHCONT {
+	DROP
+	;; push identifier now
+	NOW
+	;; <
+	;; push identifier endBid
+	GETGLOB 13
+	LESS
+}
+IFNOT
+;; push identifier _expiry
+PUSH S2
+;; emitting 3 value(s)
+PUSH S5
+EQINT -1
+PUSHCONT {
+	PUSH S7
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 96
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST xe54ee154
+	PUSH S3
+	STUR 128
+	PUSH S2
+	STIR 1
+	PUSH S1
+	STUR 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	GETGLOB 4
+	DUP
+	INDEX 3
+	PUSH S1
+	INDEX 2
+	GETGLOB 9
+	BLKSWAP 1, 3
+	INDEX 1
+	NEWC
+	PUSHINT 2
+	STZEROES
+	STI 1
+	PUSHINT 3
+	STZEROES
+	STSLICE
+	SWAP
+	STGRAMS
+	STDICT
+	PUSHINT 104
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	GETGLOB 4
+	INDEX 5
+	STUR 32
+	PUSH S3
+	STUR 128
+	PUSH S2
+	STIR 1
+	PUSH S1
+	STUR 32
+	ENDC
+	GETGLOB 4
+	INDEX 4
+	SENDRAWMSG
+}
+IFELSE
+BLKDROP 3
+; end function inquiryRequest
+DROP2
+; end modifier onlyRoot
+IFREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	participateProxy
+.public	participateProxy
+.type	participateProxy, @function
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+LDU 32
+GETGLOB 4
+ROT
+SETINDEXQ 5
+SETGLOB 4
+; Decode input parameters
+; Decode rpr
+;; decode struct RegPartReq rpr
+;; decode RegPartReq.sender
+LDMSGADDRQ
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDMSGADDR
+}
+IFNOT
+;; decode RegPartReq.duration
+LDUQ 32
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 32
+}
+IFNOT
+;; decode RegPartReq.hash
+LDUQ 256
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 256
+}
+IFNOT
+;; build struct RegPartReq ss:4
+BLKSWAP 3, 1
+TUPLE 3
+SWAP
+; Decode rhash
+LDUQ 128
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 128
+}
+IFNOT
+; Decode _expiry
+LDUQ 32
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 32
+}
+IFNOT
+ENDS
+;; param: rpr
+;; param: rhash
+;; param: _expiry
+; modifier onlyRoot
+;; get member sender
+GETGLOB 9
+;; push identifier root
+GETGLOB 10
+SDEQ
+THROWIFNOT 99
+; function participateProxy
+;; get member balance
+GETPARAM 7
+INDEX 0
+;; -
+;; get member value
+CALLREF {
+	CALL $message_balance_macro$
+}
+SUB
+UFITS 128
+;; decl: bal
+;; get member sender
+;; push identifier rpr
+PUSH S3
+INDEX 0
+;; get member duration
+;; push identifier rpr
+PUSH S4
+INDEX 1
+;; get member hash
+;; push identifier rpr
+PUSH S5
+INDEX 2
+;; push identifier _expiry
+PUSH S4
+CALL $participate_internal$
+;; decl: res
+;; push identifier bal
+PUSH S1
+;; +
+PUSHINT 1000000000
+ADD
+UFITS 128
+PUSHINT 0
+RAWRESERVE
+;; return
+GETGLOB 4
+PUSHINT 0
+SETINDEXQ 2
+TRUE
+SETINDEXQ 1
+PUSHINT 128
+SETINDEXQ 4
+SETGLOB 4
+;; push identifier rhash
+PUSH S3
+;; push identifier res
+PUSH S1
+BLKDROP2 2, 2
+;; emitting 2 value(s)
+PUSH S5
+EQINT -1
+PUSHCONT {
+	PUSH S7
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 96
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST xcb93a748
+	PUSH S2
+	STUR 128
+	PUSH S1
+	STIR 1
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	GETGLOB 4
+	DUP
+	INDEX 3
+	PUSH S1
+	INDEX 2
+	GETGLOB 9
+	BLKSWAP 1, 3
+	INDEX 1
+	NEWC
+	PUSHINT 2
+	STZEROES
+	STI 1
+	PUSHINT 3
+	STZEROES
+	STSLICE
+	SWAP
+	STGRAMS
+	STDICT
+	PUSHINT 104
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	GETGLOB 4
+	INDEX 5
+	STUR 32
+	PUSH S2
+	STUR 128
+	PUSH S1
+	STIR 1
+	ENDC
+	GETGLOB 4
+	INDEX 4
+	SENDRAWMSG
+}
+IFELSE
+DROP2
+; end function participateProxy
+BLKDROP 3
+; end modifier onlyRoot
+CALLREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	participate_internal
+.type	participate_internal, @function
+;; param: sender
+;; param: duration
+;; param: hash
+;; param: __expiry
+; function participate
+;; push identifier endBid
+GETGLOB 13
+NEQINT 0
+;; short-circuiting ||
+DUP
+PUSHCONT {
+	DROP
+	;; push identifier duration
+	PUSH S2
+	GTINT 0
+}
+IFNOT
+THROWIFNOT 104
+;; if
+;; push identifier endBid
+GETGLOB 13
+PUSHCONT {
+	; expValue
+	; end expValue
+	;; push identifier now
+	NOW
+	; colValue
+	SETGLOB 12
+	; end colValue
+	;; push identifier duration
+	PUSH S2
+	PUSHINT 4
+	MIN
+	;; decl: dur
+	; expValue
+	; end expValue
+	;; push identifier start
+	GETGLOB 12
+	;; +
+	PUSHINT 604800
+	;; *
+	;; push identifier dur
+	PUSH S2
+	MUL
+	UFITS 32
+	ADD
+	UFITS 32
+	; colValue
+	SETGLOB 13
+	; end colValue
+	; expValue
+	; end expValue
+	;; push identifier endBid
+	GETGLOB 13
+	;; +
+	PUSHINT 86400
+	;; *
+	;; push identifier dur
+	PUSH S2
+	MUL
+	UFITS 32
+	ADD
+	UFITS 32
+	; colValue
+	SETGLOB 14
+	; end colValue
+	;; push identifier endRev
+	GETGLOB 14
+	;; uint256
+	;; +
+	;; push identifier duration
+	PUSH S4
+	;; uint256
+	;; *
+	PUSHINT 31536000
+	;; uint256
+	MUL
+	ADD
+	;; decl: _expiry
+	;; if
+	;; push identifier _expiry
+	DUP
+	;; >
+	PUSHINT 4294967295
+	GREATER
+	PUSHCONT {
+		; expValue
+		; end expValue
+		PUSHINT 4294967295
+		; colValue
+		NIP
+		; end colValue
+	}
+	IF
+	;; end if
+	;; push identifier _expiry
+	DUP
+	;; uint32
+	UFITS 32
+	; expValue
+	; end expValue
+	; colValue
+	SETGLOB 15
+	; end colValue
+	;; emit initialized
+	NEWC
+	PUSHSLICE xc0000000000000000000000002_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST x48e64ce7
+	;; start
+	;; push identifier start
+	GETGLOB 12
+	STUR 32
+	;; endBid
+	;; push identifier endBid
+	GETGLOB 13
+	STUR 32
+	;; endRev
+	;; push identifier endRev
+	GETGLOB 14
+	STUR 32
+	;; expiry
+	;; push identifier expiry
+	GETGLOB 15
+	STUR 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	;; Remote call IDensRoot.ensureExpiry
+	;; push identifier root
+	GETGLOB 10
+	NEWC
+	STSLICECONST x62_
+	STSLICE
+	PUSHSLICE x3989680000000000000000000000000004_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST x44dc0d3f
+	;; name
+	;; push identifier name
+	GETGLOB 11
+	STREFR
+	;; expiry
+	;; push identifier endRev
+	GETGLOB 14
+	STUR 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	;; if
+	;; push identifier __expiry
+	PUSH S2
+	GTINT 0
+	PUSHCONT {
+		; expValue
+		; end expValue
+		;; push identifier __expiry
+		PUSH S2
+		; colValue
+		SETGLOB 16
+		; end colValue
+	}
+	IF
+	;; end if
+	DROP2
+}
+IFNOT
+;; end if
+;; if
+;; push identifier now
+NOW
+;; >=
+;; push identifier endBid
+GETGLOB 13
+GEQ
+PUSHCONT {
+	;; return
+	BLKDROP 4
+	FALSE
+	RET
+}
+IFJMP
+;; end if
+; expValue
+;; fetch hashes
+GETGLOB 17
+;; push identifier sender
+PUSH S4
+SWAP
+; end expValue
+;; push identifier hash
+PUSH S3
+; colValue
+NEWC
+STU 256
+ROTREV
+PUSHINT 267
+DICTSETB
+SETGLOB 17
+; end colValue
+;; emit bid_ev
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x1c393650
+;; sender
+;; push identifier sender
+PUSH S4
+STSLICER
+;; hash
+;; push identifier hash
+PUSH S2
+STUR 256
+ENDC
+PUSHINT 0
+SENDRAWMSG
+;; return
+BLKDROP 4
+TRUE
+; end function participate
+
+.globl	bid
+.public	bid
+.type	bid, @function
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+LDU 32
+GETGLOB 4
+ROT
+SETINDEXQ 5
+SETGLOB 4
+; Decode input parameters
+; Decode hash
+LDUQ 256
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 256
+}
+IFNOT
+ENDS
+;; param: hash
+; function bid
+;; get member value
+CALLREF {
+	CALL $message_balance_macro$
+}
+;; >=
+PUSHINT 1000000000
+GEQ
+THROWIFNOT 102
+;; return
+GETGLOB 4
+PUSHINT 0
+SETINDEXQ 2
+TRUE
+SETINDEXQ 1
+PUSHINT 64
+SETINDEXQ 4
+SETGLOB 4
+;; get member sender
+GETGLOB 9
+PUSHINT 0
+;; push identifier hash
+PUSH S2
+PUSHINT 0
+CALL $participate_internal$
+NIP
+;; emitting 1 value(s)
+PUSH S1
+EQINT -1
+PUSHCONT {
+	PUSH S3
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 96
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST xd9dc095f
+	PUSH S1
+	STIR 1
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	GETGLOB 4
+	DUP
+	INDEX 3
+	PUSH S1
+	INDEX 2
+	GETGLOB 9
+	BLKSWAP 1, 3
+	INDEX 1
+	NEWC
+	PUSHINT 2
+	STZEROES
+	STI 1
+	PUSHINT 3
+	STZEROES
+	STSLICE
+	SWAP
+	STGRAMS
+	STDICT
+	PUSHINT 104
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	GETGLOB 4
+	INDEX 5
+	STUR 32
+	PUSH S1
+	STIR 1
+	ENDC
+	GETGLOB 4
+	INDEX 4
+	SENDRAWMSG
+}
+IFELSE
+DROP
+; end function bid
+CALLREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	reveal
+.public	reveal
+.type	reveal, @function
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+LDU 32
+GETGLOB 4
+ROT
+SETINDEXQ 5
+SETGLOB 4
+; Decode input parameters
+; Decode amount
+LDUQ 128
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 128
+}
+IFNOT
+; Decode nonce
+LDUQ 256
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 256
+}
+IFNOT
+ENDS
+;; param: amount
+;; param: nonce
+; function reveal
+PUSHCONT {
+	;; if
+	;; push identifier now
+	NOW
+	;; <
+	;; push identifier endBid
+	GETGLOB 13
+	LESS
+	;; short-circuiting ||
+	DUP
+	PUSHCONT {
+		DROP
+		;; push identifier now
+		NOW
+		;; >=
+		;; push identifier endRev
+		GETGLOB 14
+		GEQ
+	}
+	IFNOT
+	PUSHCONT {
+		;; return
+		GETGLOB 4
+		PUSHINT 0
+		SETINDEXQ 2
+		TRUE
+		SETINDEXQ 1
+		PUSHINT 64
+		SETINDEXQ 4
+		SETGLOB 4
+		DROP2
+		FALSE
+		RET
+	}
+	IFJMP
+	;; end if
+	;; map.fetch
+	;; get member sender
+	GETGLOB 9
+	;; push identifier reveals
+	GETGLOB 18
+	PUSHINT 267
+	DICTGET
+	NULLSWAPIFNOT
+	PUSHCONT {
+		PLDU 128
+	}
+	IF
+	;; decl: rev
+	;; !
+	;; push identifier rev
+	DUP
+	ISNULL
+	NOT
+	NOT
+	THROWIFNOT 108
+	NEWC
+	;; decl: b
+	; expValue
+	DUP
+	; end expValue
+	;; push identifier amount
+	PUSH S4
+	STUR 128
+	;; push identifier nonce
+	PUSH S3
+	STUR 256
+	; colValue
+	NIP
+	; end colValue
+	;; push identifier b
+	DUP
+	ENDC
+	HASHCU
+	;; decl: rhash
+	;; push identifier rhash
+	DUP
+	;; ==
+	;; index
+	;; get member sender
+	GETGLOB 9
+	;; push identifier hashes
+	GETGLOB 17
+	PUSHINT 267
+	DICTGET
+	PUSHCONT {
+		PLDU 256
+	}
+	PUSHCONT {
+		PUSHINT 0
+	}
+	IFELSE
+	EQUAL
+	THROWIFNOT 107
+	;; get member value
+	CALLREF {
+		CALL $message_balance_macro$
+	}
+	;; >=
+	;; push identifier amount
+	PUSH S5
+	;; +
+	PUSHINT 1000000000
+	ADD
+	UFITS 128
+	GEQ
+	THROWIFNOT 102
+	; expValue
+	;; fetch reveals
+	GETGLOB 18
+	;; get member sender
+	GETGLOB 9
+	SWAP
+	; end expValue
+	;; push identifier amount
+	PUSH S6
+	; colValue
+	NEWC
+	STU 128
+	ROTREV
+	PUSHINT 267
+	DICTSETB
+	SETGLOB 18
+	; end colValue
+	;; emit revealed
+	NEWC
+	PUSHSLICE xc0000000000000000000000002_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST x211408e2
+	;; sender
+	;; get member sender
+	GETGLOB 9
+	STSLICER
+	;; amount
+	;; push identifier amount
+	PUSH S5
+	STUR 128
+	;; nonce
+	;; push identifier nonce
+	PUSH S4
+	STUR 256
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	;; push identifier reveal_1
+	GETGLOB 20
+	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	SDEQ
+	NOT
+	PUSHCONT {
+		;; index
+		;; push identifier reveal_1
+		GETGLOB 20
+		;; push identifier reveals
+		GETGLOB 18
+		PUSHINT 267
+		DICTGET
+		PUSHCONT {
+			PLDU 128
+		}
+		PUSHCONT {
+			PUSHINT 0
+		}
+		IFELSE
+	}
+	PUSHCONT {
+		PUSHINT 0
+	}
+	IFELSE
+	;; decl: amount_1
+	;; push identifier reveal_2
+	GETGLOB 21
+	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	SDEQ
+	NOT
+	PUSHCONT {
+		;; index
+		;; push identifier reveal_2
+		GETGLOB 21
+		;; push identifier reveals
+		GETGLOB 18
+		PUSHINT 267
+		DICTGET
+		PUSHCONT {
+			PLDU 128
+		}
+		PUSHCONT {
+			PUSHINT 0
+		}
+		IFELSE
+	}
+	PUSHCONT {
+		PUSHINT 0
+	}
+	IFELSE
+	;; decl: amount_2
+	;; if
+	;; push identifier amount
+	PUSH S6
+	;; >
+	;; push identifier amount_1
+	PUSH S2
+	GREATER
+	PUSHCONT {
+		;; emit new_first
+		NEWC
+		PUSHSLICE xc0000000000000000000000002_
+		STSLICER
+		STSLICECONST 0
+		STSLICECONST 0
+		STSLICECONST x6dc64a3e
+		;; sender
+		;; get member sender
+		GETGLOB 9
+		STSLICER
+		;; amount
+		;; push identifier amount
+		PUSH S7
+		STUR 128
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		;; emit new_second
+		NEWC
+		PUSHSLICE xc0000000000000000000000002_
+		STSLICER
+		STSLICECONST 0
+		STSLICECONST 0
+		STSLICECONST x7c6b0ee5
+		;; sender
+		;; push identifier reveal_1
+		GETGLOB 20
+		STSLICER
+		;; amount
+		;; push identifier amount_1
+		PUSH S2
+		STUR 128
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		; expValue
+		; end expValue
+		;; push identifier reveal_1
+		GETGLOB 20
+		; colValue
+		SETGLOB 21
+		; end colValue
+		; expValue
+		; end expValue
+		;; get member sender
+		GETGLOB 9
+		; colValue
+		SETGLOB 20
+		; end colValue
+	}
+	PUSHCONT {
+		;; if
+		;; push identifier amount
+		PUSH S6
+		;; >
+		;; push identifier amount_2
+		PUSH S1
+		GREATER
+		PUSHCONT {
+			;; emit new_second
+			NEWC
+			PUSHSLICE xc0000000000000000000000002_
+			STSLICER
+			STSLICECONST 0
+			STSLICECONST 0
+			STSLICECONST x7c6b0ee5
+			;; sender
+			;; get member sender
+			GETGLOB 9
+			STSLICER
+			;; amount
+			;; push identifier amount
+			PUSH S7
+			STUR 128
+			ENDC
+			PUSHINT 0
+			SENDRAWMSG
+			; expValue
+			; end expValue
+			;; get member sender
+			GETGLOB 9
+			; colValue
+			SETGLOB 21
+			; end colValue
+		}
+		IF
+		;; end if
+	}
+	IFELSE
+	;; end if
+	;; get member balance
+	GETPARAM 7
+	INDEX 0
+	;; -
+	;; get member value
+	CALLREF {
+		CALL $message_balance_macro$
+	}
+	SUB
+	UFITS 128
+	;; decl: bal
+	;; push identifier bal
+	DUP
+	;; +
+	;; push identifier amount
+	PUSH S8
+	ADD
+	UFITS 128
+	PUSHINT 0
+	RAWRESERVE
+	;; return
+	GETGLOB 4
+	PUSHINT 0
+	SETINDEXQ 2
+	TRUE
+	SETINDEXQ 1
+	PUSHINT 128
+	SETINDEXQ 4
+	SETGLOB 4
+	BLKDROP 8
+	TRUE
+}
+CALLX
+;; emitting 1 value(s)
+PUSH S1
+EQINT -1
+PUSHCONT {
+	PUSH S3
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 96
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST xebf5b0b8
+	PUSH S1
+	STIR 1
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	GETGLOB 4
+	DUP
+	INDEX 3
+	PUSH S1
+	INDEX 2
+	GETGLOB 9
+	BLKSWAP 1, 3
+	INDEX 1
+	NEWC
+	PUSHINT 2
+	STZEROES
+	STI 1
+	PUSHINT 3
+	STZEROES
+	STSLICE
+	SWAP
+	STGRAMS
+	STDICT
+	PUSHINT 104
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	GETGLOB 4
+	INDEX 5
+	STUR 32
+	PUSH S1
+	STIR 1
+	ENDC
+	GETGLOB 4
+	INDEX 4
+	SENDRAWMSG
+}
+IFELSE
+DROP
+; end function reveal
+CALLREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	finalize
+.public	finalize
+.type	finalize, @function
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+LDU 32
+GETGLOB 4
+ROT
+SETINDEXQ 5
+SETGLOB 4
+; Decode input parameters
+ENDS
+; function finalize
+PUSHCONT {
+	;; if
+	;; push identifier reveal_1
+	GETGLOB 20
+	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	SDEQ
+	;; short-circuiting &&
+	DUP
+	PUSHCONT {
+		DROP
+		;; push identifier now
+		NOW
+		;; >=
+		;; push identifier endBid
+		GETGLOB 13
+		GEQ
+	}
+	IF
+	PUSHCONT {
+		;; Remote call IDensRoot.auctionFailed
+		;; push identifier root
+		GETGLOB 10
+		NEWC
+		STSLICECONST x62_
+		STSLICE
+		PUSHSLICE x3989680000000000000000000000000004_
+		STSLICER
+		STSLICECONST 0
+		STSLICECONST 0
+		STSLICECONST x09e95b57
+		;; name
+		;; push identifier name
+		GETGLOB 11
+		STREFR
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		;; emit failed
+		NEWC
+		PUSHSLICE xc0000000000000000000000002_
+		STSLICER
+		STSLICECONST 0
+		STSLICECONST 0
+		STSLICECONST x094d3892
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		;; return
+		GETGLOB 4
+		PUSHINT 0
+		SETINDEXQ 2
+		TRUE
+		SETINDEXQ 1
+		PUSHINT 64
+		SETINDEXQ 4
+		SETGLOB 4
+		TRUE
+		RET
+	}
+	IFJMP
+	;; end if
+	;; if
+	;; push identifier now
+	NOW
+	;; <
+	;; push identifier endRev
+	GETGLOB 14
+	LESS
+	PUSHCONT {
+		;; return
+		GETGLOB 4
+		PUSHINT 0
+		SETINDEXQ 2
+		TRUE
+		SETINDEXQ 1
+		PUSHINT 64
+		SETINDEXQ 4
+		SETGLOB 4
+		FALSE
+		RET
+	}
+	IFJMP
+	;; end if
+	;; if
+	;; push identifier now
+	NOW
+	;; <
+	;; push identifier minfinal
+	GETGLOB 16
+	LESS
+	PUSHCONT {
+		;; return
+		GETGLOB 4
+		PUSHINT 0
+		SETINDEXQ 2
+		TRUE
+		SETINDEXQ 1
+		PUSHINT 64
+		SETINDEXQ 4
+		SETGLOB 4
+		FALSE
+		RET
+	}
+	IFJMP
+	;; end if
+	ACCEPT
+	;; map.min
+	;; push identifier reveals
+	GETGLOB 18
+	PUSHINT 267
+	DICTMIN
+	NULLSWAPIFNOT
+	PUSHCONT {
+		SWAP
+		PLDU 128
+		TUPLE 2
+	}
+	IF
+	;; decl: pair
+	; while
+	PUSHCONT {
+		;; push identifier pair
+		DUP
+		ISNULL
+		NOT
+	}
+	PUSHCONT {
+		;; push identifier pair
+		DUP
+		DUP
+		ISNULL
+		THROWIF 63
+		UNTUPLE 2
+		SWAP
+		SWAP
+		;; decl: a
+		;; decl: v
+		;; if
+		;; push identifier a
+		PUSH S1
+		;; push identifier reveal_1
+		GETGLOB 20
+		SDEQ
+		PUSHCONT {
+			;; if
+			;; push identifier reveal_2
+			GETGLOB 21
+			PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+			SDEQ
+			NOT
+			PUSHCONT {
+				;; Remote call IBidder.returnBid
+				;; push identifier v
+				DUP
+				;; -
+				;; index
+				;; push identifier reveal_2
+				GETGLOB 21
+				;; push identifier reveals
+				GETGLOB 18
+				PUSHINT 267
+				DICTGET
+				PUSHCONT {
+					PLDU 128
+				}
+				PUSHCONT {
+					PUSHINT 0
+				}
+				IFELSE
+				SUB
+				UFITS 128
+				;; push identifier a
+				PUSH S2
+				FALSE
+				NEWC
+				STSLICECONST x6_
+				STI 1
+				PUSHINT 3
+				STZEROES
+				STSLICE
+				SWAP
+				STGRAMS
+				PUSHINT 105
+				STZEROES
+				STSLICECONST 0
+				STSLICECONST 0
+				STSLICECONST x13e163a9
+				;; name
+				;; push identifier name
+				GETGLOB 11
+				STREFR
+				ENDC
+				PUSHINT 0
+				SENDRAWMSG
+			}
+			PUSHCONT {
+				;; if
+				;; push identifier v
+				DUP
+				;; >
+				PUSHINT 10000000000
+				GREATER
+				PUSHCONT {
+					;; Remote call IBidder.returnBid
+					;; push identifier v
+					DUP
+					;; -
+					PUSHINT 10000000000
+					SUB
+					UFITS 128
+					;; push identifier a
+					PUSH S2
+					FALSE
+					NEWC
+					STSLICECONST x6_
+					STI 1
+					PUSHINT 3
+					STZEROES
+					STSLICE
+					SWAP
+					STGRAMS
+					PUSHINT 105
+					STZEROES
+					STSLICECONST 0
+					STSLICECONST 0
+					STSLICECONST x13e163a9
+					;; name
+					;; push identifier name
+					GETGLOB 11
+					STREFR
+					ENDC
+					PUSHINT 0
+					SENDRAWMSG
+					;; emit returned
+					NEWC
+					PUSHSLICE xc0000000000000000000000002_
+					STSLICER
+					STSLICECONST 0
+					STSLICECONST 0
+					STSLICECONST x7b5802c9
+					;; dest
+					;; push identifier a
+					PUSH S2
+					STSLICER
+					;; amount
+					;; push identifier v
+					PUSH S1
+					;; -
+					PUSHINT 10000000000
+					SUB
+					UFITS 128
+					STUR 128
+					ENDC
+					PUSHINT 0
+					SENDRAWMSG
+				}
+				IF
+				;; end if
+			}
+			IFELSE
+			;; end if
+		}
+		PUSHCONT {
+			;; Remote call IBidder.returnBid
+			;; push identifier v
+			DUP
+			;; push identifier a
+			PUSH S2
+			FALSE
+			NEWC
+			STSLICECONST x6_
+			STI 1
+			PUSHINT 3
+			STZEROES
+			STSLICE
+			SWAP
+			STGRAMS
+			PUSHINT 105
+			STZEROES
+			STSLICECONST 0
+			STSLICECONST 0
+			STSLICECONST x13e163a9
+			;; name
+			;; push identifier name
+			GETGLOB 11
+			STREFR
+			ENDC
+			PUSHINT 0
+			SENDRAWMSG
+			;; emit returned
+			NEWC
+			PUSHSLICE xc0000000000000000000000002_
+			STSLICER
+			STSLICECONST 0
+			STSLICECONST 0
+			STSLICECONST x7b5802c9
+			;; dest
+			;; push identifier a
+			PUSH S2
+			STSLICER
+			;; amount
+			;; push identifier v
+			PUSH S1
+			STUR 128
+			ENDC
+			PUSHINT 0
+			SENDRAWMSG
+		}
+		IFELSE
+		;; end if
+		;; map.next
+		;; push identifier a
+		PUSH S1
+		;; push identifier reveals
+		GETGLOB 18
+		PUSHINT 267
+		DICTGETNEXT
+		NULLSWAPIFNOT
+		PUSHCONT {
+			SWAP
+			PLDU 128
+			TUPLE 2
+		}
+		IF
+		; expValue
+		; end expValue
+		; colValue
+		POP S3
+		; end colValue
+		DROP2
+	}
+	WHILE
+	; end while
+	;; Remote call IDensRoot.auctionSucceeded
+	;; push identifier root
+	GETGLOB 10
+	NEWC
+	STSLICECONST x62_
+	STSLICE
+	PUSHSLICE x3989680000000000000000000000000004_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST x5f291c96
+	;; name
+	;; push identifier name
+	GETGLOB 11
+	STREFR
+	;; winner
+	;; push identifier reveal_1
+	GETGLOB 20
+	STSLICER
+	;; expiry
+	;; push identifier expiry
+	GETGLOB 15
+	STUR 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	;; emit finalized
+	NEWC
+	PUSHSLICE xc0000000000000000000000002_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST x69efb624
+	;; winner
+	;; push identifier reveal_1
+	GETGLOB 20
+	STSLICER
+	;; expiry
+	;; push identifier expiry
+	GETGLOB 15
+	STUR 32
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	;; return
+	GETGLOB 4
+	PUSHINT 0
+	SETINDEXQ 2
+	TRUE
+	SETINDEXQ 1
+	PUSHINT 64
+	SETINDEXQ 4
+	SETGLOB 4
+	DROP
+	TRUE
+}
+CALLX
+;; emitting 1 value(s)
+PUSH S1
+EQINT -1
+PUSHCONT {
+	PUSH S3
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 96
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST xf781b70b
+	PUSH S1
+	STIR 1
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	GETGLOB 4
+	DUP
+	INDEX 3
+	PUSH S1
+	INDEX 2
+	GETGLOB 9
+	BLKSWAP 1, 3
+	INDEX 1
+	NEWC
+	PUSHINT 2
+	STZEROES
+	STI 1
+	PUSHINT 3
+	STZEROES
+	STSLICE
+	SWAP
+	STGRAMS
+	STDICT
+	PUSHINT 104
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	GETGLOB 4
+	INDEX 5
+	STUR 32
+	PUSH S1
+	STIR 1
+	ENDC
+	GETGLOB 4
+	INDEX 4
+	SENDRAWMSG
+}
+IFELSE
+DROP
+; end function finalize
+CALLREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	destroy
+.public	destroy
+.type	destroy, @function
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+; Decode input parameters
+ENDS
+; modifier onlyRoot
+;; get member sender
+GETGLOB 9
+;; push identifier root
+GETGLOB 10
+SDEQ
+THROWIFNOT 99
+; function destroy
+;; Remote call IDensRoot.auctionSink
+;; push identifier root
+GETGLOB 10
+FALSE
+NEWC
+STSLICECONST x6_
+STI 1
+PUSHINT 3
+STZEROES
+STSLICE
+PUSHINT 109
+STZEROES
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x618e4b40
+ENDC
+PUSHINT 160
+SENDRAWMSG
+; end function destroy
+; end modifier onlyRoot
+CALLREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.macro c7_to_c4
+GETGLOB 2
+NEWC
+STU 256
+GETGLOB 3
+STUR 64
+GETGLOB 6
+STUR 1
+NEWC
+GETGLOB 19
+GETGLOB 20
+GETGLOB 21
+REVERSE 4, 0
+STDICT
+STSLICE
+STSLICE
+GETGLOB 10
+GETGLOB 11
+GETGLOB 12
+GETGLOB 13
+GETGLOB 14
+GETGLOB 15
+GETGLOB 16
+GETGLOB 17
+GETGLOB 18
+REVERSE 11, 0
+STBREF
+STSLICE
+STREF
+STU 32
+STU 32
+STU 32
+STU 32
+STU 32
+STDICT
+STDICT
+ENDC
+POP C4
+
+.macro c4_to_c7
+PUSHROOT
+CTOS        ; c4
+LDU 256      ; pubkey c4
+LDU 64      ; pubkey timestamp c4
+LDU 1       ; pubkey [timestamp] constructor_flag memory
+LDREFRTOS
+LDDICT
+LDMSGADDR
+SETGLOB 21
+SETGLOB 20
+SETGLOB 19
+LDMSGADDR
+LDREF
+LDU 32
+LDU 32
+LDU 32
+LDU 32
+LDU 32
+LDDICT
+PLDDICT
+SETGLOB 18
+SETGLOB 17
+SETGLOB 16
+SETGLOB 15
+SETGLOB 14
+SETGLOB 13
+SETGLOB 12
+SETGLOB 11
+SETGLOB 10
+TRUE
+SETGLOB 1   ; pubkey [timestamp] constructor_flag
+SETGLOB 6   ; pubkey [timestamp]
+SETGLOB 3   ; D
+SETGLOB 2
+
+.macro c4_to_c7_with_init_storage
+PUSHROOT
+CTOS        ; c4
+DUP        ; c4 c4
+SBITS      ; c4 bits
+GTINT 1    ; c4 bits>1
+PUSHCONT {
+	LDU 256      ; pubkey c4
+	LDU 64      ; pubkey timestamp c4
+	LDU 1       ; pubkey [timestamp] constructor_flag memory
+	LDREFRTOS
+	LDDICT
+	LDMSGADDR
+	SETGLOB 21
+	SETGLOB 20
+	SETGLOB 19
+	LDMSGADDR
+	LDREF
+	LDU 32
+	LDU 32
+	LDU 32
+	LDU 32
+	LDU 32
+	LDDICT
+	PLDDICT
+	SETGLOB 18
+	SETGLOB 17
+	SETGLOB 16
+	SETGLOB 15
+	SETGLOB 14
+	SETGLOB 13
+	SETGLOB 12
+	SETGLOB 11
+	SETGLOB 10
+	TRUE
+	SETGLOB 1   ; pubkey [timestamp] constructor_flag
+	SETGLOB 6   ; pubkey [timestamp]
+	SETGLOB 3   ; D
+	SETGLOB 2
+}
+PUSHCONT {
+	PLDDICT   ; D
+	; init root
+	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	SETGLOB 10
+	; init name
+	NEWC
+	ENDC
+	SETGLOB 11
+	; init start
+	PUSHINT 0
+	SETGLOB 12
+	; init endBid
+	PUSHINT 0
+	SETGLOB 13
+	; init endRev
+	PUSHINT 0
+	SETGLOB 14
+	; init expiry
+	PUSHINT 0
+	SETGLOB 15
+	; init minfinal
+	PUSHINT 0
+	SETGLOB 16
+	; init hashes
+	NEWDICT
+	SETGLOB 17
+	; init reveals
+	NEWDICT
+	SETGLOB 18
+	; init withdrawn
+	NEWDICT
+	SETGLOB 19
+	; init reveal_1
+	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	SETGLOB 20
+	; init reveal_2
+	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	SETGLOB 21
+	; set contract pubkey
+	PUSHINT 0
+	SWAP
+	PUSHINT 64
+	DICTUGET
+	THROWIFNOT 61
+	PLDU 256
+	SETGLOB 2
+	PUSHINT 0 ; timestamp
+	SETGLOB 3
+	PUSHINT 0 ; constructor_flag
+	SETGLOB 6
+	TRUE
+	SETGLOB 1
+}
+IFELSE
+
+.internal-alias :main_internal,        0
+.internal	:main_internal
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Function: main_internal
+;; param: contract_balance
+;; param: msg_balance
+;; param: int_msg_info
+;; param: msg_body_slice
+PUSHINT 0  ; main_external trans id
+PUSH S2
+CTOS
+LDU 4       ; bounced tail
+LDMSGADDR   ; bounced src tail
+DROP
+SETGLOB 9
+MODPOW2 1
+; beg set default params for responsible func
+GETGLOB 4
+; bounce
+TRUE
+SETINDEXQ 1
+; tons
+PUSHINT 10000000
+SETINDEXQ 2
+; currency
+NULL
+SETINDEXQ 3
+; flag
+PUSHINT 0
+SETINDEXQ 4
+SETGLOB 4
+; end set default params for responsible func
+IFRET
+PUSH S1    ; body
+SEMPTY     ; isEmpty
+DUP        ; isEmpty isEmpty
+PUSHCONT {
+	DROP    ;
+	PUSH S1 ; body
+	LDU 32  ; funcId body'
+	PUSH S1 ; funcId body' funcId
+	EQINT 0 ; funcId body' isZero
+	DUP     ; funcId body' isZero isZero
+	PUSHCONT {
+ 		; funcId body' isZero
+		BLKDROP2 2, 1; isZero
+	}
+	IF
+}
+IFNOT
+; [funcId body'] doReceive
+PUSHCONT {
+	; function receive
+	THROW 100
+	; end function receive
+}
+IFJMP
+PUSH S1 ; funcId body' funcId
+LESSINT 3            ; funcId body' funcId<3
+PUSH S2              ; funcId body' funcId<3 funcId
+PUSHINT 4294967293   ; funcId body' funcId<3 funcId 4294967293
+GREATER              ; funcId body' funcId<3 funcId>4294967293
+OR                   ; funcId body' funcId<3||funcId>4294967293
+PUSHCONT {
+	DROP2
+	PUSHINT 1
+	CALL 1
+	CALL $fallback$
+}
+IFJMP
+SWAP    ; body funcId
+CALL 1
+GETGLOB 7
+ISNULL
+PUSHCONT {
+	DROP
+	CALL $fallback$
+}
+IF
+
+.internal-alias :main_external,        -1
+.internal	:main_external
+PUSHINT -1 ; main_external trans id
+PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+SETGLOB 9
+PUSH S1
+CALL $c4_to_c7_with_init_storage$
+LDU 1 ; haveSign msgSlice
+SWAP
+PUSHCONT {
+	PUSHINT 512
+	LDSLICEX ; signatureSlice msgSlice
+	DUP      ; signatureSlice msgSlice msgSlice
+	HASHSU   ; signatureSlice msgSlice hashMsgSlice
+	SWAP  ; signatureSlice hashMsgSlice msgSlice
+	LDU 1 ; signatureSlice hashMsgSlice havePubkey msgSlice
+	SWAP  ; signatureSlice hashMsgSlice msgSlice havePubkey
+	PUSHCONT {
+		LDU 256       ; signatureSlice hashMsgSlice pubkey msgSlice
+		XCHG s3
+		SWAP
+	}
+	PUSHCONT {
+		XCHG s2
+		GETGLOB 2
+	}
+	IFELSE
+	CHKSIGNU      ; msgSlice isSigned
+	THROWIFNOT 40 ; msgSlice
+}
+PUSHCONT {
+	LDU 1      ; havePubkey msgSlice
+	SWAP       ; msgSlice havePubkey
+	THROWIF 58 ; msgSlice
+}
+IFELSE
+LDU 64                         ; timestamp msgSlice
+SWAP                           ; msgSlice timestamp
+CALL $replay_protection_macro$ ; msgSlice
+LDU 32  ; expireAt msgSlice
+SWAP    ; msgSlice expireAt
+NOW     ; msgSlice expireAt now
+GREATER ; msgSlice expireAt>now
+THROWIFNOT 57
+LDU  32 ; funcId body
+PUSH S1 ; funcId body funcId
+LESSINT 3            ; funcId body' funcId<3
+PUSH S2              ; funcId body' funcId<3 funcId
+PUSHINT 4294967293   ; funcId body' funcId<3 funcId 4294967293
+GREATER              ; funcId body' funcId<3 funcId>4294967293
+OR                   ; funcId body' funcId<3||funcId>4294967293
+PUSHCONT {
+	DROP2
+	PUSHINT 1
+	CALL 1
+	CALL $fallback$
+}
+IFJMP
+SWAP    ; body funcId
+CALL 1
+GETGLOB 7
+ISNULL
+PUSHCONT {
+	DROP
+	CALL $fallback$
+}
+IF
+
+.globl	root
+.public	root
+.type	root, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 10
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xb7295e20
+PUSH S1
+STSLICER
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	name
+.public	name
+.type	name, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 11
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xf985b3f4
+PUSH S1
+STREFR
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	start
+.public	start
+.type	start, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 12
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xbffcbec1
+PUSH S1
+STUR 32
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	endBid
+.public	endBid
+.type	endBid, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 13
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xb1c3973f
+PUSH S1
+STUR 32
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	endRev
+.public	endRev
+.type	endRev, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 14
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xc71ccf4f
+PUSH S1
+STUR 32
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	expiry
+.public	expiry
+.type	expiry, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 15
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xaa4a77c6
+PUSH S1
+STUR 32
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	minfinal
+.public	minfinal
+.type	minfinal, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 16
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x860eeb75
+PUSH S1
+STUR 32
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	hashes
+.public	hashes
+.type	hashes, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 17
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xe64e7697
+PUSH S1
+SWAP
+STDICT
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	reveals
+.public	reveals
+.type	reveals, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 18
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xe2c5a682
+PUSH S1
+SWAP
+STDICT
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	withdrawn
+.public	withdrawn
+.type	withdrawn, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 19
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x8ed6d6d3
+PUSH S1
+SWAP
+STDICT
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	reveal_1
+.public	reveal_1
+.type	reveal_1, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 20
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xef983dbb
+PUSH S1
+STSLICER
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	reveal_2
+.public	reveal_2
+.type	reveal_2, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 21
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xecb5c79f
+PUSH S1
+STSLICER
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
