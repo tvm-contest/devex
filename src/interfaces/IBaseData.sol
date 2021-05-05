@@ -29,7 +29,6 @@ interface IBaseData {
         address ownerAddress;
         address addr;
         uint32 ts;
-        uint32 contestId;
     }
 
     struct ProposalResults {

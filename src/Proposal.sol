@@ -104,7 +104,7 @@ contract Proposal is Base, IProposal, IBaseData {
             passed,
             _state.votesFor,
             _state.votesAgainst,
-            100000,
+            21000000,
             _voteCountModel,
             uint32(now)
         );
@@ -123,33 +123,32 @@ contract Proposal is Base, IProposal, IBaseData {
         VoteCountModel model
     ) private inline pure returns (bool) {
         bool passed = false;
-        if (model == VoteCountModel.Majority) {
-            passed = (yes > no);
-        } else if (model == VoteCountModel.SoftMajority) {
-            passed = (yes * total * 10 >= total * total + no * (8 * total  + 20));
-        } else if (model == VoteCountModel.SuperMajority) {
-            passed = (yes * total * 3 >= total * total + no * (total + 6));
-        } else if (model == VoteCountModel.Other) {
-            //
-        }
+        passed = (yes * total * 10 > total * total + no * (8 * total  + 20));
         return passed;
     }
+
+    uint public _t1;
+    uint public _t2;
+    uint public _t3;
+    uint public _t4;
 
     function _tryEarlyComplete(
         uint32 yes,
         uint32 no,
         uint32 total,
         VoteCountModel model
-    ) private inline pure returns (bool, bool) {
+    ) private inline returns (bool, bool) {
         (bool completed, bool passed) = (false, false);
-        if (model == VoteCountModel.Majority) {
-            (completed, passed) = (2*yes > total) ? (true, true) : ((2*no >= total) ? (true, false) : (false, false));
-        } else if (model == VoteCountModel.SoftMajority) {
-            (completed, passed) = (2*yes > total) ? (true, true) : ((2*no >= total) ? (true, false) : (false, false));
-        } else if (model == VoteCountModel.SuperMajority) {
-            (completed, passed) = (3*yes > 2*total) ? (true, true) : ((3*no > total) ? (true, false) : (false, false));
-        } else if (model == VoteCountModel.Other) {
-            //
+        _t1 = yes;
+        _t2 = no;
+        _t3 = total;
+        // _t4 = (yes * total * 10);
+        if (2 * yes >= total) {
+            completed = true;
+            passed = true;
+        } else if(2 * no >= total) {
+            completed = true;
+            passed = false;
         }
         return (completed, passed);
     }
@@ -162,12 +161,12 @@ contract Proposal is Base, IProposal, IBaseData {
         (bool completed, bool passed) = (false, false);
         if (now > _proposalInfo.end) {
             completed = true;
-            passed = _calculateVotes(_state.votesFor, _state.votesAgainst, 100000, _voteCountModel);
+            passed = _calculateVotes(_state.votesFor, _state.votesAgainst, 21000000, _voteCountModel);
         } else {
             (completed, passed) = _tryEarlyComplete(
                 _state.votesFor,
                 _state.votesAgainst,
-                100000,
+                21000000,
                 _voteCountModel
             );
         }

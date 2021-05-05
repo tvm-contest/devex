@@ -91,6 +91,38 @@
 				{"components":[{"name":"id","type":"uint32"},{"name":"start","type":"uint32"},{"name":"end","type":"uint32"},{"name":"title","type":"bytes"},{"name":"ts","type":"uint32"},{"name":"proposalType","type":"uint8"},{"name":"specific","type":"cell"}],"name":"info","type":"tuple"},
 				{"components":[{"name":"state","type":"uint8"},{"name":"votesFor","type":"uint32"},{"name":"votesAgainst","type":"uint32"}],"name":"status","type":"tuple"}
 			]
+		},
+		{
+			"name": "_t1",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_t1","type":"uint256"}
+			]
+		},
+		{
+			"name": "_t2",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_t2","type":"uint256"}
+			]
+		},
+		{
+			"name": "_t3",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_t3","type":"uint256"}
+			]
+		},
+		{
+			"name": "_t4",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_t4","type":"uint256"}
+			]
 		}
 	],
 	"data": [

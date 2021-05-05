@@ -150,7 +150,7 @@ describe("Demiurge test", () => {
   });
 
   it("deposit tokens to account", async () => {
-    const TOKEN_DEPOSIT = 70000;
+    const TOKEN_DEPOSIT = 16000000;
 
     console.log(
       (await smcPadawan.run({ functionName: "getDeposits" })).value.allDeposits
@@ -193,8 +193,8 @@ describe("Demiurge test", () => {
       abi: smcDemiurge.tonPackage.abi,
       functionName: "deployReserveProposal",
       input: {
-        start: Math.round(Date.now() / 1000),
-        end: Math.round(Date.now() / 1000) + 10000,
+        start: Math.round(Date.now() / 1000) + 5,
+        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
         title: utf8ToHex("test"),
         specific: {
           name: utf8ToHex("test"),
@@ -204,6 +204,8 @@ describe("Demiurge test", () => {
       dest: smcDemiurge.address,
       value: 5_000_000_000,
     });
+
+    await sleep(5000);
 
     smcProposal = new TonContract({
       client,
@@ -218,8 +220,8 @@ describe("Demiurge test", () => {
       Proposal balance: ${await smcProposal.getBalance()}`);
   });
 
-  it("send 10 votes for proposal", async () => {
-    const votesCount = 60000;
+  it("send votes for proposal", async () => {
+    const VOTES_COUNT = 16000000;
 
     console.log(
       `Padawan vote info before: `,
@@ -238,7 +240,7 @@ describe("Demiurge test", () => {
       input: {
         proposal: smcProposal.address,
         choice: true,
-        votes: votesCount,
+        votes: VOTES_COUNT,
       },
       dest: smcPadawan.address,
       value: 5_000_000_000,
@@ -255,6 +257,10 @@ describe("Demiurge test", () => {
   });
 
   it("checks proposal result", async () => {
+    console.log((await smcProposal.run({ functionName: "_t1" })).value);
+    console.log((await smcProposal.run({ functionName: "_t2" })).value);
+    console.log((await smcProposal.run({ functionName: "_t3" })).value);
+    console.log((await smcProposal.run({ functionName: "_t4" })).value);
     console.log(
       (await smcProposal.run({ functionName: "getVotingResults" })).value
     );

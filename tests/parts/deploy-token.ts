@@ -29,7 +29,7 @@ export default async (client: TonClient, smcGiver: TonContract) => {
       root_owner: "0x0",
       wallet_code: (await client.boc.get_code_from_tvc({ tvc: pkgTTW.image }))
         .code,
-      total_supply: 100000,
+      total_supply: 21000000,
     },
   });
 
@@ -52,7 +52,7 @@ export default async (client: TonClient, smcGiver: TonContract) => {
       workchain_id: 0,
       pubkey: `0x${smcTTW.keys.public}`,
       internal_owner: 0,
-      tokens: 80000,
+      tokens: 17000000,
       grams: 5_000_000_000,
     },
   });

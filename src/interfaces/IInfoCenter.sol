@@ -24,7 +24,6 @@ struct SetRootOwnerProposalSpecific {
 interface IInfoCenter is IBaseData {
     function onContestDeploy(uint32 id) external;
     function onProposalDeploy() external;
-    function stateUpdated(Stage stage) external;
     function onStateUpdate(ProposalState state) external;
     function onProposalFinalized(ProposalResults results) external;
     function registerJuryMember(string tag, uint pubkey) external;

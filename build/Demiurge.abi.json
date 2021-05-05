@@ -151,7 +151,7 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"components":[{"name":"id","type":"uint32"},{"name":"state","type":"uint8"},{"name":"ownerAddress","type":"address"},{"name":"addr","type":"address"},{"name":"ts","type":"uint32"},{"name":"contestId","type":"uint32"}],"name":"proposals","type":"map(uint32,tuple)"}
+				{"components":[{"name":"id","type":"uint32"},{"name":"state","type":"uint8"},{"name":"ownerAddress","type":"address"},{"name":"addr","type":"address"},{"name":"ts","type":"uint32"}],"name":"proposals","type":"map(uint32,tuple)"}
 			]
 		},
 		{

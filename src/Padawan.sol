@@ -7,11 +7,6 @@ import "./interfaces/IDemiurge.sol";
 import "./interfaces/ITokenRoot.sol";
 import "./interfaces/ITokenWallet.sol";
 
-
-interface IDePool {
-    function transferStake(address dest, uint64 amount) external;
-}
-
 contract Padawan is Base {
     uint32 constant ERROR_UNAUTHORIZED_CALLER = 110;
     uint32 constant ERROR_NOT_ENOUGH_VOTES = 111;
@@ -33,7 +28,7 @@ contract Padawan is Base {
         uint256 tokenId;
         address returnTo;
         uint64 amount;
-        uint64 valuePerVote; //1e-9
+        uint64 valuePerVote;
         bool approved;
         uint256 depool;
     }
@@ -49,10 +44,6 @@ contract Padawan is Base {
     address static deployer;
     // User address
     address _ownerAddress;
-    // Address of a service smc that knows voice price.
-    address _priceProvider;
-    // List of DePool addresses.
-    mapping(address => bool) public depools;
 
     // Collection of Padawan's token accounts.
     // map [token root address] => account struct
@@ -63,8 +54,6 @@ contract Padawan is Base {
 
     // predefined TokenId for Crystals currency
     uint256 _crystalsID = 0;
-    // predefined TokenId for DePool Stake
-    uint256 _depoolID = 1;
 
     // Set of proposal address for which user is voted and which are not finalized yet.
     mapping(address => uint32) _activeProposals;
@@ -246,15 +235,15 @@ contract Padawan is Base {
 
                 if (deposit.tokenId == _crystalsID) {
                     _ownerAddress.transfer(value, false, 0);
-                } else if (deposit.tokenId == _depoolID) {
-                    // user can reclaim only all depool stake at once.
-                    if (value >= deposit.amount) {
-                        address depool = address.makeAddrStd(0, deposit.depool);
-                        IDePool(depool).transferStake{value: 0.5 ton, flag: 1}
-                            (deposit.returnTo, deposit.amount);
-                    } else {
-                        (votes, value) = (0, 0);
-                    }
+                // } else if (deposit.tokenId == _depoolID) {
+                //     // user can reclaim only all depool stake at once.
+                //     if (value >= deposit.amount) {
+                //         // address depool = address.makeAddrStd(0, deposit.depool);
+                //         // IDePool(depool).transferStake{value: 0.5 ton, flag: 1}
+                //         //     (deposit.returnTo, deposit.amount);
+                //     } else {
+                //         (votes, value) = (0, 0);
+                //     }
                 } else {
                     TipAccount acc = tokenAccounts[address.makeAddrStd(0, deposit.tokenId)];
                     ITokenWallet(acc.addr).transfer{value: 0.1 ton + 0.1 ton}
@@ -411,9 +400,8 @@ contract Padawan is Base {
         lockedVotes = _lockedVotes;
     }
 
-    function getAddresses() public view returns (address userWallet, address priceProvider) {
-        userWallet = _ownerAddress;
-        priceProvider = _priceProvider;
+    function getAddresses() public view returns (address ownerAddress) {
+        ownerAddress = _ownerAddress;
     }
 
     function getActiveProposals() public view returns (mapping(address => uint32) activeProposals) {

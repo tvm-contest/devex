@@ -8,19 +8,17 @@ import "./interfaces/IClient.sol";
 
 contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
 
-    /*
-        Exception codes:
-        101 Not authorized to administer contest
-        102 ID is already taken
-    */
+    uint16 constant ERROR_NOT_AUTHORIZED_TO_ADMIN =     101;
+    uint16 constant ERROR_ID_ALREADY_TAKEN =            102;
 
-    uint16 constant ERROR_NOT_AUTHORIZED_WALLET =       300; // Only UserWallet can request padawans
-    uint16 constant ERROR_PADAWAN_ALREADY_DEPLOYED =    301; // padawan is already deployed
-    uint16 constant ERROR_PROPOSAL_ALREADY_DEPLOYED =   302; // proposal is already deployed
+    uint16 constant ERROR_NOT_AUTHORIZED_WALLET =       300;
+    uint16 constant ERROR_PADAWAN_ALREADY_DEPLOYED =    301;
+    uint16 constant ERROR_PROPOSAL_ALREADY_DEPLOYED =   302;
     uint16 constant ERROR_NOT_ALL_CHECKS_PASSED =       303;
     uint16 constant ERROR_INIT_ALREADY_COMPLETED =      304;
-
-    uint16 constant DEFAULT_OPTIONS = 0;
+    uint16 constant ERROR_END_LOWER_THAT_START =        305;
+    uint16 constant ERROR_NOW_LOWER_THAT_START =        306;
+    uint16 constant ERROR_BAD_DATES =                   307;
 
     uint8 constant CHECK_PROPOSAL = 1;
     uint8 constant CHECK_PADAWAN = 2;
@@ -76,13 +74,13 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     /*
     * Initialization functions
     */
+
     constructor(address store, address densRoot) public {
         if (msg.sender == address(0)) {
             require(msg.pubkey() == tvm.pubkey(), 101);
         }
         tvm.accept();
         
-
         if (store != address(0)) {
             _store = store;
             DemiurgeStore(_store).queryImage{value: 0.2 ton, bounce: true}(ContractType.Proposal);
@@ -159,8 +157,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
             ProposalState.New,
             msg.sender,
             addr,
-            uint32(now),
-            0
+            uint32(now)
         );
     }
 
@@ -170,6 +167,9 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
         string title,
         SetCodeProposalSpecific specific
     ) external checksEmpty {
+        require(end > start, ERROR_END_LOWER_THAT_START);
+        require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
+        require(end - start > 60 * 60 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -182,6 +182,9 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
         string title,
         ReserveProposalSpecific specific
     ) external checksEmpty {
+        require(end > start, ERROR_END_LOWER_THAT_START);
+        require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
+        require(end - start > 60 * 60 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -194,6 +197,9 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
         string title,
         SetOwnerProposalSpecific specific
     ) external checksEmpty {
+        require(end > start, ERROR_END_LOWER_THAT_START);
+        require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
+        require(end - start > 60 * 60 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -206,6 +212,9 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
         string title,
         SetRootOwnerProposalSpecific specific
     ) external checksEmpty {
+        require(end > start, ERROR_END_LOWER_THAT_START);
+        require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
+        require(end - start > 60 * 60 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -270,6 +279,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
             _passCheck(CHECK_PADAWAN);
         }
     }
+
     /*
     *   Get methods
     */
