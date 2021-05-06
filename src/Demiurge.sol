@@ -171,7 +171,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     ) external checksEmpty {
         require(end > start, ERROR_END_LOWER_THAT_START);
         require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
-        require(end - start > 60 * 60 * 24 * 7, ERROR_BAD_DATES);
+        require(end - start >= 60 * 60 * 24 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -186,7 +186,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     ) external checksEmpty {
         require(end > start, ERROR_END_LOWER_THAT_START);
         require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
-        require(end - start > 60 * 60 * 24 * 7, ERROR_BAD_DATES);
+        require(end - start >= 60 * 60 * 24 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -201,7 +201,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     ) external checksEmpty {
         require(end > start, ERROR_END_LOWER_THAT_START);
         require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
-        require(end - start > 60 * 60 * 24 * 7, ERROR_BAD_DATES);
+        require(end - start >= 60 * 60 * 24 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -216,7 +216,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     ) external checksEmpty {
         require(end > start, ERROR_END_LOWER_THAT_START);
         require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
-        require(end - start > 60 * 60 * 24 * 7, ERROR_BAD_DATES);
+        require(end - start >= 60 * 60 * 24 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
