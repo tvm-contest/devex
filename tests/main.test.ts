@@ -72,17 +72,18 @@ describe("Demiurge test", () => {
     smcDemiurgeStore = await deployDemiurgeStore(client, smcGiver);
   });
 
+  it("deploy and init Token", async () => {
+    [smcRT, smcTTWUser] = await deployToken(client, smcGiver);
+  });
+
   it("deploy and init Demiurge", async () => {
     smcDemiurge = await deployDemiurge(
       client,
       smcGiver,
       smcDemiurgeStore,
-      smcTestRoot
+      smcTestRoot,
+      smcRT
     );
-  });
-
-  it("deploy and init Token", async () => {
-    [smcRT, smcTTWUser] = await deployToken(client, smcGiver);
   });
 
   it("deploy and init Padawan", async () => {
@@ -128,9 +129,7 @@ describe("Demiurge test", () => {
       smcSafeMultisigWallet,
       abi: smcPadawan.tonPackage.abi,
       functionName: "createTokenAccount",
-      input: {
-        tokenRoot: smcRT.address,
-      },
+      input: {},
       dest: smcPadawan.address,
       value: 5_000_000_000,
     });
@@ -191,6 +190,60 @@ describe("Demiurge test", () => {
       client,
       smcSafeMultisigWallet,
       abi: smcDemiurge.tonPackage.abi,
+      functionName: "deploySetCodeProposal",
+      input: {
+        start: Math.round(Date.now() / 1000) + 5,
+        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
+        title: utf8ToHex("test"),
+        specific: {
+          contractType: 1,
+          code: "",
+        },
+      },
+      dest: smcDemiurge.address,
+      value: 5_000_000_000,
+    });
+    await callThroughMultisig({
+      client,
+      smcSafeMultisigWallet,
+      abi: smcDemiurge.tonPackage.abi,
+      functionName: "deploySetOwnerProposal",
+      input: {
+        start: Math.round(Date.now() / 1000) + 5,
+        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
+        title: utf8ToHex("test"),
+        specific: {
+          name: utf8ToHex("test"),
+          ts: Math.round(Date.now() / 1000),
+          owner:
+            "0:e73840daf07b5bf9554e8b32dd7c880826f44e78b46b2cb5a288537505caf3c5",
+        },
+      },
+      dest: smcDemiurge.address,
+      value: 5_000_000_000,
+    });
+    await callThroughMultisig({
+      client,
+      smcSafeMultisigWallet,
+      abi: smcDemiurge.tonPackage.abi,
+      functionName: "deploySetRootOwnerProposal",
+      input: {
+        start: Math.round(Date.now() / 1000) + 5,
+        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
+        title: utf8ToHex("test"),
+        specific: {
+          pubkey:
+            "0xb92d835085854943dcd7236e2bbb28d703fe6d0f074a61e8848559940b311aa0",
+          comment: utf8ToHex("test"),
+        },
+      },
+      dest: smcDemiurge.address,
+      value: 5_000_000_000,
+    });
+    await callThroughMultisig({
+      client,
+      smcSafeMultisigWallet,
+      abi: smcDemiurge.tonPackage.abi,
       functionName: "deployReserveProposal",
       input: {
         start: Math.round(Date.now() / 1000) + 5,
@@ -206,6 +259,10 @@ describe("Demiurge test", () => {
     });
 
     await sleep(5000);
+
+    console.log(
+      (await smcDemiurge.run({ functionName: "getDeployed" })).value.proposals
+    );
 
     smcProposal = new TonContract({
       client,

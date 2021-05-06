@@ -13,7 +13,7 @@ export default async (client: TonClient, smcGiver: TonContract) => {
     keys,
   });
 
-  fs.writeFileSync("./keys.json", JSON.stringify(keys));
+  fs.writeFileSync("./mtsg-keys.json", JSON.stringify(keys));
 
   await smcSafeMultisigWallet.calcAddress();
 

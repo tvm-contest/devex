@@ -8,7 +8,8 @@ export default async (
   client: TonClient,
   smcGiver: TonContract,
   smcDemiurgeStore: TonContract,
-  smcTestRoot: TonContract
+  smcTestRoot: TonContract,
+  smcRT: TonContract
 ) => {
   const smcDemiurge = new TonContract({
     client,
@@ -31,6 +32,7 @@ export default async (
     input: {
       store: smcDemiurgeStore.address,
       densRoot: smcTestRoot.address,
+      tokenRoot: smcRT.address,
     },
   });
 

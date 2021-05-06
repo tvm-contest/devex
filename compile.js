@@ -7,11 +7,13 @@ if (!shell.which("git")) {
 }
 
 const smcNames = [
-  "Demiurge",
-  "DemiurgeStore",
-  "Padawan",
-  "Proposal",
-  "TestRoot",
+  // "Demiurge",
+  // "DemiurgeStore",
+  // "Padawan",
+  // "Proposal",
+  // "TestRoot",
+  // "Debot",
+  "DemiurgeDebot",
 ];
 
 const compileScripts = [];

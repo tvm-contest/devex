@@ -6,7 +6,8 @@ enum ContractType {
     Demiurge,
     Proposal,
     Padawan,
-    DemiurgeDebot
+    DemiurgeDebot,
+    VotingDebot
 }
 
 interface IDemiurgeStoreCallback {

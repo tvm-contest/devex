@@ -4,7 +4,7 @@ import "./IBaseData.sol";
 
 
 struct SetCodeProposalSpecific {
-    uint8 ContractType;
+    uint8 contractType;
     TvmCell code;
 }
 struct ReserveProposalSpecific {

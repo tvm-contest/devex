@@ -73,6 +73,8 @@ contract Padawan is Base {
     // If  == 0, there is no pending deposits.
     uint32 _pendingDepositId;
 
+    address _tokenRoot;
+
     event VoteRejected(uint64 pid, uint32 votes, uint16 ec);
 
     /*
@@ -93,8 +95,9 @@ contract Padawan is Base {
     *  Initialization
     */
 
-    constructor() public contractOnly {
+    constructor(address tokenRoot) public contractOnly {
         require(deployer == msg.sender, ERROR_INVALID_DEPLOYER);
+        _tokenRoot = tokenRoot;
         IDemiurge(deployer).onPadawanDeploy{value: 1 ton}(tvm.pubkey());
     }
 
@@ -372,13 +375,13 @@ contract Padawan is Base {
         _ownerAddress.transfer(0, false, 64);
     }
 
-    function createTokenAccount(address tokenRoot) external onlyOwner {
+    function createTokenAccount() external onlyOwner {
         require(msg.value >= TOKEN_ACCOUNT_FEE, ERROR_MSG_VALUE_TOO_LOW);
-        require(!tokenAccounts.exists(tokenRoot), ERROR_TOKEN_ACCOUNT_ALREADY_EXISTS);
+        require(!tokenAccounts.exists(_tokenRoot), ERROR_TOKEN_ACCOUNT_ALREADY_EXISTS);
         uint256 owner = address(this).value;
-        tokenAccounts[tokenRoot] = TipAccount(address(0), owner, uint32(now), 0);
+        tokenAccounts[_tokenRoot] = TipAccount(address(0), owner, uint32(now), 0);
 
-        ITokenRoot(tokenRoot).deployEmptyWallet{value: 0, flag: 64, bounce: true}
+        ITokenRoot(_tokenRoot).deployEmptyWallet{value: 0, flag: 64, bounce: true}
             (tvm.functionId(onTokenWalletDeploy), 0, 0, owner, 1 ton);
     }
 
