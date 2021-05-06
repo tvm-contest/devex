@@ -68,12 +68,12 @@ demiurge.call_method('constructor', dict(
       tokenRoot = smcRT.addr()
 ), private_key = private_key)
 
-
-
+ts4.set_verbose(False)
 ts4.dispatch_messages()
+ts4.set_verbose(True)
 
 images = demiurge.call_getter("getImages",{})
-print(images);
+# print(images);
 
 
 print("==================== deploy and init tip3 ====================")
@@ -165,7 +165,7 @@ assert eq(TOKEN_DEPOSIT,smcPadawan.call_getter('getDeposits',{}))
 
 print("==================== deploy and init Proposal ====================")
   
-
+  
 payloadDeployReserveProposal = helper.call_getter('encode_deployReserveProposal_call',  {
         'start': Math.round(Date.now() / 1000) + 5,
         'end': Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
