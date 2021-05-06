@@ -198,7 +198,7 @@ contract Proposal is Base, IProposal, IBaseData {
         info = _proposalInfo;
     }
 
-    function getCurrentVotes() public view returns (uint32 votesFor, uint32 votesAgainst) {
+    function getCurrentVotes() external override view returns (uint32 votesFor, uint32 votesAgainst) {
         return (_state.votesFor, _state.votesAgainst);
     }
 
