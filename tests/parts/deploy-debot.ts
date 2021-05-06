@@ -29,10 +29,7 @@ export default async (
 
   await smcGiver.call({
     functionName: "sendGrams",
-    input: {
-      dest: smcDemiurgeDebot.address,
-      amount: 100_000_000_000,
-    },
+    input: { dest: smcDemiurgeDebot.address, amount: 100_000_000_000 },
   });
 
   trimlog(`DemiurgeDebot balance: ${await smcDemiurgeDebot.getBalance()}`);

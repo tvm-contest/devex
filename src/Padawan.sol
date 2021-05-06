@@ -398,7 +398,7 @@ contract Padawan is Base {
     }
 
     function getVoteInfo() external view returns (uint32 reqVotes, uint32 totalVotes, uint32 lockedVotes) {
-        reqVotes =  _requestedVotes;
+        reqVotes = _requestedVotes;
         totalVotes =  _totalVotes;
         lockedVotes = _lockedVotes;
     }
