@@ -74,7 +74,6 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     address _mtsg;
     address _padawan;
     uint _padawanPubkey;
-    uint128 _balance;
 
     uint32 _retryId;
 
@@ -82,22 +81,22 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     mapping (uint32 => ProposalInfo) _info;
     mapping(address => uint32) _activeProposals;
     NewProposal _newprop;
-    SetCodeProposalSpecific _newSetCode;
+    //SetCodeProposalSpecific _newSetCode;
     ReserveProposalSpecific _newReserve;
     SetOwnerProposalSpecific _newSetOwner;
     SetRootOwnerProposalSpecific _newSetRootOwner;
 
+    Padawan _padawanVotes;
     mapping (address => TipAccount) _tip3Accounts;
     uint128 _tmpTokenBalance;
     uint8 _tmpTokenDecimals;
 
     uint128 _fromBalance;
     address _fromTip3Addr;
-    uint128 _depositAmount;
+    uint64 _depositAmount;
     uint32 _proposalId;
     uint32 _votes;
     bool _yesNo;
-    Padawan _padawanVotes;
 
     modifier accept {
         tvm.accept();
@@ -131,7 +130,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         address support, string hello, string language, string dabi, bytes icon
     ) {
         name = "Demiurge Debot";
-        version = "1.7.0";
+        version = "1.8.0";
         publisher = "RSquad";
         key = "Voting system for DENS.";
         author = "RSquad";
@@ -153,11 +152,11 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     }
 
     function mainMenu() public {
-        Terminal.print(0, "Demiurge Debot.");
+        //Terminal.print(0, "Demiurge Debot.");
         Terminal.print(0, format("Current Demiurge: {}", _demiurge));
-        Terminal.print(0, format("Current Multisig address: {}", _mtsg));
-        Terminal.print(0, format("[DEBUG] Current Padawan: {}", _padawan));
+        Terminal.print(0, format("Current Multisig: {}", _mtsg));
         if (_padawan != address(0)) {
+            Terminal.print(0, format("Current Padawan: {}", _padawan));
             Terminal.print(0, 
             format("Your votes:\ntotal: {}, locked: {}, requested to reclaim: {}",
                 _padawanVotes.totalVotes,
@@ -170,10 +169,15 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
                 Terminal.print(0, format("[DEBUG] TIP3 Wallet: {}", tip3wallet.addr));
                 Terminal.print(0, format("TIP3 deposit: {} tokens", _tmpTokenBalance));
             }
+        } else {
+            Terminal.print(0, "You need to attach your personal voting contract (Padawan) or deploy new one.");
         }
 
         MenuItem[] items;
         items.push(MenuItem("Attach Multisig", "", tvm.functionId(askMultisig)));
+        if (_padawan == address(0)) {
+            items.push(MenuItem("Attach Padawan", "", tvm.functionId(attachPadawanMenu)));
+        }
         items.push(MenuItem("View Proposals", "", tvm.functionId(viewAllProposals)));
         items.push(MenuItem("Create Proposal", "", tvm.functionId(createProposal)));
         items.push(MenuItem("Vote for Proposal", "", tvm.functionId(voteForProposal)));
@@ -226,7 +230,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
 
     function setFromTip3Wallet(address value) public {
         _fromTip3Addr = value;
-        optional(uint256) none = 0;
+        optional(uint256) none;
         ITokenWallet(value).getBalance{
             abiVer: 2,
             extMsg: true,
@@ -286,7 +290,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         }
         (address root, ) = _tip3Accounts.min().get();
         optional(uint256) none = 0;
-        TvmCell payload = tvm.encodeBody(IPadawan.depositTokens, _fromTip3Addr, root.value, uint64(_depositAmount));
+        TvmCell payload = tvm.encodeBody(IPadawan.depositTokens, _fromTip3Addr, root.value, _depositAmount);
         IMultisig(_mtsg).submitTransaction{
             abiVer: 2,
             extMsg: true,
@@ -339,7 +343,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     }
     function saveMultisig(address value) public {
         _mtsg = value;
-        Terminal.print(tvm.functionId(Debot.start), format("Multisig address: {}", value));
+        start();
     }
 
     function voteForProposal(uint32 index) public {
@@ -357,12 +361,17 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             }
             this.voteForProposal2();
         } else {
-            Terminal.print(0, "Padawan doesn't attached");
-            Menu.select("What do you want to do?", "", [
-                MenuItem("Attach existed Padawan", "", tvm.functionId(attachPadawan)),
-                MenuItem("Create Padawan", "", tvm.functionId(createPadawan))
-            ]);
+            attachPadawanMenu(0);
         }
+    }
+
+    function attachPadawanMenu(uint32 index) public {
+        index;
+        Terminal.print(0, "Padawan doesn't attached");
+        Menu.select("What do you want to do?", "", [
+            MenuItem("Attach existed Padawan", "", tvm.functionId(attachPadawan)),
+            MenuItem("Create Padawan", "", tvm.functionId(createPadawan))
+        ]);
     }
 
     function voteForProposal2() public {
@@ -371,7 +380,11 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             count++;
             id;
         }
-        NumberInput.get(tvm.functionId(enterProposalId), "Enter proposal id:", 0, count);
+        if (count == 0) {
+            Terminal.print(tvm.functionId(Debot.start), "There is no active proposals.");
+        } else {
+            NumberInput.get(tvm.functionId(enterProposalId), "Enter proposal id:", 0, count - 1);
+        }
     }
 
     function enterProposalId(int256 value) public {
@@ -381,7 +394,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             Terminal.print(tvm.functionId(Debot.start), "Proposal is expired.");
             return;
         } else {
-            NumberInput.get(tvm.functionId(enterVotes), "Enter number of votes:", 0, _padawanVotes.totalVotes);
+            NumberInput.get(tvm.functionId(enterVotes), "Enter number of votes:", 0, _padawanVotes.totalVotes - _padawanVotes.lockedVotes);
             Menu.select("How to vote?", "", [
                 MenuItem("Vote \"Yes\"", "", tvm.functionId(sendVoteFor)),
                 MenuItem("Vote \"No\"", "", tvm.functionId(sendVoteFor))
@@ -593,18 +606,19 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         index = index;
         Terminal.print(0, "List of proposals:");
         _printProposals();
-        Terminal.print(tvm.functionId(Debot.start), "Back to start");
     }
 
     function _printProposals() private inline {
         for((uint32 id, ) : _data) {
-            _printProp(id);
+            this.printProp(id);
         }
+        Terminal.print(tvm.functionId(Debot.start), "Back to start");
     }
 
-    function _printProp(uint32 id) private inline {
+    function printProp(uint32 id) public {
         ProposalInfo info = _info[id];
         ProposalData data = _data[id];
+
         string opt = "\"soft majority\"";
 
         string fmt = format(
@@ -613,6 +627,19 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             opt, data.addr, data.ownerAddress
         );
         Terminal.print(0, fmt);
+
+        IProposal(data.addr).getCurrentVotes{
+            abiVer: 2,
+            extMsg: true,
+            sign: false,
+            time: 0,
+            callbackId: tvm.functionId(setProposalVotes),
+            onErrorId: 0
+        }();
+    }
+
+    function setProposalVotes(uint32 votesFor, uint32 votesAgainst) public {
+        Terminal.print(0, format("\"Yes\" votes: {}, \"No\" votes: {}", votesFor, votesAgainst));
     }
 
     function _typeToString(ProposalType proposalType) inline private pure returns (string) {
@@ -654,18 +681,6 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             return "Distributed";
         }
         return "unknown";
-    }
-
-    function _printActiveProposals() private {
-        if (_activeProposals.empty()) {
-            Terminal.print(0, "No active proposals");
-            return;
-        }
-        for ((address addr, uint32 votes) : _activeProposals) {
-            uint32 id = _findProposal(addr);
-            _printProp(id);
-            Terminal.print(0, format("You sent {} votes for it.", votes));
-        }
     }
 
     function _findProposal(address findAddr) private view returns (uint32) {
@@ -735,6 +750,8 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
                 onErrorId: 0,
                 time: uint32(now)
             }();
+        } else {
+            this.mainMenu();
         }
     }
     function setPadawanVotes(uint32 reqVotes, uint32 totalVotes, uint32 lockedVotes) public {
@@ -751,7 +768,6 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     }
 
     function setDemiBalance(uint128 nanotokens) public {
-        _balance = nanotokens;
         Terminal.print(0, format("Demiurge balance: {} nanotokens", nanotokens));
     }
 

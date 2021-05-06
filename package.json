@@ -6,7 +6,8 @@
   "scripts": {
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha --exit -r ts-node/register -r dotenv/config -t 300000 'tests/**/*.test.ts'",
     "compile": "node ./compile.js",
-    "test:compile": "npm run compile && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha --exit -r ts-node/register -r dotenv/config -t 300000 'tests/**/*.test.ts'"
+    "test:compile": "npm run compile && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha --exit -r ts-node/register -r dotenv/config -t 300000 'tests/**/*.test.ts'",
+    "deploy:denvet": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha --exit -r ts-node/register -r ./env.config.devnet.js -t 300000 'tests/deploy.devnet.test.ts'"
   },
   "author": {
     "name": "rsquad",

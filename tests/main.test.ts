@@ -28,6 +28,8 @@ describe("Demiurge test", () => {
   let smcTTWPadawan: TonContract;
   let smcTestRoot: TonContract;
 
+  console.log(process.env.NETWORK);
+
   before(async () => {
     client = createClient();
     smcGiver = new TonContract({
