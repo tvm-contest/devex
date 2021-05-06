@@ -98,8 +98,10 @@ describe("Demiurge test", () => {
         pubkey: `0x${keys.public}`,
       },
       dest: smcDemiurge.address,
-      value: 5_000_000_000,
+      value: 7_000_000_000,
     });
+
+    await sleep(1000);
 
     // TODO: refactor Padawan get
     smcPadawan = new TonContract({
@@ -124,15 +126,15 @@ describe("Demiurge test", () => {
       ).value.allAccounts
     );
 
-    await callThroughMultisig({
-      client,
-      smcSafeMultisigWallet,
-      abi: smcPadawan.tonPackage.abi,
-      functionName: "createTokenAccount",
-      input: {},
-      dest: smcPadawan.address,
-      value: 5_000_000_000,
-    });
+    // await callThroughMultisig({
+    //   client,
+    //   smcSafeMultisigWallet,
+    //   abi: smcPadawan.tonPackage.abi,
+    //   functionName: "createTokenAccount",
+    //   input: {},
+    //   dest: smcPadawan.address,
+    //   value: 5_000_000_000,
+    // });
 
     const TTWAddr = (
       await smcPadawan.run({
@@ -193,7 +195,7 @@ describe("Demiurge test", () => {
       functionName: "deploySetCodeProposal",
       input: {
         start: Math.round(Date.now() / 1000) + 5,
-        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
+        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 24 * 7,
         title: utf8ToHex("test"),
         specific: {
           contractType: 1,
@@ -210,7 +212,7 @@ describe("Demiurge test", () => {
       functionName: "deploySetOwnerProposal",
       input: {
         start: Math.round(Date.now() / 1000) + 5,
-        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
+        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 24 * 7,
         title: utf8ToHex("test"),
         specific: {
           name: utf8ToHex("test"),
@@ -229,7 +231,7 @@ describe("Demiurge test", () => {
       functionName: "deploySetRootOwnerProposal",
       input: {
         start: Math.round(Date.now() / 1000) + 5,
-        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
+        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 24 * 7,
         title: utf8ToHex("test"),
         specific: {
           pubkey:
@@ -247,7 +249,7 @@ describe("Demiurge test", () => {
       functionName: "deployReserveProposal",
       input: {
         start: Math.round(Date.now() / 1000) + 5,
-        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
+        end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 24 * 7,
         title: utf8ToHex("test"),
         specific: {
           name: utf8ToHex("test"),

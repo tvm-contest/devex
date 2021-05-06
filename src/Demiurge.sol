@@ -108,7 +108,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
             pubkey: pubkey,
             code: code
         });
-        address addr = new Padawan {stateInit: state, value: START_BALANCE}(_tokenRoot);
+        address addr = new Padawan {stateInit: state, value: START_BALANCE + 2 ton}(_tokenRoot);
         _deployedPadawans[pubkey] = PadawanData(msg.sender, addr);
     }
 

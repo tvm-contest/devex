@@ -62,6 +62,12 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         string title;
         ProposalType proposalType;
     }
+
+    struct Padawan {
+        uint32 reqVotes;
+        uint32 totalVotes;
+        uint32 lockedVotes;
+    }
     
     address _demiurge;
     address _mtsg;
@@ -79,6 +85,8 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     ReserveProposalSpecific _newReserve;
     SetOwnerProposalSpecific _newSetOwner;
     SetRootOwnerProposalSpecific _newSetRootOwner;
+
+    Padawan _padawanVotes;
 
     modifier accept {
         tvm.accept();
@@ -127,18 +135,18 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         return [ Terminal.ID, Menu.ID, AddressInput.ID, ConfirmInput.ID ];
     }
 
-    function start () public override {
+    function start() public override {
         _getProposals();
-        if(_padawanPubkey != 0) {
-            _getPadawan();
-        }
+        _getPadawan();
         Sdk.getBalance(tvm.functionId(setDemiBalance), _demiurge);
+        this.mainMenu();
+    }
+
+    function mainMenu() public {
         Terminal.print(0, "Demiurge Debot.");
         Terminal.print(0, format("Current Demiurge: {}", _demiurge));
         Terminal.print(0, format("Current Multisig address: {}", _mtsg));
-        if(_padawan != address(0)) {
-            Terminal.print(0, format("Current Padawan: {}", _padawan));
-        }
+        Terminal.print(0, format("Current Padawan: {}", _padawan));
         Menu.select("What do you want to do?", "", [
             MenuItem("Attach Multisig", "", tvm.functionId(askMultisig)),
             MenuItem("View Proposals", "", tvm.functionId(viewAllProposals)),
@@ -160,6 +168,11 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         index;
         if(_padawan != address(0)) {
             Terminal.print(0, format("Current Padawan: {}", _padawan));
+            Terminal.print(0, format("Votes: {} reqVotes, {} totalVotes, {} lockedVotes",
+                _padawanVotes.reqVotes,
+                _padawanVotes.totalVotes,
+                _padawanVotes.lockedVotes
+            ));
         } else {
             Terminal.print(0, "Padawan doesn't attached");
             Menu.select("What do you want to do?", "", [
@@ -172,6 +185,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     function attachPadawan(uint32 index) public {
         index;
         Terminal.input(tvm.functionId(enterNewPadawanPubkey), "Enter pubkey:", false);
+        this.start();
     }
 
     function createPadawan(uint32 index) public {
@@ -195,7 +209,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             expire: 0,
             callbackId: tvm.functionId(onSuccess),
             onErrorId: tvm.functionId(onError)
-        }(_demiurge, 3 ton, false, false, m_payload);
+        }(_demiurge, 5 ton, false, false, m_payload);
     }
 
     function createProposal(uint32 index) public {
@@ -356,11 +370,27 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         string opt = "\"soft majority\"";
 
         string fmt = format(
-            "\nID {}. \"{}\"\nStatus: {}\nStart: {}, End: {}\nTotal votes: 21000000, options: {}\nAddress: {}\ncreator: {}\n",
-            id, info.title, _stateToString(data.state), info.start, info.end,
+            "\nID {}. \"{}\"\nStatus: {}\nType: {}\nStart: {}, End: {}\nTotal votes: 21000000, options: {}\nAddress: {}\ncreator: {}\n",
+            id, info.title, _stateToString(data.state), _typeToString(info.proposalType), info.start, info.end,
             opt, data.addr, data.ownerAddress
         );
         Terminal.print(0, fmt);
+    }
+
+    function _typeToString(ProposalType proposalType) inline private pure returns (string) {
+        if (proposalType == ProposalType.SetCode) {
+            return "SetCode";
+        }
+        if (proposalType == ProposalType.Reserve) {
+            return "Reserve";
+        }
+        if (proposalType == ProposalType.SetOwner) {
+            return "SetOwner";
+        }
+        if (proposalType == ProposalType.SetRootOwner) {
+            return "SetRootOwner";
+        }
+        return "unknown";
     }
 
     function _stateToString(ProposalState state) inline private pure returns (string) {
@@ -440,6 +470,16 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             onErrorId: tvm.functionId(onError),
             time: uint32(now)
         }(_padawanPubkey);
+        if(_padawan != address(0)) {
+            IPadawan(_padawan).getVoteInfo{
+                abiVer: 2,
+                extMsg: true,
+                sign: false,
+                callbackId: tvm.functionId(setPadawanVotes),
+                onErrorId: tvm.functionId(onError),
+                time: uint32(now)
+            }();
+        }
     }
 
     // function setTokenAccounts(mapping (address => TipAccount) allAccounts) public {
@@ -449,12 +489,14 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     function setProposalData(mapping(uint32 => ProposalData) proposals) public {
         _data = proposals;
     }
-
     function setProposalInfo(mapping(uint32 => ProposalInfo) proposals) public {
         _info = proposals;
     }
-    function setPadawan(ProposalData proposalData) public {
-        _padawan = proposalData.addr;
+    function setPadawan(PadawanData padawanData) public {
+        _padawan = padawanData.addr;
+    }
+    function setPadawanVotes(uint32 reqVotes, uint32 totalVotes, uint32 lockedVotes) public {
+        _padawanVotes = Padawan(reqVotes, totalVotes, lockedVotes);
     }
 
     function setDemiBalance(uint128 nanotokens) public {
@@ -481,18 +523,9 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         Terminal.print(tvm.functionId(Debot.start), "Deploy succeeded.");
     }
 
-    function onSuccessfulSet() public {
-        Terminal.print(tvm.functionId(Debot.start), "Succeeded.");
-    }
-
     function onError(uint32 sdkError, uint32 exitCode) public {
         Terminal.print(0, format("Failed. Sdk error {}. Exit code {}.", sdkError, exitCode));
         ConfirmInput.get(_retryId, "Do you want to retry?");
-    }
-
-    function retrySetAddress(bool value) public pure {
-        if (!value) return;
-        // setDemiAddress(_demiurge);
     }
 
     /*
@@ -507,8 +540,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
 
     function onCodeUpgrade() internal override {
         tvm.resetStorage();
-        // _pub = 0x042ba05fab575ae9488b5a4b49b293f07b885cad09a21292aaaa3c26ebba1c66;
-        // _sec = 0x14de59851748d1df1c986de13c4e6d52291e6b832524f67278935578f0b58305;
-        // priceProvider = address.makeAddrStd(0, 0x9e9f912a67088341a9cd04330c40eff63300c52bf2fb4634e286a6d0d1e9a77c);
+        // _pub = ;
+        // _sec = ;
     }
 }

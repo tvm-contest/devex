@@ -99,6 +99,7 @@ contract Padawan is Base {
         require(deployer == msg.sender, ERROR_INVALID_DEPLOYER);
         _tokenRoot = tokenRoot;
         IDemiurge(deployer).onPadawanDeploy{value: 1 ton}(tvm.pubkey());
+        _createTokenAccount();
     }
 
     function initPadawan(address ownerAddress) external {
@@ -375,13 +376,11 @@ contract Padawan is Base {
         _ownerAddress.transfer(0, false, 64);
     }
 
-    function createTokenAccount() external onlyOwner {
-        require(msg.value >= TOKEN_ACCOUNT_FEE, ERROR_MSG_VALUE_TOO_LOW);
-        require(!tokenAccounts.exists(_tokenRoot), ERROR_TOKEN_ACCOUNT_ALREADY_EXISTS);
+    function _createTokenAccount() private {
         uint256 owner = address(this).value;
         tokenAccounts[_tokenRoot] = TipAccount(address(0), owner, uint32(now), 0);
 
-        ITokenRoot(_tokenRoot).deployEmptyWallet{value: 0, flag: 64, bounce: true}
+        ITokenRoot(_tokenRoot).deployEmptyWallet{value: 2 ton, flag: 1, bounce: true}
             (tvm.functionId(onTokenWalletDeploy), 0, 0, owner, 1 ton);
     }
 
@@ -398,7 +397,7 @@ contract Padawan is Base {
     }
 
     function getVoteInfo() external view returns (uint32 reqVotes, uint32 totalVotes, uint32 lockedVotes) {
-        reqVotes =  _requestedVotes;
+        reqVotes = _requestedVotes;
         totalVotes =  _totalVotes;
         lockedVotes = _lockedVotes;
     }
