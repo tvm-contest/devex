@@ -90,7 +90,7 @@ walletAddress = smcRT.call_method('deployWallet', {
       'pubkey': public_key,
       'internal_owner': 0,
       'tokens': 17000000,
-      'grams': 5_000_000_000
+      'grams': 5*ts4.GRAM,
     },private_key=private_key )
 ts4.dispatch_messages()
 
@@ -107,6 +107,9 @@ helper  = ts4.BaseContract('Helper', {}, nickname = 'helper')
 payload = helper.call_getter('encode_deployPadawan_call', dict(pubkey = public_key))
 ts4.dispatch_messages()
 
+# Load Padawan's ABI beforehand to dismiss 'Unknown message' warning
+ts4.register_abi('Padawan')
+
 params = dict(
         dest = demiurge.addr(),
         value = 15_500_000_000,
@@ -115,15 +118,20 @@ params = dict(
         payload = payload
     )
 print(ts4.get_balance(smcSafeMultisigWallet.addr()))
-smcSafeMultisigWallet.call_method('sendTransaction', params , private_key=private_key )
+
+smcSafeMultisigWallet.call_method('sendTransaction', params, private_key = private_key)
+
 ts4.dispatch_messages()
 
 padawanAddress = (demiurge.call_getter_raw('getDeployed',{}))['padawans'][public_key]['addr']
 
-smcPadawan = ts4.BaseContract('Padawan', None, address=ts4.Address(padawanAddress),
-        pubkey = public_key,
-        private_key = private_key,
-        nickname = 'PadawanWallet',)
+smcPadawan = ts4.BaseContract('Padawan', None, 
+        address = ts4.Address(padawanAddress),
+        nickname = 'PadawanWallet',
+    )
+    
+# Ensure Padawan has correct balance
+smcPadawan.ensure_balance(5*ts4.GRAM)
 
 #payloadCreateTokenAccount = helper.call_getter('encode_createTokenAccount_call', {'tokenRoot': smcRT.addr()})
 
@@ -139,7 +147,7 @@ smcPadawan = ts4.BaseContract('Padawan', None, address=ts4.Address(padawanAddres
 TTWAddr = smcPadawan.call_getter('getTokenAccounts')
 print(TTWAddr)
 
-smcTTWPadawan = ts4.BaseContract('TONTokenWallet', None, address=TTWAddr,  pubkey = public_key,
+smcTTWPadawan = ts4.BaseContract('TONTokenWallet', None, address=TTWAddr, pubkey = public_key,
         private_key = private_key)
 
 TOKEN_DEPOSIT = 21000000000
