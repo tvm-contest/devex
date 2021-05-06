@@ -1,0 +1,181 @@
+{
+	"ABI version": 2,
+	"header": ["time"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"store","type":"address"},
+				{"name":"densRoot","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployPadawan",
+			"inputs": [
+				{"name":"pubkey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onPadawanDeploy",
+			"inputs": [
+				{"name":"key","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deploySetCodeProposal",
+			"inputs": [
+				{"name":"start","type":"uint32"},
+				{"name":"end","type":"uint32"},
+				{"name":"title","type":"bytes"},
+				{"components":[{"name":"ContractType","type":"uint8"},{"name":"code","type":"cell"}],"name":"specific","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployReserveProposal",
+			"inputs": [
+				{"name":"start","type":"uint32"},
+				{"name":"end","type":"uint32"},
+				{"name":"title","type":"bytes"},
+				{"components":[{"name":"name","type":"bytes"},{"name":"ts","type":"uint32"}],"name":"specific","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deploySetOwnerProposal",
+			"inputs": [
+				{"name":"start","type":"uint32"},
+				{"name":"end","type":"uint32"},
+				{"name":"title","type":"bytes"},
+				{"components":[{"name":"name","type":"bytes"},{"name":"owner","type":"address"},{"name":"ts","type":"uint128"}],"name":"specific","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deploySetRootOwnerProposal",
+			"inputs": [
+				{"name":"start","type":"uint32"},
+				{"name":"end","type":"uint32"},
+				{"name":"title","type":"bytes"},
+				{"components":[{"name":"pubkey","type":"uint256"},{"name":"comment","type":"bytes"}],"name":"specific","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onProposalDeploy",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onProposalFinalized",
+			"inputs": [
+				{"components":[{"name":"id","type":"uint32"},{"name":"passed","type":"bool"},{"name":"votesFor","type":"uint32"},{"name":"votesAgainst","type":"uint32"},{"name":"totalVotes","type":"uint32"},{"name":"model","type":"uint8"},{"name":"ts","type":"uint32"}],"name":"results","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setProposalSI",
+			"inputs": [
+				{"name":"c","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setPadawanSI",
+			"inputs": [
+				{"name":"c","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "updateABI",
+			"inputs": [
+				{"name":"kind","type":"uint8"},
+				{"name":"sabi","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "updateImage",
+			"inputs": [
+				{"name":"kind","type":"uint8"},
+				{"name":"image","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getImages",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"padawan","type":"cell"},
+				{"name":"proposal","type":"cell"}
+			]
+		},
+		{
+			"name": "getDeployed",
+			"inputs": [
+			],
+			"outputs": [
+				{"components":[{"name":"ownerAddress","type":"address"},{"name":"addr","type":"address"}],"name":"padawans","type":"map(uint256,tuple)"},
+				{"name":"proposals","type":"map(address,uint32)"}
+			]
+		},
+		{
+			"name": "getProposalInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"components":[{"name":"id","type":"uint32"},{"name":"start","type":"uint32"},{"name":"end","type":"uint32"},{"name":"title","type":"bytes"},{"name":"ts","type":"uint32"},{"name":"proposalType","type":"uint8"},{"name":"specific","type":"cell"}],"name":"proposals","type":"map(uint32,tuple)"}
+			]
+		},
+		{
+			"name": "getProposalData",
+			"inputs": [
+			],
+			"outputs": [
+				{"components":[{"name":"id","type":"uint32"},{"name":"state","type":"uint8"},{"name":"ownerAddress","type":"address"},{"name":"addr","type":"address"},{"name":"ts","type":"uint32"}],"name":"proposals","type":"map(uint32,tuple)"}
+			]
+		},
+		{
+			"name": "getStats",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"version","type":"uint16"},
+				{"name":"deployedPadawansCounter","type":"uint32"},
+				{"name":"deployedProposalsCounter","type":"uint32"}
+			]
+		},
+		{
+			"name": "getPadawan",
+			"inputs": [
+				{"name":"key","type":"uint256"}
+			],
+			"outputs": [
+				{"components":[{"name":"ownerAddress","type":"address"},{"name":"addr","type":"address"}],"name":"data","type":"tuple"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}
