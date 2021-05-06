@@ -18,7 +18,8 @@ smcSafeMultisigWallet = ts4.BaseContract('SafeMultisigWallet',
             owners      = [public_key],
         ),
         pubkey      = public_key,
-        private_key = private_key
+        private_key = private_key,
+        nickname     = 'wallet',
     )
 
 print("> deploy and init DemiurgeStore")
@@ -38,7 +39,9 @@ print(smcDemiurgeStore.addr())
 
 demiurge = ts4.BaseContract('Demiurge',  ctor_params = None,
         pubkey      = public_key,
-        private_key = private_key)
+        private_key = private_key,
+        nickname     = 'demiurge',
+    )
 
 demiurge.call_method('constructor', dict(
       store = smcDemiurgeStore.addr(),
@@ -65,8 +68,9 @@ smcRT = ts4.BaseContract('RootTokenContract', ctor_params = dict(
             total_supply= 21000000
         ),
         pubkey = public_key,
-        private_key = private_key
-        )
+        private_key = private_key,
+        nickname = 'RootTokenContract',
+    )
 
 walletAddress = smcRT.call_method('deployWallet', {
       '_answer_id': 1,
@@ -78,13 +82,16 @@ walletAddress = smcRT.call_method('deployWallet', {
     },private_key=private_key )
 ts4.dispatch_messages()
 
-smcTTWUser = ts4.BaseContract('TONTokenWallet', None, address=walletAddress,  pubkey = public_key,
-        private_key = private_key)
+smcTTWUser = ts4.BaseContract('TONTokenWallet', None, address=walletAddress,  
+        pubkey = public_key,
+        private_key = private_key,
+        nickname = 'TokenWallet',
+    )
 
 print("==================== deploy and init Padawan ====================")
     
 ## Encode payload
-helper  = ts4.BaseContract('Helper', {})
+helper  = ts4.BaseContract('Helper', {}, nickname = 'helper')
 payload = helper.call_getter('encode_deployPadawan_call', dict(pubkey = public_key))
 print(payload)
 ts4.dispatch_messages()
