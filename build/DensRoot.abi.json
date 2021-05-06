@@ -41,6 +41,38 @@
 			]
 		},
 		{
+			"name": "installBid",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setNewAuctionsBan",
+			"inputs": [
+				{"name":"until","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSmvRoot",
+			"inputs": [
+				{"name":"smv","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onProposalPassed",
+			"inputs": [
+				{"components":[{"name":"id","type":"uint32"},{"name":"start","type":"uint32"},{"name":"end","type":"uint32"},{"name":"title","type":"bytes"},{"name":"ts","type":"uint32"},{"name":"proposalType","type":"uint8"},{"name":"specific","type":"cell"}],"name":"proposalInfo","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "upgrade",
 			"inputs": [
 				{"name":"code","type":"cell"}
@@ -65,6 +97,16 @@
 			]
 		},
 		{
+			"name": "getReservedNames",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"bytes[]"},
+				{"name":"value1","type":"uint32[]"}
+			]
+		},
+		{
 			"name": "resolve",
 			"inputs": [
 				{"name":"name","type":"bytes"}
@@ -79,6 +121,17 @@
 				{"name":"_answer_id","type":"uint32"},
 				{"name":"name","type":"bytes"},
 				{"name":"cert","type":"address"},
+				{"name":"ptype","type":"uint8"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "resolveFull",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"fullname","type":"bytes"},
 				{"name":"ptype","type":"uint8"}
 			],
 			"outputs": [
@@ -109,6 +162,24 @@
 			"inputs": [
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "gcNeeded",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"bool"}
+			]
+		},
+		{
+			"name": "gcPossibleAt",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint32"}
 			]
 		},
 		{
@@ -212,9 +283,9 @@
 		{
 			"name": "directlyReconfigure",
 			"inputs": [
-				{"name":"name","type":"bytes"},
-				{"name":"_owner","type":"address"},
-				{"name":"expiry","type":"uint32"}
+				{"name":"value0","type":"bytes"},
+				{"name":"value1","type":"address"},
+				{"name":"value2","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
@@ -223,6 +294,7 @@
 		{
 			"name": "generateHash",
 			"inputs": [
+				{"name":"bidder","type":"address"},
 				{"name":"amount","type":"uint128"},
 				{"name":"nonce","type":"uint256"}
 			],
@@ -321,6 +393,14 @@
 			]
 		},
 		{
+			"name": "bid_code",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"bid_code","type":"cell"}
+			]
+		},
+		{
 			"name": "owner",
 			"inputs": [
 			],
@@ -373,6 +453,14 @@
 			]
 		},
 		{
+			"name": "bidCodeUpdated",
+			"inputs": [
+				{"name":"hash","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "balanceAdded",
 			"inputs": [
 				{"name":"donor","type":"address"},
@@ -401,6 +489,14 @@
 			"name": "ownerTransferred",
 			"inputs": [
 				{"name":"from","type":"uint256"},
+				{"name":"to","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "ownerChanged",
+			"inputs": [
 				{"name":"to","type":"uint256"}
 			],
 			"outputs": [
@@ -510,6 +606,22 @@
 			"inputs": [
 				{"name":"name","type":"bytes"},
 				{"name":"until","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "newAuctionsBanned",
+			"inputs": [
+				{"name":"until","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "smvRootSet",
+			"inputs": [
+				{"name":"smv_root","type":"address"}
 			],
 			"outputs": [
 			]

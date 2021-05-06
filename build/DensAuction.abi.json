@@ -17,6 +17,14 @@
 			]
 		},
 		{
+			"name": "installBidCode",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "inquiryRequest",
 			"inputs": [
 				{"name":"_answer_id","type":"uint32"},
@@ -53,14 +61,22 @@
 			]
 		},
 		{
-			"name": "reveal",
+			"name": "findBid",
 			"inputs": [
 				{"name":"_answer_id","type":"uint32"},
-				{"name":"amount","type":"uint128"},
-				{"name":"nonce","type":"uint256"}
+				{"name":"bidder","type":"address"}
 			],
 			"outputs": [
-				{"name":"value0","type":"bool"}
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "revealInt",
+			"inputs": [
+				{"name":"owner","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
 			]
 		},
 		{
@@ -136,43 +152,59 @@
 			]
 		},
 		{
-			"name": "hashes",
+			"name": "prolongGrace",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"hashes","type":"map(address,uint256)"}
+				{"name":"prolongGrace","type":"uint32"}
 			]
 		},
 		{
-			"name": "reveals",
+			"name": "bid_code",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"reveals","type":"map(address,uint128)"}
+				{"name":"bid_code","type":"cell"}
 			]
 		},
 		{
-			"name": "withdrawn",
+			"name": "bid_code_fuse",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"withdrawn","type":"map(address,bool)"}
+				{"name":"bid_code_fuse","type":"bool"}
 			]
 		},
 		{
-			"name": "reveal_1",
+			"name": "top_bid",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"reveal_1","type":"address"}
+				{"name":"top_bid","type":"address"}
 			]
 		},
 		{
-			"name": "reveal_2",
+			"name": "top_bid_amt",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"reveal_2","type":"address"}
+				{"name":"top_bid_amt","type":"uint128"}
+			]
+		},
+		{
+			"name": "sec_bid",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"sec_bid","type":"address"}
+			]
+		},
+		{
+			"name": "sec_bid_amt",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"sec_bid_amt","type":"uint128"}
 			]
 		}
 	],
@@ -212,8 +244,7 @@
 			"name": "revealed",
 			"inputs": [
 				{"name":"sender","type":"address"},
-				{"name":"amount","type":"uint128"},
-				{"name":"nonce","type":"uint256"}
+				{"name":"amount","type":"uint128"}
 			],
 			"outputs": [
 			]
@@ -256,6 +287,7 @@
 			"name": "finalized",
 			"inputs": [
 				{"name":"winner","type":"address"},
+				{"name":"paid","type":"uint128"},
 				{"name":"expiry","type":"uint32"}
 			],
 			"outputs": [

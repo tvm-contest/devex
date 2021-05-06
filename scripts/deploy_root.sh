@@ -14,6 +14,7 @@ if [[ -f "$solc" ]]; then
   $solc DensPlatform.sol >/dev/null
   $solc DensCertificate.sol >/dev/null
   $solc DensAuction.sol >/dev/null
+  $solc DensBid.sol >/dev/null
   mv ./*.code ../build/
   mv ./*.json ../build/
   cd ../scripts || exit
@@ -25,15 +26,18 @@ if [[ -f "$solc" ]]; then
     $link compile DensPlatform.code -a DensPlatform.abi.json -o DensPlatform.tvc --lib ../bin/stdlib_sol.tvm >/dev/null
     $link compile DensCertificate.code -a DensCertificate.abi.json -o DensCertificate.tvc --lib ../bin/stdlib_sol.tvm >/dev/null
     $link compile DensAuction.code -a DensAuction.abi.json -o DensAuction.tvc --lib ../bin/stdlib_sol.tvm >/dev/null
+    $link compile DensBid.code -a DensBid.abi.json -o DensBid.tvc --lib ../bin/stdlib_sol.tvm >/dev/null
 
     echo "Extracting code for installation..."
     $link decode --tvc DensPlatform.tvc > dens_platform.txt
     $link decode --tvc DensCertificate.tvc > dens_certificate.txt
     $link decode --tvc DensAuction.tvc > dens_auction.txt
+    $link decode --tvc DensBid.tvc > dens_bid.txt
 
     cat dens_platform.txt | grep 'code:' | cut -d' ' -f3 > code_plat.txt
     cat dens_certificate.txt | grep 'code:' | cut -d' ' -f3 > code_cert.txt
     cat dens_auction.txt | grep 'code:' | cut -d' ' -f3 > code_auct.txt
+    cat dens_bid.txt | grep 'code:' | cut -d' ' -f3 > code_bid.txt
 
     cd ../scripts || exit
   else
@@ -47,6 +51,7 @@ fi
 c_plat=$(cat ../build/code_plat.txt)
 c_cert=$(cat ../build/code_cert.txt)
 c_auct=$(cat ../build/code_auct.txt)
+c_bid=$(cat ../build/code_bid.txt)
 c_empt='te6ccgEBAQEAAgAAAA=='
 
 tvc='../build/DensRoot.tvc'
@@ -139,6 +144,24 @@ fi
 if $doi; then
   echo "[*] Installing auction code..."
   $tcli call --abi $abi --sign $rkf "$addr" installAuction '{"code":"'"$c_auct"'"}'
+fi
+
+echo "[=] Verifying bid code..."
+ret=$($tcli run --abi $abi "$addr" bid_code {} | grep '"bid_code"' | awk '{print $2}')
+doi=false
+if [[ "$ret" == '"'"$c_empt"'"' ]]; then
+  echo "[!] Bid code is not initialized"
+  doi=true
+elif [[ "$ret" == '"'"$c_bid"'"' ]]; then
+  echo "[-] Bid code is up to date"
+else
+  echo "[!] Bid code is unknown / outdated"
+  doi=true
+fi
+
+if $doi; then
+  echo "[*] Installing bid code..."
+  $tcli call --abi $abi --sign $rkf "$addr" installBid '{"code":"'"$c_bid"'"}'
 fi
 
 echo "All done! You are advised to re-run this script again to make sure everything is deployed correctly!"

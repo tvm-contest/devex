@@ -16,8 +16,8 @@ contract DensTest is IDataStructs {
         root = _root;
     }
 
-    receive() external pure {}
-    fallback() external pure {}
+    receive() external pure { revert(Errors.RECEIVE_FORBIDDEN); }
+    fallback() external pure { revert(Errors.FALLBACK_FORBIDDEN); }
 
     function setValue(address dest, address value) external pure acc {
         DensCertificate(dest).setValue(value);
@@ -50,12 +50,12 @@ contract DensTest is IDataStructs {
     }
 
     function reveal(address dest, uint128 amount, uint256 nonce) external pure acc {
-        IDensAuction(dest).reveal{value: amount + 1 ton, callback: DensTest.revealCallback}(amount, nonce);
+        IDensBid(dest).reveal{value: amount + 1 ton}(amount, nonce);
     }
 
-    function revealCallback(bool res) external pure {
-        tvm.log(format("reveal response: ok={}", res?1:0));
-    }
+//    function revealCallback(bool res) external pure {
+//        tvm.log(format("reveal response: ok={}", res?1:0));
+//    }
 
     function finalize(address dest) external pure acc {
         IDensAuction(dest).finalize{value: 1 ton, callback: DensTest.finalizeCallback}();

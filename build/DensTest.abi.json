@@ -85,14 +85,6 @@
 			]
 		},
 		{
-			"name": "revealCallback",
-			"inputs": [
-				{"name":"res","type":"bool"}
-			],
-			"outputs": [
-			]
-		},
-		{
 			"name": "finalize",
 			"inputs": [
 				{"name":"dest","type":"address"}

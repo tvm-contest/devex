@@ -27,7 +27,9 @@ contract DensPlatform {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
 
-    constructor() public {
+    constructor()
+        public
+    {
         require(msg.sender == root, Errors.NOT_ROOT);
         tvm.accept();
     }
@@ -36,7 +38,9 @@ contract DensPlatform {
     // Initialization (first code upgrade - install contract to platform)
     // Differs from IUpgradable by passing owner - do not make too much messages (upgrade, setOwner)
 
-    function initialize(TvmCell code, address owner) external {
+    function initialize(TvmCell code, address owner)
+        external
+    {
         require(msg.sender == root, Errors.NOT_ROOT);
         tvm.accept();
         tvm.setcode(code);
@@ -49,5 +53,20 @@ contract DensPlatform {
     function onCodeUpgrade(TvmCell data) private {}
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function inquiryExpiry(uint128 rhash)
+        pure external responsible
+        returns(uint128, uint32)
+    {
+        return {value: 0, bounce: true, flag: MsgFlag.MsgBalance} (rhash, 0);
+    }
+
+    function destroy()
+        external view
+    {
+        require(msg.sender == root, Errors.NOT_ROOT);
+        // msg.sender.transfer({value: 0, bounce: false, flag: MsgFlag.SelfDestruct});
+        IAddBalance(root).addBalance{value: 0, bounce: false, flag: MsgFlag.SelfDestruct}();
+    }
 
 }

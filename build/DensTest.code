@@ -36,6 +36,15 @@ CALLREF {
 TRUE
 SETGLOB 7
 
+.globl	fallback
+.type	fallback, @function
+; function fallback
+THROW 191
+; end function fallback
+IFREF {
+	CALL $c7_to_c4$
+}
+
 .globl	setValue
 .public	setValue
 .type	setValue, @function
@@ -536,7 +545,7 @@ ENDS
 ; modifier acc
 ACCEPT
 ; function reveal
-;; Remote call IDensAuction.reveal
+;; Remote call IDensBid.reveal
 ;; push identifier amount
 PUSH S1
 ;; +
@@ -554,8 +563,7 @@ PUSHINT 105
 STZEROES
 STSLICECONST 0
 STSLICECONST 0
-STSLICECONST x6bf5b0b8
-STSLICECONST x296e7071
+STSLICECONST x5bc6c67f
 ;; amount
 ;; push identifier amount
 PUSH S2
@@ -570,58 +578,6 @@ SENDRAWMSG
 ; end function reveal
 BLKDROP 3
 ; end modifier acc
-IFREF {
-	CALL $c7_to_c4$
-}
-TRUE
-SETGLOB 7
-
-.globl	revealCallback
-.public	revealCallback
-.type	revealCallback, @function
-; Decode input parameters
-; Decode res
-LDI 1
-ENDS
-;; param: res
-; function revealCallback
-NEWC
-NULL
-TUPLE 2
-NEWC
-PUSHSLICE x72657665616c20726573706f6e73653a206f6b3d
-CALLREF {
-	CALL $storeStringInBuilders_macro$
-}
-CALLREF {
-	CALL $appendToList_macro$
-}
-;; push identifier res
-PUSH S2
-PUSHCONT {
-	PUSHINT 1
-}
-PUSHCONT {
-	PUSHINT 0
-}
-IFELSE
-PUSHINT 0
-FALSE
-FALSE
-CALLREF {
-	CALL $convertIntToDecStr_macro$
-}
-CALLREF {
-	CALL $appendToList_macro$
-}
-CALLREF {
-	CALL $assembleList_macro$
-}
-CTOS
-STRDUMP
-DROP
-DROP
-; end function revealCallback
 IFREF {
 	CALL $c7_to_c4$
 }
@@ -893,11 +849,28 @@ MODPOW2 1
 IFRET
 PUSH S1    ; body
 SEMPTY     ; isEmpty
-IFRET
-PUSH S1 ; body
-LDU 32  ; funcId body'
-PUSH S1 ; funcId body' funcId
-IFNOTRET
+DUP        ; isEmpty isEmpty
+PUSHCONT {
+	DROP    ;
+	PUSH S1 ; body
+	LDU 32  ; funcId body'
+	PUSH S1 ; funcId body' funcId
+	EQINT 0 ; funcId body' isZero
+	DUP     ; funcId body' isZero isZero
+	PUSHCONT {
+ 		; funcId body' isZero
+		BLKDROP2 2, 1; isZero
+	}
+	IF
+}
+IFNOT
+; [funcId body'] doReceive
+PUSHCONT {
+	; function receive
+	THROW 192
+	; end function receive
+}
+IFJMP
 PUSH S1 ; funcId body' funcId
 LESSINT 3            ; funcId body' funcId<3
 PUSH S2              ; funcId body' funcId<3 funcId
@@ -906,6 +879,9 @@ GREATER              ; funcId body' funcId<3 funcId>4294967293
 OR                   ; funcId body' funcId<3||funcId>4294967293
 PUSHCONT {
 	DROP2
+	PUSHINT 1
+	CALL 1
+	CALL $fallback$
 }
 IFJMP
 SWAP    ; body funcId
@@ -914,6 +890,7 @@ GETGLOB 7
 ISNULL
 PUSHCONT {
 	DROP
+	CALL $fallback$
 }
 IF
 
@@ -947,6 +924,9 @@ GREATER              ; funcId body' funcId<3 funcId>4294967293
 OR                   ; funcId body' funcId<3||funcId>4294967293
 PUSHCONT {
 	DROP2
+	PUSHINT 1
+	CALL 1
+	CALL $fallback$
 }
 IFJMP
 SWAP    ; body funcId
@@ -955,6 +935,7 @@ GETGLOB 7
 ISNULL
 PUSHCONT {
 	DROP
+	CALL $fallback$
 }
 IF
 

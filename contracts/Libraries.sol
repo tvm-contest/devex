@@ -4,6 +4,7 @@ library PlatformTypes {
     uint8 constant Platform = 0;
     uint8 constant Certificate = 1;
     uint8 constant Auction = 2;
+    uint8 constant Bid = 201;
     uint8 constant Root = 255;
 }
 
@@ -31,6 +32,18 @@ library Errors {
     uint8 constant NOT_PARENT        = 109;
     uint8 constant RESERVED_NAME     = 110;
     uint8 constant EXPIRED           = 111;
+    uint8 constant INVALID_CODE      = 112;
+    uint8 constant NOT_MY_AUCTION    = 113;
+    uint8 constant AMOUNT_TOO_LOW    = 114;
+    uint8 constant BID_FUSE_BLOWN    = 115;
+    uint8 constant REMAIN_TOO_LOW    = 116;
+    uint8 constant INVALID_PHASE     = 117;
+    uint8 constant AUCTIONS_BANNED   = 118;
+    uint8 constant GARBAGE_TOO_HOT   = 119;
+    // ------------------------------------
+    uint8 constant FALLBACK_FORBIDDEN = 191;
+    uint8 constant RECEIVE_FORBIDDEN  = 192;
+    uint8 constant DEPLOY_FORBIDDEN   = 199;
     // ------------------------------------
     uint8 constant TOO_LOW_DURATION  = 201;
     uint8 constant TOO_HIGH_DURATION = 202;
@@ -55,12 +68,17 @@ library DeNS {
 
     uint32 constant MaxDurationValue = 100;
 
-    uint32 constant ReAuctionGrace = 1 days;
+    uint32 constant ReAuctionGrace = 2 days;
+    uint32 constant ProlongGrace   = 1 days;
 
     uint128 constant PlatformInitPrice = 1 ton;
+    uint128 constant BidInitPrice      = 0.7 ton;
+
+    uint128 constant BidRevealAdd      = 1 ton;
 
     uint128 constant RegNameMinValue   = 5 ton;
     uint128 constant BidMinValue       = 1 ton;
+    uint128 constant BidMinAmount      = 1 ton;
 
     uint128 constant SingleFixedPrice  = 10 ton;
 

@@ -15,7 +15,7 @@ SETGLOB 6
 ; Decode input parameters
 ENDS
 ; constructor DensCertificate
-THROW 100
+THROW 199
 ; end constructor DensCertificate
 CALLREF {
 	CALL $c7_to_c4$
@@ -26,7 +26,7 @@ SETGLOB 7
 .globl	fallback
 .type	fallback, @function
 ; function fallback
-THROW 100
+THROW 191
 ; end function fallback
 IFREF {
 	CALL $c7_to_c4$
@@ -90,8 +90,10 @@ THROWIFNOT 99
 ACCEPT
 NEWC
 ;; decl: b
+CALL $smc_identify_internal$
+;; decl: iden
 ; expValue
-DUP
+PUSH S1
 ; end expValue
 ;; push identifier root
 GETGLOB 10
@@ -115,21 +117,27 @@ STUR 32
 GETGLOB 17
 STUR 32
 ; colValue
-NIP
+POP S2
 ; end colValue
 ;; push identifier code
-PUSH S1
-SETCODE
-;; push identifier code
-PUSH S1
+PUSH S2
 CTOS
 BLESS
 POP c3
+CALL $smc_identify_internal$
+;; ==
+;; push identifier iden
+PUSH S1
+EQUAL
+THROWIFNOT 112
+;; push identifier code
+PUSH S2
+SETCODE
 ;; push identifier b
-DUP
+PUSH S1
 ENDC
 CALL $:onCodeUpgrade$
-DROP
+DROP2
 ; end function upgrade
 DROP
 ; end modifier onlyRoot
@@ -163,6 +171,8 @@ PUSHINT 0
 SETGLOB 16
 PUSHINT 0
 SETGLOB 17
+NEWDICT
+SETGLOB 18
 ;; end set default state vars
 ;; push identifier data
 DUP
@@ -240,8 +250,11 @@ PUSHCONT {
 	; end colValue
 }
 PUSHCONT {
+	; function Now
+	;; return
 	;; push identifier now
 	NOW
+	; end function Now
 	;; uint32
 }
 IFELSE
@@ -313,6 +326,17 @@ CALLREF {
 }
 COMMIT
 THROW 0
+
+.globl	smc_identify_internal
+.type	smc_identify_internal, @function
+; function smc_identify
+;; return
+PUSHSLICE x44654e5320436572746966696361746520536d61727420436f6e7472616374
+NEWC
+STSLICE
+ENDC
+HASHCU
+; end function smc_identify
 
 .globl	requestUpgrade
 .public	requestUpgrade
@@ -403,6 +427,24 @@ GETGLOB 12
 SDEQ
 THROWIFNOT 100
 ; function subCertRequest
+;; if
+;; push identifier subexpiry
+DUP
+;; >
+;; push identifier expiry
+GETGLOB 17
+GREATER
+PUSHCONT {
+	; expValue
+	; end expValue
+	;; push identifier expiry
+	GETGLOB 17
+	; colValue
+	NIP
+	; end colValue
+}
+IF
+;; end if
 ;; emit subCertRequested
 NEWC
 PUSHSLICE xc0000000000000000000000002_
@@ -497,6 +539,24 @@ GETGLOB 12
 SDEQ
 THROWIFNOT 100
 ; function subCertSynchronize
+;; if
+;; push identifier subexpiry
+DUP
+;; >
+;; push identifier expiry
+GETGLOB 17
+GREATER
+PUSHCONT {
+	; expValue
+	; end expValue
+	;; push identifier expiry
+	GETGLOB 17
+	; colValue
+	NIP
+	; end colValue
+}
+IF
+;; end if
 ;; emit subCertSynchronized
 NEWC
 PUSHSLICE xc0000000000000000000000002_
@@ -702,6 +762,13 @@ PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
 ; end expValue
 ; colValue
 SETGLOB 14
+; end colValue
+;; delete
+; expValue
+; end expValue
+NEWDICT
+; colValue
+SETGLOB 18
 ; end colValue
 ;; emit ownerForceChanged
 NEWC
@@ -1023,7 +1090,7 @@ UFITS 128
 ;; >=
 PUSHINT 1000000000
 GEQ
-THROWIFNOT 100
+THROWIFNOT 116
 ;; emit withdrawn
 NEWC
 PUSHSLICE xc0000000000000000000000002_
@@ -1212,6 +1279,23 @@ STSLICER
 ENDC
 PUSHINT 0
 SENDRAWMSG
+;; emit modified_ex
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x78b0a871
+;; rec_type
+PUSHINT 0
+STIR 16
+;; value
+;; push identifier new_value
+PUSH S1
+STSLICER
+ENDC
+PUSHINT 0
+SENDRAWMSG
 ; end function setValue
 ;; transfer()
 ;; get member sender
@@ -1228,6 +1312,258 @@ PUSHINT 64
 SENDRAWMSG
 ; end modifier retRem
 DROP
+; end modifier onlyOwner
+CALLREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	getTarget
+.public	getTarget
+.type	getTarget, @function
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+LDU 32
+GETGLOB 4
+ROT
+SETINDEXQ 5
+SETGLOB 4
+; Decode input parameters
+; Decode rec_type
+LDI 16
+ENDS
+;; param: rec_type
+; function getTarget
+PUSHCONT {
+	;; if
+	;; push identifier rec_type
+	DUP
+	PUSHCONT {
+		;; return
+		;; push identifier value
+		GETGLOB 14
+		NIP
+		RET
+	}
+	IFNOTJMP
+	;; end if
+	;; return
+	;; index
+	;; push identifier rec_type
+	DUP
+	;; push identifier values
+	GETGLOB 18
+	PUSHINT 16
+	DICTIGET
+	PUSHCONT {
+		PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	}
+	IFNOT
+	NIP
+}
+CALLX
+;; emitting 1 value(s)
+PUSH S1
+EQINT -1
+PUSHCONT {
+	PUSH S3
+	CTOS
+	LDU 2
+	LDMSGADDR
+	DROP
+	NIP
+	NEWC
+	STSLICECONST xc
+	STSLICE
+	PUSHINT 96
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST xf3dee3cb
+	PUSH S1
+	STSLICER
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+PUSHCONT {
+	GETGLOB 4
+	DUP
+	INDEX 3
+	PUSH S1
+	INDEX 2
+	GETGLOB 9
+	BLKSWAP 1, 3
+	INDEX 1
+	NEWC
+	PUSHINT 2
+	STZEROES
+	STI 1
+	PUSHINT 3
+	STZEROES
+	STSLICE
+	SWAP
+	STGRAMS
+	STDICT
+	PUSHINT 104
+	STZEROES
+	STSLICECONST 0
+	STSLICECONST 0
+	GETGLOB 4
+	INDEX 5
+	STUR 32
+	PUSH S1
+	STSLICER
+	ENDC
+	GETGLOB 4
+	INDEX 4
+	SENDRAWMSG
+}
+IFELSE
+DROP
+; end function getTarget
+IFREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	setTarget
+.public	setTarget
+.type	setTarget, @function
+GETGLOB 1
+ISNULL
+IFREF {
+	CALL $c4_to_c7$
+}
+; Decode input parameters
+; Decode rec_type
+LDI 16
+; Decode new_value
+LDMSGADDRQ
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDMSGADDR
+}
+IFNOT
+ENDS
+;; param: rec_type
+;; param: new_value
+; modifier onlyOwner
+;; get member sender
+GETGLOB 9
+;; push identifier owner
+GETGLOB 12
+SDEQ
+THROWIFNOT 100
+; modifier retRem
+; function setTarget
+PUSHCONT {
+	;; if
+	;; push identifier rec_type
+	PUSH S1
+	PUSHCONT {
+		; expValue
+		; end expValue
+		;; push identifier new_value
+		DUP
+		; colValue
+		SETGLOB 14
+		; end colValue
+		;; emit modified
+		NEWC
+		PUSHSLICE xc0000000000000000000000002_
+		STSLICER
+		STSLICECONST 0
+		STSLICECONST 0
+		STSLICECONST x740216c0
+		;; value
+		;; push identifier new_value
+		PUSH S1
+		STSLICER
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		;; emit modified_ex
+		NEWC
+		PUSHSLICE xc0000000000000000000000002_
+		STSLICER
+		STSLICECONST 0
+		STSLICECONST 0
+		STSLICECONST x78b0a871
+		;; rec_type
+		PUSHINT 0
+		STIR 16
+		;; value
+		;; push identifier new_value
+		PUSH S1
+		STSLICER
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		;; return
+		RET
+	}
+	IFNOTJMP
+	;; end if
+	; expValue
+	;; fetch values
+	GETGLOB 18
+	;; push identifier rec_type
+	PUSH S2
+	SWAP
+	; end expValue
+	;; push identifier new_value
+	PUSH S2
+	; colValue
+	ROTREV
+	PUSHINT 16
+	DICTISET
+	SETGLOB 18
+	; end colValue
+	;; emit modified_ex
+	NEWC
+	PUSHSLICE xc0000000000000000000000002_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST x78b0a871
+	;; rec_type
+	;; push identifier rec_type
+	PUSH S2
+	STIR 16
+	;; value
+	;; push identifier new_value
+	PUSH S1
+	STSLICER
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+}
+CALLX
+; end function setTarget
+;; transfer()
+;; get member sender
+GETGLOB 9
+NEWC
+STSLICECONST x42_
+STSLICE
+PUSHINT 109
+STZEROES
+STSLICECONST 0
+STSLICECONST 0
+ENDC
+PUSHINT 64
+SENDRAWMSG
+; end modifier retRem
+DROP2
 ; end modifier onlyOwner
 CALLREF {
 	CALL $c7_to_c4$
@@ -1423,10 +1759,13 @@ THROWIFNOT 99
 ;; push identifier expiry
 GETGLOB 17
 PUSHCONT {
-	; expValue
-	; end expValue
+	; function Now
+	;; return
 	;; push identifier now
 	NOW
+	; end function Now
+	; expValue
+	; end expValue
 	; colValue
 	SETGLOB 17
 	; end colValue
@@ -2149,6 +2488,13 @@ PUSHCONT {
 	; colValue
 	SETGLOB 14
 	; end colValue
+	;; delete
+	; expValue
+	; end expValue
+	NEWDICT
+	; colValue
+	SETGLOB 18
+	; end colValue
 	; expValue
 	; end expValue
 	;; push identifier new_owner
@@ -2289,13 +2635,15 @@ GETGLOB 11
 GETGLOB 12
 GETGLOB 16
 GETGLOB 17
-REVERSE 7, 0
+GETGLOB 18
+REVERSE 8, 0
 STBREF
 STSLICE
 STREF
 STSLICE
 STU 32
 STU 32
+STDICT
 ENDC
 POP C4
 
@@ -2315,7 +2663,9 @@ LDMSGADDR
 LDREF
 LDMSGADDR
 LDU 32
-PLDU 32
+LDU 32
+PLDDICT
+SETGLOB 18
 SETGLOB 17
 SETGLOB 16
 SETGLOB 12
@@ -2347,7 +2697,9 @@ PUSHCONT {
 	LDREF
 	LDMSGADDR
 	LDU 32
-	PLDU 32
+	LDU 32
+	PLDDICT
+	SETGLOB 18
 	SETGLOB 17
 	SETGLOB 16
 	SETGLOB 12
@@ -2386,6 +2738,9 @@ PUSHCONT {
 	; init expiry
 	PUSHINT 0
 	SETGLOB 17
+	; init values
+	NEWDICT
+	SETGLOB 18
 	; set contract pubkey
 	PUSHINT 0
 	SWAP
@@ -2468,7 +2823,7 @@ PUSHCONT {
 	GETGLOB 10
 	SDEQ
 	PUSHCONT {
-		THROW 100
+		THROW 192
 	}
 	IFNOT
 	;; end if
@@ -2748,6 +3103,28 @@ STSLICECONST 0
 STSLICECONST xaa4a77c6
 PUSH S1
 STUR 32
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
+.globl	values
+.public	values
+.type	values, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 18
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xec89df22
+PUSH S1
+SWAP
+STDICT
 ENDC
 PUSHINT 0
 SENDRAWMSG

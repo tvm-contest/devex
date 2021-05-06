@@ -117,6 +117,25 @@
 			]
 		},
 		{
+			"name": "getTarget",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"rec_type","type":"int16"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "setTarget",
+			"inputs": [
+				{"name":"rec_type","type":"int16"},
+				{"name":"new_value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "getExpiry",
 			"inputs": [
 				{"name":"_answer_id","type":"uint32"}
@@ -271,6 +290,14 @@
 			"outputs": [
 				{"name":"expiry","type":"uint32"}
 			]
+		},
+		{
+			"name": "values",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"values","type":"map(int16,address)"}
+			]
 		}
 	],
 	"data": [
@@ -298,6 +325,15 @@
 		{
 			"name": "modified",
 			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "modified_ex",
+			"inputs": [
+				{"name":"rec_type","type":"int16"},
 				{"name":"value","type":"address"}
 			],
 			"outputs": [
