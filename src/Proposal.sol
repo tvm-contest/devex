@@ -155,6 +155,7 @@ contract Proposal is Base, IProposal, IBaseData {
 
     function _transit(ProposalState state) private inline {
         _state.state = state;
+        IInfoCenter(_deployer).onStateUpdate{value: 0.2 ton, bounce: true}(state);
     }
 
     function _wrapUp() private {

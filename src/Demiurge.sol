@@ -93,6 +93,14 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
 
         _createChecks();
     }
+
+    function onStateUpdate(ProposalState state) external override {
+        optional(uint32) opt = _deployedProposals.fetch(msg.sender);
+        require(opt.hasValue());
+        uint32 key = opt.get();
+        _proposalData[key].state = state;
+        msg.sender.transfer(0, false, 64);
+    }
     
     /*
      * Public Deploy API
