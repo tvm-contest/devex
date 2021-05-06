@@ -34,6 +34,25 @@ smcDemiurgeStore.call_method('setProposalImage', {'image': proposalImage})
 smcDemiurgeStore.call_method('setPadawanImage', {'image': padawanImage})
 ts4.dispatch_messages()
 
+
+
+ttwImage = ts4.core.load_code_cell('../build/TONTokenWallet.tvc')
+
+smcRT = ts4.BaseContract('RootTokenContract', ctor_params = dict(
+            name = ts4.str2bytes('test'),
+            symbol = ts4.str2bytes('test'),
+            decimals = 0,
+            root_public_key = public_key,
+            root_owner = "0x0",
+            wallet_code= ttwImage,
+            total_supply= 21000000
+        ),
+        pubkey = public_key,
+        private_key = private_key,
+        nickname = 'RootTokenContract',
+    )
+ts4.dispatch_messages()
+
 print("==================== deploy and init Demiurge ==================== ")
 print(smcDemiurgeStore.addr())
 
@@ -45,9 +64,12 @@ demiurge = ts4.BaseContract('Demiurge',  ctor_params = None,
 
 demiurge.call_method('constructor', dict(
       store = smcDemiurgeStore.addr(),
-      densRoot = smcTestRoot.addr()
-      
+      densRoot = smcTestRoot.addr(),
+      tokenRoot = smcRT.addr()
 ), private_key = private_key)
+
+
+
 ts4.dispatch_messages()
 
 images = demiurge.call_getter("getImages",{})
@@ -56,21 +78,7 @@ print(images);
 
 print("==================== deploy and init tip3 ====================")
 
-ttwImage = ts4.core.load_code_cell('../build/TONTokenWallet.tvc')
 
-smcRT = ts4.BaseContract('RootTokenContract', ctor_params = dict(
-            name = "74697033",
-            symbol = "74697033",
-            decimals = 0,
-            root_public_key = public_key,
-            root_owner = "0x0",
-            wallet_code= ttwImage,
-            total_supply= 21000000
-        ),
-        pubkey = public_key,
-        private_key = private_key,
-        nickname = 'RootTokenContract',
-    )
 
 walletAddress = smcRT.call_method('deployWallet', {
       '_answer_id': 1,
@@ -93,38 +101,40 @@ print("==================== deploy and init Padawan ====================")
 ## Encode payload
 helper  = ts4.BaseContract('Helper', {}, nickname = 'helper')
 payload = helper.call_getter('encode_deployPadawan_call', dict(pubkey = public_key))
-print(payload)
 ts4.dispatch_messages()
 
 params = dict(
         dest = demiurge.addr(),
-        value = 500_000_000,
+        value = 15_500_000_000,
         bounce = False,
         flags = 3,
         payload = payload
     )
-
+print(ts4.get_balance(smcSafeMultisigWallet.addr()))
 smcSafeMultisigWallet.call_method('sendTransaction', params , private_key=private_key )
 ts4.dispatch_messages()
 
-padawanAddress = demiurge.call_getter('getDeployed',{})  
-print(padawanAddress)
-smcPadawan = ts4.BaseContract('Padavan', None, address=padawanAddress,  pubkey = public_key,
-        private_key = private_key)
+padawanAddress = (demiurge.call_getter('getDeployed',{}))['padawans'][public_key]['addr']  
 
+smcPadawan = ts4.BaseContract('Padawan', None, address=ts4.Address(padawanAddress), 
+        pubkey = public_key,
+        private_key = private_key,
+        nickname = 'PadawanWallet',)
 
-payloadCreateTokenAccount = helper.call_getter('encode_createTokenAccount_call', {'tokenRoot': smcRT.addr()})
+#payloadCreateTokenAccount = helper.call_getter('encode_createTokenAccount_call', {'tokenRoot': smcRT.addr()})
 
-smcSafeMultisigWallet.call_method_signed('sendTransaction', dict(
-        dest = smcPadawan.addr(),
-        value = 5_000_000_000,
-        bounce = False,
-        flags = 3,
-        payload = payloadCreateTokenAccount
-    ))
-ts4.dispatch_messages()
+#smcSafeMultisigWallet.call_method('sendTransaction', dict(
+#        dest = smcPadawan.addr(),
+#        value = 6_000_000_000,
+#        bounce = False,
+#        flags = 1,
+#        payload = payloadCreateTokenAccount
+#    ), private_key=private_key)
+#ts4.dispatch_messages()
 
 TTWAddr = smcPadawan.call_getter('getTokenAccounts')
+print(TTWAddr)
+
 smcTTWPadawan = ts4.BaseContract('TONTokenWallet', None, address=TTWAddr,  pubkey = public_key,
         private_key = private_key)
 
@@ -132,7 +142,7 @@ TOKEN_DEPOSIT = 21000000000
 smcTTWUser.call_method('transfer', dict(
         dest= smcTTWPadawan.addr(),
         tokens= TOKEN_DEPOSIT,
-        grams= 1_000_000_000))
+        grams= 1_000_000_000), private_key = private_key)
 
 print(ts4.str(smcTTWUser.addr()))
 
@@ -144,7 +154,7 @@ payloadDepositTokens =  helper.call_getter('encode_depositTokens_call', dict(
 
 smcSafeMultisigWallet.call_method('sendTransaction',  dict(
         dest = smcPadawan.addr(),
-        value = 2_000_000_000,
+        value = 5_000_000_000,
         bounce = False,
         flags = 3,
         payload = payloadDepositTokens
