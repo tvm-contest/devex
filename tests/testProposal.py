@@ -10,6 +10,8 @@ assert eq('0.2.1', ts4.__version__)
 
 print("==================== Initialization ====================")
 
+helper  = ts4.BaseContract('Helper', {}, nickname = 'helper')
+
 smcTestRoot = ts4.BaseContract('TestRoot', {})
 
 (private_key, public_key) = ts4.make_keypair()
@@ -28,7 +30,8 @@ smcDemiurgeStore = ts4.BaseContract('DemiurgeStore', {})
 
 demiurgeImage = ts4.core.load_code_cell('../build/Demiurge.tvc')
 proposalImage = ts4.core.load_code_cell('../build/Proposal.tvc')
-padawanImage = ts4.core.load_code_cell('../build/Padawan.tvc')
+padawanCode = ts4.load_code_cell('../build/Padawan.tvc')
+padawanImage = helper.call_getter('make_image_cell', dict(code = padawanCode))
 
 smcDemiurgeStore.call_method('setDemiurgeImage', {'image': demiurgeImage})
 smcDemiurgeStore.call_method('setProposalImage', {'image': proposalImage})
@@ -44,7 +47,7 @@ smcRT = ts4.BaseContract('RootTokenContract', ctor_params = dict(
             symbol = ts4.str2bytes('test'),
             decimals = 0,
             root_public_key = public_key,
-            root_owner = "0x0",
+            root_owner = '0x0',
             wallet_code= ttwImage,
             total_supply= 21000000
         ),
@@ -76,7 +79,7 @@ ts4.set_verbose(True)
 images = demiurge.call_getter("getImages", {})
 
 assert eq(['padawan', 'proposal'], list(images.keys()))
-assert eq(ts4.Cell(padawanImage),  images['padawan'])
+assert eq(padawanImage,  images['padawan'])
 assert eq(ts4.Cell(proposalImage), images['proposal'])
 
 
@@ -103,7 +106,6 @@ smcTTWUser = ts4.BaseContract('TONTokenWallet', None, address=walletAddress,
 print("==================== deploy and init Padawan ====================")
 
 ## Encode payload
-helper  = ts4.BaseContract('Helper', {}, nickname = 'helper')
 payload = helper.call_getter('encode_deployPadawan_call', dict(pubkey = public_key))
 ts4.dispatch_messages()
 
@@ -131,7 +133,7 @@ smcPadawan = ts4.BaseContract('Padawan', None,
     )
     
 # Ensure Padawan has correct balance
-smcPadawan.ensure_balance(5*ts4.GRAM)
+smcPadawan.ensure_balance((5-2)*ts4.GRAM)
 
 #payloadCreateTokenAccount = helper.call_getter('encode_createTokenAccount_call', {'tokenRoot': smcRT.addr()})
 
@@ -144,7 +146,7 @@ smcPadawan.ensure_balance(5*ts4.GRAM)
 #    ), private_key=private_key)
 #ts4.dispatch_messages()
 
-TTWAddr = smcPadawan.call_getter('getTokenAccounts')
+TTWAddr = smcPadawan.call_getter_raw('getTokenAccounts')
 print(TTWAddr)
 
 smcTTWPadawan = ts4.BaseContract('TONTokenWallet', None, address=TTWAddr, pubkey = public_key,

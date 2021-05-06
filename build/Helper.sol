@@ -52,4 +52,10 @@ contract Helper {
     function encode_voteFor_call(address proposal, bool choice, uint32 votes) public pure returns (TvmCell payload) {
         return tvm.encodeBody(IPadawan.voteFor, proposal,choice,votes);
     }
+	
+	function make_image_cell(TvmCell code) public pure returns (TvmCell) {
+		TvmBuilder b;
+		b.storeRef(code);
+		return b.toCell();
+	}
 }
