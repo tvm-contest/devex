@@ -5,6 +5,7 @@
 		{
 			"name": "constructor",
 			"inputs": [
+				{"name":"tokenRoot","type":"address"}
 			],
 			"outputs": [
 			]
@@ -94,14 +95,6 @@
 			"name": "onTokenWalletDeploy",
 			"inputs": [
 				{"name":"ownerAddress","type":"address"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "createTokenAccount",
-			"inputs": [
-				{"name":"tokenRoot","type":"address"}
 			],
 			"outputs": [
 			]

@@ -6,7 +6,8 @@
 			"name": "constructor",
 			"inputs": [
 				{"name":"store","type":"address"},
-				{"name":"densRoot","type":"address"}
+				{"name":"densRoot","type":"address"},
+				{"name":"tokenRoot","type":"address"}
 			],
 			"outputs": [
 			]
@@ -33,7 +34,7 @@
 				{"name":"start","type":"uint32"},
 				{"name":"end","type":"uint32"},
 				{"name":"title","type":"bytes"},
-				{"components":[{"name":"ContractType","type":"uint8"},{"name":"code","type":"cell"}],"name":"specific","type":"tuple"}
+				{"components":[{"name":"contractType","type":"uint8"},{"name":"code","type":"cell"}],"name":"specific","type":"tuple"}
 			],
 			"outputs": [
 			]
