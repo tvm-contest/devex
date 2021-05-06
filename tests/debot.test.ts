@@ -39,6 +39,10 @@ describe("nic expiring test", () => {
     smcSafeMultisigWallet = await deployMultisig(client, smcGiver);
   });
 
+  it("deploy and init Token", async () => {
+    [smcRT, smcTTWUser] = await deployToken(client, smcGiver);
+  });
+
   it("deploy TestRoot", async () => {
     smcTestRoot = new TonContract({
       client,
@@ -74,49 +78,12 @@ describe("nic expiring test", () => {
       client,
       smcGiver,
       smcDemiurgeStore,
-      smcTestRoot
+      smcTestRoot,
+      smcRT
     );
   });
 
-  it("deploy and init Token", async () => {
-    [smcRT, smcTTWUser] = await deployToken(client, smcGiver);
-  });
-
-  // it("deploy and init Proposal", async () => {
-  //   await callThroughMultisig({
-  //     client,
-  //     smcSafeMultisigWallet,
-  //     abi: smcDemiurge.tonPackage.abi,
-  //     functionName: "deployReserveProposal",
-  //     input: {
-  //       start: Math.round(Date.now() / 1000) + 5,
-  //       end: Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
-  //       title: utf8ToHex("test"),
-  //       specific: {
-  //         name: utf8ToHex("test"),
-  //         ts: Math.round(Date.now() / 1000),
-  //       },
-  //     },
-  //     dest: smcDemiurge.address,
-  //     value: 5_000_000_000,
-  //   });
-
-  //   await sleep(5000);
-
-  //   smcProposal = new TonContract({
-  //     client,
-  //     name: "Proposal",
-  //     tonPackage: pkgProposal,
-  //     address: Object.keys(
-  //       (await smcDemiurge.run({ functionName: "getDeployed" })).value.proposals
-  //     )[0],
-  //   });
-
-  //   trimlog(`Proposal address: ${smcProposal.address}
-  //     Proposal balance: ${await smcProposal.getBalance()}`);
-  // });
-
   it("deploy DeBot", async () => {
-    smcDeBot = await deployDebot(client, smcGiver);
+    smcDeBot = await deployDebot(client, smcGiver, smcDemiurge);
   });
 });

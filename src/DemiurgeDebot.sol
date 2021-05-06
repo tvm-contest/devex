@@ -89,9 +89,9 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
      *   Init functions
      */
 
-    constructor() public accept {
+    constructor(address demiurge) public accept {
         tvm.accept();
-        _demiurge = address(0xac2ca1aa39dec466bd48c057d627353ed08c19783ba29579f99b3531a7a93988);
+        _demiurge = demiurge;
     }
 
     function setDemiurgeAddress(address addr) public signed {
@@ -204,7 +204,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             Terminal.print(tvm.functionId(Debot.start), "You need to attach multisig first");
         } else {
             NumberInput.get(tvm.functionId(enterStart), "Enter unixtime when voting for proposal should start:", uint32(now), 0xFFFFFFFF);
-            NumberInput.get(tvm.functionId(enterEnd), "Enter duration of voting period for contest proposal (in seconds):", 1, 31536000);
+            NumberInput.get(tvm.functionId(enterEnd), "Enter duration of voting period for contest proposal (in seconds):", 60 * 60 * 24 * 7, 31536000);
             Terminal.input(tvm.functionId(enterProposalTitle), "Enter title:", false);
             Menu.select("Select Proposal Type", "", [
                 MenuItem("SetCode", "", tvm.functionId(enterSetCode)),

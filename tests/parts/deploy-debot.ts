@@ -7,7 +7,11 @@ import pkgPadawan from "../../ton-packages/Padawan.package";
 import { trimlog } from "../utils/common";
 const fs = require("fs");
 
-export default async (client: TonClient, smcGiver: TonContract) => {
+export default async (
+  client: TonClient,
+  smcGiver: TonContract,
+  smcDemiurge: TonContract
+) => {
   const keys = await client.crypto.generate_random_sign_keys();
   const smcDemiurgeDebot = new TonContract({
     client,
@@ -33,7 +37,11 @@ export default async (client: TonClient, smcGiver: TonContract) => {
 
   trimlog(`DemiurgeDebot balance: ${await smcDemiurgeDebot.getBalance()}`);
 
-  await smcDemiurgeDebot.deploy({});
+  await smcDemiurgeDebot.deploy({
+    input: {
+      demiurge: smcDemiurge.address,
+    },
+  });
 
   await new Promise<void>((resolve) => {
     fs.readFile(
