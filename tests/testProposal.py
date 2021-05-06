@@ -36,15 +36,21 @@ ts4.dispatch_messages()
 print("==================== deploy and init Demiurge ==================== ")
 print(smcDemiurgeStore.addr())
 
-demiurge = ts4.BaseContract('Demiurge',  ctor_params = dict(
-      store = smcDemiurgeStore.addr(),
-      densRoot = smcTestRoot.addr(),
-),
+demiurge = ts4.BaseContract('Demiurge',  ctor_params = None,
         pubkey      = public_key,
         private_key = private_key)
 
+demiurge.call_method('constructor', dict(
+      store = smcDemiurgeStore.addr(),
+      densRoot = smcTestRoot.addr()
+      
+), private_key = private_key)
+ts4.dispatch_messages()
+
 images = demiurge.call_getter("getImages",{})
 print(images);
+
+
 print("==================== deploy and init tip3 ====================")
 
 ttwImage = ts4.core.load_code_cell('../build/TONTokenWallet.tvc')
