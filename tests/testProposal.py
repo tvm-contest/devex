@@ -5,7 +5,7 @@ bt = 1000000
 
 ts4.init('../build/', verbose = True)
 ts4.G_WARN_ON_UNEXPECTED_ANSWERS = True
-ts4.set_verbose(False)
+
 
 print("==================== Initialization ====================")
 
