@@ -244,7 +244,7 @@ contract Padawan is Base {
                 } else {
                     TipAccount acc = tokenAccounts[address.makeAddrStd(0, deposit.tokenId)];
                     ITokenWallet(acc.addr).transfer{value: 0.1 ton + 0.1 ton}
-                        (deposit.returnTo, value, 0.1 ton);
+                        (deposit.returnTo, value, false, acc.addr);
                 }
 
                 deposit.amount -= math.min(value, deposit.amount);
