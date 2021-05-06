@@ -6,23 +6,8 @@ then
     exit 1
 fi
 
-tcli_sys=$(whereis tonos-cli | awk '{print $2}')
 tcli=""
-
-if [[ "$tcli_sys" != "" ]]; then
-  echo "[<] Using system tonos-cli"
-  tcli="$tcli_sys"
-else
-  echo "[>] Using local tonos-cli"
-  tcli="./bin/tonos-cli"
-fi
-
-if [[ ! -f "$tcli" ]]; then
-  echo "[!] tonos-cli not found! Please download or build tonos-cli and install it to bin"
-  echo "[!] You can obtain it here: https://github.com/tonlabs/tonos-cli"
-  echo "!!! It is not possible to proceed without installation of it"
-  exit 1
-fi
+source ./internal_locator.sh tcli
 
 function GetResultTC() {
   res="$(echo "$1" | tr '\n' ' ' | tr '\r' ' ' | cut -d'{' -f2-)"
