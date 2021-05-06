@@ -5,7 +5,6 @@ bt = 1000000
 
 ts4.init('../build/', verbose = True)
 ts4.G_WARN_ON_UNEXPECTED_ANSWERS = True
-ts4.core.trace_on()
 ts4.set_verbose(False)
 
 print("==================== Initialization ====================")
@@ -32,14 +31,20 @@ padawanImage = ts4.core.load_code_cell('../build/Padawan.tvc')
 smcDemiurgeStore.call_method('setDemiurgeImage', {'image': demiurgeImage})
 smcDemiurgeStore.call_method('setProposalImage', {'image': proposalImage})
 smcDemiurgeStore.call_method('setPadawanImage', {'image': padawanImage})
+ts4.dispatch_messages()
 
+print("==================== deploy and init Demiurge ==================== ")
+print(smcDemiurgeStore.addr())
 
-print("> deploy and init Demiurge")
 demiurge = ts4.BaseContract('Demiurge',  ctor_params = dict(
-      store = smcDemiurgeStore.address(),
-      densRoot = smcTestRoot.address(),
-))
+      store = smcDemiurgeStore.addr(),
+      densRoot = smcTestRoot.addr(),
+),
+        pubkey      = public_key,
+        private_key = private_key)
 
+images = demiurge.call_getter("getImages",{})
+print(images);
 print("==================== deploy and init tip3 ====================")
 
 ttwImage = ts4.core.load_code_cell('../build/TONTokenWallet.tvc')
@@ -75,11 +80,12 @@ print("==================== deploy and init Padawan ====================")
 ## Encode payload
 helper  = ts4.BaseContract('Helper', {})
 payload = helper.call_getter('encode_deployPadawan_call', dict(pubkey = public_key))
+print(payload)
 ts4.dispatch_messages()
 
 params = dict(
         dest = demiurge.addr(),
-        value = 100_000_000,
+        value = 500_000_000,
         bounce = False,
         flags = 3,
         payload = payload
