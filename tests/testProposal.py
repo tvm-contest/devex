@@ -34,14 +34,18 @@ smcSafeMultisigWallet = ts4.BaseContract('SafeMultisigWallet',
 print("> deploy and init DemiurgeStore")
 smcDemiurgeStore = ts4.BaseContract('DemiurgeStore', {}, nickname = 'demiurgeStore')
 
-demiurgeImage = ts4.core.load_code_cell('../build/Demiurge.tvc')
-proposalImage = ts4.core.load_code_cell('../build/Proposal.tvc')
-padawanCode = ts4.load_code_cell('../build/Padawan.tvc')
-padawanImage = helper.call_getter('make_image_cell', dict(code = padawanCode))
+def load_image(name):
+    code = ts4.load_code_cell('../build/{}.tvc'.format(name))
+    return helper.call_getter('make_image_cell', dict(code = code))
+
+demiurgeImage = load_image('Demiurge')
+proposalImage = load_image('Proposal')
+padawanImage  = load_image('Padawan')
 
 smcDemiurgeStore.call_method('setDemiurgeImage', {'image': demiurgeImage})
 smcDemiurgeStore.call_method('setProposalImage', {'image': proposalImage})
-smcDemiurgeStore.call_method('setPadawanImage', {'image': padawanImage})
+smcDemiurgeStore.call_method('setPadawanImage',  {'image': padawanImage})
+
 ts4.dispatch_messages()
 
 
@@ -86,7 +90,7 @@ images = demiurge.call_getter('getImages', {})
 
 assert eq(['padawan', 'proposal'], list(images.keys()))
 assert eq(padawanImage,  images['padawan'])
-assert eq(ts4.Cell(proposalImage), images['proposal'])
+assert eq(proposalImage, images['proposal'])
 
 
 print("==================== deploy and init tip3 ====================")
@@ -130,11 +134,11 @@ ts4.dispatch_messages()
 
 padawanAddress = (demiurge.call_getter_raw('getDeployed',{}))['padawans'][public_key]['addr']
 
-smcPadawan = ts4.BaseContract('Padawan', None, 
+smcPadawan = ts4.BaseContract('Padawan', None,
         address = ts4.Address(padawanAddress),
         nickname = 'PadawanWallet',
     )
-    
+
 # Ensure Padawan has correct balance
 smcPadawan.ensure_balance((5-2)*ts4.GRAM)
 
@@ -181,6 +185,12 @@ smcSafeMultisigWallet.call_method('sendTransaction',  dict(
         flags = 3,
         payload = payloadDepositTokens
     ), private_key = private_key)
+
+ts4.dispatch_one_message()
+ts4.dispatch_one_message()
+ts4.dispatch_one_message()
+# ts4.core.set_trace(True)
+ts4.dispatch_one_message()
 ts4.dispatch_messages()
 
 assert eq(TOKEN_DEPOSIT, smcPadawan.call_getter('getDeposits',{}))
