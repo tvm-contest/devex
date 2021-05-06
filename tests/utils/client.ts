@@ -2,7 +2,7 @@ import { TonClient } from "@tonclient/core";
 import { libNode } from "@tonclient/lib-node";
 
 const NETWORK_MAP = {
-  LOCAL: "http://0.0.0.0",
+  LOCAL: "http://127.0.0.1",
   DEVNET: "https://net.ton.dev",
 };
 
