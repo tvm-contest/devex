@@ -10,9 +10,15 @@ assert eq('0.2.1', ts4.__version__)
 
 print("==================== Initialization ====================")
 
+# Load some ABI beforehand to dismiss 'Unknown message' warnings
+ts4.register_abi('Padawan')
+ts4.register_abi('TONTokenWallet')
+ts4.register_abi('RootTokenContract')
+# ts4.register_abi('Proposal')
+
 helper  = ts4.BaseContract('Helper', {}, nickname = 'helper')
 
-smcTestRoot = ts4.BaseContract('TestRoot', {})
+smcTestRoot = ts4.BaseContract('TestRoot', {}, nickname = 'TestRoot')
 
 (private_key, public_key) = ts4.make_keypair()
 smcSafeMultisigWallet = ts4.BaseContract('SafeMultisigWallet',
@@ -26,7 +32,7 @@ smcSafeMultisigWallet = ts4.BaseContract('SafeMultisigWallet',
     )
 
 print("> deploy and init DemiurgeStore")
-smcDemiurgeStore = ts4.BaseContract('DemiurgeStore', {})
+smcDemiurgeStore = ts4.BaseContract('DemiurgeStore', {}, nickname = 'demiurgeStore')
 
 demiurgeImage = ts4.core.load_code_cell('../build/Demiurge.tvc')
 proposalImage = ts4.core.load_code_cell('../build/Proposal.tvc')
@@ -109,10 +115,6 @@ print("==================== deploy and init Padawan ====================")
 payload = helper.call_getter('encode_deployPadawan_call', dict(pubkey = public_key))
 ts4.dispatch_messages()
 
-# Load Padawan's ABI beforehand to dismiss 'Unknown message' warning
-ts4.register_abi('Padawan')
-ts4.register_abi('TONTokenWallet')
-
 params = dict(
         dest = demiurge.addr(),
         value = 15_500_000_000,
@@ -155,12 +157,14 @@ print(TTWAddr)
 smcTTWPadawan = ts4.BaseContract('TONTokenWallet', None, address=TTWAddr, pubkey = public_key,
         private_key = private_key)
 
+ts4.dump_js_data()
+
 TOKEN_DEPOSIT = 21000000000
 
 smcTTWUser.call_method('transfer', dict(
-        dest= smcTTWPadawan.addr(),
-        tokens= TOKEN_DEPOSIT,
-        grams= 1_000_000_000), private_key = private_key)
+        dest = smcTTWPadawan.addr(),
+        tokens = TOKEN_DEPOSIT,
+        grams = 1*ts4.GRAM), private_key = private_key)
 
 print(smcRT.addr().str().replace('0:', '0x'))
 
