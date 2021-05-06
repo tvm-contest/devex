@@ -76,7 +76,7 @@ ts4.set_verbose(False)
 ts4.dispatch_messages()
 ts4.set_verbose(True)
 
-images = demiurge.call_getter("getImages", {})
+images = demiurge.call_getter('getImages', {})
 
 assert eq(['padawan', 'proposal'], list(images.keys()))
 assert eq(padawanImage,  images['padawan'])
@@ -111,6 +111,7 @@ ts4.dispatch_messages()
 
 # Load Padawan's ABI beforehand to dismiss 'Unknown message' warning
 ts4.register_abi('Padawan')
+ts4.register_abi('TONTokenWallet')
 
 params = dict(
         dest = demiurge.addr(),
@@ -135,6 +136,7 @@ smcPadawan = ts4.BaseContract('Padawan', None,
 # Ensure Padawan has correct balance
 smcPadawan.ensure_balance((5-2)*ts4.GRAM)
 
+
 #payloadCreateTokenAccount = helper.call_getter('encode_createTokenAccount_call', {'tokenRoot': smcRT.addr()})
 
 #smcSafeMultisigWallet.call_method('sendTransaction', dict(
@@ -146,7 +148,8 @@ smcPadawan.ensure_balance((5-2)*ts4.GRAM)
 #    ), private_key=private_key)
 #ts4.dispatch_messages()
 
-TTWAddr = smcPadawan.call_getter_raw('getTokenAccounts')
+TTWAddr = smcPadawan.call_getter_raw('getTokenAccounts')['allAccounts'][smcRT.addr().str()]['addr']
+TTWAddr = ts4.Address(TTWAddr)
 print(TTWAddr)
 
 smcTTWPadawan = ts4.BaseContract('TONTokenWallet', None, address=TTWAddr, pubkey = public_key,
@@ -175,7 +178,7 @@ smcSafeMultisigWallet.call_method('sendTransaction',  dict(
     ), private_key = private_key)
 ts4.dispatch_messages()
 
-assert eq(TOKEN_DEPOSIT,smcPadawan.call_getter('getDeposits',{}))
+assert eq(TOKEN_DEPOSIT, smcPadawan.call_getter('getDeposits',{}))
 
 print("==================== deploy and init Proposal ====================")
 
