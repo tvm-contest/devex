@@ -33,13 +33,6 @@ contract Padawan is Base {
         uint256 depool;
     }
 
-    struct TipAccount {
-        address addr;
-        uint256 ownerAddressKey;
-        uint32 createdAt;
-        uint128 balance;
-    }
-
     // ProposalDeployer address
     address static deployer;
     // User address

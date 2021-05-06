@@ -2,6 +2,13 @@ pragma ton-solidity >= 0.36.0;
 
 import "IBaseData.sol";
 
+struct TipAccount {
+    address addr;
+    uint256 ownerAddressKey;
+    uint32 createdAt;
+    uint128 balance;
+}
+
 interface IPadawan {
     function voteFor(address proposal, bool choice, uint32 votes) external;
     function depositTons(uint32 tons) external;
@@ -18,6 +25,6 @@ interface IPadawan {
     function onTransfer(address source, uint128 amount) external;
 
     function getVoteInfo() external view returns (uint32 reqVotes, uint32 totalVotes, uint32 lockedVotes);
-
+    function getTokenAccounts() external view returns (mapping (address => TipAccount) allAccounts);
     function getActiveProposals() external returns (mapping(address => uint32) activeProposals);
 }

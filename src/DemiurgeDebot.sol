@@ -9,6 +9,7 @@ import "./interfaces/Msg.sol";
 import "./interfaces/ConfirmInput.sol";
 import "./interfaces/AddressInput.sol";
 import "./interfaces/NumberInput.sol";
+import "./interfaces/AmountInput.sol";
 import "./interfaces/Sdk.sol";
 import "./interfaces/Upgradable.sol";
 import "./interfaces/IDemiurge.sol";
@@ -86,6 +87,16 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     SetOwnerProposalSpecific _newSetOwner;
     SetRootOwnerProposalSpecific _newSetRootOwner;
 
+    mapping (address => TipAccount) _tip3Accounts;
+    uint128 _tmpTokenBalance;
+    uint8 _tmpTokenDecimals;
+
+    uint128 _fromBalance;
+    address _fromTip3Addr;
+    uint128 _depositAmount;
+    uint32 _proposalId;
+    uint32 _votes;
+    bool _yesNo;
     Padawan _padawanVotes;
 
     modifier accept {
@@ -120,12 +131,12 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         address support, string hello, string language, string dabi, bytes icon
     ) {
         name = "Demiurge Debot";
-        version = "1.6.0";
+        version = "1.7.0";
         publisher = "RSquad";
-        key = "Deploy SMV system and create personal voting debot.";
+        key = "Voting system for DENS.";
         author = "RSquad";
         support = address.makeAddrStd(0, 0x0);
-        hello = "Hello, i am Demiurge Debot.";
+        hello = "Hello, i am SMV Demiurge Debot.";
         language = "en";
         dabi = m_debotAbi.get();
         icon = "";
@@ -136,24 +147,191 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     }
 
     function start() public override {
+        Sdk.getBalance(tvm.functionId(setDemiBalance), _demiurge);
         _getProposals();
         _getPadawan();
-        Sdk.getBalance(tvm.functionId(setDemiBalance), _demiurge);
-        this.mainMenu();
     }
 
     function mainMenu() public {
         Terminal.print(0, "Demiurge Debot.");
         Terminal.print(0, format("Current Demiurge: {}", _demiurge));
         Terminal.print(0, format("Current Multisig address: {}", _mtsg));
-        Terminal.print(0, format("Current Padawan: {}", _padawan));
-        Menu.select("What do you want to do?", "", [
-            MenuItem("Attach Multisig", "", tvm.functionId(askMultisig)),
-            MenuItem("View Proposals", "", tvm.functionId(viewAllProposals)),
-            MenuItem("Create Proposal", "", tvm.functionId(createProposal)),
-            MenuItem("Vote for Proposal", "", tvm.functionId(voteForProposal))
-        ]);
+        Terminal.print(0, format("[DEBUG] Current Padawan: {}", _padawan));
+        if (_padawan != address(0)) {
+            Terminal.print(0, 
+            format("Your votes:\ntotal: {}, locked: {}, requested to reclaim: {}",
+                _padawanVotes.totalVotes,
+                _padawanVotes.lockedVotes,
+                _padawanVotes.reqVotes
+            ));
+            if (!_tip3Accounts.empty()) {
+                (address root, TipAccount tip3wallet) = _tip3Accounts.min().get();
+                Terminal.print(0, format("[DEBUG] TIP3 Root: {}", root));
+                Terminal.print(0, format("[DEBUG] TIP3 Wallet: {}", tip3wallet.addr));
+                Terminal.print(0, format("TIP3 deposit: {} tokens", _tmpTokenBalance));
+            }
+        }
+
+        MenuItem[] items;
+        items.push(MenuItem("Attach Multisig", "", tvm.functionId(askMultisig)));
+        items.push(MenuItem("View Proposals", "", tvm.functionId(viewAllProposals)));
+        items.push(MenuItem("Create Proposal", "", tvm.functionId(createProposal)));
+        items.push(MenuItem("Vote for Proposal", "", tvm.functionId(voteForProposal)));
+        if (_padawan != address(0)) {
+            items.push(MenuItem("Acquire votes", "", tvm.functionId(depositTokens)));
+        }
+        if (_padawanVotes.totalVotes != 0) {
+            items.push(MenuItem("Reclaim votes", "", tvm.functionId(reclaimVotes)));
+        }
+        Menu.select("What do you want to do?", "", items);
     }
+
+    //
+    // Reclaim votes
+    //
+    function reclaimVotes(uint32 index) public {
+        index = index;
+        NumberInput.get(tvm.functionId(enterVotes), "Enter number of votes:", 1, _padawanVotes.totalVotes);
+        ConfirmInput.get(tvm.functionId(reclaim) , "Sign and reclaim?");
+    }
+
+    function reclaim(bool value) public {
+        if (!value) {
+            return;
+        }
+        _retryId = tvm.functionId(reclaim);
+        optional(uint256) none = 0;
+        TvmCell payload = tvm.encodeBody(IPadawan.reclaimDeposit, _votes);
+        IMultisig(_mtsg).submitTransaction{
+            abiVer: 2,
+            extMsg: true,
+            sign: true,
+            pubkey: none,
+            time: uint64(now),
+            expire: 0,
+            callbackId: tvm.functionId(onSuccess),
+            onErrorId: tvm.functionId(onError)
+        }(_padawan, 1.5 ton, true, false, payload);
+    }
+
+    //
+    // Deposit tip3 tokens 
+    //
+
+    function depositTokens(uint32 index) public {
+        index;
+        Terminal.print(0, "To acquire votes you need to deposit tip3 tokens first. Then tokens will be locked and converted to votes.");
+        AddressInput.get(tvm.functionId(setFromTip3Wallet), "Enter tip3 wallet address from which you want to deposit tokens:");
+    }
+
+    function setFromTip3Wallet(address value) public {
+        _fromTip3Addr = value;
+        optional(uint256) none = 0;
+        ITokenWallet(value).getBalance{
+            abiVer: 2,
+            extMsg: true,
+            sign: false,
+            callbackId: tvm.functionId(setFromBalance),
+            onErrorId: 0,
+            time: uint32(now),
+            expire: 0,
+            pubkey: none
+        }();
+    }
+
+    function setFromBalance(uint128 value0) public {
+        _fromBalance = value0;
+        AmountInput.get(tvm.functionId(setDepositAmount), "How many tokens to deposit?", _tmpTokenDecimals, 0, _fromBalance);
+        Terminal.print(tvm.functionId(transferTokens), "Ok, sign message with tip3 wallet keys.");
+    }
+
+    function setDepositAmount(uint128 value) public {
+        _depositAmount = uint64(value);
+    }
+
+    function transferTokens() public {
+        _retryId = 0;
+        optional(uint256) pubkey = 0;
+        (, TipAccount acc) = _tip3Accounts.min().get();
+        ITokenWallet(_fromTip3Addr).transfer{
+            abiVer: 2,
+            extMsg: true,
+            sign: true,
+            callbackId: tvm.functionId(depositTokens2),
+            onErrorId: tvm.functionId(onError),
+            time: uint32(now),
+            expire: 0,
+            pubkey: pubkey
+        }(acc.addr, _depositAmount, 0.5 ton);
+    }
+
+    //
+    // Lock votes
+    //
+
+    function depositTokens2() public {
+        Terminal.print(0, "Transfer succeeded. Now i will convert them to votes.");
+        Terminal.print(tvm.functionId(depositTokens3), "Sign next message with multisig keys.");
+    }
+
+    function depositTokens3() public {
+        _retryId = tvm.functionId(depositTokens4);
+        depositTokens4(true);
+    }
+
+    function depositTokens4(bool value) public {
+        if (!value) {
+            start();
+            return;
+        }
+        (address root, ) = _tip3Accounts.min().get();
+        optional(uint256) none = 0;
+        TvmCell payload = tvm.encodeBody(IPadawan.depositTokens, _fromTip3Addr, root.value, uint64(_depositAmount));
+        IMultisig(_mtsg).submitTransaction{
+            abiVer: 2,
+            extMsg: true,
+            sign: true,
+            pubkey: none,
+            time: uint64(now),
+            expire: 0,
+            callbackId: tvm.functionId(onSuccess),
+            onErrorId: tvm.functionId(onError)
+        }(_padawan, 1.5 ton, true, false, payload);
+    }
+
+    function setTip3Wallet(address value) private pure {
+        optional(uint256) none;
+        ITokenWallet(value).getBalance{
+            abiVer: 2,
+            extMsg: true,
+            sign: false,
+            callbackId: tvm.functionId(setTokenBalance),
+            onErrorId: 0,
+            time: uint32(now),
+            expire: 0,
+            pubkey: none
+        }();
+        ITokenWallet(value).getDecimals{
+            abiVer: 2,
+            extMsg: true,
+            sign: false,
+            callbackId: tvm.functionId(setTokenDecimals),
+            onErrorId: 0,
+            time: uint32(now),
+            expire: 0,
+            pubkey: none
+        }();
+    }
+
+    function setTokenBalance(uint128 value0) public {
+        _tmpTokenBalance = value0;
+    }
+
+    function setTokenDecimals(uint8 value0) public {
+        _tmpTokenDecimals = value0;
+    }
+
+    //---------------------------------------------------------------
 
     function askMultisig(uint32 index) public {
         index;
@@ -167,12 +345,17 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     function voteForProposal(uint32 index) public {
         index;
         if(_padawan != address(0)) {
-            Terminal.print(0, format("Current Padawan: {}", _padawan));
-            Terminal.print(0, format("Votes: {} reqVotes, {} totalVotes, {} lockedVotes",
+            Terminal.print(0, format("[DEBUG] Current Padawan: {}", _padawan));
+            Terminal.print(0, format("[DEBUG] Votes: {} reqVotes, {} totalVotes, {} lockedVotes",
                 _padawanVotes.reqVotes,
                 _padawanVotes.totalVotes,
                 _padawanVotes.lockedVotes
             ));
+            if (_padawanVotes.totalVotes == 0) {
+                Terminal.print(tvm.functionId(Debot.start), "You don't have votes.");
+                return;
+            }
+            this.voteForProposal2();
         } else {
             Terminal.print(0, "Padawan doesn't attached");
             Menu.select("What do you want to do?", "", [
@@ -181,6 +364,61 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             ]);
         }
     }
+
+    function voteForProposal2() public {
+        int count = 0;
+        for((uint32 id, ) : _data) {
+            count++;
+            id;
+        }
+        NumberInput.get(tvm.functionId(enterProposalId), "Enter proposal id:", 0, count);
+    }
+
+    function enterProposalId(int256 value) public {
+        _proposalId = uint32(value);
+        ProposalData proposal = _data[_proposalId];
+        if (proposal.state >= ProposalState.Ended) {
+            Terminal.print(tvm.functionId(Debot.start), "Proposal is expired.");
+            return;
+        } else {
+            NumberInput.get(tvm.functionId(enterVotes), "Enter number of votes:", 0, _padawanVotes.totalVotes);
+            Menu.select("How to vote?", "", [
+                MenuItem("Vote \"Yes\"", "", tvm.functionId(sendVoteFor)),
+                MenuItem("Vote \"No\"", "", tvm.functionId(sendVoteFor))
+            ]);
+        }
+    }
+
+    function enterVotes(int256 value) public {
+        _votes = uint32(value);
+    }
+
+    function sendVoteFor(uint32 index) public {
+        _yesNo = index == 0;
+        ConfirmInput.get(tvm.functionId(retryVoteFor), "Sign and send votes?");
+    }
+
+    function retryVoteFor(bool value) public {
+        if (!value) {
+            return;
+        }
+        _retryId = tvm.functionId(retryVoteFor);
+        address propAddr = _data[_proposalId].addr;
+        optional(uint256) none = 0;
+        TvmCell payload = tvm.encodeBody(IPadawan.voteFor, propAddr, _yesNo, _votes);
+        IMultisig(_mtsg).submitTransaction{
+            abiVer: 2,
+            extMsg: true,
+            sign: true,
+            pubkey: none,
+            time: uint64(now),
+            expire: 0,
+            callbackId: tvm.functionId(onSuccess),
+            onErrorId: tvm.functionId(onError)
+        }(_padawan, 1.5 ton, true, false, payload);
+    }
+
+    // --------------------------------------------------
 
     function attachPadawan(uint32 index) public {
         index;
@@ -217,7 +455,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         if(_mtsg == address(0)) {
             Terminal.print(tvm.functionId(Debot.start), "You need to attach multisig first");
         } else {
-            NumberInput.get(tvm.functionId(enterStart), "Enter unixtime when voting for proposal should start:", uint32(now), 0xFFFFFFFF);
+            NumberInput.get(tvm.functionId(enterStart), "Enter unixtime when voting for proposal should start:", uint32(now) + 60, 0xFFFFFFFF);
             NumberInput.get(tvm.functionId(enterEnd), "Enter duration of voting period for contest proposal (in seconds):", 60 * 60 * 24 * 7, 31536000);
             Terminal.input(tvm.functionId(enterProposalTitle), "Enter title:", false);
             Menu.select("Select Proposal Type", "", [
@@ -470,21 +708,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             onErrorId: tvm.functionId(onError),
             time: uint32(now)
         }(_padawanPubkey);
-        if(_padawan != address(0)) {
-            IPadawan(_padawan).getVoteInfo{
-                abiVer: 2,
-                extMsg: true,
-                sign: false,
-                callbackId: tvm.functionId(setPadawanVotes),
-                onErrorId: tvm.functionId(onError),
-                time: uint32(now)
-            }();
-        }
     }
-
-    // function setTokenAccounts(mapping (address => TipAccount) allAccounts) public {
-    //     _tip3Accounts = allAccounts;
-    // }
 
     function setProposalData(mapping(uint32 => ProposalData) proposals) public {
         _data = proposals;
@@ -494,9 +718,36 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     }
     function setPadawan(PadawanData padawanData) public {
         _padawan = padawanData.addr;
+        if(_padawan != address(0)) {
+            IPadawan(_padawan).getVoteInfo{
+                abiVer: 2,
+                extMsg: true,
+                sign: false,
+                callbackId: tvm.functionId(setPadawanVotes),
+                onErrorId: tvm.functionId(onError),
+                time: uint32(now)
+            }();
+            IPadawan(_padawan).getTokenAccounts{
+                abiVer: 2,
+                extMsg: true,
+                sign: false,
+                callbackId: tvm.functionId(setTokenAccounts),
+                onErrorId: 0,
+                time: uint32(now)
+            }();
+        }
     }
     function setPadawanVotes(uint32 reqVotes, uint32 totalVotes, uint32 lockedVotes) public {
         _padawanVotes = Padawan(reqVotes, totalVotes, lockedVotes);
+    }
+
+    function setTokenAccounts(mapping (address => TipAccount) allAccounts) public {
+        _tip3Accounts = allAccounts;
+        if (!_tip3Accounts.empty()) {
+            (, TipAccount acc) = _tip3Accounts.min().get();
+            setTip3Wallet(acc.addr);
+        }
+        this.mainMenu();
     }
 
     function setDemiBalance(uint128 nanotokens) public {
