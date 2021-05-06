@@ -51,6 +51,7 @@ describe("nic expiring test", () => {
       keys: await client.crypto.generate_random_sign_keys(),
     });
 
+    console.log(1);
     await smcTestRoot.calcAddress();
 
     await smcGiver.call({
@@ -60,6 +61,8 @@ describe("nic expiring test", () => {
         amount: 100_000_000_000,
       },
     });
+
+    console.log(2);
 
     trimlog(`TestRoot address: ${smcTestRoot.address}
       TestRoot public: ${smcTestRoot.keys.public}

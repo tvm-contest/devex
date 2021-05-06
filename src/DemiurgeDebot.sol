@@ -146,17 +146,16 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     }
 
     function start() public override {
-        Sdk.getBalance(tvm.functionId(setDemiBalance), _demiurge);
+        //Sdk.getBalance(tvm.functionId(setDemiBalance), _demiurge);
         _getProposals();
         _getPadawan();
     }
 
     function mainMenu() public {
-        //Terminal.print(0, "Demiurge Debot.");
-        Terminal.print(0, format("Current Demiurge: {}", _demiurge));
-        Terminal.print(0, format("Current Multisig: {}", _mtsg));
+        Terminal.print(0, format("Demiurge: {}", _demiurge));
+        Terminal.print(0, format("Multisig: {}", _mtsg));
         if (_padawan != address(0)) {
-            Terminal.print(0, format("Current Padawan: {}", _padawan));
+            Terminal.print(0, format("Padawan: {}", _padawan));
             Terminal.print(0, 
             format("Your votes:\ntotal: {}, locked: {}, requested to reclaim: {}",
                 _padawanVotes.totalVotes,
@@ -164,9 +163,9 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
                 _padawanVotes.reqVotes
             ));
             if (!_tip3Accounts.empty()) {
-                (address root, TipAccount tip3wallet) = _tip3Accounts.min().get();
-                Terminal.print(0, format("[DEBUG] TIP3 Root: {}", root));
-                Terminal.print(0, format("[DEBUG] TIP3 Wallet: {}", tip3wallet.addr));
+                //(address root, TipAccount tip3wallet) = _tip3Accounts.min().get();
+                //Terminal.print(0, format("[DEBUG] TIP3 Root: {}", root));
+                //Terminal.print(0, format("[DEBUG] TIP3 Wallet: {}", tip3wallet.addr));
                 Terminal.print(0, format("TIP3 deposit: {} tokens", _tmpTokenBalance));
             }
         } else {
@@ -622,7 +621,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         string opt = "\"soft majority\"";
 
         string fmt = format(
-            "\nID {}. \"{}\"\nStatus: {}\nType: {}\nStart: {}, End: {}\nTotal votes: 21000000, options: {}\nAddress: {}\ncreator: {}\n",
+            "\nID {}. \"{}\"\nStatus: {}\nType: {}\nStart: {}, End: {}\nTotal votes: 21000000, options: {}\nAddress: {}\ncreator: {}",
             id, info.title, _stateToString(data.state), _typeToString(info.proposalType), info.start, info.end,
             opt, data.addr, data.ownerAddress
         );
@@ -768,7 +767,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     }
 
     function setDemiBalance(uint128 nanotokens) public {
-        Terminal.print(0, format("Demiurge balance: {} nanotokens", nanotokens));
+        //Terminal.print(0, format("Demiurge balance: {} nanotokens", nanotokens));
     }
 
     function onSuccessfulDeploy() public pure {
