@@ -6,6 +6,7 @@ bt = 1000000
 ts4.init('../build/', verbose = True)
 ts4.G_WARN_ON_UNEXPECTED_ANSWERS = True
 
+assert eq('0.2.1', ts4.__version__)
 
 print("==================== Initialization ====================")
 
@@ -73,7 +74,10 @@ ts4.dispatch_messages()
 ts4.set_verbose(True)
 
 images = demiurge.call_getter("getImages",{})
-# print(images);
+
+assert eq(['padawan', 'proposal'], list(images.keys()))
+assert eq(ts4.Cell(padawanImage),  images['padawan'])
+assert eq(ts4.Cell(proposalImage), images['proposal'])
 
 
 print("==================== deploy and init tip3 ====================")
@@ -90,14 +94,14 @@ walletAddress = smcRT.call_method('deployWallet', {
     },private_key=private_key )
 ts4.dispatch_messages()
 
-smcTTWUser = ts4.BaseContract('TONTokenWallet', None, address=walletAddress,  
+smcTTWUser = ts4.BaseContract('TONTokenWallet', None, address=walletAddress,
         pubkey = public_key,
         private_key = private_key,
         nickname = 'TokenWallet',
     )
 
 print("==================== deploy and init Padawan ====================")
-    
+
 ## Encode payload
 helper  = ts4.BaseContract('Helper', {}, nickname = 'helper')
 payload = helper.call_getter('encode_deployPadawan_call', dict(pubkey = public_key))
@@ -114,9 +118,9 @@ print(ts4.get_balance(smcSafeMultisigWallet.addr()))
 smcSafeMultisigWallet.call_method('sendTransaction', params , private_key=private_key )
 ts4.dispatch_messages()
 
-padawanAddress = (demiurge.call_getter('getDeployed',{}))['padawans'][public_key]['addr']  
+padawanAddress = (demiurge.call_getter('getDeployed',{}))['padawans'][public_key]['addr']
 
-smcPadawan = ts4.BaseContract('Padawan', None, address=ts4.Address(padawanAddress), 
+smcPadawan = ts4.BaseContract('Padawan', None, address=ts4.Address(padawanAddress),
         pubkey = public_key,
         private_key = private_key,
         nickname = 'PadawanWallet',)
@@ -164,8 +168,8 @@ ts4.dispatch_messages()
 assert eq(TOKEN_DEPOSIT,smcPadawan.call_getter('getDeposits',{}))
 
 print("==================== deploy and init Proposal ====================")
-  
-  
+
+
 payloadDeployReserveProposal = helper.call_getter('encode_deployReserveProposal_call',  {
         'start': Math.round(Date.now() / 1000) + 5,
         'end': Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
@@ -184,6 +188,6 @@ params = dict(
         payload = payloadDeployReserveProposal
     )
 
-smcSafeMultisigWallet.call_method('sendTransaction', params, private_key = private_key)  
+smcSafeMultisigWallet.call_method('sendTransaction', params, private_key = private_key)
 
 ts4.core.set_now(bt)
