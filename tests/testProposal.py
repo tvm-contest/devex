@@ -1,5 +1,4 @@
 import tonos_ts4.ts4 as ts4, json
-
 eq = ts4.eq
 bt = 1000000
 
@@ -59,7 +58,7 @@ smcRT = ts4.BaseContract('RootTokenContract', ctor_params = dict(
             root_public_key = public_key,
             root_owner = '0x0',
             wallet_code= ttwImage,
-            total_supply= 22000000000
+            total_supply= 21000000
         ),
         pubkey = public_key,
         private_key = private_key,
@@ -102,7 +101,7 @@ walletAddress = smcRT.call_method('deployWallet', {
       'workchain_id': 0,
       'pubkey': public_key,
       'internal_owner': 0,
-      'tokens': 22000000000,
+      'tokens': 21000000,
       'grams': 5*ts4.GRAM,
     },private_key=private_key )
 ts4.dispatch_messages()
@@ -163,7 +162,7 @@ smcTTWPadawan = ts4.BaseContract('TONTokenWallet', None, address=TTWAddr, pubkey
 
 ts4.dump_js_data()
 
-TOKEN_DEPOSIT = 21000000000
+TOKEN_DEPOSIT = 21000000
 
 smcTTWUser.call_method('transfer', dict(
         dest = smcTTWPadawan.addr(),
@@ -193,18 +192,17 @@ ts4.dispatch_one_message()
 ts4.dispatch_one_message()
 ts4.dispatch_messages()
 
-assert eq(TOKEN_DEPOSIT, smcPadawan.call_getter('getDeposits',{}))
 
 print("==================== deploy and init Proposal ====================")
 
 
 payloadDeployReserveProposal = helper.call_getter('encode_deployReserveProposal_call',  {
-        'start': Math.round(Date.now() / 1000) + 5,
-        'end': Math.round(Date.now() / 1000) + 180 + 60 * 60 * 7,
+        'start': 15457300 + 5,
+        'end': 1545730 + 180 + 60 * 60 * 7,
         'title': '74657374',
         'specific': {
           'name': '74657374',
-          'ts': Math.round(Date.now() / 1000),
+          'ts': 1545730,
         },
 })
 
