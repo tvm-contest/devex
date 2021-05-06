@@ -64,7 +64,7 @@ function SelectNetwork() {
           "FloodNet (https://gql.custler.net)")
             SetNet "https://gql.custler.net"; exit; ;;
           "LocalNode (http://localhost)")
-            SetNet "https://localhost"; exit; ;;
+            SetNet "http://localhost"; exit; ;;
           "Custom URL")
             read -r -p "[?] Please enter new endpoint URL: " url
             if [[ "$url" != "" ]]; then
