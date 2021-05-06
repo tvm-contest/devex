@@ -73,7 +73,7 @@ ts4.set_verbose(False)
 ts4.dispatch_messages()
 ts4.set_verbose(True)
 
-images = demiurge.call_getter("getImages",{})
+images = demiurge.call_getter("getImages", {})
 
 assert eq(['padawan', 'proposal'], list(images.keys()))
 assert eq(ts4.Cell(padawanImage),  images['padawan'])
@@ -118,7 +118,7 @@ print(ts4.get_balance(smcSafeMultisigWallet.addr()))
 smcSafeMultisigWallet.call_method('sendTransaction', params , private_key=private_key )
 ts4.dispatch_messages()
 
-padawanAddress = (demiurge.call_getter('getDeployed',{}))['padawans'][public_key]['addr']
+padawanAddress = (demiurge.call_getter_raw('getDeployed',{}))['padawans'][public_key]['addr']
 
 smcPadawan = ts4.BaseContract('Padawan', None, address=ts4.Address(padawanAddress),
         pubkey = public_key,
