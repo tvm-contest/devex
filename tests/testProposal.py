@@ -49,7 +49,7 @@ smcRT = ts4.BaseContract('RootTokenContract', ctor_params = dict(
             root_public_key = public_key,
             root_owner = '0x0',
             wallet_code= ttwImage,
-            total_supply= 21000000
+            total_supply= 22000000000
         ),
         pubkey = public_key,
         private_key = private_key,
@@ -92,7 +92,7 @@ walletAddress = smcRT.call_method('deployWallet', {
       'workchain_id': 0,
       'pubkey': public_key,
       'internal_owner': 0,
-      'tokens': 17000000,
+      'tokens': 22000000000,
       'grams': 5*ts4.GRAM,
     },private_key=private_key )
 ts4.dispatch_messages()
@@ -156,23 +156,24 @@ smcTTWPadawan = ts4.BaseContract('TONTokenWallet', None, address=TTWAddr, pubkey
         private_key = private_key)
 
 TOKEN_DEPOSIT = 21000000000
+
 smcTTWUser.call_method('transfer', dict(
         dest= smcTTWPadawan.addr(),
         tokens= TOKEN_DEPOSIT,
         grams= 1_000_000_000), private_key = private_key)
 
-print(ts4.str(smcTTWUser.addr()))
+print(smcRT.addr().str().replace('0:', '0x'))
 
 payloadDepositTokens =  helper.call_getter('encode_depositTokens_call', dict(
     returnTo = smcTTWUser.addr(),
-    tokenId = '0x1',
+    tokenId = smcRT.addr().str().replace('0:', '0x'),
     tokens = TOKEN_DEPOSIT))
 
 
 smcSafeMultisigWallet.call_method('sendTransaction',  dict(
         dest = smcPadawan.addr(),
         value = 5_000_000_000,
-        bounce = False,
+        bounce = True,
         flags = 3,
         payload = payloadDepositTokens
     ), private_key = private_key)
