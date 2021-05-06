@@ -40,6 +40,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
 
     address _store;
     address _densRoot;
+    address _tokenRoot;
 
     uint8 _checkList;
 
@@ -75,7 +76,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     * Initialization functions
     */
 
-    constructor(address store, address densRoot) public {
+    constructor(address store, address densRoot, address tokenRoot) public {
         if (msg.sender == address(0)) {
             require(msg.pubkey() == tvm.pubkey(), 101);
         }
@@ -88,6 +89,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
         }
         
         _densRoot = densRoot;
+        _tokenRoot = tokenRoot;
 
         _createChecks();
     }
@@ -106,7 +108,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
             pubkey: pubkey,
             code: code
         });
-        address addr = new Padawan {stateInit: state, value: START_BALANCE}();
+        address addr = new Padawan {stateInit: state, value: START_BALANCE}(_tokenRoot);
         _deployedPadawans[pubkey] = PadawanData(msg.sender, addr);
     }
 

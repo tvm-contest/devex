@@ -12,6 +12,8 @@ const smcNames = [
   "Padawan",
   "Proposal",
   "TestRoot",
+  "Debot",
+  "DemiurgeDebot",
 ];
 
 const compileScripts = [];
