@@ -1,4 +1,4 @@
-pragma ton-solidity ^0.38.0;
+pragma ton-solidity >=0.42.0;
 pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
@@ -10,14 +10,23 @@ import "ui/Debot.sol";
 import "ui/Menu.sol";
 import "ui/Sdk.sol";
 import "ui/Terminal.sol";
+import "ui/Transferable.sol";
+import "ui/Upgradable.sol";
+import "ui/NumberInput.sol";
 
 import "./Interfaces.sol";
 import "./Libraries.sol";
 import "./Structures.sol";
 
-contract DensDebot is Debot, IDataStructs {
-
+contract DeNSDebot is Debot, Upgradable, Transferable, IDataStructs {
+    string[] chain;
+    uint chainIdx;
     address root;
+    bytes nIcon;
+    address currentResolvingAddress;
+    RegRequest request;
+    uint256 nonce;
+    uint128 bidAmount;
 
     constructor(address _root) public {
         require(tvm.pubkey() != 0);
@@ -26,69 +35,103 @@ contract DensDebot is Debot, IDataStructs {
         root = _root;
     }
 
-    /// @notice Entry point function for DeBot.
+    function onCodeUpgrade() internal override {
+        tvm.resetStorage();
+    }
+
+    function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
+        return [ Terminal.ID, AmountInput.ID, ConfirmInput.ID, AddressInput.ID ];
+    }
+
+    function getDebotInfo() public functionID(0xDEB) override view returns(
+        string name, string version, string publisher, string key, string author,
+        address support, string hello, string language, string dabi, bytes icon
+    ) {
+        name = "DeNS DeBot";
+        version = format("{}.{}.{}", 0,0,1);
+        publisher = "TON Labs";
+        key = "DeBot for DeNS";
+        author = "TON Labs";
+        support = address.makeAddrStd(0, 0x97619544fb5d6115b2188350b1172b70952aac40705272d75f44c4685946fea);
+        hello = "Hi, I will help you with DeNS manipulations.";
+        language = "en";
+        dabi = m_debotAbi.get();
+        icon = nIcon;
+    }
+
     function start() public override {
         Terminal.print(0, "Welcome to the DeNS debot!");
         Terminal.print(0, "Please select your option:");
-        Menu.select ("Options",     "Available debot actions", [
-            MenuItem("Resolve",     "Resolve an address",        tvm.functionId(mi_Resolve)),
-            MenuItem("Root",        "Operating the DeNS root",   tvm.functionId(mi_Root)),
-            MenuItem("Certificate", "Working with certificates", tvm.functionId(mi_Certificate)),
-            MenuItem("Auction",     "Interaction with auctions", tvm.functionId(mi_Auction)),
+        Menu.select ("Options", "Available debot actions", [
+            MenuItem("Resolve",     "Resolve name",             tvm.functionId(miResolve)),
+            MenuItem("Register",    "Register name",            tvm.functionId(miRegister)),
+            MenuItem("Auction",     "Participate in auctions",  tvm.functionId(miAuction)),
             MenuItem("Quit", "", 0)
         ]);
     }
 
-    function mi_Resolve(uint32 index) public {
-        require(index >= 0); // silence
-        Terminal.inputStr(tvm.functionId(mi_Resolve_1), "Domain name:", false);
+    function miResolve(uint32 index) public {
+            require(index >= 0);
+            Terminal.inputStr(tvm.functionId(resolveName), "Name to resolve:", false);
     }
 
-    string[] chain;
-    address curr_p;
-    uint curr_i;
-    function mi_Resolve_1(string value) public {
-        string st = value;
-        Terminal.print(0, format("Resolving {}...", st));
-        uint l = st.byteLength();
-        uint s = 0;
-        delete chain;
-        for (uint i = 0; i < l; i++) {
-            if (st.substr(i, 1) == "/") { // /
-                chain.push(st.substr(s, i - s));
-                s = i + 1;
+    function resolveName(string value) public {
+        Terminal.print(0, format("Resolving {}.", value));
+        _lookupPreparations(value);
+        _recursiveLookup(address(0));
+    }
+
+    function _tokenize(string input) private {
+        uint length = input.byteLength();
+        uint idx = 0;
+        for (uint i = 0; i < length; i++) {
+            if (input.substr(i, 1) == "/") {
+                chain.push(input.substr(idx, i - idx));
             }
         }
-        chain.push(st.substr(s, l - s));
-        curr_i = 0;
-        curr_p = address(0);
-        goResolve();
-        // Terminal.print(0, format("Certificate address: {}", par));
-        // uint32 exp = IDensCertificate(par).getExpiry();
-        // address val = IDensCertificate(par).getValue();
-        // if (now > exp) {
-        //     Terminal.print(0, "Certificate expired :(");
-        // } else {
-        //     Terminal.print(0, "Resolution successful:");
-        //     Terminal.print(0, format("{}", val));
-        // }
+        chain.push(input.substr(idx, length - idx));
     }
 
-    function goResolve() private {
-        string part = chain[curr_i];
-        Terminal.print(0, format("Lookup {}/{}...", curr_p, part));
-        IDensRoot(root).resolveRPC{callback: onResolve}(part, curr_p, PlatformTypes.Certificate);
+    function _lookupPreparations(string value) private {
+        delete chain;
+        _tokenize(value);
+        chainIdx = 0;
+    }
+
+    function _recursiveLookup(address currentAddress) private {
+        string part = chain[chainIdx];
+        Terminal.print(0, format("Lookup for {} part.", part));
+        IDensRoot(root).resolveRPC{callback: onResolve}(part, currentAddress, PlatformTypes.Certificate);
     }
 
     function onResolve(address res) public {
+        currentResolvingAddress = res;
+        Sdk.getAccountType(tvm.functionId(checkStatus), res);
+    }
+
+    function resolveOfExistingCert(address res) public {
         Terminal.print(0, format("Got address {}", res));
-        if (curr_i + 1 == chain.length) {
+        if (chainIdx + 1 == chain.length) {
             Terminal.print(0, "Requesting value...");
             IDensCertificate(res).whois{callback: onResolveWhois}();
             return;
         }
-        curr_i += 1;
-        goResolve();
+        chainIdx += 1;
+        string part = chain[chainIdx];
+        IDensRoot(root).resolveRPC{
+            callback: onResolve
+            }(part, res, PlatformTypes.Certificate);
+    }
+
+    function checkStatus(int8 acc_type) public {
+        if (acc_type == -1)  {
+            Terminal.print(0, "Certificate does not exist, name is free to register.");
+            start();
+        }
+        if (acc_type == 0) {
+            Terminal.print(0, "Certificate exists");
+            resolveOfExistingCert(currentResolvingAddress);
+        }
     }
 
     function onResolveWhois(Whois res) public {
@@ -100,24 +143,65 @@ contract DensDebot is Debot, IDataStructs {
         start();
     }
 
-    function mi_Root(uint32 index) public {
-
+    function miRegister(uint32 index) public {
+        require(index >= 0);
+        Terminal.inputStr(tvm.functionId(registerName), "Name to register:", false);
     }
 
-    function mi_Certificate(uint32 index) public {
-
+    function registerName(string value) public {
+        Terminal.print(0, format("Registeration of {} initiated.", value));
+        NumberInput.get(tvm.functionId(setRequestedDuration), "Please enter desired duration (in years):", 1, 100);
+        request.name = value;
+    }
+    
+    function setRequestedDuration(uint32 value) public {
+        request.duration = value;
+        AmountInput.get(tvm.functionId(setHashedAmount), "Please enter desired amount for the bid:", 9, 1, 1e13);
     }
 
-    function mi_Auction(uint32 index) public {
-
+    function setHashedAmount(uint128 value) public {
+        bidAmount = value;
+        nonce = rnd.next();
+        AddressInput(tvm.functionId(userAddressSpicified), "Please select wallet address you want to use:");
+        
+        //IDensRoot(root){callback: onAucResolve}.resolveFull(request.name, PlatformTypes.Auction);
     }
 
-    function getVersion() public override returns (string name, uint24 semver) {
-        (name, semver) = ("DeNS Debot", _version(0,1,0));
+    function userAddressSpicified(address value) {
+        IDensRoot(root){callback: sendRegRequest}.generateHash(value, bidAmount, nonce);
     }
 
-    function _version(uint24 major, uint24 minor, uint24 fix) private pure inline returns (uint24) {
-        return (major << 16) | (minor << 8) | (fix);
+    function sendRegRequest(uint256 value) {
+        request.hash = value;
+        IDensRoot(root).regName(tvm.functionId(regNameCallback), request);
     }
 
+    function regNameCallback(bool success, uint8 failCode, address) {
+        ;
+    }
+
+    function onAucResolve(address value) public {}
+
+    function miAuction(uint32 index) public {
+        require(index >= 0);
+        uint256 h = 
+        Sdk.getAccountsDataByHash(tvm.functionId(onAccountsByHash),h,address(0x0));
+    }
+
+    function onAccountsByHash(ISdk.AccData[] accounts) public {
+        m_tpaddrs = new address[](0);
+        m_tip3Menu = new  Tip3MenuInfo[](0);
+        for (uint i=0; i<accounts.length;i++)
+        {
+            m_tpaddrs.push(accounts[i].id);
+        }
+
+        if (m_tpaddrs.length>0)
+        {
+            m_curTP = 0;
+            getTradingPairStock(m_tpaddrs[m_curTP]);
+        }
+        else
+            Terminal.print(tvm.functionId(showTip3Menu),"no trading pairs!");
+    }
 }
