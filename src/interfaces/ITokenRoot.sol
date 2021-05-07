@@ -7,5 +7,5 @@ interface ITokenRoot {
         uint256 pubkey,
         uint256 internal_owner,
         uint128 grams
-    ) external functionID(0xD);
+    ) external functionID(1745532193); // functionID(0xD);
 }

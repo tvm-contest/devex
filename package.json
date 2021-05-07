@@ -29,7 +29,6 @@
     "dotenv": "^8.2.0",
     "js-trim-multiline-string": "^1.0.8",
     "mocha": "^8.2.1",
-    "tondev": "^0.3.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },
@@ -37,6 +36,7 @@
     "@tonclient/core": "^1.5.0",
     "@tonclient/lib-node": "^1.5.0",
     "rimraf": "^3.0.2",
-    "shelljs": "^0.8.4"
+    "shelljs": "^0.8.4",
+    "tondev": "^0.6.0"
   }
 }

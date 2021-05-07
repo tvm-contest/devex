@@ -230,7 +230,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
     function setFromTip3Wallet(address value) public {
         _fromTip3Addr = value;
         optional(uint256) none;
-        ITokenWallet(value).getBalance{
+        ITokenWallet(value).getDetails{
             abiVer: 2,
             extMsg: true,
             sign: false,
@@ -242,8 +242,8 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
         }();
     }
 
-    function setFromBalance(uint128 value0) public {
-        _fromBalance = value0;
+    function setFromBalance(bytes name, bytes symbol, uint8 decimals, uint128 balance, uint256 root_public_key, uint256 wallet_public_key, address root_address, address owner_address, LendOwnership lend_ownership, TvmCell code, Allowance allowance, int8 workchain_id) public {
+        _fromBalance = balance;
         AmountInput.get(tvm.functionId(setDepositAmount), "How many tokens to deposit?", _tmpTokenDecimals, 0, _fromBalance);
         Terminal.print(tvm.functionId(transferTokens), "Ok, sign message with tip3 wallet keys.");
     }
@@ -265,7 +265,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             time: uint32(now),
             expire: 0,
             pubkey: pubkey
-        }(acc.addr, _depositAmount, 0.5 ton);
+        }(acc.addr, _depositAmount, false, _fromTip3Addr);
     }
 
     //
@@ -304,7 +304,7 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
 
     function setTip3Wallet(address value) private pure {
         optional(uint256) none;
-        ITokenWallet(value).getBalance{
+        ITokenWallet(value).getDetails{
             abiVer: 2,
             extMsg: true,
             sign: false,
@@ -314,24 +314,11 @@ contract DemiurgeDebot is IBaseData, DemiurgeStore, Debot, Upgradable {
             expire: 0,
             pubkey: none
         }();
-        ITokenWallet(value).getDecimals{
-            abiVer: 2,
-            extMsg: true,
-            sign: false,
-            callbackId: tvm.functionId(setTokenDecimals),
-            onErrorId: 0,
-            time: uint32(now),
-            expire: 0,
-            pubkey: none
-        }();
     }
 
-    function setTokenBalance(uint128 value0) public {
-        _tmpTokenBalance = value0;
-    }
-
-    function setTokenDecimals(uint8 value0) public {
-        _tmpTokenDecimals = value0;
+    function setTokenBalance(bytes name, bytes symbol, uint8 decimals, uint128 balance, uint256 root_public_key, uint256 wallet_public_key, address root_address, address owner_address, LendOwnership lend_ownership, TvmCell code, Allowance allowance, int8 workchain_id) public {
+        _tmpTokenBalance = balance;
+        _tmpTokenDecimals = decimals;
     }
 
     //---------------------------------------------------------------
