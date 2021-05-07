@@ -1,6 +1,8 @@
 # FTC-DeNS v2
 FreeTON Contest - Decentralized Name Service **Version 2**
 
+`devnet root address: 0:5bbb59c7e1f1986550e418786ae1b5116513cfcc18975c8a94ea19090ecd95f8`
+
 ---
 
 # Version 1 docs follow
