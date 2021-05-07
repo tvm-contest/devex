@@ -196,46 +196,46 @@ describe("Demiurge test", () => {
 
     console.log("Deployed!");
 
-    // await new Promise<void>((resolve) => {
-    //   fs.readFile(
-    //     "./build/DemiurgeDebot.abi.json",
-    //     "utf8",
-    //     async function (err, data) {
-    //       if (err) {
-    //         return console.log({ err });
-    //       }
+    await new Promise<void>((resolve) => {
+      fs.readFile(
+        "./build/DemiurgeDebot.abi.json",
+        "utf8",
+        async function (err, data) {
+          if (err) {
+            return console.log({ err });
+          }
 
-    //       const buf = Buffer.from(data, "ascii");
-    //       var hexvalue = buf.toString("hex");
+          const buf = Buffer.from(data, "ascii");
+          var hexvalue = buf.toString("hex");
 
-    //       await smcDemiurgeDebot.call({
-    //         functionName: "setABI",
-    //         input: {
-    //           dabi: hexvalue,
-    //         },
-    //       });
+          await smcDemiurgeDebot.call({
+            functionName: "setABI",
+            input: {
+              dabi: hexvalue,
+            },
+          });
 
-    //       resolve();
-    //     }
-    //   );
-    // });
+          resolve();
+        }
+      );
+    });
 
-    // await smcDemiurgeDebot.call({
-    //   functionName: "setProposalImage",
-    //   input: {
-    //     image: pkgProposal.image,
-    //   },
-    // });
+    await smcDemiurgeDebot.call({
+      functionName: "setProposalImage",
+      input: {
+        image: pkgProposal.image,
+      },
+    });
 
-    // await smcDemiurgeDebot.call({
-    //   functionName: "setPadawanImage",
-    //   input: {
-    //     image: pkgPadawan.image,
-    //   },
-    // });
+    await smcDemiurgeDebot.call({
+      functionName: "setPadawanImage",
+      input: {
+        image: pkgPadawan.image,
+      },
+    });
 
-    // console.log(
-    //   `./bin/tonos-cli --url http://net.ton.dev debot fetch ${smcDemiurgeDebot.address}`
-    // );
+    console.log(
+      `./bin/tonos-cli --url http://net.ton.dev debot fetch ${smcDemiurgeDebot.address}`
+    );
   });
 });
