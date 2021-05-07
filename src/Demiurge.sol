@@ -93,6 +93,14 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
 
         _createChecks();
     }
+
+    function onStateUpdate(ProposalState state) external {
+        optional(uint32) opt = _deployedProposals.fetch(msg.sender);
+        require(opt.hasValue());
+        uint32 key = opt.get();
+        _lProposalData[key].state = state;
+        msg.sender.transfer(0, false, 64);
+    }
     
     /*
      * Public Deploy API
@@ -171,7 +179,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     ) external checksEmpty {
         require(end > start, ERROR_END_LOWER_THAT_START);
         require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
-        require(end - start > 60 * 60 * 24 * 7, ERROR_BAD_DATES);
+        require(end - start >= 60 * 60 * 24 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -186,7 +194,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     ) external checksEmpty {
         require(end > start, ERROR_END_LOWER_THAT_START);
         require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
-        require(end - start > 60 * 60 * 24 * 7, ERROR_BAD_DATES);
+        require(end - start >= 60 * 60 * 24 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -201,7 +209,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     ) external checksEmpty {
         require(end > start, ERROR_END_LOWER_THAT_START);
         require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
-        require(end - start > 60 * 60 * 24 * 7, ERROR_BAD_DATES);
+        require(end - start >= 60 * 60 * 24 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
@@ -216,7 +224,7 @@ contract Demiurge is Base, IBaseData, IDemiurgeStoreCallback {
     ) external checksEmpty {
         require(end > start, ERROR_END_LOWER_THAT_START);
         require(uint32(now) < start, ERROR_NOW_LOWER_THAT_START);
-        require(end - start > 60 * 60 * 24 * 7, ERROR_BAD_DATES);
+        require(end - start >= 60 * 60 * 24 * 7, ERROR_BAD_DATES);
         TvmBuilder b;
         b.store(specific);
         TvmCell cellSpecific = b.toCell();
