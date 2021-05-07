@@ -1,0 +1,78 @@
+{
+	"ABI version": 2,
+	"header": ["time"],
+	"functions": [
+		{
+			"name": "encode_deployPadawan_call",
+			"inputs": [
+				{"name":"pubkey","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "encode_createTokenAccount_call",
+			"inputs": [
+				{"name":"tokenRoot","type":"address"}
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "encode_depositTokens_call",
+			"inputs": [
+				{"name":"returnTo","type":"address"},
+				{"name":"tokenId","type":"uint256"},
+				{"name":"tokens","type":"uint64"}
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "encode_deployReserveProposal_call",
+			"inputs": [
+				{"name":"start","type":"uint32"},
+				{"name":"end","type":"uint32"},
+				{"name":"title","type":"bytes"},
+				{"components":[{"name":"name","type":"bytes"},{"name":"ts","type":"uint32"}],"name":"specific","type":"tuple"}
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "encode_voteFor_call",
+			"inputs": [
+				{"name":"proposal","type":"address"},
+				{"name":"choice","type":"bool"},
+				{"name":"votes","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"payload","type":"cell"}
+			]
+		},
+		{
+			"name": "make_image_cell",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}
