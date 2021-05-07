@@ -13,6 +13,14 @@
 			]
 		},
 		{
+			"name": "onStateUpdate",
+			"inputs": [
+				{"name":"state","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "deployPadawan",
 			"inputs": [
 				{"name":"pubkey","type":"uint256"}

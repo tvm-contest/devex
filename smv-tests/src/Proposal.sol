@@ -155,6 +155,7 @@ contract Proposal is Base, IProposal, IBaseData {
 
     function _transit(ProposalState state) private inline {
         _state.state = state;
+        IInfoCenter(_deployer).onStateUpdate{value: 0.2 ton, bounce: true}(state);
     }
 
     function _wrapUp() private {
@@ -198,7 +199,7 @@ contract Proposal is Base, IProposal, IBaseData {
         info = _proposalInfo;
     }
 
-    function getCurrentVotes() public view returns (uint32 votesFor, uint32 votesAgainst) {
+    function getCurrentVotes() external override view returns (uint32 votesFor, uint32 votesAgainst) {
         return (_state.votesFor, _state.votesAgainst);
     }
 

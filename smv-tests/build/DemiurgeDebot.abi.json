@@ -67,6 +67,99 @@
 			]
 		},
 		{
+			"name": "reclaimVotes",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "reclaim",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "depositTokens",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setFromTip3Wallet",
+			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setFromBalance",
+			"inputs": [
+				{"name":"value0","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDepositAmount",
+			"inputs": [
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "transferTokens",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "depositTokens2",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "depositTokens3",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "depositTokens4",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setTokenBalance",
+			"inputs": [
+				{"name":"value0","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setTokenDecimals",
+			"inputs": [
+				{"name":"value0","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "askMultisig",
 			"inputs": [
 				{"name":"index","type":"uint32"}
@@ -86,6 +179,53 @@
 			"name": "voteForProposal",
 			"inputs": [
 				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "attachPadawanMenu",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "voteForProposal2",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "enterProposalId",
+			"inputs": [
+				{"name":"value","type":"int256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "enterVotes",
+			"inputs": [
+				{"name":"value","type":"int256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendVoteFor",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "retryVoteFor",
+			"inputs": [
+				{"name":"value","type":"bool"}
 			],
 			"outputs": [
 			]
@@ -272,6 +412,23 @@
 			]
 		},
 		{
+			"name": "printProp",
+			"inputs": [
+				{"name":"id","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setProposalVotes",
+			"inputs": [
+				{"name":"votesFor","type":"uint32"},
+				{"name":"votesAgainst","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "setProposalData",
 			"inputs": [
 				{"components":[{"name":"id","type":"uint32"},{"name":"state","type":"uint8"},{"name":"ownerAddress","type":"address"},{"name":"addr","type":"address"},{"name":"ts","type":"uint32"}],"name":"proposals","type":"map(uint32,tuple)"}
@@ -301,6 +458,14 @@
 				{"name":"reqVotes","type":"uint32"},
 				{"name":"totalVotes","type":"uint32"},
 				{"name":"lockedVotes","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setTokenAccounts",
+			"inputs": [
+				{"components":[{"name":"addr","type":"address"},{"name":"ownerAddressKey","type":"uint256"},{"name":"createdAt","type":"uint32"},{"name":"balance","type":"uint128"}],"name":"allAccounts","type":"map(address,tuple)"}
 			],
 			"outputs": [
 			]
