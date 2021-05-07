@@ -1,0 +1,6 @@
+/.idea/
+/keys/*.keys.json
+/keys/*.phrase.txt
+/scripts/tonos-cli.conf.json
+/*.log
+/scripts/*.log
