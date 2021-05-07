@@ -192,6 +192,14 @@
 			]
 		},
 		{
+			"name": "winner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"winner","type":"address"}
+			]
+		},
+		{
 			"name": "sec_bid",
 			"inputs": [
 			],
@@ -263,6 +271,14 @@
 			"inputs": [
 				{"name":"sender","type":"address"},
 				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "new_winner",
+			"inputs": [
+				{"name":"newwin","type":"address"}
 			],
 			"outputs": [
 			]

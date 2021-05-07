@@ -94,6 +94,62 @@ IFREF {
 TRUE
 SETGLOB 7
 
+.globl	setTarget
+.public	setTarget
+.type	setTarget, @function
+; Decode input parameters
+; Decode dest
+LDMSGADDR
+; Decode typ
+LDI 16
+; Decode value
+LDMSGADDRQ
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDMSGADDR
+}
+IFNOT
+ENDS
+;; param: dest
+;; param: typ
+;; param: value
+; modifier acc
+ACCEPT
+; function setTarget
+;; Remote call DensCertificate.setTarget
+;; push identifier dest
+PUSH S2
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHSLICE x3989680000000000000000000000000004_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x1de8ba6f
+;; rec_type
+;; push identifier typ
+PUSH S2
+STIR 16
+;; new_value
+;; push identifier value
+PUSH S1
+STSLICER
+ENDC
+PUSHINT 0
+SENDRAWMSG
+; end function setTarget
+BLKDROP 3
+; end modifier acc
+IFREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
 .globl	transferOwner
 .public	transferOwner
 .type	transferOwner, @function
@@ -230,6 +286,8 @@ NEWC
 ; expValue
 DUP
 ; end expValue
+MYADDR
+STSLICER
 ;; push identifier amount
 PUSH S3
 STUR 128
@@ -417,6 +475,8 @@ NEWC
 ; expValue
 DUP
 ; end expValue
+MYADDR
+STSLICER
 ;; push identifier amount
 PUSH S3
 STUR 128
@@ -473,7 +533,7 @@ NEWC
 NULL
 TUPLE 2
 NEWC
-PUSHSLICE x62696420726573706f6e73653a206f6b3d
+PUSHSLICE x61756374696f6e2062696420726573706f6e73653a206f6b3d
 CALLREF {
 	CALL $storeStringInBuilders_macro$
 }
@@ -506,6 +566,141 @@ STRDUMP
 DROP
 DROP
 ; end function bidCallback
+IFREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	bid2
+.public	bid2
+.type	bid2, @function
+; Decode input parameters
+; Decode dest
+LDMSGADDR
+; Decode amount
+LDUQ 128
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 128
+}
+IFNOT
+; Decode nonce
+LDUQ 256
+PUSHCONT {
+	;; load next cell
+	LDREF
+	ENDS
+	CTOS
+	LDU 256
+}
+IFNOT
+ENDS
+;; param: dest
+;; param: amount
+;; param: nonce
+; modifier acc
+ACCEPT
+; function bid2
+NEWC
+;; decl: b
+; expValue
+DUP
+; end expValue
+MYADDR
+STSLICER
+;; push identifier amount
+PUSH S3
+STUR 128
+;; push identifier nonce
+PUSH S2
+STUR 256
+; colValue
+NIP
+; end colValue
+;; push identifier b
+DUP
+ENDC
+HASHCU
+;; decl: hash
+;; Remote call IDensBid.bid
+;; push identifier dest
+PUSH S4
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHSLICE x43b9aca00000000000000000000000000004_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x59dc095f
+STSLICECONST x67d0c634
+;; hash_val
+;; push identifier hash
+PUSH S1
+STUR 256
+ENDC
+PUSHINT 0
+SENDRAWMSG
+DROP2
+; end function bid2
+BLKDROP 3
+; end modifier acc
+IFREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
+.globl	bid2Callback
+.public	bid2Callback
+.type	bid2Callback, @function
+; Decode input parameters
+; Decode res
+LDI 1
+ENDS
+;; param: res
+; function bid2Callback
+NEWC
+NULL
+TUPLE 2
+NEWC
+PUSHSLICE x6269642062696420726573706f6e73653a206f6b3d
+CALLREF {
+	CALL $storeStringInBuilders_macro$
+}
+CALLREF {
+	CALL $appendToList_macro$
+}
+;; push identifier res
+PUSH S2
+PUSHCONT {
+	PUSHINT 1
+}
+PUSHCONT {
+	PUSHINT 0
+}
+IFELSE
+PUSHINT 0
+FALSE
+FALSE
+CALLREF {
+	CALL $convertIntToDecStr_macro$
+}
+CALLREF {
+	CALL $appendToList_macro$
+}
+CALLREF {
+	CALL $assembleList_macro$
+}
+CTOS
+STRDUMP
+DROP
+DROP
+; end function bid2Callback
 IFREF {
 	CALL $c7_to_c4$
 }
@@ -767,6 +962,40 @@ IFREF {
 TRUE
 SETGLOB 7
 
+.globl	withdraw
+.public	withdraw
+.type	withdraw, @function
+; Decode input parameters
+; Decode dest
+LDMSGADDR
+ENDS
+;; param: dest
+; modifier acc
+ACCEPT
+; function withdraw
+;; Remote call IDensBid.withdraw
+;; push identifier dest
+DUP
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHSLICE x43b9aca00000000000000000000000000004_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST x2fb4720b
+ENDC
+PUSHINT 0
+SENDRAWMSG
+; end function withdraw
+DROP
+; end modifier acc
+IFREF {
+	CALL $c7_to_c4$
+}
+TRUE
+SETGLOB 7
+
 .macro c7_to_c4
 GETGLOB 2
 NEWC
@@ -867,7 +1096,6 @@ IFNOT
 ; [funcId body'] doReceive
 PUSHCONT {
 	; function receive
-	THROW 192
 	; end function receive
 }
 IFJMP

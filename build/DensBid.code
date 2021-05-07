@@ -139,6 +139,19 @@ DUP
 ; colValue
 SETGLOB 17
 ; end colValue
+;; transfer()
+;; get member sender
+GETGLOB 9
+NEWC
+STSLICECONST x62_
+STSLICE
+PUSHINT 109
+STZEROES
+STSLICECONST 0
+STSLICECONST 0
+ENDC
+PUSHINT 64
+SENDRAWMSG
 ; end function put
 DROP
 ; end modifier onlyOwner
@@ -216,6 +229,14 @@ PUSHCONT {
 	SETGLOB 13
 	; end colValue
 	;; return
+	GETGLOB 4
+	PUSHINT 0
+	SETINDEXQ 2
+	TRUE
+	SETINDEXQ 1
+	PUSHINT 64
+	SETINDEXQ 4
+	SETGLOB 4
 	TRUE
 }
 CALLX

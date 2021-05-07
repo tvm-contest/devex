@@ -90,10 +90,8 @@ THROWIFNOT 99
 ACCEPT
 NEWC
 ;; decl: b
-CALL $smc_identify_internal$
-;; decl: iden
 ; expValue
-PUSH S1
+DUP
 ; end expValue
 ;; push identifier root
 GETGLOB 10
@@ -117,27 +115,21 @@ STUR 32
 GETGLOB 17
 STUR 32
 ; colValue
-POP S2
+NIP
 ; end colValue
 ;; push identifier code
-PUSH S2
+PUSH S1
 CTOS
 BLESS
 POP c3
-CALL $smc_identify_internal$
-;; ==
-;; push identifier iden
-PUSH S1
-EQUAL
-THROWIFNOT 112
 ;; push identifier code
-PUSH S2
+PUSH S1
 SETCODE
 ;; push identifier b
-PUSH S1
+DUP
 ENDC
 CALL $:onCodeUpgrade$
-DROP2
+DROP
 ; end function upgrade
 DROP
 ; end modifier onlyRoot
@@ -326,17 +318,6 @@ CALLREF {
 }
 COMMIT
 THROW 0
-
-.globl	smc_identify_internal
-.type	smc_identify_internal, @function
-; function smc_identify
-;; return
-PUSHSLICE x44654e5320436572746966696361746520536d61727420436f6e7472616374
-NEWC
-STSLICE
-ENDC
-HASHCU
-; end function smc_identify
 
 .globl	requestUpgrade
 .public	requestUpgrade

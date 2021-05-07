@@ -182,23 +182,23 @@ contract DensRoot is IDensRoot, ITransferOwnerExt, IUpgradable, IAddBalance, ICl
         private
     {
         TvmBuilder b;
-        uint256 iden = smc_identify();
+        // uint256 iden = smc_identify();
         b.store(platform_code, certificate_code, auction_code, owner, pending_owner);
         tvm.setCurrentCode(code);
-        require(smc_identify() == iden, Errors.INVALID_CODE);
-        emit rootCodeUpdated(tvm.hash(code));
         tvm.setcode(code);
+        // require(smc_identify() == iden, Errors.INVALID_CODE);
+        emit rootCodeUpdated(tvm.hash(code));
         onCodeUpgrade(b.toCell());
     }
 
     function onCodeUpgrade(TvmCell data) private {} // Special!
 
-    function smc_identify()
-        pure private
-        returns(uint256)
-    {
-        return tvm.hash("DeNS Root Smart Contract");
-    }
+//    function smc_identify()
+//        pure private
+//        returns(uint256)
+//    {
+//        return tvm.hash("DeNS Root Smart Contract");
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Request upgrade from certificate contract (IDensRoot)
@@ -292,6 +292,7 @@ contract DensRoot is IDensRoot, ITransferOwnerExt, IUpgradable, IAddBalance, ICl
                 s = i + 1;
             }
         }
+        adr = _resolve(st.substr(s, l - s), ptype, adr);
         return adr;
     }
 

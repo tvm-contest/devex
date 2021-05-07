@@ -46,6 +46,7 @@ contract DensAuction is IDensAuction, IAddBalance {
 
     address public top_bid;
     uint128 public top_bid_amt;
+    address public winner;
 
     address public sec_bid;
     uint128 public sec_bid_amt;
@@ -115,14 +116,16 @@ contract DensAuction is IDensAuction, IAddBalance {
             uint32 dur = math.min(duration, DeNS.MaxPeriodYears);
             endBid = start + DeNS.BidPeriodPerYear * dur;
             endRev = endBid + DeNS.RevealPeriodPerYear * dur;
-            uint256 _expiry = uint256(endRev) + uint256(duration) * uint256(365 days);
+            uint32 exp_base = endRev;
+            if (__expiry > exp_base) exp_base = __expiry;
+            uint256 _expiry = uint256(exp_base) + uint256(duration) * uint256(365 days);
             if (_expiry > 0xFFFFFFFF) _expiry = 0xFFFFFFFF;
             expiry = uint32(_expiry);
             emit initialized(start, endBid, endRev, expiry);
-            IDensRoot(root).ensureExpiry(name, endRev);
             if (__expiry > 0) {
-                minfinal = __expiry;
                 prolongGrace = DeNS.ProlongGrace;
+                IDensRoot(root).ensureExpiry(name, exp_base + prolongGrace);
+                minfinal = __expiry;
             }
         }
         if (now >= endBid)
@@ -208,7 +211,9 @@ contract DensAuction is IDensAuction, IAddBalance {
         }
         top_bid = msg.sender;
         top_bid_amt = amount;
+        winner = owner;
         emit new_first(top_bid, top_bid_amt);
+        emit new_winner(winner);
         tvm.rawReserve(bal + amount, 0);
         emit revealed(owner, amount);
         owner.transfer({value: 0, bounce: true, flag: MsgFlag.AllBalance}); // return gas change
@@ -238,8 +243,8 @@ contract DensAuction is IDensAuction, IAddBalance {
             paid = top_bid_amt;
             IAddBalance(top_bid).addBalance{value: remainder, bounce: true, flag: 0}();
         }
-        IDensRoot(root).auctionSucceeded(name, top_bid, expiry);
-        emit finalized(top_bid, paid, expiry);
+        IDensRoot(root).auctionSucceeded(name, winner, expiry);
+        emit finalized(winner, paid, expiry);
         return {value: 0, bounce: true, flag: MsgFlag.MsgBalance} true;
     }
 
@@ -277,6 +282,7 @@ contract DensAuction is IDensAuction, IAddBalance {
     event revealed(address sender, uint128 amount);
     event new_first(address sender, uint128 amount);
     event new_second(address sender, uint128 amount);
+    event new_winner(address newwin);
     event returned(address dest, uint128 amount);
     event failed();
     event finalized(address winner, uint128 paid, uint32 expiry);

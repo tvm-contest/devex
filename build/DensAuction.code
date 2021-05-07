@@ -100,8 +100,10 @@ PUSHINT 0
 SETGLOB 21
 PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
 SETGLOB 22
-PUSHINT 0
+PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
 SETGLOB 23
+PUSHINT 0
+SETGLOB 24
 ;; end set default state vars
 ;; push identifier data
 DUP
@@ -162,7 +164,7 @@ PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
 ; expValue
 ; end expValue
 ; colValue
-SETGLOB 22
+SETGLOB 23
 ; end colValue
 ; expValue
 ; end expValue
@@ -174,7 +176,7 @@ SETGLOB 21
 ; end expValue
 PUSHINT 0
 ; colValue
-SETGLOB 23
+SETGLOB 24
 ; end colValue
 ; expValue
 ; end expValue
@@ -686,10 +688,31 @@ PUSHCONT {
 	; end colValue
 	;; push identifier endRev
 	GETGLOB 14
+	;; decl: exp_base
+	;; if
+	;; push identifier __expiry
+	PUSH S2
+	;; >
+	;; push identifier exp_base
+	PUSH S1
+	GREATER
+	PUSHCONT {
+		; expValue
+		; end expValue
+		;; push identifier __expiry
+		PUSH S2
+		; colValue
+		NIP
+		; end colValue
+	}
+	IF
+	;; end if
+	;; push identifier exp_base
+	DUP
 	;; uint256
 	;; +
 	;; push identifier duration
-	PUSH S4
+	PUSH S5
 	;; uint256
 	;; *
 	PUSHINT 31536000
@@ -748,50 +771,55 @@ PUSHCONT {
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
-	;; Remote call IDensRoot.ensureExpiry
-	;; push identifier root
-	GETGLOB 10
-	NEWC
-	STSLICECONST x62_
-	STSLICE
-	PUSHSLICE x3989680000000000000000000000000004_
-	STSLICER
-	STSLICECONST 0
-	STSLICECONST 0
-	STSLICECONST x44dc0d3f
-	;; name
-	;; push identifier name
-	GETGLOB 11
-	STREFR
-	;; expiry
-	;; push identifier endRev
-	GETGLOB 14
-	STUR 32
-	ENDC
-	PUSHINT 0
-	SENDRAWMSG
 	;; if
 	;; push identifier __expiry
-	PUSH S2
+	PUSH S3
 	GTINT 0
 	PUSHCONT {
-		; expValue
-		; end expValue
-		;; push identifier __expiry
-		PUSH S2
-		; colValue
-		SETGLOB 16
-		; end colValue
 		; expValue
 		; end expValue
 		PUSHINT 86400
 		; colValue
 		SETGLOB 17
 		; end colValue
+		;; Remote call IDensRoot.ensureExpiry
+		;; push identifier root
+		GETGLOB 10
+		NEWC
+		STSLICECONST x62_
+		STSLICE
+		PUSHSLICE x3989680000000000000000000000000004_
+		STSLICER
+		STSLICECONST 0
+		STSLICECONST 0
+		STSLICECONST x44dc0d3f
+		;; name
+		;; push identifier name
+		GETGLOB 11
+		STREFR
+		;; expiry
+		;; push identifier exp_base
+		PUSH S2
+		;; +
+		;; push identifier prolongGrace
+		GETGLOB 17
+		ADD
+		UFITS 32
+		STUR 32
+		ENDC
+		PUSHINT 0
+		SENDRAWMSG
+		; expValue
+		; end expValue
+		;; push identifier __expiry
+		PUSH S3
+		; colValue
+		SETGLOB 16
+		; end colValue
 	}
 	IF
 	;; end if
-	DROP2
+	BLKDROP 3
 }
 IFNOT
 ;; end if
@@ -1237,7 +1265,7 @@ PUSHCONT {
 	DUP
 	;; <=
 	;; push identifier sec_bid_amt
-	GETGLOB 23
+	GETGLOB 24
 	LEQ
 	PUSHCONT {
 		;; Remote call IAddBalance.addBalance
@@ -1277,14 +1305,14 @@ PUSHCONT {
 		;; get member sender
 		GETGLOB 9
 		; colValue
-		SETGLOB 22
+		SETGLOB 23
 		; end colValue
 		; expValue
 		; end expValue
 		;; push identifier amount
 		DUP
 		; colValue
-		SETGLOB 23
+		SETGLOB 24
 		; end colValue
 		;; emit new_second
 		NEWC
@@ -1295,11 +1323,11 @@ PUSHCONT {
 		STSLICECONST x7c6b0ee5
 		;; sender
 		;; push identifier sec_bid
-		GETGLOB 22
+		GETGLOB 23
 		STSLICER
 		;; amount
 		;; push identifier sec_bid_amt
-		GETGLOB 23
+		GETGLOB 24
 		STUR 128
 		ENDC
 		PUSHINT 0
@@ -1366,14 +1394,14 @@ PUSHCONT {
 		;; push identifier top_bid
 		GETGLOB 20
 		; colValue
-		SETGLOB 22
+		SETGLOB 23
 		; end colValue
 		; expValue
 		; end expValue
 		;; push identifier top_bid_amt
 		GETGLOB 21
 		; colValue
-		SETGLOB 23
+		SETGLOB 24
 		; end colValue
 		;; emit new_second
 		NEWC
@@ -1384,11 +1412,11 @@ PUSHCONT {
 		STSLICECONST x7c6b0ee5
 		;; sender
 		;; push identifier sec_bid
-		GETGLOB 22
+		GETGLOB 23
 		STSLICER
 		;; amount
 		;; push identifier sec_bid_amt
-		GETGLOB 23
+		GETGLOB 24
 		STUR 128
 		ENDC
 		PUSHINT 0
@@ -1421,6 +1449,13 @@ PUSHCONT {
 	; colValue
 	SETGLOB 21
 	; end colValue
+	; expValue
+	; end expValue
+	;; push identifier owner
+	PUSH S2
+	; colValue
+	SETGLOB 22
+	; end colValue
 	;; emit new_first
 	NEWC
 	PUSHSLICE xc0000000000000000000000002_
@@ -1436,6 +1471,20 @@ PUSHCONT {
 	;; push identifier top_bid_amt
 	GETGLOB 21
 	STUR 128
+	ENDC
+	PUSHINT 0
+	SENDRAWMSG
+	;; emit new_winner
+	NEWC
+	PUSHSLICE xc0000000000000000000000002_
+	STSLICER
+	STSLICECONST 0
+	STSLICECONST 0
+	STSLICECONST x4674068a
+	;; newwin
+	;; push identifier winner
+	GETGLOB 22
+	STSLICER
 	ENDC
 	PUSHINT 0
 	SENDRAWMSG
@@ -1629,18 +1678,18 @@ PUSHCONT {
 	;; end if
 	ACCEPT
 	;; push identifier sec_bid_amt
-	GETGLOB 23
+	GETGLOB 24
 	;; decl: paid
 	;; if
 	;; push identifier sec_bid_amt
-	GETGLOB 23
+	GETGLOB 24
 	GTINT 0
 	PUSHCONT {
 		;; push identifier top_bid_amt
 		GETGLOB 21
 		;; -
 		;; push identifier sec_bid_amt
-		GETGLOB 23
+		GETGLOB 24
 		SUB
 		UFITS 128
 		;; decl: remainder
@@ -1693,8 +1742,8 @@ PUSHCONT {
 	GETGLOB 11
 	STREFR
 	;; winner
-	;; push identifier top_bid
-	GETGLOB 20
+	;; push identifier winner
+	GETGLOB 22
 	STSLICER
 	;; expiry
 	;; push identifier expiry
@@ -1711,8 +1760,8 @@ PUSHCONT {
 	STSLICECONST 0
 	STSLICECONST x59a52eb2
 	;; winner
-	;; push identifier top_bid
-	GETGLOB 20
+	;; push identifier winner
+	GETGLOB 22
 	STSLICER
 	;; paid
 	;; push identifier paid
@@ -1877,6 +1926,10 @@ GETGLOB 23
 REVERSE 4, 0
 STSLICE
 STSLICE
+STSLICE
+NEWC
+GETGLOB 24
+SWAP
 STU 128
 GETGLOB 10
 GETGLOB 11
@@ -1889,7 +1942,8 @@ GETGLOB 17
 GETGLOB 18
 GETGLOB 19
 GETGLOB 21
-REVERSE 13, 0
+REVERSE 14, 0
+STBREF
 STBREF
 STSLICE
 STREF
@@ -1914,10 +1968,12 @@ LDU 1       ; pubkey [timestamp] constructor_flag memory
 LDREFRTOS
 LDMSGADDR
 LDMSGADDR
-PLDU 128
 SETGLOB 23
 SETGLOB 22
 SETGLOB 20
+LDREFRTOS
+PLDU 128
+SETGLOB 24
 LDMSGADDR
 LDREF
 LDU 32
@@ -1959,10 +2015,12 @@ PUSHCONT {
 	LDREFRTOS
 	LDMSGADDR
 	LDMSGADDR
-	PLDU 128
 	SETGLOB 23
 	SETGLOB 22
 	SETGLOB 20
+	LDREFRTOS
+	PLDU 128
+	SETGLOB 24
 	LDMSGADDR
 	LDREF
 	LDU 32
@@ -2031,12 +2089,15 @@ PUSHCONT {
 	; init top_bid_amt
 	PUSHINT 0
 	SETGLOB 21
-	; init sec_bid
+	; init winner
 	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
 	SETGLOB 22
+	; init sec_bid
+	PUSHSLICE x8000000000000000000000000000000000000000000000000000000000000000001_
+	SETGLOB 23
 	; init sec_bid_amt
 	PUSHINT 0
-	SETGLOB 23
+	SETGLOB 24
 	; set contract pubkey
 	PUSHINT 0
 	SWAP
@@ -2454,13 +2515,34 @@ SENDRAWMSG
 TRUE
 SETGLOB 7
 
+.globl	winner
+.public	winner
+.type	winner, @function
+CALLREF {
+	CALL $c4_to_c7$
+}
+GETGLOB 22
+NEWC
+PUSHSLICE xc0000000000000000000000002_
+STSLICER
+STSLICECONST 0
+STSLICECONST 0
+STSLICECONST xe199a229
+PUSH S1
+STSLICER
+ENDC
+PUSHINT 0
+SENDRAWMSG
+TRUE
+SETGLOB 7
+
 .globl	sec_bid
 .public	sec_bid
 .type	sec_bid, @function
 CALLREF {
 	CALL $c4_to_c7$
 }
-GETGLOB 22
+GETGLOB 23
 NEWC
 PUSHSLICE xc0000000000000000000000002_
 STSLICER
@@ -2481,7 +2563,7 @@ SETGLOB 7
 CALLREF {
 	CALL $c4_to_c7$
 }
-GETGLOB 23
+GETGLOB 24
 NEWC
 PUSHSLICE xc0000000000000000000000002_
 STSLICER

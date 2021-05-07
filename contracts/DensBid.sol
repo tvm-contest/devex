@@ -59,6 +59,7 @@ contract DensBid is IDensBid, IAddBalance {
         external override onlyOwner
     {
         box = new_box;
+        msg.sender.transfer({value: 0, bounce: true, flag: MsgFlag.MsgBalance});
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +72,7 @@ contract DensBid is IDensBid, IAddBalance {
         if (Now() >= endBid)
             return {value: 0, bounce: true, flag: MsgFlag.MsgBalance} false;
         hash = hash_val;
-        return true;
+        return {value: 0, bounce: true, flag: MsgFlag.MsgBalance} true;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

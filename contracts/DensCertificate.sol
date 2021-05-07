@@ -67,10 +67,10 @@ contract DensCertificate is IDensCertificate, ITransferOwnerInt, IUpgradable, IS
     {
         tvm.accept();
         TvmBuilder b;
-        uint256 iden = smc_identify();
+//        uint256 iden = smc_identify();
         b.store(root, name, owner, parent, value, registered, expiry);
         tvm.setCurrentCode(code);
-        require(smc_identify() == iden, Errors.INVALID_CODE);
+//        require(smc_identify() == iden, Errors.INVALID_CODE);
         tvm.setcode(code);
         onCodeUpgrade(b.toCell());
     }
@@ -87,12 +87,12 @@ contract DensCertificate is IDensCertificate, ITransferOwnerInt, IUpgradable, IS
         emit deployed(root, name, owner, expiry, value != address(0));
     }
 
-    function smc_identify()
-        pure private
-        returns(uint256)
-    {
-        return tvm.hash("DeNS Certificate Smart Contract");
-    }
+//    function smc_identify()
+//        pure private
+//        returns(uint256)
+//    {
+//        return tvm.hash("DeNS Certificate Smart Contract");
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // IDensCertificate owner can request upgrade from root

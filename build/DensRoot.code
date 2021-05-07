@@ -937,10 +937,8 @@ SETGLOB 7
 ; function _upgrade
 NEWC
 ;; decl: b
-CALL $smc_identify_internal$
-;; decl: iden
 ; expValue
-PUSH S1
+DUP
 ; end expValue
 ;; push identifier platform_code
 GETGLOB 10
@@ -958,19 +956,16 @@ STUR 256
 GETGLOB 15
 STUR 256
 ; colValue
-POP S2
+NIP
 ; end colValue
 ;; push identifier code
-PUSH S2
+PUSH S1
 CTOS
 BLESS
 POP c3
-CALL $smc_identify_internal$
-;; ==
-;; push identifier iden
+;; push identifier code
 PUSH S1
-EQUAL
-THROWIFNOT 112
+SETCODE
 ;; emit rootCodeUpdated
 NEWC
 PUSHSLICE xc0000000000000000000000002_
@@ -980,20 +975,17 @@ STSLICECONST 0
 STSLICECONST x1db34797
 ;; hash
 ;; push identifier code
-PUSH S3
+PUSH S2
 HASHCU
 STUR 256
 ENDC
 PUSHINT 0
 SENDRAWMSG
-;; push identifier code
-PUSH S2
-SETCODE
 ;; push identifier b
-PUSH S1
+DUP
 ENDC
 CALL $:onCodeUpgrade$
-BLKDROP 3
+DROP2
 ; end function _upgrade
 
 .internal-alias :onCodeUpgrade,        2
@@ -1009,17 +1001,6 @@ CALLREF {
 }
 COMMIT
 THROW 0
-
-.globl	smc_identify_internal
-.type	smc_identify_internal, @function
-; function smc_identify
-;; return
-PUSHSLICE x44654e5320526f6f7420536d61727420436f6e7472616374
-NEWC
-STSLICE
-ENDC
-HASHCU
-; end function smc_identify
 
 .globl	requestCertificateUpgrade
 .public	requestCertificateUpgrade
@@ -1819,6 +1800,30 @@ PUSHCONT {
 WHILE
 DROP
 ; end for
+;; push identifier st
+PUSH S3
+;; push identifier s
+PUSH S2
+;; push identifier l
+PUSH S4
+;; -
+;; push identifier s
+PUSH S4
+SUB
+UFITS 256
+CALLREF {
+	CALL $__substr_macro$
+}
+;; push identifier ptype
+PUSH S5
+;; push identifier adr
+PUSH S2
+CALL $_resolve_internal$
+; expValue
+; end expValue
+; colValue
+NIP
+; end colValue
 ;; return
 XCHG s5
 BLKDROP 5
