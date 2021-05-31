@@ -1,0 +1,422 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addBalance",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgrade",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "requestUpgrade",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subCertRequest",
+			"inputs": [
+				{"name":"subname","type":"bytes"},
+				{"name":"subexpiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subCertSynchronize",
+			"inputs": [
+				{"name":"subname","type":"bytes"},
+				{"name":"subexpiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getOwner",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "setOwner",
+			"inputs": [
+				{"name":"new_owner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getPendingOwner",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "transferOwner",
+			"inputs": [
+				{"name":"new_owner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "acceptOwner",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdraw",
+			"inputs": [
+				{"name":"dest","type":"address"},
+				{"name":"_value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getValue",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "setValue",
+			"inputs": [
+				{"name":"new_value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getTarget",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"rec_type","type":"int16"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "setTarget",
+			"inputs": [
+				{"name":"rec_type","type":"int16"},
+				{"name":"new_value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getExpiry",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint32"}
+			]
+		},
+		{
+			"name": "setExpiry",
+			"inputs": [
+				{"name":"_expiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "prolong",
+			"inputs": [
+				{"name":"length","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getRegistered",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint32"}
+			]
+		},
+		{
+			"name": "inquiryExpiry",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"rhash","type":"uint128"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint128"},
+				{"name":"value1","type":"uint32"}
+			]
+		},
+		{
+			"name": "getParent",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getRoot",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getName",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"bytes"}
+			]
+		},
+		{
+			"name": "whois",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"components":[{"name":"name","type":"bytes"},{"name":"owner","type":"address"},{"name":"parent","type":"address"},{"name":"value","type":"address"},{"name":"registered","type":"uint32"},{"name":"expiry","type":"uint32"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "auctionProcess",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"new_owner","type":"address"},
+				{"name":"new_expiry","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"bool"}
+			]
+		},
+		{
+			"name": "root",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"root","type":"address"}
+			]
+		},
+		{
+			"name": "name",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"}
+			]
+		},
+		{
+			"name": "owner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"owner","type":"address"}
+			]
+		},
+		{
+			"name": "parent",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"parent","type":"address"}
+			]
+		},
+		{
+			"name": "value",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value","type":"address"}
+			]
+		},
+		{
+			"name": "pending_owner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"pending_owner","type":"address"}
+			]
+		},
+		{
+			"name": "registered",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"registered","type":"uint32"}
+			]
+		},
+		{
+			"name": "expiry",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"expiry","type":"uint32"}
+			]
+		},
+		{
+			"name": "values",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"values","type":"map(int16,address)"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+		{
+			"name": "deployed",
+			"inputs": [
+				{"name":"root","type":"address"},
+				{"name":"name","type":"bytes"},
+				{"name":"owner","type":"address"},
+				{"name":"expiry","type":"uint32"},
+				{"name":"upgraded","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "upgradeRequested",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "modified",
+			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "modified_ex",
+			"inputs": [
+				{"name":"rec_type","type":"int16"},
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "prepareOwnerTransfer",
+			"inputs": [
+				{"name":"to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "ownerTransferred",
+			"inputs": [
+				{"name":"from","type":"address"},
+				{"name":"to","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "ownerForceChanged",
+			"inputs": [
+				{"name":"new_owner","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "expiryChanged",
+			"inputs": [
+				{"name":"new_expiry","type":"uint32"},
+				{"name":"prolong","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "withdrawn",
+			"inputs": [
+				{"name":"dest","type":"address"},
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "auctionSet",
+			"inputs": [
+				{"name":"owner","type":"address"},
+				{"name":"expiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subCertRequested",
+			"inputs": [
+				{"name":"subname","type":"bytes"},
+				{"name":"subexpiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subCertSynchronized",
+			"inputs": [
+				{"name":"subname","type":"bytes"},
+				{"name":"subexpiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "balanceAdded",
+			"inputs": [
+				{"name":"donor","type":"address"},
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		}
+	]
+}
