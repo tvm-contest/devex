@@ -16,11 +16,13 @@
 
 #include <iostream>
 
+
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/random.hpp>
 #include <boost/algorithm/hex.hpp>
 
+#include "circuit.hpp"
 #include "list_contains_component.hpp"
 
 #include <nil/crypto3/algebra/curves/bls12.hpp>
@@ -51,7 +53,8 @@ typedef algebra::curves::bls12<381> curve_type;
 typedef typename curve_type::scalar_field_type field_type;
 
 typedef zk::snark::r1cs_gg_ppzksnark<curve_type> scheme_type;
-
+typedef nil::marshalling::verifier_input_serializer_tvm<scheme_type> serializer_tvm;
+typedef nil::marshalling::verifier_input_deserializer_tvm<scheme_type> deserializer_tvm;
 typedef hmac_component<field_type,
                        knapsack_crh_with_bit_out_component<field_type>,
                        knapsack_crh_with_field_out_component<field_type>>
@@ -71,9 +74,22 @@ std::string field_element_to_hex(field_type::value_type element) {
     std::string hex;
     std::vector<std::uint8_t> byteblob(modulus_chunks);
     std::vector<std::uint8_t>::iterator write_iter = byteblob.begin();
-    nil::marshalling::verifier_input_serializer_tvm<scheme_type>::field_type_process<field_type>(element, write_iter);
+    serializer_tvm::field_type_process<field_type>(element, write_iter);
     boost::algorithm::hex(byteblob.begin(), byteblob.end(), std::back_inserter(hex));
     return hex;
+}
+
+inline std::vector<uint8_t> read_vector_from_disk(boost::filesystem::path file_path) {
+    boost::filesystem::ifstream instream(file_path, std::ios::in | std::ios::binary);
+    std::vector<uint8_t> data((std::istreambuf_iterator<char>(instream)), std::istreambuf_iterator<char>());
+    return data;
+}
+
+inline void write_vector_to_disk(boost::filesystem::path file_path, const std::vector<uint8_t> &data) {
+    boost::filesystem::ofstream ostream(file_path, std::ios::out | std::ios::binary);
+    for(auto byte : data) {
+        ostream << byte;
+    }
 }
 
 void generate_vote_secret() {
@@ -81,7 +97,7 @@ void generate_vote_secret() {
     std::vector<std::uint8_t> secret_byteblob(SECRET_BITS_SIZE / 8);
     rd.generate(secret_byteblob.begin(), secret_byteblob.end());
     std::vector<bool> secret_bitblob(256);
-    detail::pack<stream_endian::big_octet_big_bit, stream_endian::big_octet_big_bit, 8, 1>(
+    nil::crypto3::detail::pack<stream_endian::big_octet_big_bit, stream_endian::big_octet_big_bit, 8, 1>(
         secret_byteblob.begin(), secret_byteblob.end(), secret_bitblob.begin());
 
     field_type::value_type hash = Hmac::get_hmac(secret_bitblob, std::vector<bool>(HASH_MSG_LEN, 1)) [0];
@@ -89,11 +105,7 @@ void generate_vote_secret() {
     std::string hash_hex = field_element_to_hex(hash);
 
     boost::filesystem::path secret_path(hash_hex);
-    boost::filesystem::ofstream secretof(secret_path);
-    for (auto byte : secret_byteblob) {
-        secretof << byte;
-    }
-    secretof.close();
+    write_vector_to_disk(secret_path, secret_byteblob);
     std::cout << "Voting secret has been saved to " << hash_hex << std::endl;
     std::cout << "Voting secret hash is: " << hash_hex << std::endl;
 }
@@ -147,123 +159,11 @@ int main(int argc, char *argv[]) {
     }
 
     blueprint<field_type> bp;
-
-    // public input varibles
-
-    // packed hashes of permitted voting secrets
-    blueprint_variable_vector<field_type> voting_secrets_hashes;
-    voting_secrets_hashes.allocate(bp, MAX_ENTRIES);
-    // the vote choice, uint32
-    blueprint_variable<field_type> vote;
-    vote.allocate(bp);
-    // Hmac(secret,little endian vote)
-    blueprint_variable<field_type> signed_vote;
-    signed_vote.allocate(bp);
-
-    // Hmac(secret, ANONYMOUS_ID_MSG_LEN ones)
-    blueprint_variable<field_type> anonymous_id;
-    anonymous_id.allocate(bp);
-    assert(bp.num_variables() == PRIMARY_INPUT_SIZE);
-    bp.set_input_sizes(PRIMARY_INPUT_SIZE);
-
-    // auxilary input variables
-
-    digest_variable<field_type> voting_secret(bp, SECRET_BITS_SIZE);
-
-    // components for verification of the voting secret.
-
-    // Hmac(secret, HASH_MSG_LEN ones)
-    blueprint_variable<field_type> secret_hash;
-    secret_hash.allocate(bp);
-    block_variable<field_type> secret_block(bp, {voting_secret.bits});
-
-    // blueprint_variable not allocated, therfore constant and equal to 1.
-    blueprint_variable<field_type> one;
-
-    block_variable<field_type> hash_msg_block(bp,
-        {blueprint_variable_vector<field_type>(HASH_MSG_LEN, one)});
-    Hmac secret_hmac_comp(bp,
-                          secret_block,
-                          hash_msg_block,
-                          blueprint_variable_vector<field_type>(1, secret_hash));
-    
-    // The voters set may contain zeros if there is less than maximum voters.
-    // So we have to make sure the secret's hash is not zero.
-    blueprint_variable_vector<field_type> secret_hash_bits;
-    secret_hash_bits.allocate(bp, modulus_bits);
-    packing_component<field_type> secret_hash_pack(bp, secret_hash_bits, secret_hash);
-    blueprint_variable<field_type> not_all_zeros;
-    not_all_zeros.allocate(bp);
-    disjunction<field_type> test_not_all_zeros(bp, secret_hash_bits, not_all_zeros);
-
-    list_contains_component<field_type> list_contains_comp(bp,
-                                                           MAX_ENTRIES,
-                                                           voting_secrets_hashes,
-                                                           secret_hash);
-
-    // components for signed vote
-
-    blueprint_variable_vector<field_type> vote_bits;
-    vote_bits.allocate(bp, VOTE_MSG_LEN);
-    packing_component<field_type> vote_pack(bp, vote_bits, vote);
-    block_variable<field_type> vote_block(bp, {vote_bits});
-    Hmac vote_hmac(bp, secret_block, vote_block, blueprint_variable_vector<field_type>(1, signed_vote));
-
-    // componenets for verification of id
-
-    block_variable<field_type> anoynymous_id_msg_block(bp,
-     {blueprint_variable_vector<field_type>(ANONYMOUS_ID_MSG_LEN, one)});
-    Hmac anonymous_id_msg_hmac(bp,
-                       secret_block,
-                       anoynymous_id_msg_block,
-                       blueprint_variable_vector<field_type>(1, anonymous_id));
-
-    // generate constraints
-
-    // constraints for verification of the voting secret.
-
-    voting_secret.generate_r1cs_constraints();
-    secret_hmac_comp.generate_r1cs_constraints();
-    secret_hash_pack.generate_r1cs_constraints(true);
-    test_not_all_zeros.generate_r1cs_constraints();
-    generate_r1cs_equals_const_constraint<field_type>(bp, not_all_zeros, 1);
-    
-    list_contains_comp.generate_r1cs_constraints();
-
-    // constraints for signed vote.
-
-    vote_pack.generate_r1cs_constraints(true);
-    vote_hmac.generate_r1cs_constraints();
-
-    // constraints for id
-
-    anonymous_id_msg_hmac.generate_r1cs_constraints();
-
-    typename scheme_type::keypair_type keypair;
-    if (vm.count("generate-keypair")) {
-        std::cout << "Starting generator" << std::endl;
-        zk::snark::r1cs_constraint_system<field_type> constraint_system = bp.get_constraint_system();
-        std::cout << constraint_system.num_constraints() << std::endl;
-        std::cout << constraint_system.num_variables() << std::endl;
-        keypair = zk::snark::generate<scheme_type>(constraint_system);
-        std::vector<std::uint8_t> verification_key_byteblob =
-            nil::marshalling::verifier_input_serializer_tvm<scheme_type>::process(keypair.second);
-        boost::filesystem::ofstream vkoutf(vkout);
-        for (const auto &v : verification_key_byteblob) {
-            vkoutf << v;
-        }
-        vkoutf.close();
+    if(!vm.count("prove")) {
+        bp = circuit::generate_circuit<field_type>();
     } else {
-        std::cerr << "Keys must be generated each time." << std::endl;
-        // return 1;
-    }
-
-    if (vm.count("prove")) {
-        boost::filesystem::ifstream sinf(sin);
-        std::vector<std::uint8_t> secret_byteblob(SECRET_BITS_SIZE / 8);
-        for (std::uint8_t &byte : secret_byteblob) {
-            sinf >> byte;
-        }
+        std::vector<std::uint8_t> secret_byteblob = read_vector_from_disk(sin);
+        assert(secret_byteblob.size() == SECRET_BITS_SIZE / 8);
         std::vector<bool> secret_bv(SECRET_BITS_SIZE);
         nil::crypto3::detail::pack<stream_endian::big_octet_big_bit, stream_endian::big_octet_big_bit, 8, 1>(
             secret_byteblob.begin(), secret_byteblob.end(), secret_bv.begin());
@@ -297,38 +197,72 @@ int main(int argc, char *argv[]) {
         for (size_t i = 0; i < hashes_bytes.size(); ++i) {
             nil::marshalling::status_type status;
             hashes_field_elements[i] =
-                nil::marshalling::verifier_input_deserializer_tvm<scheme_type>::field_type_process<field_type>(
+                deserializer_tvm::field_type_process<field_type>(
                     hashes_bytes[i].cbegin(), hashes_bytes[i].cend(), status);
         }
 
         for (size_t i = hashes_bytes.size(); i < hashes_field_elements.size(); ++i) {
             hashes_field_elements[i] = field_type::value_type::zero();
         }
+        circuit::generated_primary_input<field_type> primary_input;
+        bp = circuit::generate_circuit_with_witness<field_type>(
+            hashes_field_elements,
+            secret_bv,
+            vote_choice,
+            &primary_input
+        );
+        std::cout << "is blueprint satisfied:" << (bp.is_satisfied() ? "true" : "false") << std::endl;
 
-        // generate witness
+        std::string signed_vote_hex = field_element_to_hex(primary_input.signed_vote);
+        std::cout << "Your signed vote is: " << signed_vote_hex << std::endl;
 
-        for (size_t i = 0; i < hashes_field_elements.size(); i++) {
-            bp.val(voting_secrets_hashes[i]) = hashes_field_elements[i];
+        std::string anonymous_id_hex = field_element_to_hex(primary_input.anonymous_id);
+        std::cout << "Your anonymous voter id is: " << anonymous_id_hex << std::endl;
+    }
+    
+    typename scheme_type::keypair_type keypair;
+    if (vm.count("generate-keypair")) {
+        std::cout << "Starting generator" << std::endl;
+        zk::snark::r1cs_constraint_system<field_type> constraint_system = bp.get_constraint_system();
+        std::cout << constraint_system.num_constraints() << std::endl;
+        std::cout << constraint_system.num_variables() << std::endl;
+        keypair = zk::snark::generate<scheme_type>(constraint_system);
+        std::vector<std::uint8_t> verification_key_byteblob =
+            serializer_tvm::process(keypair.second);
+        write_vector_to_disk(vkout, verification_key_byteblob);
+        
+        std::vector<std::uint8_t> proving_key_byteblob =
+            serializer_tvm::process(keypair.first);
+        write_vector_to_disk(pkout, proving_key_byteblob);
+    } else{
+        std::cout << "Loading keypair" << std::endl;
+        std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk(pkout);
+        nil::marshalling::status_type pk_desrialize_status;
+        keypair.first =
+             deserializer_tvm::proving_key_process(proving_key_byteblob.begin(),
+                                                   proving_key_byteblob.end(),
+                                                   pk_desrialize_status);
+
+        std::vector<uint8_t> verification_key_byteblob = read_vector_from_disk(vkout);
+        
+        if(pk_desrialize_status != nil::marshalling::status_type::success) {
+            std::cerr << "Error: Could not deserialize proving key";
+            return 1;
         }
 
-        voting_secret.generate_r1cs_witness(secret_bv);
-        secret_hmac_comp.generate_r1cs_witness();
-        secret_hash_pack.generate_r1cs_witness_from_packed();
-        test_not_all_zeros.generate_r1cs_witness();
+        nil::marshalling::status_type vk_desrialize_status;
+        keypair.second =
+            deserializer_tvm::verification_key_process(verification_key_byteblob.begin(),
+                                                  verification_key_byteblob.end(),
+                                                  vk_desrialize_status);
 
-        std::string hash_hex = field_element_to_hex(bp.val(secret_hash));
-        std::cout << hash_hex << std::endl;
-        list_contains_comp.generate_r1cs_witness();
+        if(vk_desrialize_status != nil::marshalling::status_type::success) {
+            std::cerr << "Error: Could not deserialize verification key";
+            return 1;
+        }
+    }
 
-        // witness generation for signed vote
-        bp.val(vote) = vote_choice;
-        vote_pack.generate_r1cs_witness_from_packed();
-        vote_hmac.generate_r1cs_witness();
-
-        // constraints for id
-
-        anonymous_id_msg_hmac.generate_r1cs_witness();
-
+    if (vm.count("prove")) {
         std::cout << "is blueprint satisfied:" << (bp.is_satisfied() ? "true" : "false") << std::endl;
 
         std::cout << "Starting prover" << std::endl;
@@ -336,18 +270,12 @@ int main(int argc, char *argv[]) {
         const typename scheme_type::proof_type proof =
             zk::snark::prove<scheme_type>(keypair.first, bp.primary_input(), bp.auxiliary_input());
         std::vector<std::uint8_t> proof_byteblob =
-            nil::marshalling::verifier_input_serializer_tvm<scheme_type>::process(proof);
+            serializer_tvm::process(proof);
         boost::filesystem::ofstream poutf(pout);
         for (const auto &v : proof_byteblob) {
             poutf << v;
         }
         poutf.close();
-
-        std::string signed_vote_hex = field_element_to_hex(bp.val(signed_vote));
-        std::cout << "Your signed vote is: " << signed_vote_hex << std::endl;
-
-        std::string anonymous_id_hex = field_element_to_hex(bp.val(anonymous_id));
-        std::cout << "Your anonymous voter id is: " << anonymous_id_hex << std::endl;
     }
 
     return 0;
