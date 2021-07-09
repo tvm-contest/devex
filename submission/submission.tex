@@ -6,32 +6,70 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,
+	urlcolor=gray
+}
+
+\usepackage{xcolor}
+\usepackage{listings}
+
+\lstdefinestyle{BashInputStyle}{
+	language=bash,
+	basicstyle=\small\sffamily,
+	columns=fullflexible,
+%	backgroundcolor=\color{yellow!20},
+	linewidth=0.9\linewidth,
+	xleftmargin=0.1\linewidth
+}
+
 \author{OcamlPro - Fabrice Le Fessant et Thomas Sibut-Pinote}
-\title{Groth16 zkSNARK Proof Verification : Three Use Cases}
+\title{Groth16 zkSNARK Proof Verification on Freeton : Three Use Cases}
+
 \begin{document}
 \maketitle
+
+The present document is an official submission to the 18$^{\text{th}}$ contest\footnote{\url{https://devex.gov.freeton.org/proposal?proposalAddress=0\%3Ae6b65075478e7d412fdb0870452f30dfa8bf51272e28a3167abc5c5df6fd051d}} of the DevEx governance. Although we accepted earlier to be part of the jury, we understand that by submitting this document we waive our right to vote in the present contest.
+
 In this submission, we propose three different use cases for Groth16
 zkSNARK proofs on the FreeTON blockchain.
 
-\section{Technical contribution to the usability: `ft`}
+\section{Technical contribution to the usability of ZkSnark-enabled Freeton with `ft`}
 
-(justifié parce que les jurés peuvent se servir de `ft` pour tester
-notre code)
+In the course of participating in this contest, we were led to refine our in-house tools in order to more easily manipulate the Nil Foundation forks of the Ton Virtual Machine (TVM), the TON Solidity compiler and the TVM linker.
+
+The freeton wallet \lstinline|ft| can be installed using Docker (\url{https://ocamlpro.github.io/freeton_wallet/sphinx/install.html#using-docker}) or \lstinline|opam|.
+
+Once it is installed, a Zksnark-ready sandbox can be installed by simply running:
+
+\begin{lstlisting}[style=BashInputStyle]
+ft switch create sandbox --image ocamlpro/nil-local-node
+\end{lstlisting}
+
+Now all commands from the \lstinline|ft| documentation will work, in particular it will be easy to create accounts, deploy contracts, and call them as seen in \url{https://ocamlpro.github.io/freeton_wallet/sphinx/use-cases.html}.
 
 \section{A toy example: Sudoku}
 \label{section_sudoku}
 
-Let's start with our first toy use case. Suppose you want to set up a Sudoku problem for your students to solve, so that upon completion they receive some token. The issue is that once any student has solved it, the solution sits on the blockchain for all to see. All the other students can cheat by copying it, instead of doing the work by themselves, which defeats the whole purpose.
+Let's start with our first toy use case. Suppose you want to set up a Sudoku problem for your students to solve, so that upon completion they receive some token. The issue is that once any student has solved it, the solution sits on the blockchain for all to see. All the other students can cheat by copying it, instead of doing the work by themselves, which defeats the whole purpose. One other advantage is that we don't need to implement the whole logic of the computation on the smart contract. For some size of Sudoku, this is probably worthwhile.
 
 \section{A better example: Project Euler}
 \label{section_euler}
 
-The previous example is somewhat limited by the fact that sudokus are easily solvable problems, either by hand or with a computer; they are not a realistic use case of zk-snarks. Let's keep the idea of a decentralized classroom. the famous website Project Euler\footnote{{https://projecteuler.net/}} offers math and programming problems of various difficulty to its users. It uses captchas to prevent brute force attempts at guessing the answer to a problem. The answers to problems are stored statically on its servers and the answers are checked against them. Can we make Project Euler decentralized? Using the idea from Section \ref{section_sudoku}, we can prevent users from stealing others' solutions \textbf{and} from brute-forcing them, due to the cost of generating proofs.
+The previous example is somewhat limited by the fact that sudokus are easily solvable problems, either by hand or with a computer; they are not a realistic use case of zk-snarks. Let's keep the idea of a decentralized classroom. the famous website Project Euler\footnote{\url{https://projecteuler.net/}} offers math and programming problems of various difficulty to its users. It uses captchas to prevent brute force attempts at guessing the answer to a problem. The answers to problems are stored statically on its servers and the answers are checked against them. Can we make Project Euler decentralized? Using the idea from Section \ref{section_sudoku}, we can prevent users from stealing others' solutions \textbf{and} from brute-forcing them, due to the cost of generating proofs.
 
 
 \section{A useful example: SetCodeMultisigWallet with a pin code}
 \label{section_pincode}
 
+Our final example is much more practical. What happens when one loses the private key controlling one's wallet? One solution, on a multisig wallet, is to have e.g. two private keys, one being safely stored in a vault at the bank. But what if going to the bank is impossible? Another solution is to enable a one-time pin code to change the public key controlling a given wallet.
+
+This solution needs to be zero-knowledge because any solution that lets attackers observe the pin code in the clear gives them an opportunity to intercept it (for instance if they are a validator) and change the order of transactions, to gain control of the wallet.
+
+Our solution consists in providing a zero-knowledge proof of the pin code \emph{tied} with the new public key (to avoid interception of the proof).
 
 
 \end{document}
