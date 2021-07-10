@@ -1,0 +1,7 @@
+
+{
+    "ocaml.sandbox": {
+        "kind": "opam"
+        "switch": "/home/thomas/ocamlpro/BLOCKCHAIN/FREETON/freeton_sudoku_generator/sudoku_generator"
+    }
+}
