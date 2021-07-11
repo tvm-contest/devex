@@ -17,6 +17,7 @@ contract ZKSudoku {
     address m_owner; // address of the contract supplying new sudoku
 		     // instances? Or just the owner manually sending
 		     // them? First option makes it more turnkey
+    bytes v_key;
 
     struct fixed_value {
 	uint8 i;
@@ -35,9 +36,10 @@ contract ZKSudoku {
 	return true;
     }
 
-    constructor(address owner, fixed_value[] instance) public {
+    constructor(address owner, bytes v_key_in, fixed_value[] instance) public {
 	tvm.accept();
 	m_owner = owner;
+	v_key = v_key_in;
 	for(uint i=0;i<instance.length;i++){
 	    require(check_value(instance[i]));
 	    m_instance.push(instance[i]);
@@ -65,7 +67,7 @@ contract ZKSudoku {
 	    require(check_value(fv));
 	    temp[fv.i * SUDOKU_SIZE + fv.j] = fv.value;
 	}
-	string blob_str = "";
+	string blob_str=(encode_little_endian(PI_SIZE,4));
 	// build the actual encoded primary input
 	for(uint i=0;i<NUM_SQUARES;i++){
 	    blob_str.append(serialize_primary_input(temp[i]));
@@ -75,14 +77,11 @@ contract ZKSudoku {
     }
 
 
-    function submit(bytes v_key, // should not be here if we could
-				 // serialize properly using the nil
-				 // library
-		    bytes proof)
-	public view returns (bool res) {
+    function submit(bytes proof)
+	public view returns (bool res, string blob_str) {
 	    require(proof.length == PROOF_SIZE);
 	    tvm.accept();
-	    string blob_str = proof;
+	    blob_str = proof;
 	    blob_str.append(pi_from_instance(m_instance));
 	    blob_str.append(v_key);
 	    if(tvm.vergrth16(blob_str)){
@@ -94,8 +93,7 @@ contract ZKSudoku {
     }
 
     function serialize_primary_input(uint32 some_number) pure internal inline returns(bytes) {
-        string blob_str=(encode_little_endian(PI_SIZE,4));
-        blob_str.append(encode_little_endian(uint256(some_number), field_element_bytes));
+        string blob_str = encode_little_endian(uint256(some_number), field_element_bytes);
         return blob_str;
     }
 
