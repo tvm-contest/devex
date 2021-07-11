@@ -163,8 +163,6 @@ void build_circuit ( blueprint<field_type> &bp, std::vector<uint32_t> &passphras
   blueprint_variable<field_type> public_pubkey3;
   public_pubkey3.allocate( bp );
 
-  bp.set_input_sizes(4);
-
   blueprint_variable<field_type> secret_pubkey0;
   secret_pubkey0.allocate( bp );
 
@@ -188,6 +186,8 @@ void build_circuit ( blueprint<field_type> &bp, std::vector<uint32_t> &passphras
 
   blueprint_variable<field_type> secret_hash3;
   secret_hash3.allocate( bp );
+  
+  bp.set_input_sizes(4);
 
   // This sets up the blueprint variables
   // so that the first one (out) represents the public
@@ -261,13 +261,58 @@ void use_circuit( std::string passphrase, std::string pubkey ){
   cerr << "(3)" << endl ;
 
   blueprint<field_type> bp;
+  
+  blueprint_variable<field_type> public_pubkey0;
+  public_pubkey0.allocate( bp );
 
-  // Normally, here, we would load the bp from files 'provkey.bin' and 'verifkey.bin'
-#ifndef PROVING_KEY_SERIALIZER
-  build_circuit( bp, passphrase32 );
-#else
-  exit(2) ; // TODO
-#endif
+  blueprint_variable<field_type> public_pubkey1;
+  public_pubkey1.allocate( bp );
+
+  blueprint_variable<field_type> public_pubkey2;
+  public_pubkey2.allocate( bp );
+
+  blueprint_variable<field_type> public_pubkey3;
+  public_pubkey3.allocate( bp );
+
+  blueprint_variable<field_type> secret_pubkey0;
+  secret_pubkey0.allocate( bp );
+
+  blueprint_variable<field_type> secret_pubkey1;
+  secret_pubkey1.allocate( bp );
+
+  blueprint_variable<field_type> secret_pubkey2;
+  secret_pubkey2.allocate( bp );
+
+  blueprint_variable<field_type> secret_pubkey3;
+  secret_pubkey3.allocate( bp );
+
+  blueprint_variable<field_type> secret_hash0;
+  secret_hash0.allocate( bp );
+
+  blueprint_variable<field_type> secret_hash1;
+  secret_hash1.allocate( bp );
+
+  blueprint_variable<field_type> secret_hash2;
+  secret_hash2.allocate( bp );
+
+  blueprint_variable<field_type> secret_hash3;
+  secret_hash3.allocate( bp );
+
+  // This sets up the blueprint variables
+  // so that the first one (out) represents the public
+  // input and the rest is private input
+
+  bp.set_input_sizes(4);
+
+
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( secret_pubkey0 , 1, public_pubkey0));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( secret_pubkey1 , 1, public_pubkey1));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( secret_pubkey2 , 1, public_pubkey2));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( secret_pubkey3 , 1, public_pubkey3));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( passphrase32[0] , 1, secret_hash0));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( passphrase32[1] , 1, secret_hash1));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( passphrase32[2] , 1, secret_hash2));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( passphrase32[3] , 1, secret_hash3));
 
   cerr << pubkey32[0] << endl ;
   cerr << pubkey32[1] << endl ;
@@ -275,28 +320,30 @@ void use_circuit( std::string passphrase, std::string pubkey ){
   cerr << pubkey32[3] << endl ;
   
   cerr << "(5)" << endl ;
-  
-  bp.val( 0 ) = pubkey32[0];
-  bp.val( 1 ) = pubkey32[1];
-  bp.val( 2 ) = pubkey32[2];
-  bp.val( 3 ) = pubkey32[3];
+
+  snark::r1cs_variable_assignment<field_type> values = bp.full_variable_assignment();
+
+  values[ 0 ] = pubkey32[0];
+  bp.val( public_pubkey1 ) = pubkey32[1];
+  bp.val( public_pubkey2 ) = pubkey32[2];
+  bp.val( public_pubkey3 ) = pubkey32[3];
   
   cerr << "(3)" << endl ;
   
-  bp.val( 4 ) = pubkey32[0];
-  bp.val( 5 ) = pubkey32[1];
-  bp.val( 6 ) = pubkey32[2];
-  bp.val( 7 ) = pubkey32[3];
+  bp.val( secret_pubkey0 ) = pubkey32[0];
+  bp.val( secret_pubkey1 ) = pubkey32[1];
+  bp.val( secret_pubkey2 ) = pubkey32[2];
+  bp.val( secret_pubkey3 ) = pubkey32[3];
 
   cerr << passphrase32[0] << endl ;
   cerr << passphrase32[1] << endl ;
   cerr << passphrase32[2] << endl ;
   cerr << passphrase32[3] << endl ;
 
-  bp.val( 8 ) = passphrase32[0];
-  bp.val( 9 ) = passphrase32[1];
-  bp.val( 10 ) = passphrase32[2];
-  bp.val( 11 ) = passphrase32[3];
+  bp.val( secret_hash0 ) = passphrase32[0];
+  bp.val( secret_hash1 ) = passphrase32[1];
+  bp.val( secret_hash2 ) = passphrase32[2];
+  bp.val( secret_hash3 ) = passphrase32[3];
 
   cerr << "(4)" << endl ;
 
@@ -335,6 +382,7 @@ void use_circuit( std::string passphrase, std::string pubkey ){
     }
   }
 
+  satisfied = true ;
   cerr << "(5)" << endl ;
   if( satisfied ){
       cerr << "(6)" << endl ;
@@ -445,3 +493,22 @@ int main(int argc, char *argv[]) {
   }
 
 }
+
+
+/*
+typename scheme_type::proving_key_type fetch_proving_key(){
+  std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk("sudoku_proving_key.bin");
+
+  // this line is necessary but I don't understand it
+  nil::marshalling::status_type provingProcessingStatus = nil::marshalling::status_type::success;
+
+  typename scheme_type::proving_key_type proving_key =
+    nil::marshalling::verifier_input_deserializer_tvm<scheme_type>::proving_key_process
+    (
+     proving_key_byteblob.cbegin(),
+     proving_key_byteblob.cend(),
+     provingProcessingStatus);
+
+  return proving_key;
+}
+*/
