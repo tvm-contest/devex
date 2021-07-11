@@ -38,6 +38,40 @@ typedef typename curve_type::scalar_field_type field_type;
 
 typedef zk::snark::r1cs_gg_ppzksnark<curve_type> scheme_type;
 
+std::vector<int> read_input(std::string filename){
+  std::vector<int> sudoku;
+  std::ifstream inFile;
+  inFile.open(filename.c_str());
+  if (inFile.is_open())
+    {
+      for (int i = 0; i < %d; i++)
+        {
+	  char temp;
+	  inFile >> temp;
+	  sudoku.push_back((int)temp - (int)48); //convert char to int
+	  std::cout << sudoku[i] << " ";
+        }
+
+      inFile.close();
+    }
+    else { //Error message
+      std::cerr << "Can't find input file " << filename << std::endl;
+    }
+    return sudoku;
+}
+
+
+std::vector<int> input_instance(std::string filename){
+  std::vector<int> sudoku = read_input(filename);
+  return sudoku;
+}
+
+std::vector<int> input_solved(std::string filename){
+  std::vector<int> sudoku = read_input(filename);
+  return sudoku;
+}
+
+
 int test(){
 
     using curve_type = curves::bls12<381>;
@@ -194,8 +228,35 @@ int test(){
     return 0;
 }
 
+inline std::vector<uint8_t> read_vector_from_disk(std::string file_path)
+{
+  std::ifstream instream(file_path, std::ios::in | std::ios::binary);
+  std::vector<uint8_t> data((std::istreambuf_iterator<char>(instream)), std::istreambuf_iterator<char>());
+  return data;
+}
+
+
+void prove(std::vector<int> sudoku_instance, std::vector<int> sudoku_solution){
+
+  std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk("sudoku_proving_key.bin");
+
+  // this line is necessary but I don't understand it
+  nil::marshalling::status_type provingProcessingStatus = nil::marshalling::status_type::success;
+
+  typename scheme_type::proving_key_type proving_key =
+    nil::marshalling::verifier_input_deserializer_tvm<scheme_type>::proving_key_process
+    (
+     proving_key_byteblob.cbegin(),
+     proving_key_byteblob.cend(),
+     provingProcessingStatus);
+
+
+}
+
+
  |}
 name
+(sudoku_size * sudoku_size)
 public_variable_definitions
 allocate_public_variables
 (sudoku_size * sudoku_size)
