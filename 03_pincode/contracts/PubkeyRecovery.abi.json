@@ -1,0 +1,69 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"verifkey","type":"bytes"},
+				{"name":"backup_key","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "UpdateBackupKey",
+			"inputs": [
+				{"name":"backup_key","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "SetNewPubkeyFromBackup",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "RecoverPubkey",
+			"inputs": [
+				{"name":"c","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "SetNewPubkey",
+			"inputs": [
+				{"name":"proof","type":"bytes"},
+				{"name":"newkey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "verify",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+				{"name":"is_correct","type":"bool"}
+			]
+		},
+		{
+			"name": "check",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+				{"name":"is_correct","type":"bool"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

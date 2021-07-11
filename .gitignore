@@ -2,4 +2,4 @@
 *.out
 _build/
 _drom/
-*.abi.json
+*.code

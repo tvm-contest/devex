@@ -32,24 +32,28 @@
 \begin{document}
 \maketitle
 
-The present document is an official submission to the 18$^{\text{th}}$ contest\footnote{\url{https://devex.gov.freeton.org/proposal?proposalAddress=0\%3Ae6b65075478e7d412fdb0870452f30dfa8bf51272e28a3167abc5c5df6fd051d}} of the DevEx governance. Although we accepted earlier to be part of the jury, we understand that by submitting this document we waive our right to vote in the present contest.
+The present document is an official submission to the 18$^{\text{th}}$
+contest\footnote{\url{https://devex.gov.freeton.org/proposal?proposalAddress=0\%3Ae6b65075478e7d412fdb0870452f30dfa8bf51272e28a3167abc5c5df6fd051d}}
+of the DevEx governance: {\em Groth16 zkSNARK Proof Verification Use
+  Cases}. Although we accepted earlier to be part of the jury, we
+understand that by submitting this document we waive our right to vote
+in the present contest.
 
 In this submission, we propose three different use cases for Groth16
-zkSNARK proofs on the FreeTON blockchain.
+zkSNARK proofs on the FreeTON blockchain:
+\begin{itemize}
+\item Sudoky: Zksnarks are used to prove that the user has a solution
+  to a given Sudoky problem, without providing the solutions to other
+  users ;
+\item Euler Project: Zksnarks are used to prove that the user has
+  found the solution to an Euler problem ;
+\item Pin-code reset of forgotten keys: Zksnarks are used to replace a
+  pubkey when the user has lost his secret key
+\end{itemize}
 
-\section{Technical contribution to the usability of ZkSnark-enabled Freeton with `ft`}
-
-In the course of participating in this contest, we were led to refine our in-house tools in order to more easily manipulate the Nil Foundation forks of the Ton Virtual Machine (TVM), the TON Solidity compiler and the TVM linker.
-
-The freeton wallet \lstinline|ft| can be installed using Docker (\url{https://ocamlpro.github.io/freeton_wallet/sphinx/install.html#using-docker}) or \lstinline|opam|.
-
-Once it is installed, a Zksnark-ready sandbox can be installed by simply running:
-
-\begin{lstlisting}[style=BashInputStyle]
-ft switch create sandbox --image ocamlpro/nil-local-node
-\end{lstlisting}
-
-Now all commands from the \lstinline|ft| documentation will work, in particular it will be easy to create accounts, deploy contracts, and call them as seen in \url{https://ocamlpro.github.io/freeton_wallet/sphinx/use-cases.html}.
+Finally, we finish this document by a section showing the
+contributions that we did for the Free TON community while working on
+this contest.
 
 \section{A toy example: Sudoku}
 \label{section_sudoku}
@@ -62,14 +66,142 @@ Let's start with our first toy use case. Suppose you want to set up a Sudoku pro
 The previous example is somewhat limited by the fact that sudokus are easily solvable problems, either by hand or with a computer; they are not a realistic use case of zk-snarks. Let's keep the idea of a decentralized classroom. the famous website Project Euler\footnote{\url{https://projecteuler.net/}} offers math and programming problems of various difficulty to its users. It uses captchas to prevent brute force attempts at guessing the answer to a problem. The answers to problems are stored statically on its servers and the answers are checked against them. Can we make Project Euler decentralized? Using the idea from Section \ref{section_sudoku}, we can prevent users from stealing others' solutions \textbf{and} from brute-forcing them, due to the cost of generating proofs.
 
 
-\section{A useful example: SetCodeMultisigWallet with a pin code}
+\section{Pin code reset for forgotten keys}
 \label{section_pincode}
 
-Our final example is much more practical. What happens when one loses the private key controlling one's wallet? One solution, on a multisig wallet, is to have e.g. two private keys, one being safely stored in a vault at the bank. But what if going to the bank is impossible? Another solution is to enable a one-time pin code to change the public key controlling a given wallet.
+In this use case, we use Zksnarks to allow users to replace their
+public keys in multisig wallets. The typical use is when a user has
+lost the associated secret key, and is unable to sign/confirm any new
+transaction. With our approach, the user first creates a recovery
+contract, where a passphrase is associated to his public key. If he
+needs to change his public key, he can use Zksnarks to associate a new
+public key in his recovery contract, and tell multisig wallets to
+safely replace his pubkey by the new one.
 
-This solution needs to be zero-knowledge because any solution that lets attackers observe the pin code in the clear gives them an opportunity to intercept it (for instance if they are a validator) and change the order of transactions, to gain control of the wallet.
+Compared to other approaches, this use can provide several
+improvements:
+\begin{itemize}
+\item The user does not disclose his passphrase. Most other approaches
+  (based on hashes for example) give an opportunity for
+  man-in-the-middle attacks ;
+\item As the user does not disclose his passphrase, the pubkey can be
+  replaced several times ;
+\item The user does not need to create the new public key ahead of
+  time. Instead, he can create it when he has lost the former one,
+  decreasing the likelihood of losing the associated secret key also ;
+\end{itemize}
 
-Our solution consists in providing a zero-knowledge proof of the pin code \emph{tied} with the new public key (to avoid interception of the proof).
+\subsection{Technical solution}
 
+This use case includes 3 different components:
+\begin{description}
+\item[PinCode Client:] it is a C++ program linked to the Blueprint
+  Zksnarks library. It can be used in two different ways:
+  \begin{itemize}
+  \item To create the initial circuit using the passphrase. The client
+    should be called as:
+\begin{verbatim}
+pincode-client prepare "my pass phrase"
+\end{verbatim}
+   This will generate a file \lstinline{verifkey.hex} that can be used
+   as an argument when deploying the \lstinline{PubkeyRecovery} smart
+   contract, and a file \lstinline{provkey.hex} that can be used to
+   create new witnesses ;
+ \item To create a witness that the passphrase is known when providing
+   a new public key. Because the witness contains the new public key,
+   an attacker cannot intercept the message and replace it. The client
+   should be called as:
+\begin{verbatim}
+pincode-client prove "my pass phrase" "PUBKEY_AS_HEX_NUMBER"
+\end{verbatim}
+  The command expects to find the file \lstinline{provkey.hex} and
+  generates a file \lstinline{proof.hex} that should be submitted to
+  the \lstinline{PubkeyRecovery} smart contract together with the new
+  public key.
+  \end{itemize}
+\item[PubkeyRecovery smart contract:] This smart contract is a TIP-3
+  contract, using the initial public key to verify its address. This
+  contract is very simple. It contains:
+  \begin{itemize}
+  \item A constructor to set the circuit that will be used to verify
+    that the passphrase is known when it is used ;
+  \item An external function
+    \lstinline{SetNewPubkey(bytes proof, uint256 pubkey)}
+    to define the new public key, while providing a
+    proof of knowledge of the passphrase ;
+  \item An external function
+    \lstinline{RecoverPubkey(address multisigaddr)}
+    to call a multisig contract to update the
+    corresponding custodian. The multisig contract will verify that
+    the address is correct before replacing the public key ;
+  \end{itemize}
+\item[Modified Multisig Wallet:] This is a standard multisig wallet,
+  modified to recognize addresses of \lstinline{PubkeyRecovery} smart
+  contracts. They provide two additionnal functions:
+  \begin{itemize}
+  \item An external function
+    \lstinline{SetPubkeyRecoveryCode(TvmCell code)}
+    to define the code of the \lstinline{PubkeyRecovery} smart
+    contract. Because the code hash is known, anybody can call this
+    function with the correct code.
+  \item An external function
+    \lstinline{RecoverPubkey(uint256 oldkey, uint256 newkey)}
+    that can only be called by a
+    \lstinline{PubkeyRecovery} smart contract.
+  \end{itemize}
+\end{description}
+
+
+\section{Contributions to the Free TON community}
+
+In the course of participating to this contest, we were led to refine
+our in-house tools in order to more easily manipulate the Nil
+Foundation forks of the Ton Virtual Machine (TVM), the TON Solidity
+compiler and the TVM linker.
+
+Our first contribution is a public Docker image containing the TONOS
+SE compiled with Zksnarks support. The image is published as {\tt
+  ocamlpro/nil-local-node} and is built from
+\url{https://github.com/NilFoundation/tonos-se}.
+
+Running it is simple:
+\begin{verbatim}
+docker run -d --name local-node -e USER_AGREEMENT=yes -p80:80 ocamlpro/nil-local-node
+\end{verbatim}
+
+Another way to use it is through our development tool {\tt ft}, a Free
+TON Wallet designed for developers:
+\url{https://github.com/OCamlPro/freeton_wallet}
+
+For this contest, a set of improvements has been contributed to {\tt
+  ft} to ease using it.
+
+In particular:
+\begin{itemize}
+\item The interface has been improved to provide multiple levels of
+  subcommands, making them easier to understand and to use ;
+\item A new argument {\tt --image} is available with {\tt ft switch
+  create} to specify the Docker image to use. This new argument is
+  specially useful for our Docker image for NilFoundation TONOS SE.
+\end{itemize}
+
+As a consequence, a Zksnark-ready sandbox (local network) can be
+installed by simply running:
+
+\begin{lstlisting}[style=BashInputStyle]
+ft switch create sandbox --image ocamlpro/nil-local-node
+\end{lstlisting}
+
+Now all commands from the \lstinline|ft| documentation will work, in
+particular it will be easy to create accounts, deploy contracts, and
+call them as seen in
+\url{https://ocamlpro.github.io/freeton_wallet/sphinx/use-cases.html}.
+
+The Docker image of \lstinline|ft| has been updated to use
+NilFoundation tools
+(\lstinline|solc|, \lstinline|tonos-cli|, \lstinline|tvm_linker|), it is
+the easiest way to use \lstinline|ft| if you don't want to build
+it. See the installation instruction at
+(\url{https://ocamlpro.github.io/freeton_wallet/sphinx/install.html#using-docker}).
 
 \end{document}
