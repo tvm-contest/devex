@@ -22,6 +22,32 @@ public:
     static const std::size_t HASH_MSG_LEN = 33;
     static const std::size_t ANONYMOUS_ID_MSG_LEN = 34;
 
+public:
+    template <typename FieldType>
+    static blueprint<FieldType> generate_circuit_with_witness(
+        const std::vector<typename FieldType::value_type> &hashes_field_elements,
+        const std::vector<bool> &secret_bv,
+        std::uint32_t vote_choice,
+        std::size_t secret_hash_index,
+        const typename FieldType::value_type &vote_choice_hmac_value,
+        const typename FieldType::value_type &anonymous_id_value)
+    {
+        return generate_circuit_internal<FieldType>(
+            hashes_field_elements,
+            secret_bv,
+            vote_choice,
+            secret_hash_index,
+            vote_choice_hmac_value,
+            anonymous_id_value,
+            true
+        );
+    }
+    
+    template <typename FieldType>
+    static blueprint<FieldType> generate_circuit() {
+        return generate_circuit_internal<FieldType>();
+    }
+
 private:
     template <typename FieldType>
     static blueprint<FieldType> generate_circuit_internal(
@@ -164,31 +190,5 @@ private:
         }
 
         return bp;
-    }
-
-public:
-    template <typename FieldType>
-    static blueprint<FieldType> generate_circuit_with_witness(
-        const std::vector<typename FieldType::value_type> &hashes_field_elements,
-        const std::vector<bool> &secret_bv,
-        std::uint32_t vote_choice,
-        std::size_t secret_hash_index,
-        const typename FieldType::value_type &vote_choice_hmac_value,
-        const typename FieldType::value_type &anonymous_id_value)
-    {
-        return generate_circuit_internal<FieldType>(
-            hashes_field_elements,
-            secret_bv,
-            vote_choice,
-            secret_hash_index,
-            vote_choice_hmac_value,
-            anonymous_id_value,
-            true
-        );
-    }
-    
-    template <typename FieldType>
-    static blueprint<FieldType> generate_circuit() {
-        return generate_circuit_internal<FieldType>();
     }
 };
