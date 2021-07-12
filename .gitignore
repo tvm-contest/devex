@@ -4,3 +4,7 @@ _build/
 _drom/
 *.code
 /ton-proof-verification-contest
+*.bin
+*.bin.gz
+*.hex
+core

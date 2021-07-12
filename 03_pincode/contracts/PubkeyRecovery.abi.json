@@ -12,6 +12,14 @@
 			]
 		},
 		{
+			"name": "SetCircuit",
+			"inputs": [
+				{"name":"circuit","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "UpdateBackupKey",
 			"inputs": [
 				{"name":"backup_key","type":"uint256"}
@@ -53,12 +61,43 @@
 			]
 		},
 		{
-			"name": "check",
+			"name": "vergrth16",
 			"inputs": [
 				{"name":"value","type":"bytes"}
 			],
 			"outputs": [
 				{"name":"is_correct","type":"bool"}
+			]
+		},
+		{
+			"name": "get",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"verifkey","type":"bytes"},
+				{"name":"newkey","type":"uint256"},
+				{"name":"backup_key","type":"uint256"},
+				{"name":"circuit","type":"bytes"}
+			]
+		},
+		{
+			"name": "pi_of_pubkey",
+			"inputs": [
+				{"name":"pubkey","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"primary_input","type":"bytes"}
+			]
+		},
+		{
+			"name": "check",
+			"inputs": [
+				{"name":"proof","type":"bytes"},
+				{"name":"newkey","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"verified","type":"bool"},
+				{"name":"blob_str","type":"bytes"}
 			]
 		}
 	],
