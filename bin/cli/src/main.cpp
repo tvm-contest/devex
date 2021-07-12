@@ -105,7 +105,7 @@ void generate_vote_secret() {
 }
 
 int main(int argc, char *argv[]) {
-    boost::filesystem::path pout, pkout, vkout, sin, hlin;
+    boost::filesystem::path pout, pkout, vkout, pkin, sin, hlin;
     std::uint32_t vote_choice;
     boost::program_options::options_description options(
         "R1CS Generic Group PreProcessing Zero-Knowledge Succinct Non-interactive ARgument of Knowledge "
@@ -117,6 +117,7 @@ int main(int argc, char *argv[]) {
     ("generate-keypair", "Generate keys")
     ("prove", "Generate proof")
     ("proof-output,po", boost::program_options::value<boost::filesystem::path>(&pout)->default_value("proof"))
+    ("proving-key,pk", boost::program_options::value<boost::filesystem::path>(&pkin)->default_value("pkey"))
     ("proving-key-output,pko", boost::program_options::value<boost::filesystem::path>(&pkout)->default_value("pkey"))
     ("verifying-key-output,vko", boost::program_options::value<boost::filesystem::path>(&vkout)->default_value("vkey"))
     ("secret,s", boost::program_options::value<boost::filesystem::path>(&sin))
@@ -260,7 +261,7 @@ int main(int argc, char *argv[]) {
         proving_key=keypair.first;
     } else {
         std::cout << "Loading proving key" << std::endl;
-        std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk(pkout);
+        std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk(pkin);
         nil::marshalling::status_type pk_desrialize_status;
         proving_key =
              deserializer_tvm::proving_key_process(proving_key_byteblob.begin(),
