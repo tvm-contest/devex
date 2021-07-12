@@ -65,7 +65,8 @@ type state =
     private_variables : variables;
     public_variables : variables;
     equations : equation list;
-    private_definitions : equation list
+    private_definitions : equation list;
+    prod_table : (lc * lc, variable ) Hashtbl.t;
     (* definition of intermediate
        values *)
   }
@@ -75,12 +76,33 @@ let get_fresh_index state =
   let res = state.fresh_index in
   {state with fresh_index = res + 1}, res
 
-let get_fresh_variable state =
+let get_fresh_variable state x y =
   let state, res = get_fresh_index state in
   let newvar = Var ("aux",[res]) in
+  Hashtbl.add state.prod_table (x,y) newvar;
   newvar, {state with
             private_variables =
-              newvar::state.private_variables}
+              newvar::state.private_variables;}
+
+let lookup tbl x y =
+  Printf.eprintf "Looking up %s * %s\n%!" (os_lc x) (os_lc y);
+  let res = match Hashtbl.find_opt tbl (x,y) with
+  | Some z -> Some z
+  | None -> (match Hashtbl.find_opt tbl (y,x) with
+             | Some z -> Some z
+             | None -> None) in
+  (match res with
+  | Some res ->
+     Printf.eprintf "Found: %s\n%!" (os_var res)
+  | None -> Printf.eprintf "Not Found\n%!");
+  res
+
+let get_variable state x y =
+  match lookup state.prod_table x y with
+  | Some z -> z, state
+  | None -> get_fresh_variable state x y
+
+
 
 let add_equations state equations =
   {state with equations = List.concat [state.equations;equations]}
@@ -93,8 +115,15 @@ let create_equations state (lcs_to_multiply : lc list) (result : lc) =
   | [] -> failwith "don't play with me, empty product"
   | [x] -> add_equations state [Product2 (x,result)]
   | [x;y] -> add_equations state [Product3 (x,y,result)]
+  | x::y::z::t::rest ->
+     let interm_var1,state = get_variable state x y in
+     let interm_var2,state = get_variable state z t in
+     let state = aux state [x;y] [1,interm_var1] in
+     let state = aux state [z;t] [1,interm_var2] in
+     let state = aux state ([1,interm_var1]::[1,interm_var2]::rest) result in
+     {state with private_definitions = (Product3 (x,y,[1,interm_var1]))::(Product3 (z,t,[1,interm_var2]))::state.private_definitions}
   | x::y::z ->
-     let interm_var,state = get_fresh_variable state in
+     let interm_var,state = get_fresh_variable state x y in
      let state = aux state [x;y] [1,interm_var] in
      let state = aux state ([1,interm_var]::z) result in
      {state with private_definitions = (Product3 (x,y,[1,interm_var]))::state.private_definitions}
@@ -123,6 +152,22 @@ let oc_allocate_blueprint_variables prefixe ~this variables =
             res
             (os_var x)
             (if this then "this->" else "")) xs
+
+    in aux prefixe variables
+
+let oc_push_public_variables prefixe variables =
+  let rec aux res = function
+    | [] -> Printf.sprintf "%s\n" res
+    | x::xs ->
+       aux
+         (Printf.sprintf "%s%!\n    \
+                              %svariables.push_back(&%s);"
+            res
+            (match x with
+             | Var("free_x",_) -> "free_"
+             | _ -> "")
+            (os_var x)
+            ) xs
 
     in aux prefixe variables
 
@@ -208,10 +253,9 @@ let generate_indices m =
         generate_interval 0 m
       (fun j -> (i,j)))
 
-let sudoku_public_variables n = (List.concat (generate_fixed_variables (n*n)))
+let sudoku_public_variables n = (List.concat (generate_fixed_variables (n*n))) @ (List.concat (generate_variables (n*n)))
 
-let sudoku_private_variables n = (List.concat (generate_variables (n*n))) @
-                           (List.concat (generate_fixed_variables_square (n*n)))
+let sudoku_private_variables n = (List.concat (generate_fixed_variables_square (n*n)))
 
 let generate_value_equations n =
   List.map (fun (i,j) -> generate_equation n i j)
@@ -301,7 +345,8 @@ let build_sudoku_state n : state =
       public_variables = sudoku_public_variables n;
       private_variables = sudoku_private_variables n;
       equations = (generate_all_fixed_value_equations n);
-      private_definitions = generate_all_fixed_value_definitions n
+      private_definitions = generate_all_fixed_value_definitions n;
+      prod_table = Hashtbl.create 100
     } in
   List.fold_right
     (fun (prod,res) state -> create_equations state prod res)
@@ -355,8 +400,8 @@ let oc_state state name =
        state.public_variables)
     ~public_variable_arguments:
     (oc_arguments state.public_variables)
-  ~sudoku_size:(state.sudoku_size_param * state.sudoku_size_param))
-
+  ~sudoku_size:(state.sudoku_size_param * state.sudoku_size_param)
+  ~push_public_variables:(oc_push_public_variables "" state.public_variables))
 
 let sudoku = build_sudoku_state (int_of_string Sys.argv.(1))
 
