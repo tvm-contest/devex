@@ -9,6 +9,7 @@ fi
 
 CURDIR=$(pwd)
 FILES=$(ls *.hpp *.cpp)
+touch $FILES
 
 ROOTDIR=$(cd ../..; pwd)
 
@@ -24,6 +25,9 @@ if [ ! -f build/Makefile ]; then
   cmake ..
   cd ..
 fi
+
+rm -f bin/cli/src/*.cpp
+rm -f bin/cli/src/*.hpp
 
 for file in $FILES; do
     ln -sf $CURDIR/$file bin/cli/src/$file
