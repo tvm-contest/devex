@@ -246,13 +246,15 @@ int main(int argc, char *argv[]) {
 
     }
     
-    typename scheme_type::keypair_type keypair;
+    typename scheme_type::proving_key_type proving_key;
     if (vm.count("generate-keypair")) {
         std::cout << "Starting generator" << std::endl;
-        zk::snark::r1cs_constraint_system<field_type> constraint_system = bp.get_constraint_system();
+        zk::snark::r1cs_constraint_system<field_type> constraint_system =
+            bp.get_constraint_system();
         std::cout << constraint_system.num_constraints() << std::endl;
         std::cout << constraint_system.num_variables() << std::endl;
-        keypair = zk::snark::generate<scheme_type>(constraint_system);
+        typename scheme_type::keypair_type keypair =
+             zk::snark::generate<scheme_type>(constraint_system);
         std::vector<std::uint8_t> verification_key_byteblob =
             serializer_tvm::process(keypair.second);
         write_vector_to_disk(vkout, verification_key_byteblob);
@@ -260,30 +262,20 @@ int main(int argc, char *argv[]) {
         std::vector<std::uint8_t> proving_key_byteblob =
             serializer_tvm::process(keypair.first);
         write_vector_to_disk(pkout, proving_key_byteblob);
-    } else{
-        std::cout << "Loading keypair" << std::endl;
+
+        proving_key=keypair.first;
+    } else {
+        std::cout << "Loading proving key" << std::endl;
         std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk(pkout);
         nil::marshalling::status_type pk_desrialize_status;
-        keypair.first =
+        proving_key =
              deserializer_tvm::proving_key_process(proving_key_byteblob.begin(),
                                                    proving_key_byteblob.end(),
                                                    pk_desrialize_status);
 
-        std::vector<uint8_t> verification_key_byteblob = read_vector_from_disk(vkout);
-        
         if(pk_desrialize_status != nil::marshalling::status_type::success) {
-            std::cerr << "Error: Could not deserialize proving key";
-            return 1;
-        }
-
-        nil::marshalling::status_type vk_desrialize_status;
-        keypair.second =
-            deserializer_tvm::verification_key_process(verification_key_byteblob.begin(),
-                                                  verification_key_byteblob.end(),
-                                                  vk_desrialize_status);
-
-        if(vk_desrialize_status != nil::marshalling::status_type::success) {
-            std::cerr << "Error: Could not deserialize verification key";
+            std::cerr << "Error: Could not deserialize proving key" << std::endl;
+            std::cerr << "Status is:" << static_cast<int>(pk_desrialize_status) << std::endl;
             return 1;
         }
     }
@@ -294,7 +286,7 @@ int main(int argc, char *argv[]) {
         std::cout << "Starting prover" << std::endl;
 
         const typename scheme_type::proof_type proof =
-            zk::snark::prove<scheme_type>(keypair.first, bp.primary_input(), bp.auxiliary_input());
+            zk::snark::prove<scheme_type>(proving_key, bp.primary_input(), bp.auxiliary_input());
         std::vector<std::uint8_t> proof_byteblob =
             serializer_tvm::process(proof);
         boost::filesystem::ofstream poutf(pout);
