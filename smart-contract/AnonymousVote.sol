@@ -42,14 +42,14 @@ contract AnonymousVote {
 
     function vote(bytes proof,
                     uint32 vote_choice,
-                    uint256 signed_vote,
+                    uint256 vote_hmac,
                     uint256 anonymous_id) public {
         require(msg.pubkey() == 0 ,106);
         require(proof.length == PROOF_SIZE, 105);
         require(!m_votes.exists(anonymous_id), 109);
         tvm.accept();
         string blob_str = proof;
-        blob_str.append(serialize_primary_input(vote_choice, signed_vote, anonymous_id));
+        blob_str.append(serialize_primary_input(vote_choice, vote_hmac, anonymous_id));
         blob_str.append(m_vkey);
         require(tvm.vergrth16(blob_str), 108);
         m_votes[anonymous_id] = vote_choice;
@@ -71,14 +71,14 @@ contract AnonymousVote {
     }
 
     function serialize_primary_input(uint32 vote_choice,
-                                     uint256 signed_vote,
+                                     uint256 vote_hmac,
                                      uint256 anonymous_id) internal inline view returns(bytes) {
         string blob_str=(encode_little_endian(PI_SIZE,4));
         for(uint256 voter : m_voters_set) {
             blob_str.append(uint256_to_bytes(voter));
         }
         blob_str.append(encode_little_endian(uint256(vote_choice), 32));
-        blob_str.append(uint256_to_bytes(signed_vote));
+        blob_str.append(uint256_to_bytes(vote_hmac));
         blob_str.append(uint256_to_bytes(anonymous_id));
         return blob_str;
     }
