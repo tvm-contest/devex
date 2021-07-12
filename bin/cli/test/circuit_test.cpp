@@ -47,11 +47,6 @@ BOOST_AUTO_TEST_CASE(circuit_test) {
     std::vector<std::uint32_t> vote_choices {0,1,2,10000000/*,4294967295*/};
     for(std::uint32_t vote_choice : vote_choices) {
         for(std::size_t secret_index = 0; secret_index < 4; ++secret_index) {
-            if(vote_choice!=0) {
-                field_type::value_type a = vote_choice;
-                //field_type::value_type::modulus_type b = a.data;
-                std::cout<<nil::crypto3::multiprecision::msb(field_type::value_type::modulus_type(a.data))<<std::endl;
-            }
             std::vector<bool> vote_choice_bv(circuit::VOTE_MSG_LEN);
 
             for(std::size_t i = 0, temp = vote_choice; i < circuit::VOTE_MSG_LEN; ++i) {
@@ -67,10 +62,6 @@ BOOST_AUTO_TEST_CASE(circuit_test) {
             for(std::size_t index = 0; index < circuit::MAX_VOTERS; ++index) {
                 for(int real_vote_hmac = 0; real_vote_hmac < 2; ++real_vote_hmac) {
                     for(int real_anonymous_id  = 0; real_anonymous_id < 2; ++real_anonymous_id) {
-                        std::cout<< "Testing for secret number:" << index <<
-                            ", vote_choice:" << vote_choice <<
-                            ", real_vote_hmac:" << (real_vote_hmac ? "true": "false") <<
-                            ", real_anonymous_id:" << (real_anonymous_id ? "true": "false") << std::endl;
                         blueprint<field_type> bp = circuit::generate_circuit_with_witness<field_type>(
                             hash_list,
                             secrets[secret_index],
