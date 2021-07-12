@@ -39,19 +39,13 @@ public:
         }
     }
 
-    void generate_r1cs_witness(size_t index) {
+    void generate_r1cs_witness(std::size_t index) {
         assert(index < list_size);
         for(std::size_t i = 0; i < list_size; ++i) {
             this->bp.val(index_mask[i]) = (i == index ?
                 FieldType::value_type::one() :
                 FieldType::value_type::zero());
         }
-    }
-
-    void generate_r1cs_witness() {
-        boost::optional<std::size_t> index = find_index();
-        assert(index);
-        generate_r1cs_witness(*index);
     }
 
 private:
