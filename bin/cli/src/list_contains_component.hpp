@@ -47,15 +47,5 @@ public:
                 FieldType::value_type::zero());
         }
     }
-
-private:
-    boost::optional<std::size_t> find_index() {
-        for(std::size_t i = 0; i < list_size; ++i) {
-            if(this->bp.val(value) == this->bp.val(list[i])) {
-                return i;
-            }
-        }
-        return boost::none;
-    }
 };
 #endif
