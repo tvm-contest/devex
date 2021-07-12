@@ -118,8 +118,8 @@ int main(int argc, char *argv[]) {
     ("prove", "Generate proof")
     ("proof-output,po", boost::program_options::value<boost::filesystem::path>(&pout)->default_value("proof"))
     ("proving-key,pk", boost::program_options::value<boost::filesystem::path>(&pkin)->default_value("pkey"))
-    ("proving-key-output,pko", boost::program_options::value<boost::filesystem::path>(&pkout)->default_value("pkey"))
-    ("verifying-key-output,vko", boost::program_options::value<boost::filesystem::path>(&vkout)->default_value("vkey"))
+    ("proving-key-output,pko", boost::program_options::value<boost::filesystem::path>(&pkout))
+    ("verifying-key-output,vko", boost::program_options::value<boost::filesystem::path>(&vkout))
     ("secret,s", boost::program_options::value<boost::filesystem::path>(&sin))
     ("hash-list,hl", boost::program_options::value<boost::filesystem::path>(&hlin))
     ("vote", boost::program_options::value<std::uint32_t>(&vote_choice));
