@@ -17,7 +17,7 @@ class circuit {
 public:
     static const std::size_t SECRET_BITS_SIZE = 256;
     static const std::size_t PRIMARY_INPUT_SIZE = 13;
-    static const std::size_t MAX_ENTRIES = 10;
+    static const std::size_t MAX_VOTERS = 10;
     static const std::size_t VOTE_MSG_LEN = 32;
     static const std::size_t HASH_MSG_LEN = 33;
     static const std::size_t ANONYMOUS_ID_MSG_LEN = 34;
@@ -73,7 +73,7 @@ private:
 
         // packed hashes of permitted voting secrets
         blueprint_variable_vector<FieldType> voting_secrets_hashes;
-        voting_secrets_hashes.allocate(bp, MAX_ENTRIES);
+        voting_secrets_hashes.allocate(bp, MAX_VOTERS);
         // the vote choice, uint32
         blueprint_variable<FieldType> vote;
         vote.allocate(bp);
@@ -118,7 +118,7 @@ private:
         disjunction<FieldType> test_not_all_zeros(bp, secret_hash_bits, not_all_zeros);
 
         list_contains_component<FieldType> list_contains_comp(bp,
-                                                            MAX_ENTRIES,
+                                                            MAX_VOTERS,
                                                             voting_secrets_hashes,
                                                             secret_hash);
 
@@ -161,7 +161,7 @@ private:
         anonymous_id_msg_hmac.generate_r1cs_constraints();
 
         if(generate_witness) {
-            assert(hashes_field_elements.size() == MAX_ENTRIES);
+            assert(hashes_field_elements.size() == MAX_VOTERS);
             assert(secret_bv.size() == SECRET_BITS_SIZE);
             // generate witness
             

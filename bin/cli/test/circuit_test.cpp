@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(circuit_test) {
             field_type::value_type anoymous_id =
                 Hmac::get_hmac(secrets[secret_index], std::vector<bool>(circuit::ANONYMOUS_ID_MSG_LEN, 1))[0];
 
-            for(std::size_t index = 0; index < circuit::MAX_ENTRIES; ++index) {
+            for(std::size_t index = 0; index < circuit::MAX_VOTERS; ++index) {
                 for(int real_vote_hmac = 0; real_vote_hmac < 2; ++real_vote_hmac) {
                     for(int real_anonymous_id  = 0; real_anonymous_id < 2; ++real_anonymous_id) {
                         std::cout<< "Testing for secret number:" << index <<

@@ -186,7 +186,7 @@ int main(int argc, char *argv[]) {
             boost::algorithm::unhex(hashes_hex[i].begin(), hashes_hex[i].end(), hashes_bytes[i].begin());
         }
 
-        std::vector<field_type::value_type> hashes_field_elements(circuit::MAX_ENTRIES);
+        std::vector<field_type::value_type> hashes_field_elements(circuit::MAX_VOTERS);
 
         for (size_t i = 0; i < hashes_bytes.size(); ++i) {
             nil::marshalling::status_type status;
