@@ -32,7 +32,7 @@ done
 cd build
 make cli || exit 2
 
-cp -f bin/cli/src/cli $CURDIR/pincode-client
+cp -f bin/cli/cli $CURDIR/pincode-client
 
 
 

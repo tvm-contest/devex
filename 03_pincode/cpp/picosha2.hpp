@@ -141,44 +141,6 @@ void hash256_block(RaIter1 message_digest, RaIter2 first, RaIter2 last) {
 
 }  // namespace detail
 
-template <typename InIter>
-void output_hex(InIter first, InIter last, std::ostream& os) {
-    os.setf(std::ios::hex, std::ios::basefield);
-    while (first != last) {
-        os.width(2);
-        os.fill('0');
-        os << static_cast<unsigned int>(*first);
-        ++first;
-    }
-    os.setf(std::ios::dec, std::ios::basefield);
-}
-
-template <typename InIter>
-void bytes_to_hex_string(InIter first, InIter last, std::string& hex_str) {
-    std::ostringstream oss;
-    output_hex(first, last, oss);
-    hex_str.assign(oss.str());
-}
-
-template <typename InContainer>
-void bytes_to_hex_string(const InContainer& bytes, std::string& hex_str) {
-    bytes_to_hex_string(bytes.begin(), bytes.end(), hex_str);
-}
-
-template <typename InIter>
-std::string bytes_to_hex_string(InIter first, InIter last) {
-    std::string hex_str;
-    bytes_to_hex_string(first, last, hex_str);
-    return hex_str;
-}
-
-template <typename InContainer>
-std::string bytes_to_hex_string(const InContainer& bytes) {
-    std::string hex_str;
-    bytes_to_hex_string(bytes, hex_str);
-    return hex_str;
-}
-
 class hash256_one_by_one {
    public:
     hash256_one_by_one() { init(); }
@@ -271,6 +233,7 @@ class hash256_one_by_one {
     word_t h_[8];
 };
 
+/*
 inline void get_hash_hex_string(const hash256_one_by_one& hasher,
                                 std::string& hex_str) {
     byte_t hash[k_digest_size];
@@ -283,7 +246,8 @@ inline std::string get_hash_hex_string(const hash256_one_by_one& hasher) {
     get_hash_hex_string(hasher, hex_str);
     return hex_str;
 }
-
+*/
+  
 namespace impl {
 template <typename RaIter, typename OutIter>
 void hash256_impl(RaIter first, RaIter last, OutIter first2, OutIter last2, int,
@@ -340,6 +304,7 @@ void hash256(const InContainer& src, OutContainer& dst) {
     hash256(src.begin(), src.end(), dst.begin(), dst.end());
 }
 
+/*
 template <typename InIter>
 void hash256_hex_string(InIter first, InIter last, std::string& hex_str) {
     byte_t hashed[k_digest_size];
@@ -369,6 +334,8 @@ template <typename InContainer>
 std::string hash256_hex_string(const InContainer& src) {
     return hash256_hex_string(src.begin(), src.end());
 }
+*/
+
 template<typename OutIter>void hash256(std::ifstream& f, OutIter first, OutIter last){
     hash256(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>(), first,last);
 
