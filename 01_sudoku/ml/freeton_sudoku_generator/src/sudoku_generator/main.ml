@@ -126,6 +126,22 @@ let oc_allocate_blueprint_variables prefixe ~this variables =
 
     in aux prefixe variables
 
+let oc_push_public_variables prefixe variables =
+  let rec aux res = function
+    | [] -> Printf.sprintf "%s\n" res
+    | x::xs ->
+       aux
+         (Printf.sprintf "%s%!\n    \
+                              %svariables.push_back(&%s);"
+            res
+            (match x with
+             | Var("free_x",_) -> "free_"
+             | _ -> "")
+            (os_var x)
+            ) xs
+
+    in aux prefixe variables
+
 
 let oc_equation = function
   | Product2(x,res) ->
@@ -208,10 +224,9 @@ let generate_indices m =
         generate_interval 0 m
       (fun j -> (i,j)))
 
-let sudoku_public_variables n = (List.concat (generate_fixed_variables (n*n)))
+let sudoku_public_variables n = (List.concat (generate_fixed_variables (n*n))) @ (List.concat (generate_variables (n*n)))
 
-let sudoku_private_variables n = (List.concat (generate_variables (n*n))) @
-                           (List.concat (generate_fixed_variables_square (n*n)))
+let sudoku_private_variables n = (List.concat (generate_fixed_variables_square (n*n)))
 
 let generate_value_equations n =
   List.map (fun (i,j) -> generate_equation n i j)
@@ -355,8 +370,8 @@ let oc_state state name =
        state.public_variables)
     ~public_variable_arguments:
     (oc_arguments state.public_variables)
-  ~sudoku_size:(state.sudoku_size_param * state.sudoku_size_param))
-
+  ~sudoku_size:(state.sudoku_size_param * state.sudoku_size_param)
+  ~push_public_variables:(oc_push_public_variables "" state.public_variables))
 
 let sudoku = build_sudoku_state (int_of_string Sys.argv.(1))
 
