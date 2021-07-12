@@ -128,7 +128,7 @@ private:
         vote_bits.allocate(bp, VOTE_MSG_LEN);
         packing_component<FieldType> vote_pack(bp, vote_bits, vote);
         block_variable<FieldType> vote_block(bp, {vote_bits});
-        Hmac vote_hmac(bp, secret_block, vote_block, blueprint_variable_vector<FieldType>(1, vote_hmac));
+        Hmac vote_hmac_component(bp, secret_block, vote_block, blueprint_variable_vector<FieldType>(1, vote_hmac));
 
         // componenets for verification of id
 
@@ -154,7 +154,7 @@ private:
         // constraints for vote hmac.
 
         vote_pack.generate_r1cs_constraints(true);
-        vote_hmac.generate_r1cs_constraints();
+        vote_hmac_component.generate_r1cs_constraints();
 
         // constraints for id
 
@@ -179,7 +179,7 @@ private:
             // witness generation for vote hmac
             bp.val(vote) = vote_choice;
             vote_pack.generate_r1cs_witness_from_packed();
-            vote_hmac.generate_r1cs_witness();
+            vote_hmac_component.generate_r1cs_witness();
 
             // witness generation for id
 
