@@ -37,7 +37,7 @@ macro(cm_find_package NAME)
     endif()
 endmacro()
 
-option(BUILD_TESTS "Build unit tests" TRUE)
+option(BUILD_TESTS "Build unit tests" FALSE)
 
 if(NOT Boost_FOUND)
     cm_find_package(Boost REQUIRED COMPONENTS program_options system filesystem)
