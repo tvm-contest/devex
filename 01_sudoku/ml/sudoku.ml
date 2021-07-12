@@ -3,7 +3,7 @@ let ps = print_string
 let pn = print_newline
 
 let instances = 1
-let m = 2
+let m = 3
 let n = m*m
 
 let in_domain n x =  (0 <= x && x <= n-1)
@@ -131,4 +131,6 @@ let instance_as_fixed_value_array sudoku =
 
 let _ =
   let sudoku = input () in
-  Printf.printf "%s" (instance_as_fixed_value_array sudoku)
+  Printf.printf "%s" (instance_as_fixed_value_array sudoku);
+  ignore (backtrack n sudoku);
+  print_sudoku sudoku
