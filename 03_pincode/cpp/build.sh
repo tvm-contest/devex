@@ -22,6 +22,7 @@ if [ ! -f build/Makefile ]; then
   mkdir build
   cd build
   cmake ..
+  cd ..
 fi
 
 for file in $FILES; do
@@ -29,6 +30,10 @@ for file in $FILES; do
 done
 
 cd build
-make cli
+make cli || exit 2
+
+cp -f bin/cli/src/cli $CURDIR/pincode-client
+
+
 
 
