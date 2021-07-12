@@ -78,8 +78,8 @@ private:
         blueprint_variable<FieldType> vote;
         vote.allocate(bp);
         // Hmac(secret,little endian vote)
-        blueprint_variable<FieldType> signed_vote;
-        signed_vote.allocate(bp);
+        blueprint_variable<FieldType> vote_hmac;
+        vote_hmac.allocate(bp);
 
         // Hmac(secret, ANONYMOUS_ID_MSG_LEN ones)
         blueprint_variable<FieldType> anonymous_id;
@@ -122,13 +122,13 @@ private:
                                                             voting_secrets_hashes,
                                                             secret_hash);
 
-        // components for signed vote
+        // components for vote hmac
 
         blueprint_variable_vector<FieldType> vote_bits;
         vote_bits.allocate(bp, VOTE_MSG_LEN);
         packing_component<FieldType> vote_pack(bp, vote_bits, vote);
         block_variable<FieldType> vote_block(bp, {vote_bits});
-        Hmac vote_hmac(bp, secret_block, vote_block, blueprint_variable_vector<FieldType>(1, signed_vote));
+        Hmac vote_hmac(bp, secret_block, vote_block, blueprint_variable_vector<FieldType>(1, vote_hmac));
 
         // componenets for verification of id
 
@@ -151,7 +151,7 @@ private:
         
         list_contains_comp.generate_r1cs_constraints();
 
-        // constraints for signed vote.
+        // constraints for vote hmac.
 
         vote_pack.generate_r1cs_constraints(true);
         vote_hmac.generate_r1cs_constraints();
@@ -176,7 +176,7 @@ private:
 
             list_contains_comp.generate_r1cs_witness(secret_hash_index);
 
-            // witness generation for signed vote
+            // witness generation for vote hmac
             bp.val(vote) = vote_choice;
             vote_pack.generate_r1cs_witness_from_packed();
             vote_hmac.generate_r1cs_witness();
@@ -185,7 +185,7 @@ private:
 
             anonymous_id_msg_hmac.generate_r1cs_witness();
 
-            bp.val(signed_vote) = vote_choice_hmac_value; 
+            bp.val(vote_hmac) = vote_choice_hmac_value; 
             bp.val(anonymous_id) = anonymous_id_value;
         }
 

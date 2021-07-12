@@ -236,7 +236,7 @@ int main(int argc, char *argv[]) {
         );
         std::cout << "is blueprint satisfied:" << (bp.is_satisfied() ? "true" : "false") << std::endl;
 
-        std::cout << "Your signed vote is: " << field_element_to_hex(vote_choice_hmac) << std::endl;        
+        std::cout << "Your vote hmac is: " << field_element_to_hex(vote_choice_hmac) << std::endl;        
         std::cout << "Your anonymous voter id is: " << field_element_to_hex(anonymous_id) << std::endl;
 
     }
