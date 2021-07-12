@@ -1,3 +1,0 @@
-[submodule "ton-proof-verification-contest"]
-	path = ton-proof-verification-contest
-	url = git@github.com:NilFoundation/ton-proof-verification-contest.git

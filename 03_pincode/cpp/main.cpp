@@ -14,6 +14,9 @@
 // limitations under the License.
 //---------------------------------------------------------------------------//
 
+#define PROVING_KEY_FILE "provkey.bin"
+#define VERIFICATION_KEY_FILE "verifkey.bin"
+
 #include <iostream>
 
 #include <boost/filesystem.hpp>
@@ -54,12 +57,11 @@ using namespace nil::crypto3::algebra;
 
 #include <iostream>
 #include <string>
-#include "picosha2.h"
+#include "picosha2.hpp"
 using namespace std;
 
 typedef algebra::curves::bls12<381> curve_type;
 typedef typename curve_type::scalar_field_type field_type;
-
 typedef zk::snark::r1cs_gg_ppzksnark<curve_type> scheme_type;
 
 using std::string;
@@ -232,17 +234,17 @@ void prepare_circuit ( std::string passphrase ){
   cerr << "(4)" << endl ;
 
   std::vector<std::uint8_t> proving_key_byteblob = nil::marshalling::verifier_input_serializer_tvm<scheme_type>::process( keypair.first );
-  binfile_of_byteblob( "provkey.bin", proving_key_byteblob );
+  binfile_of_byteblob( PROVING_KEY_FILE, proving_key_byteblob );
   hexfile_of_byteblob( "provkey.hex", proving_key_byteblob );
 
   std::vector<std::uint8_t> verification_key_byteblob = nil::marshalling::verifier_input_serializer_tvm<scheme_type>::process( keypair.second );
 
-  binfile_of_byteblob( "verifkey.bin", verification_key_byteblob );
+  binfile_of_byteblob( VERIFICATION_KEY_FILE , verification_key_byteblob );
   hexfile_of_byteblob( "verifkey.hex", verification_key_byteblob );
 
 }
 
-void use_circuit( std::string passphrase, std::string pubkey ){
+void use_circuit_old( std::string passphrase, std::string pubkey ){
 
   std::vector<uint32_t> passphrase32(4);
   std::vector<uint32_t> pubkey32(4);
@@ -323,7 +325,8 @@ void use_circuit( std::string passphrase, std::string pubkey ){
 
   snark::r1cs_variable_assignment<field_type> values = bp.full_variable_assignment();
 
-  values[ 0 ] = pubkey32[0];
+  // values[ 0 ] = pubkey32[0];
+  bp.val( public_pubkey0 ) = pubkey32[0];
   bp.val( public_pubkey1 ) = pubkey32[1];
   bp.val( public_pubkey2 ) = pubkey32[2];
   bp.val( public_pubkey3 ) = pubkey32[3];
@@ -439,11 +442,249 @@ void use_circuit( std::string passphrase, std::string pubkey ){
     hexfile_of_byteblob( "primary_input.hex", primary_input_byteblob );
 
 #ifndef PROVING_KEY_SERIALIZER
-    binfile_of_byteblob( "verifkey.bin", verification_key_byteblob );
+    binfile_of_byteblob( VERIFICATION_KEY_FILE, verification_key_byteblob );
     hexfile_of_byteblob( "verifkey.hex", verification_key_byteblob );
 #endif
 
   }
+
+}
+
+
+typename scheme_type::proving_key_type load_proving_key( std::string file ){
+  std::vector<uint8_t> byteblob = read_vector_from_disk( file ) ;
+
+  // this line is necessary but I don't understand it
+  nil::marshalling::status_type status =
+    nil::marshalling::status_type::success;
+
+  typename scheme_type::proving_key_type v =
+    nil::marshalling::verifier_input_deserializer_tvm<scheme_type>::proving_key_process
+    ( byteblob.cbegin(), byteblob.cend(), status);
+
+  return v;
+}
+
+typename scheme_type::verification_key_type
+  load_verification_key( std::string file ){
+  std::vector<uint8_t> byteblob = read_vector_from_disk( file ) ;
+
+  // this line is necessary but I don't understand it
+  nil::marshalling::status_type status =
+    nil::marshalling::status_type::success;
+
+  typename scheme_type::proving_key_type v =
+    nil::marshalling::verifier_input_deserializer_tvm<scheme_type>::verification_key_process
+    ( byteblob.cbegin(), byteblob.cend(), status);
+
+  return v;
+}
+
+void use_circuit( std::string passphrase, std::string pubkey ){
+
+  std::vector<uint32_t> passphrase32(4);
+  std::vector<uint32_t> pubkey32(4);
+
+  if( pubkey.size() != 64 ){
+    cerr << "Wrong size for pubkey, should be 64 hexa chars" << endl ;
+    exit(2) ;
+  }
+
+  cerr << "(1)" << endl ;  
+  uint32s_of_passphrase( passphrase32, passphrase );
+  
+  cerr << "(2)" << endl ;
+  uint32s_of_pubkey( pubkey32, pubkey );
+
+  /*
+  cerr << "(3)" << endl ;
+
+  blueprint<field_type> bp;
+  
+  blueprint_variable<field_type> public_pubkey0;
+  public_pubkey0.allocate( bp );
+
+  blueprint_variable<field_type> public_pubkey1;
+  public_pubkey1.allocate( bp );
+
+  blueprint_variable<field_type> public_pubkey2;
+  public_pubkey2.allocate( bp );
+
+  blueprint_variable<field_type> public_pubkey3;
+  public_pubkey3.allocate( bp );
+
+  blueprint_variable<field_type> secret_pubkey0;
+  secret_pubkey0.allocate( bp );
+
+  blueprint_variable<field_type> secret_pubkey1;
+  secret_pubkey1.allocate( bp );
+
+  blueprint_variable<field_type> secret_pubkey2;
+  secret_pubkey2.allocate( bp );
+
+  blueprint_variable<field_type> secret_pubkey3;
+  secret_pubkey3.allocate( bp );
+
+  blueprint_variable<field_type> secret_hash0;
+  secret_hash0.allocate( bp );
+
+  blueprint_variable<field_type> secret_hash1;
+  secret_hash1.allocate( bp );
+
+  blueprint_variable<field_type> secret_hash2;
+  secret_hash2.allocate( bp );
+
+  blueprint_variable<field_type> secret_hash3;
+  secret_hash3.allocate( bp );
+
+  // This sets up the blueprint variables
+  // so that the first one (out) represents the public
+  // input and the rest is private input
+
+  bp.set_input_sizes(4);
+
+
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( secret_pubkey0 , 1, public_pubkey0));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( secret_pubkey1 , 1, public_pubkey1));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( secret_pubkey2 , 1, public_pubkey2));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( secret_pubkey3 , 1, public_pubkey3));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( passphrase32[0] , 1, secret_hash0));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( passphrase32[1] , 1, secret_hash1));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( passphrase32[2] , 1, secret_hash2));
+  bp.add_r1cs_constraint(r1cs_constraint<field_type>( passphrase32[3] , 1, secret_hash3));
+
+  cerr << pubkey32[0] << endl ;
+  cerr << pubkey32[1] << endl ;
+  cerr << pubkey32[2] << endl ;
+  cerr << pubkey32[3] << endl ;
+  
+  cerr << "(5)" << endl ;
+
+  snark::r1cs_variable_assignment<field_type> values = bp.full_variable_assignment();
+
+  // values[ 0 ] = pubkey32[0];
+  bp.val( public_pubkey0 ) = pubkey32[0];
+  bp.val( public_pubkey1 ) = pubkey32[1];
+  bp.val( public_pubkey2 ) = pubkey32[2];
+  bp.val( public_pubkey3 ) = pubkey32[3];
+  
+  cerr << "(3)" << endl ;
+  
+  bp.val( secret_pubkey0 ) = pubkey32[0];
+  bp.val( secret_pubkey1 ) = pubkey32[1];
+  bp.val( secret_pubkey2 ) = pubkey32[2];
+  bp.val( secret_pubkey3 ) = pubkey32[3];
+
+  cerr << passphrase32[0] << endl ;
+  cerr << passphrase32[1] << endl ;
+  cerr << passphrase32[2] << endl ;
+  cerr << passphrase32[3] << endl ;
+
+  bp.val( secret_hash0 ) = passphrase32[0];
+  bp.val( secret_hash1 ) = passphrase32[1];
+  bp.val( secret_hash2 ) = passphrase32[2];
+  bp.val( secret_hash3 ) = passphrase32[3];
+
+  cerr << "(4)" << endl ;
+
+  std::cout << "primary input size: " << bp.primary_input().size()<< std::endl;;
+  std::cout << "auxiliary input size: " << bp.auxiliary_input().size()<< std::endl;;
+  std::cout << "num_inputs: " << bp.num_inputs()<< std::endl;;
+  std::cout << "num_variables: " << bp.num_variables() << std::endl;;
+  std::cout << "coucou2" << std::endl;
+  r1cs_variable_assignment<field_type> full_variable_assignment = bp.primary_input();
+  std::cout << "coucou3" << std::endl;
+  //std::cout << bp.auxiliary_input().begin() << std::endl;
+  std::cout << "coucou4" << std::endl;
+  r1cs_auxiliary_input<field_type> aux = bp.auxiliary_input();
+  full_variable_assignment.insert(
+                                  full_variable_assignment.end(), aux.begin(), aux.end());
+  std::cout << "coucou4" << std::endl;
+  const r1cs_constraint_system<field_type> constraints = bp.get_constraint_system();
+  std::cout << "coucou5" << std::endl;
+
+  bool satisfied = true ;
+
+  for (std::size_t c = 0; c < constraints.num_constraints(); ++c) {
+    field_type::value_type ares =
+      constraints.constraints[c].a.evaluate(full_variable_assignment);
+    field_type::value_type bres =
+      constraints.constraints[c].b.evaluate(full_variable_assignment);
+    field_type::value_type cres =
+      constraints.constraints[c].c.evaluate(full_variable_assignment);
+
+    if(ares * bres == cres){
+      std::cout << "equal" << std::endl;
+    }
+    if(!(ares * bres == cres)){
+      std::cout << "not equal" << std::endl;
+      satisfied = false ;
+    }
+  }
+
+  satisfied = true ;
+  cerr << "(5)" << endl ;
+  if( satisfied ){
+      cerr << "(6)" << endl ;
+
+    assert(bp.is_satisfied());
+
+      cerr << "(7)" << endl ;
+      
+    const r1cs_constraint_system<field_type> constraint_system = bp.get_constraint_system();
+    const typename r1cs_gg_ppzksnark<curve_type>::keypair_type keypair = generate<r1cs_gg_ppzksnark<curve_type>>(constraint_system);
+
+    cerr << "(8)" << endl ;
+
+    cerr << "(9)" << endl ;
+
+
+    std::cout << "Number of R1CS constraints: " << constraint_system.num_constraints() << std::endl;
+    
+    cerr << "(10)" << endl ;
+    bool verified = verify<r1cs_gg_ppzksnark<curve_type>>(keypair.second, bp.primary_input(), proof);
+
+    std::cout << "Verification status: " << verified << std::endl;
+        //std::cout << "primary input: " << (bp.primary_input()) << std::endl;
+
+
+  }
+
+  */
+
+  typename scheme_type::proving_key_type pk =
+    load_proving_key( PROVING_KEY_FILE );
+  
+  const typename r1cs_gg_ppzksnark<curve_type>::proof_type proof =
+    prove<r1cs_gg_ppzksnark<curve_type>>( pk,  primary_input, auxiliary_input );
+
+
+  const typename r1cs_gg_ppzksnark<curve_type>::verification_key_type vk =
+    load_verification_key( VERIFICATION_KEY_FILE );
+
+
+  std::vector<std::uint8_t> verification_key_byteblob = nil::marshalling::verifier_input_serializer_tvm<scheme_type>::process( vk ) ;
+  
+  std::vector<std::uint8_t> primary_input_byteblob = nil::marshalling::verifier_input_serializer_tvm<scheme_type>::process( primary_input );
+
+    std::vector<std::uint8_t> proof_byteblob = nil::marshalling::verifier_input_serializer_tvm<scheme_type>::process( proof);
+
+    {
+      std::vector<std::uint8_t> byteblob;
+
+      append_to_byteblob( byteblob, proof_byteblob ) ;
+      append_to_byteblob( byteblob, primary_input_byteblob ) ;
+      append_to_byteblob( byteblob, verification_key_byteblob ) ;
+
+      binfile_of_byteblob( "big_proof.bin", byteblob );
+      hexfile_of_byteblob( "big_proof.hex", byteblob );
+    }
+
+    binfile_of_byteblob( "proof.bin", proof_byteblob );
+    hexfile_of_byteblob( "proof.hex", proof_byteblob );
+    
+    binfile_of_byteblob( "primary_input.bin", primary_input_byteblob );
+    hexfile_of_byteblob( "primary_input.hex", primary_input_byteblob );
 
 }
 
@@ -496,19 +737,4 @@ int main(int argc, char *argv[]) {
 
 
 /*
-typename scheme_type::proving_key_type fetch_proving_key(){
-  std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk("sudoku_proving_key.bin");
-
-  // this line is necessary but I don't understand it
-  nil::marshalling::status_type provingProcessingStatus = nil::marshalling::status_type::success;
-
-  typename scheme_type::proving_key_type proving_key =
-    nil::marshalling::verifier_input_deserializer_tvm<scheme_type>::proving_key_process
-    (
-     proving_key_byteblob.cbegin(),
-     proving_key_byteblob.cend(),
-     provingProcessingStatus);
-
-  return proving_key;
-}
 */
