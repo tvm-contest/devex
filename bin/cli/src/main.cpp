@@ -204,20 +204,46 @@ int main(int argc, char *argv[]) {
         for (size_t i = hashes_bytes.size(); i < hashes_field_elements.size(); ++i) {
             hashes_field_elements[i] = field_type::value_type::zero();
         }
-        circuit::generated_primary_input<field_type> primary_input;
+
+        field_type::value_type hash =
+            Hmac::get_hmac(secret_bv, std::vector<bool>(HASH_MSG_LEN, 1)) [0];
+        field_type::value_type anonymous_id =
+            Hmac::get_hmac(secret_bv, std::vector<bool>(ANONYMOUS_ID_MSG_LEN, 1)) [0];
+        
+        std::vector<bool> vote_choice_bv(VOTE_MSG_LEN);
+
+        for(std::size_t i = 0, temp = vote_choice; i < VOTE_MSG_LEN; ++i) {
+            vote_choice_bv[i] = temp&1;
+            temp >>= 1;
+        }
+
+        field_type::value_type vote_choice_hmac =
+            Hmac::get_hmac(secret_bv, vote_choice_bv) [0];
+
+        std::size_t index = 
+            std::find(hashes_field_elements.begin(),
+                      hashes_field_elements.end(),
+                      hash) - hashes_field_elements.begin();
+
+        if(index < 0 ) {
+            std::cout << "The voting secret's hash is not in the voters hashes list" << std::endl;
+            return 1;
+        }
+        
+
         bp = circuit::generate_circuit_with_witness<field_type>(
             hashes_field_elements,
             secret_bv,
             vote_choice,
-            &primary_input
+            index,
+            vote_choice_hmac,
+            anonymous_id
         );
         std::cout << "is blueprint satisfied:" << (bp.is_satisfied() ? "true" : "false") << std::endl;
 
-        std::string signed_vote_hex = field_element_to_hex(primary_input.signed_vote);
-        std::cout << "Your signed vote is: " << signed_vote_hex << std::endl;
+        std::cout << "Your signed vote is: " << field_element_to_hex(vote_choice_hmac) << std::endl;        
+        std::cout << "Your anonymous voter id is: " << field_element_to_hex(anonymous_id) << std::endl;
 
-        std::string anonymous_id_hex = field_element_to_hex(primary_input.anonymous_id);
-        std::cout << "Your anonymous voter id is: " << anonymous_id_hex << std::endl;
     }
     
     typename scheme_type::keypair_type keypair;

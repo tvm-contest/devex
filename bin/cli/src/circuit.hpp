@@ -12,21 +12,25 @@ using namespace nil::crypto3::zk::components;
 //using namespace nil::crypto3::algebra;
 using namespace nil::crypto3::zk::snark;
 
-namespace circuit {
-    template <typename FieldType>
-    struct generated_primary_input {
-        typename FieldType::value_type signed_vote;
-        typename FieldType::value_type anonymous_id;
-    };
-}
 
-namespace {
+class circuit {
+public:
+    static const std::size_t SECRET_BITS_SIZE = 256;
+    static const std::size_t PRIMARY_INPUT_SIZE = 13;
+    static const std::size_t MAX_ENTRIES = 10;
+    static const std::size_t VOTE_MSG_LEN = 32;
+    static const std::size_t HASH_MSG_LEN = 33;
+    static const std::size_t ANONYMOUS_ID_MSG_LEN = 34;
+
+private:
     template <typename FieldType>
-    blueprint<FieldType> generate_circuit_internal(
+    static blueprint<FieldType> generate_circuit_internal(
         const std::vector<typename FieldType::value_type> &hashes_field_elements={},
         const std::vector<bool> &secret_bv={},
         std::uint32_t vote_choice=0,
-        circuit::generated_primary_input<FieldType> *primary_input_out = nullptr,
+        std::size_t secret_hash_index = 0,
+        const typename FieldType::value_type &vote_choice_hmac_value = 0,
+        const typename FieldType::value_type &anonymous_id_value = 0,
         bool generate_witness = false
         ) {
         typedef hmac_component<FieldType,
@@ -34,14 +38,8 @@ namespace {
                         knapsack_crh_with_field_out_component<FieldType>>
             Hmac;
 
-        const std::size_t SECRET_BITS_SIZE = 256;
         constexpr const std::size_t modulus_bits = FieldType::modulus_bits;
         constexpr const std::size_t modulus_chunks = modulus_bits / 8 + (modulus_bits % 8 ? 1 : 0);
-        const std::size_t PRIMARY_INPUT_SIZE = 13;
-        const std::size_t MAX_ENTRIES = 10;
-        const std::size_t VOTE_MSG_LEN = 32;
-        const std::size_t HASH_MSG_LEN = 33;
-        const std::size_t ANONYMOUS_ID_MSG_LEN = 34;
 
 
         blueprint<FieldType> bp;
@@ -139,7 +137,6 @@ namespace {
         if(generate_witness) {
             assert(hashes_field_elements.size() == MAX_ENTRIES);
             assert(secret_bv.size() == SECRET_BITS_SIZE);
-            assert(primary_input_out != nullptr);
             // generate witness
             
             for (size_t i = 0; i < hashes_field_elements.size(); i++) {
@@ -151,9 +148,7 @@ namespace {
             secret_hash_pack.generate_r1cs_witness_from_packed();
             test_not_all_zeros.generate_r1cs_witness();
 
-            // std::string hash_hex = field_element_to_hex(bp.val(secret_hash));
-            // std::cout << hash_hex << std::endl;
-            list_contains_comp.generate_r1cs_witness();
+            list_contains_comp.generate_r1cs_witness(secret_hash_index);
 
             // witness generation for signed vote
             bp.val(vote) = vote_choice;
@@ -164,34 +159,36 @@ namespace {
 
             anonymous_id_msg_hmac.generate_r1cs_witness();
 
-            primary_input_out->signed_vote = bp.val(signed_vote);
-            primary_input_out->anonymous_id = bp.val(anonymous_id);
+            bp.val(signed_vote) = vote_choice_hmac_value; 
+            bp.val(anonymous_id) = anonymous_id_value;
         }
 
         return bp;
     }
 
-};
-
-namespace circuit {
+public:
     template <typename FieldType>
-    blueprint<FieldType> generate_circuit_with_witness(
+    static blueprint<FieldType> generate_circuit_with_witness(
         const std::vector<typename FieldType::value_type> &hashes_field_elements,
         const std::vector<bool> &secret_bv,
         std::uint32_t vote_choice,
-        generated_primary_input<FieldType> *primary_input_out
-        ) {
-            return generate_circuit_internal<FieldType>(
-                hashes_field_elements,
-                secret_bv,
-                vote_choice,
-                primary_input_out,
-                true
-            );
-        }
+        std::size_t secret_hash_index,
+        const typename FieldType::value_type &vote_choice_hmac_value,
+        const typename FieldType::value_type &anonymous_id_value)
+    {
+        return generate_circuit_internal<FieldType>(
+            hashes_field_elements,
+            secret_bv,
+            vote_choice,
+            secret_hash_index,
+            vote_choice_hmac_value,
+            anonymous_id_value,
+            true
+        );
+    }
     
     template <typename FieldType>
-    blueprint<FieldType> generate_circuit() {
+    static blueprint<FieldType> generate_circuit() {
         return generate_circuit_internal<FieldType>();
     }
-}
+};
