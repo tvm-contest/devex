@@ -252,65 +252,6 @@ blueprint<curves::bls12<381>::scalar_field_type> build_blueprint(bool with_insta
     }
 
     // Add witness values
-/*    bp.val(x_0_0) = 1;
-    bp.val(x_0_1) = 2;
-    bp.val(x_0_2) = 3;
-    bp.val(x_0_3) = 4;
-
-    bp.val(x_1_0) = 3;
-    bp.val(x_1_1) = 4;
-    bp.val(x_1_2) = 2;
-    bp.val(x_1_3) = 1;
-
-    bp.val(x_2_0) = 2;
-    bp.val(x_2_1) = 1;
-    bp.val(x_2_2) = 4;
-    bp.val(x_2_3) = 3;
-
-    bp.val(x_3_0) = 4;
-    bp.val(x_3_1) = 3;
-    bp.val(x_3_2) = 1;
-    bp.val(x_3_3) = 2;*/
-
-    /*bp.val(free_x_0_0) = 0;
-    bp.val(free_x_0_1) = 0;
-    bp.val(free_x_0_2) = 0;
-    bp.val(free_x_0_3) = 0;
-
-    bp.val(free_x_1_0) = 0;
-    bp.val(free_x_1_1) = 0;
-    bp.val(free_x_1_2) = 0;
-    bp.val(free_x_1_3) = 0;
-
-    bp.val(free_x_2_0) = 0;
-    bp.val(free_x_2_1) = 0;
-    bp.val(free_x_2_2) = 0;
-    bp.val(free_x_2_3) = 0;
-
-    bp.val(free_x_3_0) = 0;
-    bp.val(free_x_3_1) = 0;
-    bp.val(free_x_3_2) = 0;
-    bp.val(free_x_3_3) = 0;*/
-
-/*    bp.val(free2_x_0_0) = 0;
-    bp.val(free2_x_0_1) = 0;
-    bp.val(free2_x_0_2) = 0;
-    bp.val(free2_x_0_3) = 0;
-
-    bp.val(free2_x_1_0) = 0;
-    bp.val(free2_x_1_1) = 0;
-    bp.val(free2_x_1_2) = 0;
-    bp.val(free2_x_1_3) = 0;
-
-    bp.val(free2_x_2_0) = 0;
-    bp.val(free2_x_2_1) = 0;
-    bp.val(free2_x_2_2) = 0;
-    bp.val(free2_x_2_3) = 0;
-
-    bp.val(free2_x_3_0) = 0;
-    bp.val(free2_x_3_1) = 0;
-    bp.val(free2_x_3_2) = 0;
-    bp.val(free2_x_3_3) = 0;*/
 
 
     //bp.val(out) = 35;
