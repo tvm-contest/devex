@@ -60,14 +60,8 @@ typedef hmac_component<field_type,
                        knapsack_crh_with_field_out_component<field_type>>
     Hmac;
 
-const std::size_t SECRET_BITS_SIZE = 256;
 constexpr const std::size_t modulus_bits = field_type::modulus_bits;
 constexpr const std::size_t modulus_chunks = modulus_bits / 8 + (modulus_bits % 8 ? 1 : 0);
-const std::size_t PRIMARY_INPUT_SIZE = 13;
-const std::size_t MAX_ENTRIES = 10;
-const std::size_t VOTE_MSG_LEN = 32;
-const std::size_t HASH_MSG_LEN = 33;
-const std::size_t ANONYMOUS_ID_MSG_LEN = 34;
 
 
 std::string field_element_to_hex(field_type::value_type element) {
@@ -94,13 +88,13 @@ inline void write_vector_to_disk(boost::filesystem::path file_path, const std::v
 
 void generate_vote_secret() {
     boost::random::random_device rd;
-    std::vector<std::uint8_t> secret_byteblob(SECRET_BITS_SIZE / 8);
+    std::vector<std::uint8_t> secret_byteblob(circuit::SECRET_BITS_SIZE / 8);
     rd.generate(secret_byteblob.begin(), secret_byteblob.end());
     std::vector<bool> secret_bitblob(256);
     nil::crypto3::detail::pack<stream_endian::big_octet_big_bit, stream_endian::big_octet_big_bit, 8, 1>(
         secret_byteblob.begin(), secret_byteblob.end(), secret_bitblob.begin());
 
-    field_type::value_type hash = Hmac::get_hmac(secret_bitblob, std::vector<bool>(HASH_MSG_LEN, 1)) [0];
+    field_type::value_type hash = Hmac::get_hmac(secret_bitblob, std::vector<bool>(circuit::HASH_MSG_LEN, 1)) [0];
 
     std::string hash_hex = field_element_to_hex(hash);
 
@@ -163,8 +157,8 @@ int main(int argc, char *argv[]) {
         bp = circuit::generate_circuit<field_type>();
     } else {
         std::vector<std::uint8_t> secret_byteblob = read_vector_from_disk(sin);
-        assert(secret_byteblob.size() == SECRET_BITS_SIZE / 8);
-        std::vector<bool> secret_bv(SECRET_BITS_SIZE);
+        assert(secret_byteblob.size() == circuit::SECRET_BITS_SIZE / 8);
+        std::vector<bool> secret_bv(circuit::SECRET_BITS_SIZE);
         nil::crypto3::detail::pack<stream_endian::big_octet_big_bit, stream_endian::big_octet_big_bit, 8, 1>(
             secret_byteblob.begin(), secret_byteblob.end(), secret_bv.begin());
 
@@ -192,7 +186,7 @@ int main(int argc, char *argv[]) {
             boost::algorithm::unhex(hashes_hex[i].begin(), hashes_hex[i].end(), hashes_bytes[i].begin());
         }
 
-        std::vector<field_type::value_type> hashes_field_elements(MAX_ENTRIES);
+        std::vector<field_type::value_type> hashes_field_elements(circuit::MAX_ENTRIES);
 
         for (size_t i = 0; i < hashes_bytes.size(); ++i) {
             nil::marshalling::status_type status;
@@ -206,13 +200,13 @@ int main(int argc, char *argv[]) {
         }
 
         field_type::value_type hash =
-            Hmac::get_hmac(secret_bv, std::vector<bool>(HASH_MSG_LEN, 1)) [0];
+            Hmac::get_hmac(secret_bv, std::vector<bool>(circuit::HASH_MSG_LEN, 1)) [0];
         field_type::value_type anonymous_id =
-            Hmac::get_hmac(secret_bv, std::vector<bool>(ANONYMOUS_ID_MSG_LEN, 1)) [0];
+            Hmac::get_hmac(secret_bv, std::vector<bool>(circuit::ANONYMOUS_ID_MSG_LEN, 1)) [0];
         
-        std::vector<bool> vote_choice_bv(VOTE_MSG_LEN);
+        std::vector<bool> vote_choice_bv(circuit::VOTE_MSG_LEN);
 
-        for(std::size_t i = 0, temp = vote_choice; i < VOTE_MSG_LEN; ++i) {
+        for(std::size_t i = 0, temp = vote_choice; i < circuit::VOTE_MSG_LEN; ++i) {
             vote_choice_bv[i] = temp&1;
             temp >>= 1;
         }
