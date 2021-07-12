@@ -15,7 +15,10 @@ contract PubkeyRecovery is Blueprint {
   uint256 m_newkey ;
   // The backup key, can be set up initially
   uint256 m_backup_key ;
+  // The circuit itself (compressed with gz, please)
+  bytes m_circuit ;
 
+  
   constructor( bytes verifkey, uint256 backup_key ) public
     {
       require( msg.pubkey() == tvm.pubkey() );
@@ -23,6 +26,15 @@ contract PubkeyRecovery is Blueprint {
       m_verifkey = verifkey ;
       m_backup_key = backup_key ;
     }
+
+  function SetCircuit( byte circuit ) public
+  {
+    require( msg.sender.value == 0 );
+    // pubkey must be either oldkey or newkey
+    require( msg.pubkey() == tvm.pubkey() ) ;
+    tvm.accept() ;
+    m_circuit = circuit ;
+  }
 
   function UpdateBackupKey( uint256 backup_key ) public
   {
@@ -71,5 +83,20 @@ contract PubkeyRecovery is Blueprint {
   function check(bytes value) public pure returns (bool is_correct){
     return tvm.vergrth16(value);
   }
-
+  /*
+  function get() public pure
+    returns (
+             
+  // The verification key of ZkSnarks
+  bytes m_verifkey ;
+  // The new key, used to update multisig wallets
+  uint256 m_newkey ;
+  // The backup key, can be set up initially
+  uint256 m_backup_key ;
+  // The circuit itself (compressed with gz, please)
+  bytes m_circuit ;
+bool is_correct){
+    return tvm.vergrth16(value);
+  }
+  */
 }
