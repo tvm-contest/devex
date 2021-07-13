@@ -1,5 +1,2 @@
-all:
-	./build.sh
-
-clean:
-	rm -f *.bin *.hex *~ core pincode-client
+COMMAND=pincode-client
+include ../../common/Makefile.include

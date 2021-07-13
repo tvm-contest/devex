@@ -1,0 +1,6 @@
+*~
+*.code
+
+# Remove these lines when you want to keep the tvm files
+*.tvm
+*.abi.json
