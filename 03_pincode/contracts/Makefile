@@ -1,4 +1,6 @@
-all: contracts checks
+all: contracts 
+	$(MAKE) checks
+	$(MAKE) imports
 
 SIBLING_DIR=../../02_euler/contracts
 
@@ -18,3 +20,7 @@ RecoverableMultisigWallet.code: *.sol PubkeyRecovery.code
 	ft contract build RecoverableMultisigWallet.sol -f
 	cp -f RecoverablePubkey.sol ../../02_euler/contracts/
 	cp -f RecoverablePubkey.sol.gen ../../02_euler/contracts/
+
+imports:
+	ft contract import PubkeyRecovery.sol
+	ft contract import RecoverableMultisigWallet.sol

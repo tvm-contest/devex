@@ -112,6 +112,8 @@ contract PubkeyRecovery is Blueprint {
     addr.RecoverPubkey{ flag: 64 }( tvm.pubkey(), m_newkey ) ;
   }
 
+  /// @dev checks a proof and pubkey with the verification key
+  /// provided for the problem
   function Check( bytes proof, uint256 newkey) public view
     returns (bool verified, string blob_str) {
 
@@ -125,6 +127,9 @@ contract PubkeyRecovery is Blueprint {
     verified = tvm.vergrth16( blob_str ) ;
   }
 
+  /// @dev translates a pubkey into primary_input. In this version, we
+  /// use only 124 bits from the pubkey, stored in 4 input variables
+  /// of 31 bits.
   function PrimaryInputOfPubkey( uint256 pubkey )
     public pure returns ( string primary_input )
   {
