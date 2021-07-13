@@ -8,7 +8,7 @@ fi
 
 COMMAND=$1
 
-cp -f ../../include/*.hpp .
+cp -f ../../common/*.hpp .
 
 if [ -f picosha2.h ]; then
     echo Error: you should rename picosha2.h to picosha2.hpp
