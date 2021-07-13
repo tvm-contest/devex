@@ -8,9 +8,9 @@ checks:
 
 contracts: PubkeyRecovery.code RecoverableMultisigWallet.code
 
-PubkeyRecovery.code: PubkeyRecovery.sol
+PubkeyRecovery.code: *.sol
 	ft contract build PubkeyRecovery.sol -f
 
 
-RecoverableMultisigWallet.code: RecoverableMultisigWallet.sol
+RecoverableMultisigWallet.code: *.sol
 	ft contract build RecoverableMultisigWallet.sol -f

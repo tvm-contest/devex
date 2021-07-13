@@ -6,15 +6,17 @@
 			"name": "constructor",
 			"inputs": [
 				{"name":"verifkey","type":"bytes"},
+				{"name":"zip_provkey","type":"bytes"},
 				{"name":"backup_key","type":"uint256"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "SetCircuit",
+			"name": "UpdatePincode",
 			"inputs": [
-				{"name":"circuit","type":"bytes"}
+				{"name":"verifkey","type":"bytes"},
+				{"name":"zip_provkey","type":"bytes"}
 			],
 			"outputs": [
 			]
@@ -28,8 +30,17 @@
 			]
 		},
 		{
-			"name": "SetNewPubkeyFromBackup",
+			"name": "SetFromBackupKey",
 			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "SetFromPincode",
+			"inputs": [
+				{"name":"proof","type":"bytes"},
+				{"name":"newkey","type":"uint256"}
 			],
 			"outputs": [
 			]
@@ -43,12 +54,23 @@
 			]
 		},
 		{
-			"name": "SetNewPubkey",
+			"name": "Check",
 			"inputs": [
 				{"name":"proof","type":"bytes"},
 				{"name":"newkey","type":"uint256"}
 			],
 			"outputs": [
+				{"name":"verified","type":"bool"},
+				{"name":"blob_str","type":"bytes"}
+			]
+		},
+		{
+			"name": "PrimaryInputOfPubkey",
+			"inputs": [
+				{"name":"pubkey","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"primary_input","type":"bytes"}
 			]
 		},
 		{
@@ -77,27 +99,7 @@
 				{"name":"verifkey","type":"bytes"},
 				{"name":"newkey","type":"uint256"},
 				{"name":"backup_key","type":"uint256"},
-				{"name":"circuit","type":"bytes"}
-			]
-		},
-		{
-			"name": "pi_of_pubkey",
-			"inputs": [
-				{"name":"pubkey","type":"uint256"}
-			],
-			"outputs": [
-				{"name":"primary_input","type":"bytes"}
-			]
-		},
-		{
-			"name": "check",
-			"inputs": [
-				{"name":"proof","type":"bytes"},
-				{"name":"newkey","type":"uint256"}
-			],
-			"outputs": [
-				{"name":"verified","type":"bool"},
-				{"name":"blob_str","type":"bytes"}
+				{"name":"zip_provkey","type":"bytes"}
 			]
 		}
 	],

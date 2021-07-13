@@ -42,7 +42,7 @@ contract EulerRoot is IEulerRoot, RecoverablePubkey {
     public view returns ( address addr )
   {
     require( g_owner == msg.pubkey(), EXN_AUTH_FAILED );
-    require( this.balance > 1 ton, EXN_NOT_ENOUGH_VALUE );
+    require( address(this).balance > 1 ton, EXN_NOT_ENOUGH_VALUE );
     tvm.accept() ;
 
     addr = new EulerProblem {

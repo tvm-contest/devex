@@ -2,7 +2,6 @@
 
 all: contracts checks
 
-
 SIBLING_DIR=../../03_pincode/contracts
 
 checks:

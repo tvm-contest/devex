@@ -6,16 +6,16 @@ abstract contract Blueprint {
 
   uint8 constant PROOF_SIZE = 192;
   uint8 constant field_element_bytes = 32;
-  
-  // You should change/add/remove arguments according to your circuit.
-  function serialize_primary_input(uint32 some_number/*, uint256 serialized_field_element*/) pure internal inline returns(bytes) {
+
+  function serialize_primary_input( uint32 some_number )
+    pure internal inline returns(bytes) {
     string blob_str =
       encode_little_endian(uint256(some_number), field_element_bytes);
-    //        blob_str.append(uint256_to_bytes(serialized_field_element));
     return blob_str;
   }
-  
-  function encode_little_endian(uint256 number, uint32 bytes_size) internal pure returns (bytes){
+
+  function encode_little_endian(uint256 number, uint32 bytes_size)
+    pure internal returns (bytes){
     TvmBuilder ref_builder;
     for(uint32 i=0; i<bytes_size; ++i) {
       ref_builder.store(byte(uint8(number & 0xFF)));
@@ -33,6 +33,4 @@ abstract contract Blueprint {
     builder.storeRef(ref_builder.toCell());
     return builder.toSlice().decode(bytes);
   }
-  
-  
 }
