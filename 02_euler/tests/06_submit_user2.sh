@@ -3,7 +3,7 @@
 . ./env.sh
 
 
-$FT exec -- ../cpp/euler-client prove ${EULER_PROBLEM} ${EULER_SOLUTION} '%{account:pubkey:user2}' || exit 2
+$FT exec -- ../cpp/euler-client prove ${EULER_PROBLEM} ${EULER_NONCE}  ${EULER_SOLUTION} '%{account:pubkey:user2}' || exit 2
 
 
 

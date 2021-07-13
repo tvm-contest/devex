@@ -14,8 +14,12 @@ import "Blueprint.sol";
 contract EulerProblem is IEulerProblem, Blueprint {
 
   uint64 constant EXN_AUTH_FAILED = 100 ;
+  uint64 constant EXN_WRONG_PROBLEM = 101 ;
+  uint64 constant EXN_NOT_ENOUGH_VALUE = 102 ;
 
-  uint32 constant PI_SIZE = 4;
+  event ProblemSolved( uint256 pubkey );
+  
+  uint32 constant PRIMARY_INPUT_SIZE = 4;
 
   uint32 static s_problem ;
   address static s_root_contract ;
@@ -26,18 +30,52 @@ contract EulerProblem is IEulerProblem, Blueprint {
   bytes g_verifkey ;
   // The circuit itself (compressed with gz, please)
   bytes g_zip_provkey ;
-
-  constructor( bytes verifkey, bytes zip_provkey ) public
+  // The nonce used with this problem
+  string g_nonce ;
+  
+  // The title of the problem
+  string g_title ;
+  // The description of the problem 
+  string g_description ;
+  // The url of the problem 
+  string g_url ;
+  
+  constructor( bytes verifkey, bytes zip_provkey, string nonce, 
+               string title, string description, string url ) public
   {
-    require( msg.sender == s_root_contract );
+    require( msg.sender == s_root_contract, EXN_AUTH_FAILED );
+    
     g_verifkey = verifkey ;
     g_zip_provkey = zip_provkey ;
+    g_nonce = nonce ;
+    
+    g_title = title ;
+    g_description = description ;
+    g_url = url ;
   }
 
+  function update_circuit( bytes verifkey,
+                           bytes zip_provkey,
+                           string nonce ) public
+  {
+    require( msg.sender == s_root_contract, EXN_AUTH_FAILED );
+    g_verifkey = verifkey ;
+    g_zip_provkey = zip_provkey ;
+    g_nonce = nonce ;
+  }
+
+  function update_problem( string title, string description, string url ) public
+  {
+    require( msg.sender == s_root_contract, EXN_AUTH_FAILED );
+    if( title != "" ) { g_title = title ; }
+    if( description != "" ) { g_description = description ; }
+    if( url != "" ) { g_url = url ; }
+  }
+  
   function submit( uint32 problem, bytes proof, uint256 pubkey) public 
   {
-    require( s_problem == problem );
-    require( msg.value > 0.5 ton );
+    require( s_problem == problem, EXN_WRONG_PROBLEM );
+    require( msg.value > 0.5 ton, EXN_NOT_ENOUGH_VALUE );
     (bool verified, ) = _check( proof, pubkey );
     if( verified ){
       if( g_ntop < 10 ){
@@ -47,8 +85,11 @@ contract EulerProblem is IEulerProblem, Blueprint {
           g_top10 [ pubkey ] = g_ntop ;
         }
       }
+      emit ProblemSolved ( pubkey );
       IEulerRoot( s_root_contract ).
         has_solved{ flag:64 }( s_problem, pubkey );
+    } else {
+      msg.sender.transfer({ value: 0, flag:64 });
     }
   }
 
@@ -67,6 +108,10 @@ contract EulerProblem is IEulerProblem, Blueprint {
                                       uint32 problem ,
                                       bytes verifkey ,
                                       bytes zip_provkey ,
+                                      string nonce,
+                                      string title,
+                                      string description,
+                                      string url,
                                       uint256[] top10
                                       )
   {
@@ -74,6 +119,11 @@ contract EulerProblem is IEulerProblem, Blueprint {
     problem = s_problem ;
     verifkey = g_verifkey ;
     zip_provkey = g_zip_provkey ;
+    nonce = g_nonce ;
+    title = g_title ;
+    description = g_description ;
+    url = g_url ;
+    
     top10 = new uint256[]( g_ntop );
     optional( uint256, uint8 ) opt = g_top10.min() ;
     for(uint i = 0; i<g_ntop; i++){
@@ -108,8 +158,8 @@ contract EulerProblem is IEulerProblem, Blueprint {
       x = x >> 32 ;
     }
 
-    primary_input = encode_little_endian(PI_SIZE,4);
-    for(uint i=0;i<PI_SIZE;i++){
+    primary_input = encode_little_endian(PRIMARY_INPUT_SIZE,4);
+    for(uint i=0;i<PRIMARY_INPUT_SIZE;i++){
       //      primary_input.append(serialize_primary_input(temp[7-i]));
       primary_input.append(
                            uint256_to_bytes(

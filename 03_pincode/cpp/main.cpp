@@ -83,42 +83,6 @@ using field_type = typename curve_type::scalar_field_type;
 #include "utils.hpp"
 
 
-// This function translates a bytes[32] vector into a uint32[4]
-// vector, by keeping only the first 16 bytes, and removing one bit to
-// remain positive.  The result is only 124 bits long, but it's enough
-// to keep finding collisions computationnaly impossible.
-void uint32s_of_bytes( std::vector<uint32_t> &uints, std::vector<uint8_t> &bytes )
-{
-  for( int i = 0 ; i<4; i++ ){
-    uints[i] =
-      ( (uint32_t) bytes[ 4*i] ) +
-      ( ( (uint32_t) bytes[ 4*i+1 ] ) << 8 ) +
-      ( ( (uint32_t) bytes[ 4*i+2 ] ) << 16 ) +
-      ( ( (uint32_t) bytes[ 4*i+3 ] & 0x7f ) << 24 ) ;
-  }
-}
-
-
-void uint32s_of_passphrase( std::vector<uint32_t> &uints, std::string passphrase ){
-
-  std::vector<uint8_t> hash(picosha2::k_digest_size);
-
-  picosha2::hash256( passphrase.begin(), passphrase.end(), hash.begin(), hash.end());
-  uint32s_of_bytes( uints, hash );
-}
-
-void uint32s_of_pubkey( std::vector<uint32_t> &uints, std::string pubkey_s ){
-
-  std::vector<uint8_t> pubkey(32);
-
-  for( int i = 0 ; i < 32 ; i++ ){
-    pubkey[ i ] = int_of_hexchar( pubkey_s[ i*2 ] ) * 16 + int_of_hexchar( pubkey_s[ i*2+1 ] ) ;
-    // cerr << pubkey [ i ] << endl ;
-  }
-  uint32s_of_bytes( uints, pubkey );
-}
-
-
 
 void build_circuit ( blueprint<field_type> &bp, std::vector<uint32_t> &passphrase32 ){
 

@@ -19,5 +19,6 @@ FT="ft --echo"
 
 
 export EULER_PROBLEM=101
+export EULER_NONCE=478478
 export EULER_SOLUTION=777
 

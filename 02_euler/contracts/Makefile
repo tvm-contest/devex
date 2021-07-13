@@ -20,17 +20,17 @@ distclean: clean
 
 contracts::EulerRoot.code
 
-EulerRoot.code: EulerRoot.sol $(INTERFACES)
+EulerRoot.code: *.sol
 	ft contract build EulerRoot.sol -f
 
 
 contracts::EulerProblem.code
 
-EulerProblem.code: EulerProblem.sol $(INTERFACES)
+EulerProblem.code: *.sol
 	ft contract build EulerProblem.sol -f
 
 
 contracts::EulerUser.code
 
-EulerUser.code: EulerUser.sol $(INTERFACES)
+EulerUser.code: *.sol 
 	ft contract build EulerUser.sol -f
