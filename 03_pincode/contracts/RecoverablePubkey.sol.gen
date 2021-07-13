@@ -14,7 +14,7 @@ abstract contract RecoverablePubkey is IRecoverablePubkey {
   uint8 constant EXN_WRONG_SENDER = 183 ;
 
   uint256 constant PUBKEYRECOVERY_CODEHASH =
-    0x%{get-code-hash:contract:tvc:PubkeyRecovery};
+    0xf63ab1ba40886c78634a760d5957e4e28ea003a6b68d3557af8844f93677c98d;
 
   // code of PubkeyRecovery smart contract
   TvmCell m_PubkeyRecovery_code ;

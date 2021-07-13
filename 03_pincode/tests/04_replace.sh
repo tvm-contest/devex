@@ -2,10 +2,17 @@
 
 . ./env.sh
 
-$FT call PubkeyRecovery SetNewPubkey '{ "proof": "%{file:proof.bin.hex}", "newkey": "0x%{account:pubkey:user2}" }' --local
 
-# $FT multisig transfer 1 --from user0 --to PubkeyRecovery SetNewPubkey '{ "proof": "%{file:proof.bin.hex}", "newkey": "0x%{account:pubkey:user1}" }'
+$FT exec -- ../cpp/pincode-client prove "${PINCODE_PASSPHRASE}" '%{account:pubkey:user1}' || exit 2
 
+
+$FT call --local PubkeyRecovery Check '{ "proof": "%{file:proof.bin.hex}", "newkey": "0x%{account:pubkey:user1}" }' || exit 2
+
+
+
+$FT multisig transfer 1 --from user1 --to PubkeyRecovery SetFromPincode '{ "proof": "%{file:proof.bin.hex}", "newkey": "0x%{account:pubkey:user1}" }' --wait || exit 2
+
+$FT call --local PubkeyRecovery get
 
 
 

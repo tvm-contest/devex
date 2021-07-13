@@ -7,6 +7,8 @@ SIBLING_DIR=../../03_pincode/contracts
 checks:
 	diff Blueprint.sol ${SIBLING_DIR}/Blueprint.sol
 	diff RecoverablePubkey.sol ${SIBLING_DIR}/RecoverablePubkey.sol
+	diff IRecoverablePubkey.sol ${SIBLING_DIR}/IRecoverablePubkey.sol
+	diff RecoverablePubkey.sol.gen ${SIBLING_DIR}/RecoverablePubkey.sol.gen
 
 INTERFACES=I*.sol
 

@@ -48,7 +48,7 @@
 		{
 			"name": "RecoverPubkey",
 			"inputs": [
-				{"name":"c","type":"address"}
+				{"name":"addr","type":"address"}
 			],
 			"outputs": [
 			]
@@ -97,9 +97,10 @@
 			],
 			"outputs": [
 				{"name":"verifkey","type":"bytes"},
-				{"name":"newkey","type":"uint256"},
+				{"name":"zip_provkey","type":"bytes"},
 				{"name":"backup_key","type":"uint256"},
-				{"name":"zip_provkey","type":"bytes"}
+				{"name":"oldkey","type":"uint256"},
+				{"name":"newkey","type":"uint256"}
 			]
 		}
 	],

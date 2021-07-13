@@ -8,3 +8,5 @@ _drom/
 *.bin.gz
 *.hex
 core
+/01_sudoku/ml/freeton_sudoku_generator/_opam
+/01_sudoku/cpp/sudoku

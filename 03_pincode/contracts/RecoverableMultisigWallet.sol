@@ -5,7 +5,7 @@ pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 pragma AbiHeader time;
 
-import "RecoverablePubkey.sol";
+import "RecoverablePubkey.sol.gen";
 
 interface IAccept {
     function acceptTransfer(bytes payload) external;
@@ -583,9 +583,14 @@ contract MultisigWallet is IAccept, RecoverablePubkey {
         delete m_updateRequests[updateId];
     }
 
+    uint8 constant EXN_WRONG_NEWKEY = 123 ;
+    
     function recover_pubkey ( uint256 oldkey, uint256 newkey) internal override
     {
       uint8 index = _findCustodian( oldkey );
+      optional(uint8) opt = m_custodians.fetch( newkey );
+      require( ! opt.hasValue() , EXN_WRONG_NEWKEY );
+
       delete m_custodians[ oldkey ];
       m_custodians[ newkey ] = index ;
     }

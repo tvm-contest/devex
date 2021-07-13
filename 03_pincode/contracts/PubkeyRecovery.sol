@@ -5,7 +5,7 @@ pragma AbiHeader pubkey;
 pragma AbiHeader time;
 
 import "Blueprint.sol";
-import "RecoverablePubkey.sol";
+import "IRecoverablePubkey.sol";
 
 
 /* 
@@ -106,10 +106,10 @@ contract PubkeyRecovery is Blueprint {
     m_newkey = newkey ;
   }
 
-  function RecoverPubkey( RecoverablePubkey c ) public view
+  function RecoverPubkey( IRecoverablePubkey addr ) public view
   {
     require( m_newkey != 0, EXN_NEWKEY_NOT_SET );
-    c.RecoverPubkey{ flag: 64 }( tvm.pubkey(), m_newkey ) ;
+    addr.RecoverPubkey{ flag: 64 }( tvm.pubkey(), m_newkey ) ;
   }
 
   function Check( bytes proof, uint256 newkey) public view
@@ -157,15 +157,17 @@ contract PubkeyRecovery is Blueprint {
 
   function get() public view returns (
                                       bytes verifkey ,
-                                      uint256 newkey ,
+                                      bytes zip_provkey,
                                       uint256 backup_key ,
-                                      bytes zip_provkey
+                                      uint256 oldkey ,
+                                      uint256 newkey 
                                       )
   {
     verifkey = m_verifkey ;
     newkey = m_newkey ;
     backup_key = m_backup_key ;
     zip_provkey = m_zip_provkey ;
+    oldkey = tvm.pubkey() ;
   }
 
   

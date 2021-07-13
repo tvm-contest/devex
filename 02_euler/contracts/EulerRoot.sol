@@ -10,7 +10,7 @@ pragma AbiHeader pubkey;
 import "./IEulerRoot.sol";
 import "EulerProblem.sol";
 import "EulerUser.sol";
-import "RecoverablePubkey.sol";
+import "RecoverablePubkey.sol.gen";
 
 contract EulerRoot is IEulerRoot, RecoverablePubkey {
 

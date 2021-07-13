@@ -17,3 +17,5 @@ function cmdk()
 
 FT="ft --echo"
 
+export PINCODE_PASSPHRASE=my-best-passphrase
+

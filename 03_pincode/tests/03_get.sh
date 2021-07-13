@@ -3,7 +3,7 @@
 . ./env.sh
 
 $FT call PubkeyRecovery get --local
-$FT call PubkeyRecovery pi_of_pubkey --local '{ "pubkey": "0x%{account:pubkey:user1}" }'
+$FT call PubkeyRecovery PrimaryInputOfPubkey --local '{ "pubkey": "0x%{account:pubkey:user1}" }'
 
 
 
