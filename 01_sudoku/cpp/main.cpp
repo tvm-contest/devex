@@ -55,7 +55,8 @@ typedef typename curve_type::scalar_field_type field_type;
 typedef zk::snark::r1cs_gg_ppzksnark<curve_type> scheme_type;
 
 int main(int argc, char *argv[]) {
-    boost::filesystem::path pout, pkout, vkout;
+  string instance_filename, solution_filename,
+    proving_key_output_filename,verification_key_output_filename ;
     boost::program_options::options_description options(
         "R1CS Generic Group PreProcessing Zero-Knowledge Succinct Non-interactive ARgument of Knowledge "
         "(https://eprint.iacr.org/2016/260.pdf) CLI Proof Generator");
@@ -63,8 +64,12 @@ int main(int argc, char *argv[]) {
     options.add_options()("help,h", "Display help message")
     // ("version,v", "Display version")
       ("sudoku-generate-keys", "Generate Sudoku keys")
-      ("sudoku-verify-proof", "verify Sudoku proof")
-      ("sudoku-generate-proof","generate Sudoku proof for one solved instance");
+      // ("sudoku-verify-proof", "verify Sudoku proof")
+      ("sudoku-generate-proof","generate Sudoku proof for one solved instance")
+      ("instance,inst", boost::program_options::value<std::string>(&instance_filename)->default_value("simple_instance.in"))
+      ("solution,sol", boost::program_options::value<std::string>(&solution_filename)->default_value("solved_instance.in"))
+      ("proving-key-output,pko", boost::program_options::value<std::string>(&proving_key_output_filename)->default_value("provkey.bin"))
+      ("verification-key-output,pko", boost::program_options::value<std::string>(&verification_key_output_filename)->default_value("verifkey.bin"));
     // ("proof-output,po", boost::program_options::value<boost::filesystem::path>(&pout)->default_value("proof"))
     // ("proving-key-output,pko", boost::program_options::value<boost::filesystem::path>(&pkout)->default_value("pkey"))
     // ("verifying-key-output,vko", boost::program_options::value<boost::filesystem::path>(&vkout)->default_value("vkey"));
@@ -80,15 +85,15 @@ int main(int argc, char *argv[]) {
     }
 
     if (vm.count("sudoku-generate-keys")) {
-        generate_keys();
+        generate_keys(proving_key_output_filename,verification_key_output_filename);
     };
 
-    if (vm.count("sudoku-verify-proof")){
-    };
+    // if (vm.count("sudoku-verify-proof")){
+    // };
 
     if (vm.count("sudoku-generate-proof")) {
-      std::string instance_filename = "simple_instance.in";
-      std::string solution_filename = "solved_instance.in";
+      //std::string instance_filename = "simple_instance.in";
+      //std::string solution_filename = "solved_instance.in";
       // std::cout << "Please input the sudoku instance (default is in file instance.in)" << std::endl;
       // std::cin >> instance_filename;
       std::vector<int> sudoku_instance = input_instance(instance_filename);
