@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{mathtools}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \hypersetup{
@@ -17,6 +18,8 @@
 \usepackage{xcolor}
 \usepackage{listings}
 
+\input{solidity-highlighting}
+
 \lstdefinestyle{BashInputStyle}{
 	language=bash,
 	basicstyle=\small\sffamily,
@@ -26,55 +29,179 @@
 	xleftmargin=0.1\linewidth
 }
 
-\author{OcamlPro - Fabrice Le Fessant et Thomas Sibut-Pinote}
-\title{Groth16 zkSNARK Proof Verification on Freeton : Three Use Cases}
+
+\author{OcamlPro - Fabrice Le Fessant\footnote{Telegram: @fabrice\_dune} and Thomas Sibut-Pinote\footnote{Telegram: @ThomasSibutPinote}}
+\title{Groth16 zk-SNARK Proof Verification on Freeton : Three Use Cases}
 
 \begin{document}
 \maketitle
 
+\newcommand{\zksnark}{zk-SNARK}
+\newcommand{\zksnarks}{zk-SNARKs}
+
+
+\section{Introduction}
+\label{sec:intro}
+
+\subsection{Description of the submission}
+\label{subsec:description}
+
 The present document is an official submission to the 18$^{\text{th}}$
 contest\footnote{\url{https://devex.gov.freeton.org/proposal?proposalAddress=0\%3Ae6b65075478e7d412fdb0870452f30dfa8bf51272e28a3167abc5c5df6fd051d}}
-of the DevEx governance: {\em Groth16 zkSNARK Proof Verification Use
+of the DevEx governance: {\em Groth16 \zksnark{} Proof Verification Use
   Cases}. Although we accepted earlier to be part of the jury, we
 understand that by submitting this document we waive our right to vote
 in the present contest.
 
 In this submission, we propose three different use cases for Groth16
-zkSNARK proofs on the FreeTON blockchain:
+\zksnark{} proofs on the FreeTON blockchain:
 \begin{itemize}
-\item Sudoky: Zksnarks are used to prove that the user has a solution
-  to a given Sudoky problem, without providing the solutions to other
+\item (Section~\ref{section_sudoku}) Sudoku: \zksnarks{} are used to prove that the user has a solution
+  to a given Sudoku problem, without providing the solutions to other
   users ;
-\item Euler Project: Zksnarks are used to prove that the user has
-  found the solution to an Euler problem ;
-\item Pin-code reset of forgotten keys: Zksnarks are used to replace a
-  pubkey when the user has lost his secret key
+\item (Section~\ref{section_euler})Project Euler: \zksnarks{} are used to prove that the user has found the solution to a math problem from the famous \url{https://projecteuler.net} website;
+\item (Section~\ref{section_pincode})Pin-code reset of forgotten keys: \zksnarks{} are used to replace a
+  pubkey when the user has lost his secret key.
 \end{itemize}
 
-Finally, we finish this document by a section showing the
-contributions that we did for the Free TON community while working on
-this contest.
+We then show the contributions that we made for the Free TON community while working on
+this contest (Section~\ref{sec:contributions}). Finally, we discuss the three paradigms of using \zksnarks{} that our examples showcase.
+
+\subsection{General remarks}
+\label{subsec:general_remarks}
+
+\begin{description}
+	\item[Code:] All our code comes with a README and tests. This document is provided as an overview of our use cases for \zksnarks{} on the Freeton blockchain but you can also directly plunge into the code. All our code is under the GPL license and is hosted at \url{https://github.com/OCamlPro/devex-18-zk-contest}.
+
+	\item[Compilation time:] The long compilation time of the repository provided was a major obstacle in our progression. We would suggest trying to make it shorter for future contests.
+
+	\item[Marshalling and memory corruption:] Because of a memory corruption error in the marshalling of the verification key, we were unable to do a full 9 by 9 Sudoku, restricting ourselves to 4 by 4. All our code is generic (it is generated from an Ocaml program which takes as a parameter the value $n$ such that the Sudoku is $n^2$ by $n^2$). We were told that after the contest, a more robust marshalling library would be provided. In any case we would be glad to discuss this issue with the Nil foundation team to give users the full Sudoku experience! In the meantime, a 4 by 4 Sudoku is sufficient to get a sense of the dynamics of \zksnark-based Sudoku.
+
+	\item[Keys on contracts: ] For all of our smart contracts, we provided, along with the verification key as needed by the \verb|vergroth16| instruction, the proving key (in a zipped) on the smart contract. This enables users to easily find it in order to generate their proofs. In case the contract deployer should decide to keep the possibility of changing the verification and proving keys of the problem(s), this also makes it easiest to follow changes before submitting a solution.
+
+	\item[Thanks:] We would like to thank @noam for his efforts and sportsmanship during the contest, and to the Nil foundation team for their answers to our various questions.
+\end{description}
+
+
+
+
+
+
+
+
+
 
 \section{A toy example: Sudoku}
 \label{section_sudoku}
 
-Let's start with our first toy use case. Suppose you want to set up a Sudoku problem for your students to solve, so that upon completion they receive some token. The issue is that once any student has solved it, the solution sits on the blockchain for all to see. All the other students can cheat by copying it, instead of doing the work by themselves, which defeats the whole purpose. One other advantage is that we don't need to implement the whole logic of the computation on the smart contract. For some size of Sudoku, this is probably worthwhile.
+	\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{Sudoku04}
+	\caption{A Sudoku grid}
+	\end{figure}
+
+
+Let's start with our first toy use case. Suppose you want to set up a Sudoku problem for your students to solve, so that upon completion they receive some token. The issue is that once any student has solved it, the solution sits on the blockchain for all to see. All the other students can cheat by copying it, instead of doing the work by themselves, which defeats the whole purpose.
+
+As mentioned in Section \ref{subsec:general_remarks}, we had to restrict ourselves to a 4 by 4 Sudoku grid, even though our code generator is generic in the grid size. This is because the marshalling function on the 9 by 9 code produced a memory corruption error.
+
+\subsection{Mathematical encoding}
+\label{subsec:math_enc}
+
+Let $n^2$ be the size of a Sudoku grid (in our case, $n=2$ and $n^2 = 4$ is the length of a side of the Sudoku square).In the following, the variables $(x_{i,j})_{0 \leq i,j < n^2}$ denote the (secret) values of the solution of a given instance of a Sudoku. The variables $(f_{i,j})_{0 \leq i,j < n^2}$ denote the instance so that
+\begin{equation}
+f_{i,j} =
+\begin{cases*}
+0 & if \textrm{square $i$,$j$ is not fixed by the Sudoku instance}\\
+\textrm{The value in square $i$,$j$ }        & otherwise
+\end{cases*}
+\end{equation}
+The (well-known) constraints of a Sudoku are encoded by the following equations:
+\[ \prod_{k=1}^{n^2} \left( x_{i,j} - k \right) = 0 \textrm{ for all $0 \leq i,j < n^2$} \]
+and
+\[ f_{i,j} x_{i,j} = f_{i,j}^2 \textrm{ for all $0 \leq i,j < n^2$}\]
+and, for all $S$ set of indices representing a row, a column or a box as per the rules of Sudoku:
+\[ \prod_{(i,j) \in S} x_{i,j} = \prod_{k=1}^{n^2} k = \left(n^2\right)! \; .\]
+
+
+The first equations guarantee that the only permitted values for $x_{i,j}$ are the integers from $1$ through $n^2$, while the second force
+
+\[ \forall 0 \leq i,j < n^2, f_{i,j} \neq 0 \implies x_{i,j} = f_{i,j}.\]
+
+The last equation, by forcing the product of $n^2$ integers between 1 and $n^2$ to be equal to $\left(n^2\right)!$, forces every row, column and box to contain one and only one instance of the integers $1$ through $9$.
+
+%One other advantage is that we don't need to implement the whole logic of the computation on the smart contract. For some size of Sudoku, this is probably worthwhile.
+
+\subsection{Components}
+\label{subsec:components}
+
+This use case includes two different components:
+
+\begin{description}
+	\item[The cli:] it is a C++ program linked to the Blueprint \zksnarks{} library. It can be used in two different ways:
+	\begin{itemize}
+		\item To create the original proving and verification keys. This step is independent of any given Sudoku instance and should only be done once.
+		\item To generate a proof given an instance and a solution. The instance is given as a text file such as
+
+		\begin{verbatim}
+			0000
+			0000
+			0000
+			0001
+		\end{verbatim}
+
+		where $0$s denote free values. The solution should be a similar text files with no zeroes, such as
+
+		\begin{verbatim}
+			1234
+			3412
+			2143
+			4321
+		\end{verbatim}
+
+		Note that if your solution is not correct, this step will fail.
+	\end{itemize}
+    \item[The Sudoku smart contract:] The main function of this smart contract is
+    \begin{lstlisting}[language=Solidity]
+    function submit(bytes proof)
+        public view returns (bool res, string blob_str)
+    \end{lstlisting}
+    It will check the input proof against the verification key \lstinline[language=Solidity]|v_key| and the current instance \lstinline[language=Solidity]|m_instance|, both local to the contract. This instance is stored as an array of \lstinline[language=Solidity]|fixed_value|:
+    \begin{lstlisting}[language=Solidity]
+    struct fixed_value {
+      uint8 i;
+      uint8 j;
+      uint8 value;
+    }
+
+    \end{lstlisting}
+\end{description}
 
 \section{A better example: Project Euler}
 \label{section_euler}
 
-The previous example is somewhat limited by the fact that sudokus are easily solvable problems, either by hand or with a computer; they are not a realistic use case of zk-snarks. Let's keep the idea of a decentralized classroom. the famous website Project Euler\footnote{\url{https://projecteuler.net/}} offers math and programming problems of various difficulty to its users. It uses captchas to prevent brute force attempts at guessing the answer to a problem. The answers to problems are stored statically on its servers and the answers are checked against them. Can we make Project Euler decentralized? Using the idea from Section \ref{section_sudoku}, we can prevent users from stealing others' solutions \textbf{and} from brute-forcing them, due to the cost of generating proofs.
+	\begin{figure}[!h]
+	\centering
+	\includegraphics[width=\textwidth]{euler}
+	\caption{The first Project Euler problem}
+\end{figure}
+
+The previous example is somewhat limited by the fact that Sudokus are easily solvable problems, either by hand or with a computer; they are not a realistic use case of \zksnarks{}\footnote{Although they hint at a possible use for \zksnarks{}: checking a result without implementing its full logic in Solidity may save precious storage and computations on the blockchain}.
+
+Let's keep the idea of a decentralized classroom. the famous website Project Euler\footnote{\url{https://projecteuler.net/}} offers math and programming problems of various difficulty to its users. It uses captchas to prevent brute force attempts at guessing the answer to a problem. The answers to problems are stored statically on its servers and the answers are checked against them. Can we make Project Euler decentralized? Using the idea from Section \ref{section_sudoku}, we can prevent users from stealing others' solutions \textbf{and} from brute-forcing them, due to the cost of generating proofs.
+
+1 million SHA256 hashes (about 20 seconds on our machine) computed with input \verb|problem_number \| solution | nonce| \footnote{Where `|` denotes the concatenation of strings} to emulate the captchas on the Project Euler website.
 
 
 \section{Pin code reset for forgotten keys}
 \label{section_pincode}
 
-In this use case, we use Zksnarks to allow users to replace their
+In this use case, we use \zksnarks{} to allow users to replace their
 public keys in multisig wallets. The typical use is when a user has
 lost the associated secret key, and is unable to sign/confirm any new
 transaction. With our approach, the user first creates a recovery
 contract, where a passphrase is associated to his public key. If he
-needs to change his public key, he can use Zksnarks to associate a new
+needs to change his public key, he can use \zksnarks{} to associate a new
 public key in his recovery contract, and tell multisig wallets to
 safely replace his pubkey by the new one.
 
@@ -96,7 +223,7 @@ improvements:
 This use case includes 3 different components:
 \begin{description}
 \item[PinCode Client:] it is a C++ program linked to the Blueprint
-  Zksnarks library. It can be used in two different ways:
+  \zksnarks{} library. It can be used in two different ways:
   \begin{itemize}
   \item To create the initial circuit using the passphrase. The client
     should be called as:
@@ -153,6 +280,7 @@ pincode-client prove "my pass phrase" "PUBKEY_AS_HEX_NUMBER"
 
 
 \section{Contributions to the Free TON community}
+\label{sec:contributions}
 
 In the course of participating to this contest, we were led to refine
 our in-house tools in order to more easily manipulate the Nil
@@ -160,7 +288,7 @@ Foundation forks of the Ton Virtual Machine (TVM), the TON Solidity
 compiler and the TVM linker.
 
 Our first contribution is a public Docker image containing the TONOS
-SE compiled with Zksnarks support. The image is published as {\tt
+SE compiled with \zksnarks{} support. The image is published as {\tt
   ocamlpro/nil-local-node} and is built from
 \url{https://github.com/NilFoundation/tonos-se}.
 
@@ -185,7 +313,7 @@ In particular:
   specially useful for our Docker image for NilFoundation TONOS SE.
 \end{itemize}
 
-As a consequence, a Zksnark-ready sandbox (local network) can be
+As a consequence, a \zksnark-ready sandbox (local network) can be
 installed by simply running:
 
 \begin{lstlisting}[style=BashInputStyle]
@@ -203,5 +331,10 @@ NilFoundation tools
 the easiest way to use \lstinline|ft| if you don't want to build
 it. See the installation instruction at
 (\url{https://ocamlpro.github.io/freeton_wallet/sphinx/install.html#using-docker}).
+
+\section{Thoughts on three paradigms of \zksnarks{} on blockchains}
+\label{sec_three_paradigms}
+This contest has given us the opportunity to think harder about the types of use-cases of \zksnarks{} on blockchains.
+
 
 \end{document}
