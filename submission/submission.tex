@@ -198,7 +198,7 @@ TODO: code du sudoku ici
 	\caption{The first Project Euler problem}
 \end{figure}
 
-The previous example is somewhat limited by the fact that Sudokus are easily solvable problems, either by hand or with a computer; they are not a realistic use case of \zksnarks{}\footnote{Although they hint at a possible use for \zksnarks{}: checking a result without implementing its full logic in Solidity may save precious storage and computations on the blockchain}.
+The previous example is somewhat limited by the fact that Sudokus are easily solvable problems, either by hand or with a computer; they are not a realistic use case of \zksnarks{}\footnote{Although they hint at a possible use for \zksnarks{}: checking a result without implementing its full logic in Solidity may save precious storage and computations on the blockchain.}.
 
 Let's keep the idea of a decentralized classroom. the famous website Project Euler\footnote{\url{https://projecteuler.net/}} offers math and programming problems of various difficulty to its users. It uses captchas to prevent brute force attempts at guessing the answer to a problem. The answers to problems are stored statically on its servers and the answers are checked against them. Can we make Project Euler decentralized? Using \zksnarks{}, we can prevent users from stealing others' solutions \textbf{and} from brute-forcing them, due to the cost of generating proofs.
 
@@ -207,7 +207,18 @@ The authentic first 50 problems from the Project Euler website\footnote{Solved b
 \subsection{Brute-force protection}
 \label{subsec:brute-force}
 
-Project Euler is sort of a gentlemen's competition. For example, competitors are supposed to have found the answer using a program running at most in one minute, but no mechanism enforces this. Still, some protections are in place, partly to enforce the spirit of the competition, and partly because of past abuse. For instance, a captcha system prevents one from attempting many solutions in a row. We decided to emulate the latter mechanism. If we simply gave a proving key to try and find the actual solution to the problem, users might be tempted to try to build a proof using every single integer until it works\footnote{We have noticed that although generating a correct proof may take time, an incorrect input is usually rejected in less than one second.}. Hence, the value they must find is actually
+Project Euler is a gentlemen's competition. For example, competitors
+are supposed to have found the answer using a program running at most
+in one minute, but no mechanism enforces this. Still, some protections
+are in place, partly to enforce the spirit of the competition, and
+partly because of past abuse. For instance, a captcha system prevents
+one from attempting many solutions in a row. We decided to emulate the
+latter mechanism. If we simply gave a proving key to try and find the
+actual solution to the problem, users might be tempted to try to build
+a proof using every single integer until it works\footnote{We have
+  noticed that although generating a correct proof may take time, an
+  incorrect input is usually rejected in less than one
+  second.}. Hence, the value they must find is actually
 \[ \textrm{SHA256}^{1\,000\,000}\left(problem\_number | solution | nonce\right)\]
 where the exponent denotes repeated application of the $\textrm{SHA256}$ hashing function, and `|` denotes the concatenation of strings. Note that this does not protect against replay attacks, which is why we also included a form of authentication described in Section~\ref{section_pincode}. This repeated application takes about 20 seconds on our laptops, which seems enough to discourage brute-force by all but the most determined cheaters.
 
