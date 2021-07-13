@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(circuit_test) {
 
     std::vector<field_type::value_type> hash_list {hashes[0],hashes[1],hashes[2],0,0,0,0,0,0,0};
 
-    std::vector<std::uint32_t> vote_choices {0,1,2,10000000/*,4294967295*/};
+    std::vector<std::uint32_t> vote_choices {0,1,2,10000000,4294967295};
     for(std::uint32_t vote_choice : vote_choices) {
         for(std::size_t secret_index = 0; secret_index < 4; ++secret_index) {
             std::vector<bool> vote_choice_bv(circuit::VOTE_MSG_LEN);
