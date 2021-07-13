@@ -21,36 +21,39 @@
 #include <nil/marshalling/status_type.hpp>
 
 #include "sudoku.hpp"
-#include "picosha2.h"
 #include <fstream>
+#include "picosha2.hpp"
 
 using namespace nil::crypto3::zk::snark;
 using namespace nil::crypto3::algebra;
 
 typedef algebra::curves::bls12<381> curve_type;
 typedef typename curve_type::scalar_field_type field_type;
-
 typedef zk::snark::r1cs_gg_ppzksnark<curve_type> scheme_type;
+using namespace std;
 
-void append_to_byteblob( std::vector<std::uint8_t> &byteblob, std::vector<std::uint8_t> bytes)
-{
-  byteblob.insert (byteblob.end(), bytes.begin(), bytes.end());
-}
+#include "utils.hpp"
 
-void binfile_of_byteblob( std::string file,  std::vector<std::uint8_t> byteblob ){
-  boost::filesystem::ofstream poutf( file );
-  for (const auto &v : byteblob) {
-    poutf << v;
-  }
-  poutf.close();
-}
 
-void hexfile_of_byteblob( std::string file,  std::vector<std::uint8_t> byteblob ){
-  std::string hex_str = picosha2::bytes_to_hex_string(byteblob.begin(), byteblob.end());
-  boost::filesystem::ofstream poutf( file );
-  poutf << hex_str << std::endl;
-  poutf.close();
-}
+// void append_to_byteblob( std::vector<std::uint8_t> &byteblob, std::vector<std::uint8_t> bytes)
+// {
+//   byteblob.insert (byteblob.end(), bytes.begin(), bytes.end());
+// }
+
+// void binfile_of_byteblob( std::string file,  std::vector<std::uint8_t> byteblob ){
+//   boost::filesystem::ofstream poutf( file );
+//   for (const auto &v : byteblob) {
+//     poutf << v;
+//   }
+//   poutf.close();
+// }
+
+// void hexfile_of_byteblob( std::string file,  std::vector<std::uint8_t> byteblob ){
+//   std::string hex_str = utils::bytes_to_hex_string(byteblob.begin(), byteblob.end());
+//   boost::filesystem::ofstream poutf( file );
+//   poutf << hex_str << std::endl;
+//   poutf.close();
+// }
 
 std::vector<int> read_input(std::string filename){
   std::vector<int> sudoku;
@@ -294,7 +297,7 @@ blueprint<curves::bls12<381>::scalar_field_type> build_blueprint(bool with_insta
     return bp;
 }
 
-int generate_keys(){
+int generate_keys(std::string proving_key_output_filename,std::string verification_key_output_filename){
 
   using curve_type = curves::bls12<381>;
   using field_type = typename curve_type::scalar_field_type;
@@ -310,7 +313,7 @@ int generate_keys(){
   std::vector<std::uint8_t> proving_key_byteblob =
     nil::marshalling::verifier_input_serializer_tvm<scheme_type>::process(keypair.first);
 
-  boost::filesystem::ofstream poutf1("sudoku_proving_key.bin");
+  boost::filesystem::ofstream poutf1(proving_key_output_filename);
   for (const auto &v : proving_key_byteblob) {
     poutf1 << v;
   }
@@ -320,7 +323,7 @@ int generate_keys(){
   std::vector<std::uint8_t> verification_key_byteblob =
     nil::marshalling::verifier_input_serializer_tvm<scheme_type>::process(keypair.second);
 
-  boost::filesystem::ofstream poutf2("sudoku_verification_key.bin");
+  boost::filesystem::ofstream poutf2(verification_key_output_filename);
   for (const auto &v : verification_key_byteblob) {
     poutf2 << v;
   }
@@ -330,12 +333,12 @@ int generate_keys(){
   return 0;
 }
 
-inline std::vector<uint8_t> read_vector_from_disk(std::string file_path)
-{
-  std::ifstream instream(file_path, std::ios::in | std::ios::binary);
-  std::vector<uint8_t> data((std::istreambuf_iterator<char>(instream)), std::istreambuf_iterator<char>());
-  return data;
-}
+// inline std::vector<uint8_t> read_vector_from_disk(std::string file_path)
+// {
+//   std::ifstream instream(file_path, std::ios::in | std::ios::binary);
+//   std::vector<uint8_t> data((std::istreambuf_iterator<char>(instream)), std::istreambuf_iterator<char>());
+//   return data;
+// }
 
 typename scheme_type::proving_key_type fetch_proving_key(){
   std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk("sudoku_proving_key.bin");
