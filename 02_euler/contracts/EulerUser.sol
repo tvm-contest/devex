@@ -17,11 +17,16 @@ contract EulerUser is IEulerUser {
   string g_name ;
   uint32[] g_solved ;
 
-  constructor( string name ) public {
-    require( msg.sender == s_root_contract, EXN_AUTH_FAILED );
-    g_name = name ;
+  constructor() public {
+    tvm.accept() ;
   }
 
+  function set_name( string name ) public
+  {
+    require( tvm.pubkey() == msg.pubkey(), EXN_AUTH_FAILED );
+    g_name = name ;
+  }
+  
   function has_solved( uint32 problem ) public
   {
     require( msg.sender == s_root_contract, EXN_AUTH_FAILED );

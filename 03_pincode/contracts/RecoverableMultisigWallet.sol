@@ -5,13 +5,15 @@ pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 pragma AbiHeader time;
 
+import "RecoverablePubkey.sol";
+
 interface IAccept {
     function acceptTransfer(bytes payload) external;
 }
 
 /// @title Multisignature wallet with setcode.
 /// @author Tonlabs (https://tonlabs.io)
-contract MultisigWallet is IAccept {
+contract MultisigWallet is IAccept, RecoverablePubkey {
 
     /*
      *  Storage
@@ -71,7 +73,6 @@ contract MultisigWallet is IAccept {
     uint128 constant MIN_VALUE = 1e6;
     uint    constant MAX_CLEANUP_TXNS = 40;
     // Expected hash code of PubkeyRecovery smart contract
-    uint256 constant PUBKEYRECOVERY_CODEHASH = 0x362d0ed75463bc704053f7e845735cd86c337bf1a315837b238461b94bfd2c35;
 
     // Send flags.
     // Forward fees for message will be paid from contract balance.
@@ -106,9 +107,6 @@ contract MultisigWallet is IAccept {
     // Counter of transactions
     uint32 m_idCount;
     
-    // code of PubkeyRecovery smart contract
-    TvmCell m_PubkeyRecovery_code ;
-
     /*
     Exception codes:
     100 - message sender is not a custodian;
@@ -585,21 +583,9 @@ contract MultisigWallet is IAccept {
         delete m_updateRequests[updateId];
     }
 
-    function SetPubkeyRecoveryCode( TvmCell code ) public
-    {
-      require( tvm.hash( code ) == PUBKEYRECOVERY_CODEHASH );
-      m_PubkeyRecovery_code = code ;
-    }
-
-    function RecoverPubkey ( uint256 oldkey, uint256 newkey) public
+    function recover_pubkey ( uint256 oldkey, uint256 newkey) internal override
     {
       uint8 index = _findCustodian( oldkey );
-      TvmCell stateInit = tvm.buildStateInit({
-            pubkey: newkey,
-            code: m_PubkeyRecovery_code
-            });
-      address addr = address(tvm.hash(stateInit));
-      require( addr == msg.sender );
       delete m_custodians[ oldkey ];
       m_custodians[ newkey ] = index ;
     }
