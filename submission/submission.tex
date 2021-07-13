@@ -30,8 +30,9 @@
 }
 
 
-\author{OCamlPro - Fabrice Le Fessant\footnote{Telegram: @fabrice\_dune} and Thomas Sibut-Pinote\footnote{Telegram: @ThomasSibutPinote}}
+\author{OCamlPro - Fabrice Le Fessant\footnote{Telegram: @fabrice\_dune} and Thomas Sibut-Pinote\footnote{Telegram: @ThomasSibutPinote} \\ \small{\url{https://github.com/OCamlPro/devex-18-zk-contest}}}
 \title{Groth16 zk-SNARK Proof Verification on Freeton : Three Use Cases}
+\date{}
 
 \begin{document}
 \maketitle
@@ -109,6 +110,8 @@ As mentioned in Section \ref{subsec:general_remarks}, we had to restrict ourselv
 
 \subsection{Mathematical encoding}
 \label{subsec:math_enc}
+
+\emph{Note: You may skip this section if you don't want to focus too much on the details on a first reading.}
 
 Let $n^2$ be the size of a Sudoku grid (in our case, $n=2$ and $n^2 = 4$ is the length of a side of the Sudoku square).In the following, the variables $(x_{i,j})_{0 \leq i,j < n^2}$ denote the (secret) values of the solution of a given instance of a Sudoku. The variables $(f_{i,j})_{0 \leq i,j < n^2}$ denote the instance so that
 \begin{equation}
