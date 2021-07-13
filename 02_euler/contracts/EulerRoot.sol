@@ -29,15 +29,35 @@ contract EulerRoot is IEulerRoot, RecoverablePubkey {
   }
 
   function new_problem( uint32 problem, bytes verifkey, bytes zip_provkey )
-    public
+    public view returns ( address addr )
   {
     require( g_owner == msg.pubkey(), EXN_AUTH_FAILED );
-    // TODO
+    tvm.accept() ;
+
+    addr = new EulerProblem {
+      value: 1 ton,
+      pubkey: tvm.pubkey() ,
+      code: g_problem_code ,
+      varInit: {
+        s_problem: problem ,
+        s_root_contract: this
+      }
+          }( verifkey, zip_provkey );
+    
   }
 
-  function new_user( uint256 pubkey ) public
+  function new_user( uint256 pubkey ) public view returns ( address addr )
   {
-    // TODO
+    require( msg.value >= 1 ton, EXN_AUTH_FAILED );
+    addr = new EulerUser {
+      value: 0.5 ton,
+      pubkey: pubkey ,
+      code: g_user_code ,
+      varInit: {
+        s_root_contract: this
+      }
+    }() ;
+
   }
   
   function has_solved( uint32 problem, uint256 pubkey ) public override
