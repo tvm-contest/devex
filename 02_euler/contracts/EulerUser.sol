@@ -24,6 +24,7 @@ contract EulerUser is IEulerUser {
   function set_name( string name ) public
   {
     require( tvm.pubkey() == msg.pubkey(), EXN_AUTH_FAILED );
+    tvm.accept();
     g_name = name ;
   }
   

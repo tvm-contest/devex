@@ -84,10 +84,10 @@ contract EulerProblem is IEulerProblem, Blueprint {
   }
 
 
-  function _check( bytes proof, uint256 newkey) internal view
+  function _check( bytes proof, uint256 pubkey) internal view
     returns (bool verified, string blob_str) {
 
-    bytes primary_input = _pi_of_pubkey( newkey );
+    bytes primary_input = _pi_of_pubkey( pubkey );
 
     verified = false ;
 
@@ -124,9 +124,9 @@ contract EulerProblem is IEulerProblem, Blueprint {
     primary_input = _pi_of_pubkey( pubkey );
   }
 
-  function check( bytes proof, uint256 newkey) public pure
+  function check( bytes proof, uint256 pubkey) public pure
     returns (bool verified, string blob_str) {
-    ( verified, blob_str ) = check ( proof, newkey );
+    ( verified, blob_str ) = check ( proof, pubkey );
   }
 
 }

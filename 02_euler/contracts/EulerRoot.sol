@@ -59,8 +59,9 @@ contract EulerRoot is IEulerRoot, RecoverablePubkey {
     }() ;
 
   }
-  
-  function has_solved( uint32 problem, uint256 pubkey ) public override
+
+  function problem_address( uint32 problem ) public view
+    returns ( address addr )
   {
     TvmCell stateInit = tvm.buildStateInit({
       contr: EulerProblem ,
@@ -70,19 +71,37 @@ contract EulerRoot is IEulerRoot, RecoverablePubkey {
         s_problem: problem ,
         s_root_contract: this
       }
-          });
-    address addr = address(tvm.hash(stateInit));
-    require( addr == msg.sender );
-    
-    stateInit = tvm.buildStateInit({
+    });
+    addr = address(tvm.hash(stateInit));
+  }
+
+  function user_address( uint256 pubkey ) public view
+    returns ( address addr )
+  {
+    TvmCell stateInit = tvm.buildStateInit({
       contr: EulerUser ,
       pubkey: pubkey ,
       code: g_user_code ,
       varInit: {
         s_root_contract: this
       }
-          });
+    });
     addr = address(tvm.hash(stateInit));    
+  }
+
+  function submit( uint32 problem, bytes proof, uint256 pubkey) public view 
+  {
+    address addr = problem_address( problem );
+    EulerProblem( addr ).submit
+      { value:0, flag: 64} ( problem, proof, pubkey );
+  }
+  
+  function has_solved( uint32 problem, uint256 pubkey ) public override
+  {
+    address addr = problem_address( problem ) ;
+    require( addr == msg.sender );
+
+    addr = user_address( pubkey );
     EulerUser( addr ).has_solved{ value:0, flag: 64 }( problem );
   }
 
@@ -91,6 +110,14 @@ contract EulerRoot is IEulerRoot, RecoverablePubkey {
     if( oldkey == g_owner ){
       g_owner = newkey;
     }
+  }
+
+  function get() public view returns
+    ( uint256 owner, uint256 problem_code_hash, uint256 user_code_hash )
+  {
+    owner = g_owner ;
+    problem_code_hash = tvm.hash ( g_problem_code );
+    user_code_hash = tvm.hash ( g_user_code );
   }
 
 }
