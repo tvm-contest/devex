@@ -1,4 +1,12 @@
-all: PubkeyRecovery.code RecoverableMultisigWallet.code
+all: contracts checks
+
+SIBLING_DIR=../../02_euler/contracts
+
+checks:
+	diff Blueprint.sol ${SIBLING_DIR}/Blueprint.sol
+	diff RecoverablePubkey.sol ${SIBLING_DIR}/RecoverablePubkey.sol
+
+contracts: PubkeyRecovery.code RecoverableMultisigWallet.code
 
 PubkeyRecovery.code: PubkeyRecovery.sol
 	ft contract build PubkeyRecovery.sol -f

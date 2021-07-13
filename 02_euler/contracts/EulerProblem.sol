@@ -34,7 +34,7 @@ contract EulerProblem is IEulerProblem, Blueprint {
     g_zip_provkey = zip_provkey ;
   }
 
-  function Submit( uint32 problem, bytes proof, uint256 pubkey) public 
+  function submit( uint32 problem, bytes proof, uint256 pubkey) public 
   {
     require( s_problem == problem );
     require( msg.value > 0.5 ton );
