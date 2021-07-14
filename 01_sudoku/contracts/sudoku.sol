@@ -14,9 +14,8 @@ contract ZKSudoku {
     uint8 constant PROOF_SIZE = 192;
     uint32 constant PI_SIZE = NUM_SQUARES;
     uint8 constant field_element_bytes = 32;
-    address m_owner; // address of the contract supplying new sudoku
-		     // instances? Or just the owner manually sending
-		     // them? First option makes it more turnkey
+    address m_owner; // address of the owner manually sending new
+		     // instances
     bytes v_key;
 
     struct fixed_value {
@@ -27,13 +26,25 @@ contract ZKSudoku {
 
     fixed_value[] m_instance; //the array of fixed instances
 
-    // check that fixed values are legal
+    /// @dev checks that a fixed value is legal
+    ///   (between 0 and SUDOKU_SIZE)
+    /// @param v: a fixed value for a Sudoku square
     function check_value(fixed_value v)
 	private pure returns (bool) {
 	require(v.i < SUDOKU_SIZE &&
 		v.j < SUDOKU_SIZE, WRONG_SIZE);
 	require(v.value <= SUDOKU_SIZE, SUDOKU_FORBIDDEN_VALUE);
 	return true;
+    }
+
+    function submit_instance(fixed_value[] instance) public {
+	require(msg.sender == m_owner, MUST_BE_OWNER);
+	tvm.accept ();
+	delete m_instance;
+	for(uint i=0;i<instance.length;i++){
+	    require(check_value(instance[i]));
+	    m_instance.push(instance[i]);
+	}
     }
 
     constructor(address owner, bytes v_key_in, fixed_value[] instance) public {
