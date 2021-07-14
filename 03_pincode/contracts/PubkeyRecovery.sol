@@ -78,27 +78,6 @@ contract PubkeyRecovery is Blueprint {
     m_zip_provkey = zip_provkey ;
   }
 
-  function UpdateBackupKey( uint256 backup_key ) public
-  {
-    // cannot be called from another contract, so not carrying tokens
-    require( msg.sender.value == 0, EXN_AUTH_FAILED );
-    // pubkey must be either oldkey or newkey
-    require( msg.pubkey() == tvm.pubkey() || msg.pubkey() == m_newkey,
-             EXN_AUTH_FAILED ) ;
-    tvm.accept() ;
-    m_backup_key = backup_key ;
-  }
-
-  function SetFromBackupKey() public
-  {
-    // cannot be called from another contract, so not carrying tokens
-    require( msg.sender.value == 0, EXN_AUTH_FAILED );
-    // only backup owner can activate the backup key
-    require( msg.pubkey() == m_backup_key, EXN_AUTH_FAILED );
-    tvm.accept() ;
-    m_newkey = m_backup_key ;
-  }
-
   function SetFromPincode( bytes proof, uint256 newkey) public
   {
     (bool verified, ) = Check( proof, newkey );
@@ -147,6 +126,27 @@ contract PubkeyRecovery is Blueprint {
                                             uint256( temp[7-i]) << 224
                                             ));
     }
+  }
+
+  function UpdateBackupKey( uint256 backup_key ) public
+  {
+    // cannot be called from another contract, so not carrying tokens
+    require( msg.sender.value == 0, EXN_AUTH_FAILED );
+    // pubkey must be either oldkey or newkey
+    require( msg.pubkey() == tvm.pubkey() || msg.pubkey() == m_newkey,
+             EXN_AUTH_FAILED ) ;
+    tvm.accept() ;
+    m_backup_key = backup_key ;
+  }
+
+  function SetFromBackupKey() public
+  {
+    // cannot be called from another contract, so not carrying tokens
+    require( msg.sender.value == 0, EXN_AUTH_FAILED );
+    // only backup owner can activate the backup key
+    require( msg.pubkey() == m_backup_key, EXN_AUTH_FAILED );
+    tvm.accept() ;
+    m_newkey = m_backup_key ;
   }
 
 
