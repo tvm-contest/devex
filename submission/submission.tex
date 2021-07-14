@@ -72,6 +72,18 @@ this contest (Section~\ref{sec:contributions}). Finally, we discuss the three pa
 \label{subsec:general_remarks}
 
 \begin{description}
+        \item[ft:] Throughout this project, we make heavy use of our
+          in-house freeton wallet and client \verb|ft|. We have taken
+          extra care to make its use very simple, using docker images
+          and intuitive, well-documented features. We have specially
+          adapted this tool to be able to create local sandboxes using
+          the Nil Foundation's fork of the TON OS, as well as to
+          interact with the Nil foundation server. Please check out
+          \url{https://hub.docker.com/r/ocamlpro/ft}. The
+          documentation is available both in the command line through
+          \verb|ft --help| and on the website
+          \url{https://ocamlpro.github.io/freeton_wallet/sphinx/}.
+
 	\item[Code:] All our code comes with a README, standard
           in-code documentation and tests. This document is provided
           as an overview of our use cases for \zksnarks{} on the
@@ -103,10 +115,9 @@ this contest (Section~\ref{sec:contributions}). Finally, we discuss the three pa
           the possibility of changing the verification and proving
           keys of the problem(s), this also makes it easiest to follow
           changes before submitting a solution. Unfortunately, the
-          proving key for the Sudoku has size 64KB (19KB after
-          compression) which is about 6 times (respectively 10 times
-          once zipped) bigger than for Euler and Pincode, and we
-          decided not to include it.
+          proving key for Sudoku is an order of magnitude bigger than
+          for Euler and Pincode (even zipped), and we decided not to
+          include it.
 
     \item[Separate submissions:] After deliberation, we decided to submit only one document rather than three separate submissions, in a spirit of coherence. We leave it to the appreciation of the jury whether this work deserves to be counted as several submissions.
 
@@ -226,7 +237,6 @@ This use case includes two different components:
         anywhere. The \verb|submit_instance| allows the owner to add a
         new challenge at any time.
 
-    \end{lstlisting}
 \end{description}
 
 
@@ -316,7 +326,7 @@ This use case includes two different components:
         is called by the \verb|EulerRoot| contract when the user has
         solved a new problem. The function stores the problem and the
         time of solution in the contract.
-
+\end{enumerate}
 	For internal messages between these contracts, they either check that
 	messages are coming from the unique \verb|EulerRoot| contract, or that they
 	come from pre-computed addresses à la TIP-3.
@@ -365,6 +375,12 @@ problem has been submitted and the corresponding new nonce published.
 
 \section{Pin code reset for forgotten keys}
 \label{section_pincode}
+
+	\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{pincode}
+	\end{figure}
+
 
 In this use case, we use \zksnarks{} to allow users to replace their
 public keys in other contracts, for example multisig wallets. The
@@ -513,21 +529,53 @@ it. See the installation instruction at
 
 \section{Thoughts on three paradigms of \zksnarks{} on blockchains}
 \label{sec_three_paradigms}
-This contest has given us the opportunity to think harder about the categories of uses of \zksnarks{} on blockchains:
+We wish to conclude with some broader considerations. This contest has
+given us the opportunity to think harder about the categories of uses
+of \zksnarks{} on blockchains:
 \begin{enumerate}
 	\item Statically checking that someone has some information at their disposal(Euler case)
 	\item Encoding a possibly complex computation in a circuit and challenging a user with an instance of that computation (Sudoku case)
 	\item Using the \zksnark{} as an extension of the blockchain protocol itself (pincode, anonymous transactions, voting protocols)
 \end{enumerate}
 
-Of course, the boundaries between these categories may be blurred, but still they are meaningful. The point of the first category is that the data whose existence we are verifying is inert, static, it was chosen by the verifier according to some human meaning which is completely meaningless to the contract or the blockchain. In the second category, the value whose existence we are verifying has a computational (i.e. mathematical, see Section~\ref{subsec:math_enc}) meaning, and though this computational meaning\footnote{Of course, the answers to the Project Euler problems do have computational meaning ultimately, but no program is provided to encode the problem or check the solution. This computational meaning is inferred from the english description of the problem by the problem solver.} is not present on the blockchain itself, it is implicitly present in the verification key. Finally, the third category consists in the verification of data which has blockchain-protocol-level computational meaning (such as a public key). The privacy aspect of \zksnarks{}, which is of course the whole point, had initially hidden these distinctions from us.
+Of course, the boundaries between these categories may be blurred, but
+still they are meaningful. The point of the first category is that the
+data whose existence we are verifying is inert, static, it was chosen
+by the verifier according to some human meaning which is completely
+meaningless to the contract or the blockchain. In the second category,
+the value whose existence we are verifying has a computational
+(i.e. mathematical, see Section~\ref{subsec:math_enc}) meaning, and
+though this computational meaning\footnote{Of course, the answers to
+  the Project Euler problems do have computational meaning ultimately,
+  but no program is provided to encode the problem or check the
+  solution. This computational meaning is inferred from the english
+  description of the problem by the problem solver.} is not present on
+the blockchain itself, it is implicitly present in the verification
+key. Finally, the third category consists in the verification of data
+which has blockchain-protocol-level computational meaning (such as a
+public key). The privacy aspect of \zksnarks{}, which is of course the
+whole point, had initially hidden these distinctions from us.
 
-In category 1, the main advantage of \zksnarks{} is to not spoil the fun for other competitors. One must protect oneself from replay attacks (re-using the same zero-knowledge proof as some other competitor in order to pretend one has solved the problem) and brute-forcing the answer.
+In category 1, the main advantage of \zksnarks{} is to not spoil the
+fun for other competitors. One must protect oneself from replay
+attacks (re-using the same zero-knowledge proof as some other
+competitor in order to pretend one has solved the problem) and
+brute-forcing the answer.
 
-In category 2, the point is to guarantee some mathematical properties of a wide range of submitted solutions to a given problem of a known computational nature, when not all of possible instances may be computed in advance. The \emph{zero-knowledge} part may or may not be important, but the \emph{succinct} part may well save some gas for cost-heavy verifications.
+In category 2, the point is to guarantee some mathematical properties
+of a wide range of submitted solutions to a given problem of a known
+computational nature, when not all of possible instances may be
+computed in advance. The \emph{zero-knowledge} part may or may not be
+important, but the \emph{succinct} part may well save some gas for
+cost-heavy verifications.
 
-In category 3, the zero-knowledge part plays a crucial part in preventing man-in-the-middle attacks for security-critical operations such as changing a lost public key in a wallet, or sending an anonymous amount of tokens to an anonymous recipient, or voting without revealing one's ballot.
+In category 3, the zero-knowledge part plays a crucial part in
+preventing man-in-the-middle attacks for security-critical operations
+such as changing a lost public key in a wallet, or sending an
+anonymous amount of tokens to an anonymous recipient, or voting
+without revealing one's ballot.
 
-These three categories may be combined in several ways depending on the purpose.
+These three categories may be combined in several ways depending on
+the purpose.
 
 \end{document}
