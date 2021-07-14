@@ -22,7 +22,7 @@ contract SubsMan is Debot {
     address m_invoker;
     uint256 m_ownerKey;
     uint256 m_serviceKey;
-
+    uint32 debug;
     address m_wallet;
     TvmCell m_args;
     uint32 m_sbHandle;
@@ -100,10 +100,8 @@ contract SubsMan is Debot {
         
     }
 
-    function deployAccount() public {
-        TvmCell body = tvm.encodeBody(
-            SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey
-        );
+    function deployAccount() public view {
+        TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey);
         this.callMultisig(address(this), body, 3 ton, tvm.functionId(checkAccount));
     }
 
@@ -186,15 +184,23 @@ contract SubsMan is Debot {
     }
 
     /// @notice API function.
-    function invokeQuerySubscriptions(uint256 ownerKey) public {
+    function invokeQuerySubscriptions() public {
         m_invokeType = Invoke.QuerySubscriptions;
         m_invoker = msg.sender;
-        TvmCell code = m_subscriptionBaseImage.toSlice().loadRef();
-        Sdk.getAccountsDataByHash(
-            tvm.functionId(setInvites),
-            tvm.hash(code),
-            address.makeAddrStd(-1, 0)
-        );
+ //       TvmCell code = m_subscriptionBaseImage.toSlice().loadRef();
+ //       Sdk.getAccountsDataByHash(
+ //           tvm.functionId(setInvites),
+ //           tvm.hash(code),
+ //           address.makeAddrStd(-1, 0)
+ //       );
+        IonQuerySubscriptions(m_invoker).onQuerySubscriptions();
+    }
+    
+    function _decodeAccountAddress(TvmCell data) internal pure returns (uint256) {
+        // decode invite contract data manually:
+        // pubkey, timestamp, ctor flag, address
+        (uint256 pubkey, , ,) = data.toSlice().decode(uint256, uint64, bool, address);
+        return pubkey;
     }
 
     function setInvites(AccData[] accounts) public view {
@@ -202,7 +208,7 @@ contract SubsMan is Debot {
         for (uint i = 0; i < accounts.length; i++) {
             pubkeys.push(_decodeAccountAddress(accounts[i].data));
         }
-        IonQuerySubscriptions(m_invoker).onQuerySubscriptions(pubkeys);
+       // IonQuerySubscriptions(m_invoker).onQuerySubscriptions(pubkeys);
     }
 
     function returnOnError(Status status) internal view {

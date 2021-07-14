@@ -33,9 +33,8 @@ contract DeployerDebot is Debot {
     function start() public override {
         Menu.select("I can manage your subscriptions", "", [
             MenuItem("Deploy new subscription", "", tvm.functionId(menuDeploySubscription)),
-            MenuItem("Show my subscriptions", "", tvm.functionId(menuShowSubscription)),
+            MenuItem("Show my subscriptions", "", tvm.functionId(menuShowSubscription))
         ]);
-        
     }
 
     function menuDeploySubscription(uint32 index) public {
@@ -57,10 +56,7 @@ contract DeployerDebot is Debot {
 
     function menuShowSubscription(uint32 index) public {
         index;
-        if (m_serviceKey == 0) {
-            Terminal.input(tvm.functionId(setServiceKey), "Enter your public key:", false);
-        }
-        SubsMan(m_subsman).invokeQuerySubscriptions(m_serviceKey);
+        SubsMan(m_subsman).invokeQuerySubscriptions();
     }
 
     function setOwnerKey(string value) public {
@@ -120,11 +116,13 @@ contract DeployerDebot is Debot {
         this.start();
     }
 
-    function onQuerySubscriptions(address[] subscriptions) external {
-        Terminal.print(0, format("You have {} subscriptions:", subscriptions.length));
-        for (uint i = 0; i < subscriptions.length; i++) {
-            Terminal.print(0, format("{}", subscriptions[i]));
-        }
+//    function onQuerySubscriptions(address[] subscriptions) external {
+    function onQuerySubscriptions() external {
+ //       Terminal.print(0, format("You have {} subscriptions:", subscriptions.length));
+        Terminal.print(0, "Callback to debot engine");
+ //       for (uint i = 0; i < subscriptions.length; i++) {
+ //           Terminal.print(0, format("{}", subscriptions[i]));
+ //       }
 
         this.start();
     }

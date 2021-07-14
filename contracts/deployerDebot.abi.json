@@ -34,6 +34,14 @@
 			]
 		},
 		{
+			"name": "menuShowSubscription",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "setOwnerKey",
 			"inputs": [
 				{"name":"value","type":"bytes"}
@@ -91,7 +99,6 @@
 		{
 			"name": "onQuerySubscriptions",
 			"inputs": [
-				{"name":"subscriptions","type":"address[]"}
 			],
 			"outputs": [
 			]
