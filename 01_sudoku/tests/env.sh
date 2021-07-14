@@ -21,4 +21,5 @@ FT="ft --echo"
 export SUDOKU_INSTANCE=simple_instance.in
 export SUDOKU_SOLUTION=solved_instance.in
 export SUDOKU_PROVKEY=provkey.bin
+export SUDOKU_ZIPPED_PROVKEY=provkey.bin.zip
 export SUDOKU_VERIFKEY=verifkey.bin

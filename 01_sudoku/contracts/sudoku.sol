@@ -14,58 +14,77 @@ contract ZKSudoku {
     uint8 constant PROOF_SIZE = 192;
     uint32 constant PI_SIZE = NUM_SQUARES;
     uint8 constant field_element_bytes = 32;
-    address m_owner; // address of the owner manually sending new
+    uint256 m_owner; // address of the owner manually sending new
 		     // instances
-    bytes v_key;
+    bytes v_key; // the verification key
 
-    struct fixed_value {
-	uint8 i;
-	uint8 j;
-	uint8 value;
-    }
+    //    bytes g_zip_provkey; // the proving key, compressed with
+    //    gzip This was not included in the end because the proving
+    //    key is 64 kbytes.
 
-    fixed_value[] m_instance; //the array of fixed instances
+    uint8[][3] m_instance; //the array of fixed instances
 
-    /// @dev checks that a fixed value is legal
+
+function get() public view returns
+    (
+     uint8 num_squares,
+     uint8[][3] current_instance,
+     bytes verifkey
+     )
+{
+    num_squares = NUM_SQUARES;
+    current_instance = m_instance;
+    verifkey = v_key;
+}
+/// @dev checks that a fixed value is legal
     ///   (between 0 and SUDOKU_SIZE)
-    /// @param v: a fixed value for a Sudoku square
-    function check_value(fixed_value v)
+    /// @param i: row index of checked value
+    /// @param j: column index of checked value
+    /// @param value: actual checked value
+    function check_value(uint8 i,uint8 j,uint8 value)
 	private pure returns (bool) {
-	require(v.i < SUDOKU_SIZE &&
-		v.j < SUDOKU_SIZE, WRONG_SIZE);
-	require(v.value <= SUDOKU_SIZE, SUDOKU_FORBIDDEN_VALUE);
-	return true;
-    }
+	if(i < SUDOKU_SIZE &&
+	   j < SUDOKU_SIZE){
+	    if(value <= SUDOKU_SIZE)
+		return true;
+	    else
+		require(false, SUDOKU_FORBIDDEN_VALUE);}
+	else
+	    require(false, WRONG_SIZE);}
 
-    function submit_instance(fixed_value[] instance) public {
-	require(msg.sender == m_owner, MUST_BE_OWNER);
-	tvm.accept ();
+    function submit_instance(uint8[][3] instance) public returns (bool res) {
+
+	require(msg.pubkey() == m_owner, MUST_BE_OWNER);
+	tvm.accept();
 	delete m_instance;
 	for(uint i=0;i<instance.length;i++){
-	    require(check_value(instance[i]));
-	    m_instance.push(instance[i]);
+	    if(check_value(instance[i][0],instance[i][1],instance[i][2]))
+		m_instance.push(instance[i]);
+	    else
+		require(false,SUDOKU_FORBIDDEN_VALUE);
 	}
+	res = true;
     }
 
-    constructor(address owner, bytes v_key_in, fixed_value[] instance) public {
+    constructor(bytes v_key_in, uint8[][3] instance) public {
 	tvm.accept();
-	m_owner = owner;
+	m_owner = msg.pubkey();
 	v_key = v_key_in;
-	for(uint i=0;i<instance.length;i++){
-	    require(check_value(instance[i]));
+	for(uint8 i=0;i<instance.length;i++){
+	    require(check_value(instance[i][0],instance[i][1],instance[i][2]));
 	    m_instance.push(instance[i]);
 	}
     }
 
     // getter for debugging
-    function get_value(uint i) public view returns (fixed_value){
+    function get_value(uint i) public view returns (uint8[3] value){
 	return m_instance[i];
     }
 
 
     // lots of for loops but at least none of this is stored in the
     // contract's memory
-    function pi_from_instance(fixed_value[] instance)
+    function pi_from_instance(uint8[][3] instance)
 	public pure returns (bytes) {
 	uint8[] temp;
 	// initialize all values to zero
@@ -73,10 +92,12 @@ contract ZKSudoku {
 	    temp.push(0);
 	}
 	// input the fixed values from instance
-	for(uint i=0;i<instance.length;i++){
-	    fixed_value fv = instance[i];
-	    require(check_value(fv));
-	    temp[fv.i * SUDOKU_SIZE + fv.j] = fv.value;
+	for(uint k=0;k<instance.length;k++){
+	    uint8 i=instance[k][0];
+	    uint8 j=instance[k][1];
+	    uint8 value=instance[k][3];
+	    require(check_value(i,j,value));
+	    temp[i * SUDOKU_SIZE + j] = value;
 	}
 	string blob_str=(encode_little_endian(PI_SIZE,4));
 	// build the actual encoded primary input

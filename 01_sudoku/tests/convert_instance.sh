@@ -14,7 +14,7 @@ for (( i=0; i <$SUDOKU_SIZE; i++ )); do
 	    else
 		sep=","
 	    fi
-	    res="$res$sep { \"i\" : \"$i\",\"j\" : \"$j\", \"value\" : \"${string:$index:1}\"}"
+	    res="$res$sep [\"$i\",\"$j\",\"${string:$index:1}\"]"
         fi
     done
 done

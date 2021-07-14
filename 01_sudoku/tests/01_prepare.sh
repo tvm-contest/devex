@@ -2,6 +2,6 @@
 
 . ./env.sh
 
-$FT exec -- ../cpp/sudoku-client --sudoku-generate-keys --proving-key-output ${SUDOKU_PROVKEY} --verification-key-output ${SUDOKU_VERIFKEY} || exit 2
+$FT exec -- ../cpp/sudoku-client --sudoku-generate-keys --proving-key-filename ${SUDOKU_PROVKEY} --verification-key-filename ${SUDOKU_VERIFKEY} || exit 2
 
-zip provkey.bin.zip ${SUDOKU_PROVKEY} || exit 2
+zip ${SUDOKU_ZIPPED_PROVKEY} ${SUDOKU_PROVKEY} || exit 2
