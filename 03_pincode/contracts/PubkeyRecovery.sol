@@ -93,7 +93,7 @@ contract PubkeyRecovery is Blueprint {
 
   function RecoverFromPincode( bytes proof,
                                uint256 newkey,
-                               IRecoverablePubkey addr) public
+                               IRecoverablePubkey addr) public view
   {
     (bool verified, ) = Check( proof, newkey );
     require ( verified, EXN_WRONG_PROOF ) ;
