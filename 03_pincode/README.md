@@ -1,5 +1,7 @@
 # Use case: Recoverable Pubkeys with Pincodes
 
+*To see how to test the code, please go to the Testing section at the end of this README.*
+
 The goal of this use-case is to show how zksnarks can be used to
 change the pubkey of a user when he loses his secret key. For that,
 the user must create a specific PubkeyRecovery contract associating a
