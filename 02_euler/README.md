@@ -1,14 +1,18 @@
 # Use case: Euler Problems Contest
 
-The goal of this use-case is to show how Euler problems could be
-submitted on Free TON using zksnarks to prove that a user has a
-solution without disclosing it. Each problem contract contains the top
-10 of the first users submitting a solution, and each user contract
-contains the list of solved problems with time.
+*To see how to test the code, please go to the Testing section at the end of this README.*
+
+
+The goal of this use-case is to show how [Project
+Euler](https://projecteuler.net/) problems could be submitted on Free
+TON using zksnarks to prove that a user has a solution without
+disclosing it. Each problem contract contains the top 10 of the first
+users submitting a solution, and each user contract contains the list
+of solved problems with time.
 
 ## C++ Client Part
 
-The C++ client is located in the `cpp/` directory, and can be build
+The C++ client is located in the `cpp/` directory, and can be built
 with `make` (it will clone a shared version of
 `ton-proof-verification-contest` in the top directory for that).
 It should generate an executable called `euler-client`.
