@@ -12,6 +12,7 @@ abstract contract RecoverablePubkey is IRecoverablePubkey {
   uint8 constant EXN_ALREADY_INITIALIZED = 181 ;
   uint8 constant EXN_WRONG_CODEHASH = 182 ;
   uint8 constant EXN_WRONG_SENDER = 183 ;
+  uint8 constant EXN_TOO_EARLY = 184 ;
 
   uint256 constant PUBKEYRECOVERY_CODEHASH =
     0x%{get-code-hash:contract:tvc:PubkeyRecovery};
@@ -19,18 +20,31 @@ abstract contract RecoverablePubkey is IRecoverablePubkey {
   // code of PubkeyRecovery smart contract
   TvmCell m_PubkeyRecovery_code ;
   // whether the code of PubkeyRecovery smart contract has been initialized
-  bool m_PubkeyRecovery_initialized = false ;
+  uint64 m_PubkeyRecovery_initialized = 0 ;
 
 
   /// @dev Define the code of the PubkeyRecovery contract that will be allowed
   /// to update public keys here
   function SetPubkeyRecoveryCode( TvmCell code ) public
   {
-    require( !m_PubkeyRecovery_initialized, EXN_ALREADY_INITIALIZED );
+    require( m_PubkeyRecovery_initialized == 0, EXN_ALREADY_INITIALIZED );
     require( tvm.hash( code ) == PUBKEYRECOVERY_CODEHASH, EXN_WRONG_CODEHASH );
     tvm.accept();
     m_PubkeyRecovery_code = code ;
-    m_PubkeyRecovery_initialized = true ;
+    m_PubkeyRecovery_initialized = now ;
+  }
+
+  /// @dev This function can be called to empty the
+  /// m_PubkeyRecovery_code, but not earlier than one day after it has
+  /// been set
+  function ResetRecoveryCode() public
+  {
+    require( m_PubkeyRecovery_initialized != 0, EXN_NOT_INITIALIZED );
+    require( now > m_PubkeyRecovery_initialized + 87000, EXN_TOO_EARLY );
+    tvm.accept();
+    TvmCell empty_cell;
+    m_PubkeyRecovery_code = empty_cell ;
+    m_PubkeyRecovery_initialized = 0 ;
   }
 
   /// @dev This function is called by the PubkeyRecovery contract
@@ -41,7 +55,7 @@ abstract contract RecoverablePubkey is IRecoverablePubkey {
   /// @param newkey The pubkey that should replace the old one
   function RecoverPubkey ( uint256 oldkey, uint256 newkey) public override
   {
-    require( m_PubkeyRecovery_initialized, EXN_NOT_INITIALIZED );
+    require( m_PubkeyRecovery_initialized != 0, EXN_NOT_INITIALIZED );
     TvmCell stateInit = tvm.buildStateInit({
       pubkey: oldkey,
       code: m_PubkeyRecovery_code

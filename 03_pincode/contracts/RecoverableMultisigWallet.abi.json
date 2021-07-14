@@ -153,6 +153,13 @@
 			]
 		},
 		{
+			"name": "ResetRecoveryCode",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "RecoverPubkey",
 			"inputs": [
 				{"name":"oldkey","type":"uint256"},
