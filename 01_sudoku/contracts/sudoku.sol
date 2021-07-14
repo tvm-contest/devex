@@ -76,12 +76,6 @@ function get() public view returns
 	}
     }
 
-    // getter for debugging
-    function get_value(uint i) public view returns (uint8[3] value){
-	return m_instance[i];
-    }
-
-
     // lots of for loops but at least none of this is stored in the
     // contract's memory
     function pi_from_instance(uint8[][3] instance)
@@ -95,7 +89,7 @@ function get() public view returns
 	for(uint k=0;k<instance.length;k++){
 	    uint8 i=instance[k][0];
 	    uint8 j=instance[k][1];
-	    uint8 value=instance[k][3];
+	    uint8 value=instance[k][2];
 	    require(check_value(i,j,value));
 	    temp[i * SUDOKU_SIZE + j] = value;
 	}

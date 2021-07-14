@@ -239,9 +239,9 @@ blueprint<curves::bls12<381>::scalar_field_type> build_blueprint(bool with_insta
 	    }
 	    else
 	      {
-		std::cout << "Solution valid: value at indices "
-			<< i << " and " << j
-			  << " is " << sudoku_instance[index] << std::endl;;
+		// std::cout << "Solution valid: value at indices "
+		// 	<< i << " and " << j
+		// 	  << " is " << sudoku_instance[index] << std::endl;;
 		bp.val(free_x_i_j) = sudoku_instance[index];
 		bp.val(x_i_j) = sudoku_solution[index];
 	      }
@@ -262,10 +262,10 @@ blueprint<curves::bls12<381>::scalar_field_type> build_blueprint(bool with_insta
 
     g.generate_r1cs_witness();
 
-    std::cout << "primary input size" << bp.primary_input().size()<< std::endl;;
-    std::cout << "auxiliary input size" << bp.auxiliary_input().size()<< std::endl;;
-    std::cout << "num_inputs" << bp.num_inputs()<< std::endl;;
-    std::cout << "num_variables" << bp.num_variables() << std::endl;;
+    // std::cout << "primary input size" << bp.primary_input().size()<< std::endl;;
+    // std::cout << "auxiliary input size" << bp.auxiliary_input().size()<< std::endl;;
+    // std::cout << "num_inputs" << bp.num_inputs()<< std::endl;;
+    // std::cout << "num_variables" << bp.num_variables() << std::endl;;
     /*std::cout << "coucou2" << std::endl;
     r1cs_variable_assignment<field_type> full_variable_assignment = bp.primary_input();
     std::cout << "coucou3" << std::endl;
