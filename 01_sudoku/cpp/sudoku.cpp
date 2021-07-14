@@ -340,8 +340,8 @@ int generate_keys(std::string proving_key_output_filename,std::string verificati
 //   return data;
 // }
 
-typename scheme_type::proving_key_type fetch_proving_key(){
-  std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk("sudoku_proving_key.bin");
+typename scheme_type::proving_key_type fetch_proving_key(std::string proving_key_filename){
+  std::vector<uint8_t> proving_key_byteblob = read_vector_from_disk(proving_key_filename);
 
   // this line is necessary but I don't understand it (I guess it's a
   // default value?)
@@ -357,8 +357,8 @@ typename scheme_type::proving_key_type fetch_proving_key(){
   return proving_key;
 }
 
-typename scheme_type::verification_key_type fetch_verification_key(){
-  std::vector<uint8_t> verification_key_byteblob = read_vector_from_disk("sudoku_verification_key.bin");
+typename scheme_type::verification_key_type fetch_verification_key(std::string verification_key_filename){
+  std::vector<uint8_t> verification_key_byteblob = read_vector_from_disk(verification_key_filename);
 
   // this line is necessary but I don't understand it
   nil::marshalling::status_type processingStatus = nil::marshalling::status_type::success;
@@ -375,12 +375,12 @@ typename scheme_type::verification_key_type fetch_verification_key(){
 
 
 
-void prove(std::vector<int> sudoku_instance, std::vector<int> sudoku_solution){
+void prove(std::vector<int> sudoku_instance, std::vector<int> sudoku_solution,std::string proving_key_filename, std::string verification_key_filename){
 
   typename scheme_type::proving_key_type proving_key =
-    fetch_proving_key();
+    fetch_proving_key(proving_key_filename);
   typename scheme_type::verification_key_type verification_key =
-    fetch_verification_key();
+    fetch_verification_key(verification_key_filename);
 
   using curve_type = curves::bls12<381>;
   using field_type = typename curve_type::scalar_field_type;
@@ -391,7 +391,7 @@ void prove(std::vector<int> sudoku_instance, std::vector<int> sudoku_solution){
 
 
 
-  std::cout << "coucou3" << std::endl;
+  /*std::cout << "coucou3" << std::endl;
   //std::cout << bp.auxiliary_input().begin() << std::endl;
   std::cout << "coucou4" << std::endl;
   r1cs_auxiliary_input<field_type> aux = bp.auxiliary_input();
@@ -416,7 +416,7 @@ void prove(std::vector<int> sudoku_instance, std::vector<int> sudoku_solution){
     if(!(ares * bres == cres)){
       std::cout << "not equal" << std::endl;
     }
-  }
+    }*/
 
   const r1cs_constraint_system<field_type> constraint_system = bp.get_constraint_system();
 

@@ -76,7 +76,18 @@ this contest (Section~\ref{sec:contributions}). Finally, we discuss the three pa
 
 	\item[Compilation time:] The long compilation time of the repository provided was a major obstacle in our progression. We would suggest trying to make it shorter for future contests.
 
-	\item[Marshalling and memory corruption:] Because of a memory corruption error in the marshalling of the verification key, we were unable to do a full 9 by 9 Sudoku, restricting ourselves to 4 by 4. All our code is generic (it is generated from an OCaml program which takes as a parameter the value $n$ such that the Sudoku is $n^2$ by $n^2$). We were told that after the contest, a more robust marshalling library would be provided. In any case we would be glad to discuss this issue with the Nil foundation team to give users the full Sudoku experience! In the meantime, a 4 by 4 Sudoku is sufficient to get a sense of the dynamics of \zksnark-based Sudoku.
+	\item[Marshalling and memory corruption:] Because of a memory
+          corruption error in the marshalling function (in the code
+          provided for the contests) of the verification key, we were
+          unable to do a full 9 by 9 Sudoku, restricting ourselves to
+          4 by 4. All our code is generic (it is generated from an
+          OCaml program which takes as a parameter the value $n$ such
+          that the Sudoku is $n^2$ by $n^2$). We were told that after
+          the contest, a more robust marshalling library would be
+          provided. In any case we would be glad to discuss this issue
+          with the Nil foundation team to give users the full Sudoku
+          experience! In the meantime, a 4 by 4 Sudoku is sufficient
+          to get a sense of the dynamics of \zksnark-based Sudoku.
 
 	\item[Keys on contracts: ] For all of our smart contracts, we provided, along with the verification key as needed by the \verb|vergroth16| instruction, the proving key (in a zipped) on the smart contract. This enables users to easily find it in order to generate their proofs. In case the contract deployer should decide to keep the possibility of changing the verification and proving keys of the problem(s), this also makes it easiest to follow changes before submitting a solution.
 
@@ -106,7 +117,11 @@ this contest (Section~\ref{sec:contributions}). Finally, we discuss the three pa
 
 Let's start with our first toy use case. Suppose you want to set up a Sudoku problem for your students to solve, so that upon completion they receive some token. The issue is that once any student has solved it, the solution sits on the blockchain for all to see. All the other students can cheat by copying it, instead of doing the work by themselves, which defeats the whole purpose.
 
-As mentioned in Section \ref{subsec:general_remarks}, we had to restrict ourselves to a 4 by 4 Sudoku grid, even though our code generator is generic in the grid size. This is because the marshalling function on the 9 by 9 code produced a memory corruption error.
+As mentioned in Section \ref{subsec:general_remarks}, we had to
+restrict ourselves to a 4 by 4 Sudoku grid, even though our code
+generator is generic in the grid size. This is because the marshalling
+function (in the codep rovided for the contest) on the 9 by 9 code
+produced a memory corruption error.
 
 \subsection{Mathematical encoding}
 \label{subsec:math_enc}
@@ -143,7 +158,11 @@ The last equation, by forcing the product of $n^2$ integers between 1 and $n^2$ 
 This use case includes two different components:
 
 \begin{description}
-	\item[The cli:] it is a C++ program linked to the Blueprint \zksnarks{} library. It can be used in two different ways:
+\item[The cli:] it is a C++ program linked to the Blueprint \zksnarks{} library. It can be used in two different ways:
+
+  TODO: mettre un exemple
+  copier coller la commande
+
 	\begin{itemize}
 		\item To create the original proving and verification keys. This step is independent of any given Sudoku instance and should only be done once.
 		\item To generate a proof given an instance and a solution. The instance is given as a text file such as
@@ -171,7 +190,11 @@ This use case includes two different components:
     function submit(bytes proof)
         public view returns (bool res, string blob_str)
     \end{lstlisting}
-    It will check the input proof against the verification key \lstinline[language=Solidity]|v_key| and the current instance \lstinline[language=Solidity]|m_instance|, both local to the contract. This instance is stored as an array of \lstinline[language=Solidity]|fixed_value|:
+    It will check the input proof against the verification key
+    \lstinline[language=Solidity]|v_key| and the current instance
+    \lstinline[language=Solidity]|m_instance|, which are both local to
+    the contract and set in the constructor. This instance is stored
+    as an array of \lstinline[language=Solidity]|fixed_value|:
     \begin{lstlisting}[language=Solidity]
     struct fixed_value {
       uint8 i;
@@ -181,12 +204,6 @@ This use case includes two different components:
 
     \end{lstlisting}
 \end{description}
-
-\subsection{Code}
-\label{subsec:sudoku_code}
-
-TODO: code du sudoku ici
-
 
 
 \section{Project Euler}
@@ -260,7 +277,8 @@ improvements:
   replaced several times;
 \item The user does not need to create the new public key ahead of
   time. Instead, he can create it when he has lost the former one,
-  decreasing the likelihood of losing the associated secret key also;
+
+  decreasing the likelihood of losing the associated secret key also.
 \end{itemize}
 
 \subsection{Technical solution}
@@ -310,12 +328,10 @@ pincode-client prove "my pass phrase" "PUBKEY_AS_HEX_NUMBER"
   benefit from the {\tt PubkeyRecovery} mechanism. The contract
   provides two main functions:
   \begin{itemize}
-  \item An external function \lstinline{SetPubkeyRecoveryCode(TvmCell
-    code)} to define the code of the \lstinline{PubkeyRecovery} smart
+  \item An external function \lstinline{SetPubkeyRecoveryCode(TvmCellcode)} to define the code of the \lstinline{PubkeyRecovery} smart
     contract. Because the code hash is known (inlined in the code),
     anybody can call this function with the correct code.
-  \item An external function \lstinline{RecoverPubkey(uint256 oldkey,
-    uint256 newkey)} that can only be called by a
+  \item An external function \lstinline{RecoverPubkey(uint256 oldkey,uint256 newkey)} that can only be called by a
     \lstinline{PubkeyRecovery} smart contract. The function verifies
     that the address belongs to such a contract before calling a
     function \lstinline{recover\_pubkey(oldkey, newkey)}, that the

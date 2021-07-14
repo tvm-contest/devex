@@ -1,8 +1,11 @@
 #!/bin/bash
 
 . ./env.sh
+INSTANCE=$(./convert_instance.sh initial_instance.in)
 
-$FT contract deploy sudoku --deployer user0 '{ "owner" : "%{account:address:user0}", "v_key_in" : "%{hex:file:'"${SUDOKU_VERIFKEY}"'}", "instance" : [{ "i" : "3", "j" : "3", "value" : "4"}]}' -f || exit 2
+printf "Deploying Sudoku contract with initial instance:\n\n$(cat initial_instance.in)\n\n"
+
+$FT contract deploy sudoku --credit 100 --deployer user0 '{ "v_key_in" : "%{hex:file:'"${SUDOKU_VERIFKEY}"'}",  "instance" : ['"${INSTANCE}"']}' -f || exit 2
 
 $FT account info sudoku
 
