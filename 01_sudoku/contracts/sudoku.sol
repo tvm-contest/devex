@@ -89,7 +89,7 @@ function get() public view returns
 	for(uint k=0;k<instance.length;k++){
 	    uint8 i=instance[k][0];
 	    uint8 j=instance[k][1];
-	    uint8 value=instance[k][3];
+	    uint8 value=instance[k][2];
 	    require(check_value(i,j,value));
 	    temp[i * SUDOKU_SIZE + j] = value;
 	}
