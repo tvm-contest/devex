@@ -9,6 +9,6 @@ $FT call --local euler_problem get
 
 # wrong solution:
 
-$FT exec -- ../cpp/euler-client prove ${EULER_PROBLEM} ${EULER_NONCE}  ${EULER_SOLUTION}0 '%{account:pubkey:user3}' && echo OK
+cmdk ../cpp/euler-client prove ${EULER_PROBLEM} ${EULER_NONCE}  ${EULER_SOLUTION}0 $($FT output '%{account:pubkey:user3}') 
 
 $FT call --local euler_problem get    

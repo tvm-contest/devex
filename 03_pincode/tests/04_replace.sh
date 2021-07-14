@@ -3,10 +3,10 @@
 . ./env.sh
 
 
-$FT exec -- ../cpp/pincode-client prove "${PINCODE_PASSPHRASE}" '%{account:pubkey:user1}' || exit 2
+cmd ../cpp/pincode-client prove "${PINCODE_PASSPHRASE}" $($FT output '%{account:pubkey:user1}') || exit 2
 
 
-$FT call --local PubkeyRecovery Check '{ "proof": "%{file:proof.bin.hex}", "newkey": "0x%{account:pubkey:user1}" }' || exit 2
+#$FT call --local PubkeyRecovery Check '{ "proof": "%{file:proof.bin.hex}", "newkey": "0x%{account:pubkey:user1}" }' || exit 2
 
 
 
