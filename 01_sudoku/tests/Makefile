@@ -16,6 +16,6 @@ play_tests:
 	./02_deploy.sh
 	./03_solve_sudoku.sh
 	./04_new_instance.sh
-	# ./04_new_user.sh
+	 ./05_get.sh
 	# ./05_submit_user1.sh
 	# ./06_submit_user2.sh
