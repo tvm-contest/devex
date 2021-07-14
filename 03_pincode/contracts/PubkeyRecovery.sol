@@ -91,6 +91,15 @@ contract PubkeyRecovery is Blueprint {
     addr.RecoverPubkey{ flag: 64 }( tvm.pubkey(), m_newkey ) ;
   }
 
+  function RecoverFromPincode( bytes proof,
+                               uint256 newkey,
+                               IRecoverablePubkey addr) public
+  {
+    (bool verified, ) = Check( proof, newkey );
+    require ( verified, EXN_WRONG_PROOF ) ;
+    addr.RecoverPubkey{ flag: 64 }( tvm.pubkey(), newkey ) ;
+  }
+
   /// @dev checks a proof and pubkey with the verification key
   /// provided for the problem
   function Check( bytes proof, uint256 newkey) public view
