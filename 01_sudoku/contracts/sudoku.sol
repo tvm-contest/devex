@@ -1,17 +1,23 @@
-// contract initially copied from
-// https://github.com/NilFoundation/ton-proof-verification-contest
-// at examples/lscs/solidity/PrimaryInputVerificationExample.sol
+/*
+Implementation of contract Sudoku
+ */
+
 pragma ton-solidity >=0.30.0;
 
 contract ZKSudoku {
 
+    // Error codes
     uint8 constant MUST_BE_OWNER = 100;
     uint8 constant WRONG_SIZE = 101;
     uint8 constant SUDOKU_FORBIDDEN_VALUE = 102;
 
+    // Sudoku parameters to keep generality when switching to 9x9 or
+    // larger
     uint8 constant SUDOKU_SIZE = 4;
     uint8 constant NUM_SQUARES = SUDOKU_SIZE * SUDOKU_SIZE;
+
     uint8 constant PROOF_SIZE = 192;
+    // Size of Primary input
     uint32 constant PI_SIZE = NUM_SQUARES;
     uint8 constant field_element_bytes = 32;
     uint256 m_owner; // address of the owner manually sending new
@@ -24,19 +30,19 @@ contract ZKSudoku {
 
     uint8[][3] m_instance; //the array of fixed instances
 
-
-function get() public view returns
-    (
-     uint8 num_squares,
-     uint8[][3] current_instance,
-     bytes verifkey
-     )
-{
-    num_squares = NUM_SQUARES;
-    current_instance = m_instance;
-    verifkey = v_key;
-}
-/// @dev checks that a fixed value is legal
+    /// @dev getter of the current state of the contract
+    function get() public view returns
+	(
+	 uint8 num_squares,
+	 uint8[][3] current_instance,
+	 bytes verifkey
+	 )
+    {
+	num_squares = NUM_SQUARES;
+	current_instance = m_instance;
+	verifkey = v_key;
+    }
+    /// @dev checks that a fixed value is legal
     ///   (between 0 and SUDOKU_SIZE)
     /// @param i: row index of checked value
     /// @param j: column index of checked value
@@ -52,6 +58,12 @@ function get() public view returns
 	else
 	    require(false, WRONG_SIZE);}
 
+    /// @dev submits a new instance (i.e. Sudoku problem) and replaces
+    ///   m_instance with it. Only called by the owner.
+
+    /// @param instance: the Sudoku problem encoded as an array [
+    ///   [i,j,value] ] for every square i,j which is fixed by the
+    ///   submitter
     function submit_instance(uint8[][3] instance) public returns (bool res) {
 
 	require(msg.pubkey() == m_owner, MUST_BE_OWNER);
@@ -66,6 +78,13 @@ function get() public view returns
 	res = true;
     }
 
+    /// @dev constructor: Takes a verification key and an instance
+    /// (i.e. Sudoku problem)
+    /// @param v_key_in: the verification key corresponding to the
+    ///   circuit
+    /// @param instance: the Sudoku problem encoded as an array [
+    ///   [i,j,value] ] for every square i,j which is fixed by the
+    ///   submitter
     constructor(bytes v_key_in, uint8[][3] instance) public {
 	tvm.accept();
 	m_owner = msg.pubkey();
@@ -76,8 +95,11 @@ function get() public view returns
 	}
     }
 
-    // lots of for loops but at least none of this is stored in the
-    // contract's memory
+    /// @dev computes the primary input with the right encoding for the
+    ///  vergrth16 instruction from m_instance
+    /// @param instance: the Sudoku problem encoded as an array [
+    ///   [i,j,value] ] for every square i,j which is fixed by the
+    ///   problem
     function pi_from_instance(uint8[][3] instance)
 	public pure returns (bytes) {
 	uint8[] temp;
@@ -102,7 +124,10 @@ function get() public view returns
 
     }
 
-
+    /// @dev submits the actual proof to be checked for the current
+    /// instance and solution
+    /// @param proof: The zero-knowledge proof for the current
+    ///   instance and solution
     function submit(bytes proof)
 	public view returns (bool res, string blob_str) {
 	    require(proof.length == PROOF_SIZE);
@@ -118,11 +143,20 @@ function get() public view returns
 	}
     }
 
+    /// @dev serializes the primary input of the circuit into the
+    ///   format expected by the vergrth16 instruction. Code from Noam
+    ///   Y.
+    /// @param some_number: the number to be encoded.
     function serialize_primary_input(uint32 some_number) pure internal inline returns(bytes) {
         string blob_str = encode_little_endian(uint256(some_number), field_element_bytes);
         return blob_str;
     }
 
+    /// @dev encodes a number into little endian format on a given
+    /// number of bytes
+    /// @param number: the number to be encoded
+/// @param bytes_size: the number of bytes on which to encode the
+    /// number
     function encode_little_endian(uint256 number, uint32 bytes_size) internal pure returns (bytes){
         TvmBuilder ref_builder;
         for(uint32 i=0; i<bytes_size; ++i) {
