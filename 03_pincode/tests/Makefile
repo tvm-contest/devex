@@ -10,6 +10,7 @@ play_tests:
 	./03_get.sh
 	./04_replace.sh
 	./05_update_multisig.sh
+	./06_update_multisig.sh
 
 clean:
 	rm -f *~ *.bin *.hex

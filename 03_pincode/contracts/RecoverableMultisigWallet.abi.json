@@ -12,6 +12,30 @@
 			]
 		},
 		{
+			"name": "SetPubkeyRecoveryCode",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "ResetRecoveryCode",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "RecoverPubkey",
+			"inputs": [
+				{"name":"oldkey","type":"uint256"},
+				{"name":"newkey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "acceptTransfer",
 			"inputs": [
 				{"name":"payload","type":"bytes"}
@@ -142,30 +166,6 @@
 			],
 			"outputs": [
 				{"components":[{"name":"id","type":"uint64"},{"name":"index","type":"uint8"},{"name":"signs","type":"uint8"},{"name":"confirmationsMask","type":"uint32"},{"name":"creator","type":"uint256"},{"name":"codeHash","type":"uint256"},{"name":"custodians","type":"uint256[]"},{"name":"reqConfirms","type":"uint8"}],"name":"updates","type":"tuple[]"}
-			]
-		},
-		{
-			"name": "SetPubkeyRecoveryCode",
-			"inputs": [
-				{"name":"code","type":"cell"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "ResetRecoveryCode",
-			"inputs": [
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "RecoverPubkey",
-			"inputs": [
-				{"name":"oldkey","type":"uint256"},
-				{"name":"newkey","type":"uint256"}
-			],
-			"outputs": [
 			]
 		}
 	],

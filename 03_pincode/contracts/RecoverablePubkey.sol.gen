@@ -15,7 +15,7 @@ abstract contract RecoverablePubkey is IRecoverablePubkey {
   uint8 constant EXN_TOO_EARLY = 184 ;
 
   uint256 constant PUBKEYRECOVERY_CODEHASH =
-    0x43c29d6556483d0c458c9814ed10f59293f6ac73ed7c115096fae9969d79e342;
+    0x0cdc87df6fd5e296c36f82663cb5eafbdba6f4de2d931e9ebc705dbe9aa4da69;
 
   // code of PubkeyRecovery smart contract
   TvmCell m_PubkeyRecovery_code ;

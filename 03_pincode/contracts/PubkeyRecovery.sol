@@ -68,6 +68,11 @@ contract PubkeyRecovery is Blueprint {
       m_zip_provkey = zip_provkey ;
     }
 
+
+  /// @dev This function is used to change the circuit, by providing a
+  /// new verification key and a new compressed proving key
+  /// @param verifkey : the verification key, from the 'verifkey.bin' file
+  /// @param zip_provkey : the proving key, from the 'provkey.bin' file
   function UpdatePincode( bytes verifkey, bytes zip_provkey ) public
   {
     require( msg.sender.value == 0, EXN_AUTH_FAILED );
@@ -78,6 +83,12 @@ contract PubkeyRecovery is Blueprint {
     m_zip_provkey = zip_provkey ;
   }
 
+  /// @dev This function checks a zksnarks proof associated with a new
+  /// public key, and, if the check succeeds, the new key is
+  /// activated. Further calls to RecoverPubkey() can be used to
+  /// propagate the activated key to other contracts.
+  /// @param proof: the zksnarks proof, from the 'proof.bin' file
+  /// @param newkey: the new public key to use
   function SetFromPincode( bytes proof, uint256 newkey) public
   {
     (bool verified, ) = Check( proof, newkey );
@@ -85,12 +96,28 @@ contract PubkeyRecovery is Blueprint {
     m_newkey = newkey ;
   }
 
+  /// @dev This function checks that a new public key has been
+  /// activated, and propagates it to the contract whose address is
+  /// provided in argument
+  /// @param addr: the address of the contract to update
   function RecoverPubkey( IRecoverablePubkey addr ) public view
   {
+    uint64 value = 0 ;
     require( m_newkey != 0, EXN_NEWKEY_NOT_SET );
-    addr.RecoverPubkey{ flag: 64 }( tvm.pubkey(), m_newkey ) ;
+    if( msg.pubkey() == m_newkey ){
+      tvm.accept();
+      value = 0.1 ton;
+    }
+    addr.RecoverPubkey{ value:value, flag: 64 }( tvm.pubkey(), m_newkey ) ;
   }
 
+  /// @dev This function checks a zksnarks proof associated with a new
+  /// public key, and, if the check succeeds, it propagate the new key
+  /// to the contract whose address is given, without activating it.
+  /// This function is useful if you only want to update one contract.
+  /// @param proof: the zksnarks proof, from the 'proof.bin' file
+  /// @param newkey: the new public key to use
+  /// @param addr: the address of the contract to update
   function RecoverFromPincode( bytes proof,
                                uint256 newkey,
                                IRecoverablePubkey addr) public view
@@ -137,6 +164,9 @@ contract PubkeyRecovery is Blueprint {
     }
   }
 
+  /// @dev This function can be used to change the backup key, using either
+  /// the original public key or the new activated key.
+  /// @param backup_key: the new backup key
   function UpdateBackupKey( uint256 backup_key ) public
   {
     // cannot be called from another contract, so not carrying tokens
@@ -148,6 +178,10 @@ contract PubkeyRecovery is Blueprint {
     m_backup_key = backup_key ;
   }
 
+  /// @dev This function is used to activate the backup key as a
+  /// replacement for the original key. The backup key skips the 
+  /// pincode verification, but must be set up before losing the
+  /// secret key.
   function SetFromBackupKey() public
   {
     // cannot be called from another contract, so not carrying tokens

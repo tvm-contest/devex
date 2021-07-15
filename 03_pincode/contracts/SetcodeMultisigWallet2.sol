@@ -208,7 +208,7 @@ contract MultisigWallet is IAccept {
     }
 
     /// @dev Checks that custodian with supplied public key exists in custodian set.
-    function _findCustodian(uint256 senderKey) inline private view returns (uint8) {
+    function _findCustodian(uint256 senderKey) internal view returns (uint8) {
       optional(uint8) opt_index = m_custodians.fetch(senderKey);
       require( opt_index.hasValue() , 100);
       return opt_index.get() ;
