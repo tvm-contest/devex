@@ -27,6 +27,23 @@ also attached to the user, in the sense that another user cannot
 replay the solution for himself, as the solution is attached to the
 user's pubkey.
 
+## Preliminaries
+
+Before you run our code, you need to be able to compile the contest
+repository
+(https://github.com/NilFoundation/ton-proof-verification-contest). On
+Ubuntu 21.04, it should be enough to have installed the following
+packages: `git make cmake g++ libboost-all-dev` (make sure that
+libboost has version at least 1.74). Pulling and compiling the
+repository will be done automatically by our test scripts, but it will
+fail if there are missing packages.
+
+You also very likely will want to install our in-house Freeton Wallet
+`ft`. The easiest way to install it is through docker
+(https://hub.docker.com/r/ocamlpro/ft), or alternatively with opam
+(https://ocamlpro.github.io/freeton_wallet/sphinx/install.html#build-and-install). The
+scripts assume the `ft` executable lives somewhere in your path.
+
 ## Architecture
 
 Each use-case contains:
