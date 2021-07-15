@@ -114,3 +114,7 @@ and finally display the updated list of custodians. Finally,
 `06_update_multisig.sh` does the same, but uses an external call instead
 of an internal call for `RecoverPubkey()`.
 
+## Deployment
+
+The `deployment/` directory contains a deployment of this use case
+on the testnet network of Nil Foundation.

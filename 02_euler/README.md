@@ -100,3 +100,7 @@ solution (script `06_submit_user2.sh`) while `user3` fails to replay
 the solution of `user2` and cannot generate a proof for a wrong
 solution.
 
+## Deployment
+
+The `deployment/` directory contains a deployment of this use case
+on the testnet network of Nil Foundation.

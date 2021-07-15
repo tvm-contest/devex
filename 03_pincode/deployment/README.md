@@ -26,7 +26,7 @@ The C++ client verifies that the proof is correct, but it is also possible
 to check it using the NilFoundation version of 'tonos-cli':
 
 ```
-tonos-cli run 0:7df38b1ba52798ee15118a0f8697e90c2bed6ebea141b2dacc0975e2d2e2f7ec vergrth16 "{ \"value\": \"$(cat big_proof.bin.hex)\" }" --abi ../contracts/PubkeyRecovery.abi.json
+tonos-cli --url https://net.freeton.nil.foundation/ run 0:7df38b1ba52798ee15118a0f8697e90c2bed6ebea141b2dacc0975e2d2e2f7ec vergrth16 "{ \"value\": \"$(cat big_proof.bin.hex)\" }" --abi ../contracts/PubkeyRecovery.abi.json
 ```
 
 or through 'ft':
@@ -40,7 +40,7 @@ ft call --local pincode_account vergrth16 '{ "value": "%{file:big_proof.bin.hex}
 It is also possible to activate the new pubkey:
 
 ```
-tonos-cli call 0:7df38b1ba52798ee15118a0f8697e90c2bed6ebea141b2dacc0975e2d2e2f7ec SetFromPincode "{ \"proof\": \"$(cat proof.bin.hex)\", \"newkey\": \"0x$(cat my-pubkey.hex)\" }" --abi ../contracts/PubkeyRecovery.abi.json
+tonos-cli --url https://net.freeton.nil.foundation/ call 0:7df38b1ba52798ee15118a0f8697e90c2bed6ebea141b2dacc0975e2d2e2f7ec SetFromPincode "{ \"proof\": \"$(cat proof.bin.hex)\", \"newkey\": \"0x$(cat my-pubkey.hex)\" }" --abi ../contracts/PubkeyRecovery.abi.json
 ```
 
 or through 'ft':

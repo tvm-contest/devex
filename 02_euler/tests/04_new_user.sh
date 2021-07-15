@@ -2,7 +2,7 @@
 
 . ./env.sh
 
-$FT multisig transfer 1 --from user1 --to EulerRoot new_user '{ "pubkey": "0x%{account:pubkey:user1}" }' --wait || exit 2
+$FT multisig transfer 5 --from user1 --to EulerRoot new_user '{ "pubkey": "0x%{account:pubkey:user1}" }' --wait || exit 2
 
 rm -f user.addr
 $FT call --local EulerRoot user_address '{ "pubkey": "0x%{account:pubkey:user1}" }' --subst @%{res:addr} --output user.addr || exit 2

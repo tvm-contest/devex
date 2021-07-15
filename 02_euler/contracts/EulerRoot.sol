@@ -81,7 +81,7 @@ contract EulerRoot is IEulerRoot, RecoverablePubkey {
   {
     require( msg.value >= 1 ton, EXN_AUTH_FAILED );
     addr = new EulerUser {
-      value: 0.5 ton,
+      value: msg.value - 0.1 ton,
       pubkey: pubkey ,
       code: g_user_code ,
       varInit: {
@@ -138,7 +138,7 @@ contract EulerRoot is IEulerRoot, RecoverablePubkey {
   ///   'proof.bin'
   function submit( uint32 problem,
                    bytes proof,
-                   uint256 pubkey) public view 
+                   uint256 pubkey) public view override
   {
     address addr = problem_address( problem );
     EulerProblem( addr ).submit
