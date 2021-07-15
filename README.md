@@ -3,7 +3,7 @@
 By Thomas Sibut-Pinote and Fabrice Le Fessant at OCamlPro.
 
 A detailed description of this submission is available in the
-"submission" sub-directory ([PDF](submission/submission.pdf)
+"submission" sub-directory ([PDF](submission/submission.pdf)).
 
 ## Introduction
 
