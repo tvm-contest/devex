@@ -117,13 +117,11 @@ contract DeployerDebot is Debot {
     }
 
 //    function onQuerySubscriptions(address[] subscriptions) external {
-    function onQuerySubscriptions() external {
- //       Terminal.print(0, format("You have {} subscriptions:", subscriptions.length));
-        Terminal.print(0, "Callback to debot engine");
- //       for (uint i = 0; i < subscriptions.length; i++) {
- //           Terminal.print(0, format("{}", subscriptions[i]));
- //       }
-
+    function onQuerySubscriptions(uint256[] pubkeys) external {
+        Terminal.print(0, format("You have {} subscriptions", pubkeys.length));
+        for (uint i = 0; i < pubkeys.length; i++) {
+            Terminal.print(0, format("{}", pubkeys[i]));
+        }
         this.start();
     }
 

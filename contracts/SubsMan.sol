@@ -88,8 +88,8 @@ contract SubsMan is Debot {
             varInit: { serviceKey: serviceKey },
             contr: SubsBase
         });
-
-        image = newImage;
+        TvmCell state = tvm.insertPubkey(newImage, serviceKey);
+        image = state;
     }
 
     function deployAccountHelper(uint256 ownerKey, uint256 serviceKey) public view {
@@ -104,7 +104,7 @@ contract SubsMan is Debot {
         TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey);
         this.callMultisig(address(this), body, 3 ton, tvm.functionId(checkAccount));
     }
-
+ 
     function checkAccount() public {
         address account = address(tvm.hash(buildAccount(m_ownerKey, m_serviceKey)));
         Sdk.getAccountCodeHash(tvm.functionId(checkHash), account);
@@ -187,13 +187,12 @@ contract SubsMan is Debot {
     function invokeQuerySubscriptions() public {
         m_invokeType = Invoke.QuerySubscriptions;
         m_invoker = msg.sender;
- //       TvmCell code = m_subscriptionBaseImage.toSlice().loadRef();
- //       Sdk.getAccountsDataByHash(
- //           tvm.functionId(setInvites),
- //           tvm.hash(code),
- //           address.makeAddrStd(-1, 0)
- //       );
-        IonQuerySubscriptions(m_invoker).onQuerySubscriptions();
+        TvmCell code = m_subscriptionBaseImage.toSlice().loadRef();
+        Sdk.getAccountsDataByHash(
+            tvm.functionId(setInvites),
+            tvm.hash(code),
+            address.makeAddrStd(-1, 0)
+        );
     }
     
     function _decodeAccountAddress(TvmCell data) internal pure returns (uint256) {
@@ -208,7 +207,7 @@ contract SubsMan is Debot {
         for (uint i = 0; i < accounts.length; i++) {
             pubkeys.push(_decodeAccountAddress(accounts[i].data));
         }
-       // IonQuerySubscriptions(m_invoker).onQuerySubscriptions(pubkeys);
+       IonQuerySubscriptions(m_invoker).onQuerySubscriptions(pubkeys);
     }
 
     function returnOnError(Status status) internal view {
