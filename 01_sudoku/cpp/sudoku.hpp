@@ -26,20 +26,23 @@
 #ifndef CRYPTO3_BLUEPRINT_SUDOKU_TEST_COMPONENT_HPP
 #define CRYPTO3_BLUEPRINT_SUDOKU_TEST_COMPONENT_HPP
 
-#include <nil/crypto3/zk/snark/component.hpp>
+#include <nil/crypto3/zk/components/component.hpp>
 
-#include <nil/crypto3/zk/snark/blueprint.hpp>
-#include <nil/crypto3/zk/snark/blueprint_variable.hpp>
-#include <nil/crypto3/zk/snark/components/basic_components.hpp>
+#include <nil/crypto3/zk/components/blueprint.hpp>
+#include <nil/crypto3/zk/components/blueprint_variable.hpp>
+// #include <nil/crypto3/zk/snark/components/basic_components.hpp>
 
 #include <nil/crypto3/zk/snark/relations/constraint_satisfaction_problems/r1cs.hpp>
 
-using namespace nil::crypto3::zk::snark;
+
 using namespace nil::crypto3;
-// using namespace nil::crypto3::algebra;
+using namespace nil::crypto3::zk;
+using namespace nil::crypto3::zk::components;
+using namespace nil::crypto3::algebra;
+using namespace nil::crypto3::zk::snark;
 
 template<typename FieldType>
-class test_component : public nil::crypto3::zk::snark::components::component<FieldType> {
+class test_component : public nil::crypto3::zk::components::component<FieldType> {
     using field_type = FieldType;
     //private (intermediary) variables
 
@@ -196,7 +199,7 @@ public:
                 //const blueprint_variable<field_type> &out,
                 //const blueprint_variable<field_type> &x
  ) :
-      nil::crypto3::zk::snark::components::component<field_type>(bp) ,free_x_0_0 (free_x_0_0),free_x_0_1 (free_x_0_1),free_x_0_2 (free_x_0_2),free_x_0_3 (free_x_0_3),free_x_1_0 (free_x_1_0),free_x_1_1 (free_x_1_1),free_x_1_2 (free_x_1_2),free_x_1_3 (free_x_1_3),free_x_2_0 (free_x_2_0),free_x_2_1 (free_x_2_1),free_x_2_2 (free_x_2_2),free_x_2_3 (free_x_2_3),free_x_3_0 (free_x_3_0),free_x_3_1 (free_x_3_1),free_x_3_2 (free_x_3_2),free_x_3_3 (free_x_3_3), x_0_0 (x_0_0),x_0_1 (x_0_1),x_0_2 (x_0_2),x_0_3 (x_0_3),x_1_0 (x_1_0),x_1_1 (x_1_1),x_1_2 (x_1_2),x_1_3 (x_1_3),x_2_0 (x_2_0),x_2_1 (x_2_1),x_2_2 (x_2_2),x_2_3 (x_2_3),x_3_0 (x_3_0),x_3_1 (x_3_1),x_3_2 (x_3_2),x_3_3 (x_3_3) {
+      nil::crypto3::zk::components::component<field_type>(bp) ,free_x_0_0 (free_x_0_0),free_x_0_1 (free_x_0_1),free_x_0_2 (free_x_0_2),free_x_0_3 (free_x_0_3),free_x_1_0 (free_x_1_0),free_x_1_1 (free_x_1_1),free_x_1_2 (free_x_1_2),free_x_1_3 (free_x_1_3),free_x_2_0 (free_x_2_0),free_x_2_1 (free_x_2_1),free_x_2_2 (free_x_2_2),free_x_2_3 (free_x_2_3),free_x_3_0 (free_x_3_0),free_x_3_1 (free_x_3_1),free_x_3_2 (free_x_3_2),free_x_3_3 (free_x_3_3), x_0_0 (x_0_0),x_0_1 (x_0_1),x_0_2 (x_0_2),x_0_3 (x_0_3),x_1_0 (x_1_0),x_1_1 (x_1_1),x_1_2 (x_1_2),x_1_3 (x_1_3),x_2_0 (x_2_0),x_2_1 (x_2_1),x_2_2 (x_2_2),x_2_3 (x_2_3),x_3_0 (x_3_0),x_3_1 (x_3_1),x_3_2 (x_3_2),x_3_3 (x_3_3) {
 
       // Allocate variables to blueprint
       //allocate private variables to blueprint
