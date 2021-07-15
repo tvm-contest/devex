@@ -1,0 +1,121 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"verifkey","type":"bytes"},
+				{"name":"zip_provkey","type":"bytes"},
+				{"name":"backup_key","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "UpdatePincode",
+			"inputs": [
+				{"name":"verifkey","type":"bytes"},
+				{"name":"zip_provkey","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "SetFromPincode",
+			"inputs": [
+				{"name":"proof","type":"bytes"},
+				{"name":"newkey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "RecoverPubkey",
+			"inputs": [
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "RecoverFromPincode",
+			"inputs": [
+				{"name":"proof","type":"bytes"},
+				{"name":"newkey","type":"uint256"},
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "Check",
+			"inputs": [
+				{"name":"proof","type":"bytes"},
+				{"name":"newkey","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"verified","type":"bool"},
+				{"name":"blob_str","type":"bytes"}
+			]
+		},
+		{
+			"name": "PrimaryInputOfPubkey",
+			"inputs": [
+				{"name":"pubkey","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"primary_input","type":"bytes"}
+			]
+		},
+		{
+			"name": "UpdateBackupKey",
+			"inputs": [
+				{"name":"backup_key","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "SetFromBackupKey",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "verify",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+				{"name":"is_correct","type":"bool"}
+			]
+		},
+		{
+			"name": "vergrth16",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+				{"name":"is_correct","type":"bool"}
+			]
+		},
+		{
+			"name": "get",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"verifkey","type":"bytes"},
+				{"name":"zip_provkey","type":"bytes"},
+				{"name":"backup_key","type":"uint256"},
+				{"name":"oldkey","type":"uint256"},
+				{"name":"newkey","type":"uint256"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}
