@@ -108,7 +108,8 @@ private:
                             hash_msg_block,
                             blueprint_variable_vector<FieldType>(1, secret_hash));
         
-        // The voters set may contain zeros if there is less than maximum voters.
+        // In case the voters list contains less than the maximum amount possible
+        // we fill the rest with zeros.
         // So we have to make sure the secret's hash is not zero.
         blueprint_variable_vector<FieldType> secret_hash_bits;
         secret_hash_bits.allocate(bp, modulus_bits);
