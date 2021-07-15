@@ -3,7 +3,7 @@
 By Thomas Sibut-Pinote and Fabrice Le Fessant at OCamlPro.
 
 A detailed description of this submission is available in the
-"submission" sub-directory ([PDF](submission/submission.pdf)
+"submission" sub-directory ([PDF](submission/submission.pdf)).
 
 ## Introduction
 
@@ -48,11 +48,13 @@ Each use-case contains:
   the verification key AND the pubkey of the user. In case of success,
   it triggers some business logic specific to the use case.
 
-  Note that the proving key is also published in the contract, because
-  it is important to make it available, but it is not used by the
-  contract itself. Usually, proving keys are big (about 96 kB), but
-  they can be compressed efficiently (about 3 kB) in our use cases, so
-  we expect users to publish this zipped-version.
+  Note that for use cases 2 and 3, the proving key is also published
+  in the contract, because it is important to make it available, but
+  it is not used by the contract itself. Usually, proving keys are big
+  (about 96 kB), but they can be compressed efficiently (about 3 kB)
+  in our use cases, so we expect users to publish this
+  zipped-version. The proving key for Sudoku is too big to be
+  published on the blockchain, however.
 
 * The directory "tests/" contains a set of scripts to deploy the
   contracts either on a sandbox (local network with patched TONOS SE)
