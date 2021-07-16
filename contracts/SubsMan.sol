@@ -191,14 +191,17 @@ contract SubsMan is Debot {
     function invokeQuerySubscriptions() public {
         m_invokeType = Invoke.QuerySubscriptions;
         m_invoker = msg.sender;
-        TvmCell code = m_subscriptionBaseImage.toSlice().loadRef();
         Sdk.getAccountsDataByHash(
             tvm.functionId(setInvites),
-            tvm.hash(code),
+            tvm.hash(_getAccountCode()),
             address.makeAddrStd(-1, 0)
         );
     }
     
+    function _getAccountCode() private view returns (TvmCell) {
+        TvmCell code = m_subscriptionBaseImage.toSlice().loadRef();
+        return code;
+    }
     function _decodeAccountAddress(TvmCell data) internal pure returns (uint256) {
         // decode invite contract data manually:
         // pubkey, timestamp, ctor flag, address
