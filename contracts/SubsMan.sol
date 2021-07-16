@@ -178,6 +178,7 @@ contract SubsMan is Debot {
             returnOnError(Status.InvalidSigningBoxHandle);
             return;
         }
+        delete m_serviceKey;
         m_ownerKey = ownerKey;
         m_serviceKey = serviceKey;
         m_wallet = wallet;
@@ -188,6 +189,7 @@ contract SubsMan is Debot {
 
     /// @notice API function.
     function invokeQuerySubscriptions() public {
+        Terminal.print(0, "11111");
         m_invokeType = Invoke.QuerySubscriptions;
         m_invoker = msg.sender;
         TvmCell code = m_subscriptionBaseImage.toSlice().loadRef();
@@ -206,7 +208,6 @@ contract SubsMan is Debot {
     }
 
     function setInvites(AccData[] accounts) public {
-        Terminal.print(0, "11111");
         uint256[] pubkeys;
         for (uint i = 0; i < accounts.length; i++) {
             pubkeys.push(_decodeAccountAddress(accounts[i].data));

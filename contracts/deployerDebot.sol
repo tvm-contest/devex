@@ -45,11 +45,11 @@ contract DeployerDebot is Debot {
         if (m_ownerKey == 0) {
             Terminal.input(tvm.functionId(setOwnerKey), "Enter your public key:", false);
         }
-        if (m_ownerKey != 0 && m_wallet != address(0)) {
-            getSigningBox();
-        }
         if (m_serviceKey == 0) {
             Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to:", false);
+        }
+        if (m_ownerKey != 0 && m_wallet != address(0)) {
+            getSigningBox();
         }
     }
 
@@ -60,11 +60,11 @@ contract DeployerDebot is Debot {
 
     function setOwnerKey(string value) public {
         if (!_parseKey(value)) return;
-        getSigningBox();
     }
 
     function setServiceKey(string value) public {
         if (!_parseServiceKey(value)) return;
+        getSigningBox();
     }
 
     function getSigningBox() public {
