@@ -116,11 +116,14 @@ contract SubsMan is Debot {
     }
 
     function checkHash(uint256 code_hash) public {
+        Terminal.print(0, "onSuccess -> checkAccount -> checkHash");
         if (code_hash == tvm.hash(buildAccount(m_ownerKey, m_serviceKey)) || code_hash == 0) {
             Menu.select("Waiting for the Account deployment...", "", [ MenuItem("Check again", "", tvm.functionId(menuCheckAccount)) ]);
             return;
         }
         Terminal.print(0, "Done");
+        address account = address(tvm.hash(buildAccount(m_ownerKey, m_serviceKey)));
+        returnOnDeployStatus(Status.Success, account);
     }
 
     function callMultisig(address dest, TvmCell payload, uint128 value, uint32 gotoId) public {
@@ -202,7 +205,8 @@ contract SubsMan is Debot {
         return pubkey;
     }
 
-    function setInvites(AccData[] accounts) public view {
+    function setInvites(AccData[] accounts) public {
+        Terminal.print(0, "11111");
         uint256[] pubkeys;
         for (uint i = 0; i < accounts.length; i++) {
             pubkeys.push(_decodeAccountAddress(accounts[i].data));

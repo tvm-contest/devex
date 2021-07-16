@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: deployerDebot.tvc
+      wc: None
+    keys: deployerDebot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "cable above dice film knock again galaxy insane mercy cover disease woman"
+Raw address: 0:5ce5d3939b839de5a7f49723c5848896e48a548a57a2cbcadb401992d450322b
+testnet:
+Non-bounceable address (for init): 0QBc5dOTm4Od5af0lyPFhIiW5IpUileiy8rbQBmS1FAyKx14
+Bounceable address (for later access): kQBc5dOTm4Od5af0lyPFhIiW5IpUileiy8rbQBmS1FAyK0C9
+mainnet:
+Non-bounceable address (for init): UQBc5dOTm4Od5af0lyPFhIiW5IpUileiy8rbQBmS1FAyK6by
+Bounceable address (for later access): EQBc5dOTm4Od5af0lyPFhIiW5IpUileiy8rbQBmS1FAyK_s3
+Succeeded

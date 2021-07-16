@@ -9,9 +9,6 @@ interface ISubsManCallbacks {
     function onSubscriptionDeploy(Status status, address addr) external;
 }
 
-//interface IonQuerySubscriptions {
-//    function onQuerySubscriptions(uint256[] subscription) external;
-//}
 interface IonQuerySubscriptions {
     function onQuerySubscriptions(uint256[] pubkeys) external;
 }

@@ -43,9 +43,8 @@ contract DeployerDebot is Debot {
             AddressInput.get(tvm.functionId(setWalletAddress), "Choose multisig wallet which I can use to pay for subscription deployment:");
         }
         if (m_ownerKey == 0) {
-            Terminal.input(tvm.functionId(setOwnerKey), "Enter your public key for new subscription:", false);
+            Terminal.input(tvm.functionId(setOwnerKey), "Enter your public key:", false);
         }
-
         if (m_ownerKey != 0 && m_wallet != address(0)) {
             getSigningBox();
         }
@@ -54,7 +53,7 @@ contract DeployerDebot is Debot {
         }
     }
 
-    function menuShowSubscription(uint32 index) public {
+    function menuShowSubscription(uint32 index) public view {
         index;
         SubsMan(m_subsman).invokeQuerySubscriptions();
     }
@@ -116,11 +115,10 @@ contract DeployerDebot is Debot {
         this.start();
     }
 
-//    function onQuerySubscriptions(address[] subscriptions) external {
     function onQuerySubscriptions(uint256[] pubkeys) external {
         Terminal.print(0, format("You have {} subscriptions", pubkeys.length));
         for (uint i = 0; i < pubkeys.length; i++) {
-            Terminal.print(0, format("{}", pubkeys[i]));
+            Terminal.print(0, format("0x{:X}", pubkeys[i]));
         }
         this.start();
     }
@@ -159,6 +157,7 @@ contract DeployerDebot is Debot {
         m_ownerKey = key;
         return res;
     }
+
     function _parseServiceKey(string value) private returns (bool) {
         (uint256 key, bool res) = stoi("0x" + value);
         if (!res) {
