@@ -1,1 +1,4 @@
-16:12:13 [ERROR] Create run message failed: Invalid name: fetch
+21:13:52 [ERROR] Create run message failed: Invalid name: fetch
+21:13:53 [ERROR] Create run message failed: Invalid name: fetch
+21:14:20 [ERROR] Create run message failed: Invalid name: fetch
+21:14:23 [ERROR] ResultOfSendMessage { shard_block_id: "24e9eb0034fca9974babde2f2a9957bd23605a3b7cdb514968a2a3b7cee415bd", sending_endpoints: ["http://127.0.0.1"] }

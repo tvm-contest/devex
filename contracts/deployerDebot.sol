@@ -49,7 +49,7 @@ contract DeployerDebot is Debot {
             Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to:", false);
         }
         if (m_ownerKey != 0 && m_wallet != address(0)) {
-            getSigningBox();
+            Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to:", false);
         }
     }
 

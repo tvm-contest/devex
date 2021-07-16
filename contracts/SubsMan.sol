@@ -189,7 +189,6 @@ contract SubsMan is Debot {
 
     /// @notice API function.
     function invokeQuerySubscriptions() public {
-        Terminal.print(0, "11111");
         m_invokeType = Invoke.QuerySubscriptions;
         m_invoker = msg.sender;
         TvmCell code = m_subscriptionBaseImage.toSlice().loadRef();
