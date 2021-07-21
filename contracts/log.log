@@ -6,12 +6,12 @@ Input arguments:
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "original belt balcony mad normal wheel fiscal extend reward tone ignore sphere"
-Raw address: 0:02f7808ec0daff6c7c5bb2941650c49dda53396af0a4f38c4f7016bdd6519143
+Seed phrase: "deer relief black either buffalo bring december slot service mimic either domain"
+Raw address: 0:4309e882fe332069d9c9b2fb85a4e6ee5b2f5b50e94444d4004b5286bc378c80
 testnet:
-Non-bounceable address (for init): 0QAC94COwNr_bHxbspQWUMSd2lM5avCk84xPcBa91lGRQ-ci
-Bounceable address (for later access): kQAC94COwNr_bHxbspQWUMSd2lM5avCk84xPcBa91lGRQ7rn
+Non-bounceable address (for init): 0QBDCeiC_jMgadnJsvuFpObuWy9bUOlERNQAS1KGvDeMgLaD
+Bounceable address (for later access): kQBDCeiC_jMgadnJsvuFpObuWy9bUOlERNQAS1KGvDeMgOtG
 mainnet:
-Non-bounceable address (for init): UQAC94COwNr_bHxbspQWUMSd2lM5avCk84xPcBa91lGRQ1yo
-Bounceable address (for later access): EQAC94COwNr_bHxbspQWUMSd2lM5avCk84xPcBa91lGRQwFt
+Non-bounceable address (for init): UQBDCeiC_jMgadnJsvuFpObuWy9bUOlERNQAS1KGvDeMgA0J
+Bounceable address (for later access): EQBDCeiC_jMgadnJsvuFpObuWy9bUOlERNQAS1KGvDeMgFDM
 Succeeded

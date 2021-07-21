@@ -1,4 +1,7 @@
-21:13:52 [ERROR] Create run message failed: Invalid name: fetch
-21:13:53 [ERROR] Create run message failed: Invalid name: fetch
-21:14:20 [ERROR] Create run message failed: Invalid name: fetch
-21:14:23 [ERROR] ResultOfSendMessage { shard_block_id: "24e9eb0034fca9974babde2f2a9957bd23605a3b7cdb514968a2a3b7cee415bd", sending_endpoints: ["http://127.0.0.1"] }
+19:13:20 [ERROR] Create run message failed: Invalid name: fetch
+19:13:30 [ERROR] Create run message failed: Invalid name: fetch
+19:13:37 [ERROR] Create run message failed: Invalid name: fetch
+19:13:58 [ERROR] ResultOfSendMessage { shard_block_id: "75b4cb1525599ec4adfce01b1b81728159a3eb1a3f3cb7e4e46eda25f320809b", sending_endpoints: ["http://127.0.0.1"] }
+19:14:34 [ERROR] ResultOfSendMessage { shard_block_id: "eb4e47c9aabc36e8ace1b140172829dd2dc567ea602da22b48e511939526baa3", sending_endpoints: ["http://127.0.0.1"] }
+19:14:43 [ERROR] ResultOfSendMessage { shard_block_id: "02cf9b59a223b6295786f8ba13b8911e93095fbbd9d58a4a642893fd679a0e0f", sending_endpoints: ["http://127.0.0.1"] }
+19:14:51 [ERROR] ResultOfSendMessage { shard_block_id: "e21b0727284d65454092a1bb792d0feba986743280cc41afbe19635a0fac032a", sending_endpoints: ["http://127.0.0.1"] }

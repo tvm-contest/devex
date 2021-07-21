@@ -100,7 +100,7 @@ contract SubsMan is Debot {
         
     }
 
-    function deployAccount() public view {
+    function deployAccount() view public {
         TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey);
         this.callMultisig(address(this), body, 3 ton, tvm.functionId(checkAccount));
     }
@@ -178,7 +178,6 @@ contract SubsMan is Debot {
             returnOnError(Status.InvalidSigningBoxHandle);
             return;
         }
-        delete m_serviceKey;
         m_ownerKey = ownerKey;
         m_serviceKey = serviceKey;
         m_wallet = wallet;
@@ -203,13 +202,11 @@ contract SubsMan is Debot {
         return code;
     }
     function _decodeAccountAddress(TvmCell data) internal pure returns (uint256) {
-        // decode invite contract data manually:
-        // pubkey, timestamp, ctor flag, address
-        (uint256 pubkey, , ,) = data.toSlice().decode(uint256, uint64, bool, address);
+        uint256 pubkey = data.toSlice().decode(uint256);
         return pubkey;
     }
 
-    function setInvites(AccData[] accounts) public {
+    function setInvites(AccData[] accounts) public view {
         uint256[] pubkeys;
         for (uint i = 0; i < accounts.length; i++) {
             pubkeys.push(_decodeAccountAddress(accounts[i].data));
