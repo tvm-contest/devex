@@ -99,7 +99,7 @@
 		{
 			"name": "onQuerySubscriptions",
 			"inputs": [
-				{"name":"pubkeys","type":"uint256[]"}
+				{"name":"keys","type":"uint256[]"}
 			],
 			"outputs": [
 			]

@@ -1,17 +1,17 @@
 Config: default
 Input arguments:
-     tvc: SubsMan.tvc
+     tvc: deployerDebot.tvc
       wc: None
-    keys: SubsMan.keys.json
+    keys: deployerDebot.keys.json
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "car boost disorder boil deny tower any march hub ivory link party"
-Raw address: 0:4d41420568415eaffcc5b7109fb9c7652f46ebaad910e38c270633eba0dc6c2c
+Seed phrase: "satisfy stove cause mammal scrap zebra hockey brand estate shaft empower attend"
+Raw address: 0:20e182a82fd6f4d462f0ef96269f0492e318dacd6d7e188039892185ab3fce38
 testnet:
-Non-bounceable address (for init): 0QBNQUIFaEFer_zFtxCfucdlL0brqtkQ44wnBjProNxsLHMu
-Bounceable address (for later access): kQBNQUIFaEFer_zFtxCfucdlL0brqtkQ44wnBjProNxsLC7r
+Non-bounceable address (for init): 0QAg4YKoL9b01GLw75YmnwSS4xjazW1-GIA5iSGFqz_OOLtQ
+Bounceable address (for later access): kQAg4YKoL9b01GLw75YmnwSS4xjazW1-GIA5iSGFqz_OOOaV
 mainnet:
-Non-bounceable address (for init): UQBNQUIFaEFer_zFtxCfucdlL0brqtkQ44wnBjProNxsLMik
-Bounceable address (for later access): EQBNQUIFaEFer_zFtxCfucdlL0brqtkQ44wnBjProNxsLJVh
+Non-bounceable address (for init): UQAg4YKoL9b01GLw75YmnwSS4xjazW1-GIA5iSGFqz_OOADa
+Bounceable address (for later access): EQAg4YKoL9b01GLw75YmnwSS4xjazW1-GIA5iSGFqz_OOF0f
 Succeeded

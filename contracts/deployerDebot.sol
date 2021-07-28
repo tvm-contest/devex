@@ -8,7 +8,7 @@ import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Addre
 import "SubsMan.sol";
 import "ISubsManCallbacks.sol";
 
-contract DeployerDebot is Debot {
+contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     bytes m_icon;
 
     address m_subsman;
@@ -104,7 +104,7 @@ contract DeployerDebot is Debot {
         );
     }
 
-    function onSubscriptionDeploy(Status status, address addr) external {
+    function onSubscriptionDeploy(Status status, address addr) external override{
         uint8 stat = uint8(status);
         if (status == Status.Success) {
             Terminal.print(0, format("Subscription successfully deployed:\n{}", addr));
@@ -115,10 +115,10 @@ contract DeployerDebot is Debot {
         this.start();
     }
 
-    function onQuerySubscriptions(uint256[] pubkeys) external {
-        Terminal.print(0, format("You have {} subscriptions", pubkeys.length));
-        for (uint i = 0; i < pubkeys.length; i++) {
-            Terminal.print(0, format("0x{:X}", pubkeys[i]));
+    function onQuerySubscriptions(uint256[] keys) external override{
+        Terminal.print(0, format("You have {} subscriptions", keys.length));
+        for (uint i = 0; i < keys.length; i++) {
+            Terminal.print(0, format("{}", keys[i]));
         }
         this.start();
     }
