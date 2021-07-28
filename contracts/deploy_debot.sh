@@ -57,7 +57,7 @@ ACCMAN_ADDRESS=$DEBOT_ADDRESS
 
 #ICON_BYTES=$(base64 -w 0 hellodebot.png)
 #ICON=$(echo -n "data:image/png;base64,$ICON_BYTES" | xxd -ps -c 20000)
-IMAGE=$(base64 -w 0 SubsBase.tvc)
+IMAGE=$(base64 -w 0 Subscription.tvc)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionBase "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 #$tos --url $NETWORK call $DEBOT_ADDRESS setIcon "{\"icon\":\"$ICON\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 
