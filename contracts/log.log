@@ -6,12 +6,12 @@ Input arguments:
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "deer relief black either buffalo bring december slot service mimic either domain"
-Raw address: 0:4309e882fe332069d9c9b2fb85a4e6ee5b2f5b50e94444d4004b5286bc378c80
+Seed phrase: "stick favorite gain account nation spatial woman true mammal coral twice glory"
+Raw address: 0:b58f82927f7b2abae773737044e7b6f0494d44d432003fb1be6937e7c7e2aad0
 testnet:
-Non-bounceable address (for init): 0QBDCeiC_jMgadnJsvuFpObuWy9bUOlERNQAS1KGvDeMgLaD
-Bounceable address (for later access): kQBDCeiC_jMgadnJsvuFpObuWy9bUOlERNQAS1KGvDeMgOtG
+Non-bounceable address (for init): 0QC1j4KSf3squudzc3BE57bwSU1E1DIAP7G-aTfnx-Kq0Kjt
+Bounceable address (for later access): kQC1j4KSf3squudzc3BE57bwSU1E1DIAP7G-aTfnx-Kq0PUo
 mainnet:
-Non-bounceable address (for init): UQBDCeiC_jMgadnJsvuFpObuWy9bUOlERNQAS1KGvDeMgA0J
-Bounceable address (for later access): EQBDCeiC_jMgadnJsvuFpObuWy9bUOlERNQAS1KGvDeMgFDM
+Non-bounceable address (for init): UQC1j4KSf3squudzc3BE57bwSU1E1DIAP7G-aTfnx-Kq0BNn
+Bounceable address (for later access): EQC1j4KSf3squudzc3BE57bwSU1E1DIAP7G-aTfnx-Kq0E6i
 Succeeded

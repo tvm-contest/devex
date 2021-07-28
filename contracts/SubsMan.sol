@@ -10,7 +10,7 @@ import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Termi
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Sdk.sol";
 import "ISubsManCallbacks.sol";
 import "IMultisig.sol";
-import "SubsBase.sol";
+import "Subscription.sol";
 
 
 contract SubsMan is Debot {
@@ -86,7 +86,7 @@ contract SubsMan is Debot {
             code: code,
             pubkey: ownerKey,
             varInit: { serviceKey: serviceKey },
-            contr: SubsBase
+            contr: Subscription
         });
         TvmCell state = tvm.insertPubkey(newImage, serviceKey);
         image = state;
@@ -96,7 +96,7 @@ contract SubsMan is Debot {
         require(msg.value >= 1 ton, 102);
         TvmCell state = buildAccount(ownerKey, serviceKey);
 
-        new SubsBase{value: 1 ton, flag: 1, bounce: true, stateInit: state}();
+        new Subscription{value: 1 ton, flag: 1, bounce: true, stateInit: state}();
         
     }
 
