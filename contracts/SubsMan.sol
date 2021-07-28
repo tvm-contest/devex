@@ -88,8 +88,7 @@ contract SubsMan is Debot {
             varInit: { serviceKey: serviceKey },
             contr: Subscription
         });
-        TvmCell state = tvm.insertPubkey(newImage, serviceKey);
-        image = state;
+        image = newImage;
     }
 
     function deployAccountHelper(uint256 ownerKey, uint256 serviceKey) public view {
