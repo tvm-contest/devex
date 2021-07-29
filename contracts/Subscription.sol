@@ -6,11 +6,13 @@ interface IWallet {
     function sendTransaction (address dest, uint128 value, bool bounce) external;
 }
 
-contract SubscriptionContract {
+contract Subscription {
 
     mapping (uint256 => Payment) subscriptions;
     uint256 _owner;
 
+    uint256 public static serviceKey;
+    
     uint8 constant STATUS_ACTIVE   = 1;
     uint8 constant STATUS_EXECUTED = 2;
 
