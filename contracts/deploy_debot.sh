@@ -60,7 +60,8 @@ ACCMAN_ADDRESS=$DEBOT_ADDRESS
 IMAGE=$(base64 -w 0 Subscription.tvc)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionBase "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 #$tos --url $NETWORK call $DEBOT_ADDRESS setIcon "{\"icon\":\"$ICON\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
-
+IMAGE=$(base64 -w 0 Wallet.tvc)
+$tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionWalletCode "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 echo DONE ------------------------------------------------------------------
 echo debot $DEBOT_ADDRESS
 
