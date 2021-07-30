@@ -14,13 +14,23 @@ contract Wallet {
         subscr_Image = image; 
     }
 
-    function sendTransaction(address dest, uint128 value, bool bounce) public view {
+    function sendTransaction(address dest, uint128 value, bool bounce, uint256 serviceKey, uint32 period) public view {
+        TvmCell wImage = tvm.buildStateInit({
+            code: tvm.code(),
+            pubkey: tvm.pubkey()
+        });
         TvmCell code = subscr_Image.toSlice().loadRef();
         TvmCell newImage = tvm.buildStateInit({
             code: code,
             pubkey: tvm.pubkey()
-            //varInit: { serviceKey: serviceKey },
-            //contr: Subscription
+            varInit: { 
+                serviceKey: serviceKey,
+                user_wallet: address(tvm.hash(wImage)),
+                to: dest,
+                value: value,
+                period: period
+            },
+            contr: Subscription
         });
         require(msg.pubkey() == tvm.pubkey() || msg.sender == address(tvm.hash(newImage)), 100);
 	tvm.accept();

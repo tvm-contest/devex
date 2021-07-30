@@ -118,7 +118,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function onQuerySubscriptions(uint256[] keys) external override{
         Terminal.print(0, format("You have {} subscriptions", keys.length));
         for (uint i = 0; i < keys.length; i++) {
-            Terminal.print(0, format("{}", keys[i]));
+            Terminal.print(0, format("{:X}", keys[i]));
         }
         this.start();
     }

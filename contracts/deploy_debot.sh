@@ -74,6 +74,5 @@ echo debot $ACCMAN_ADDRESS
 echo msig $MSIG_ADDRESS
 
 cat *msig*
-cat service*
 
 $tos --url $NETWORK debot fetch $DEBOT_ADDRESS

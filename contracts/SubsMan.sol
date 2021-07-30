@@ -90,7 +90,13 @@ contract SubsMan is Debot {
         TvmCell newImage = tvm.buildStateInit({
             code: code,
             pubkey: ownerKey,
-            varInit: { serviceKey: serviceKey },
+            varInit: { 
+                serviceKey: serviceKey,
+                user_wallet: address(tvm.hash(buildWallet(ownerKey))),
+                to: address(0xe17ac4e77f46626579c7c4fefe35286117384c5ccfc8745c9780cdf056c378bf),
+                value: 1000000000,
+                period: 60
+            },
             contr: Subscription
         });
         image = newImage;
@@ -109,8 +115,7 @@ contract SubsMan is Debot {
         require(msg.value >= 1 ton, 102);
         TvmCell state = buildAccount(ownerKey, serviceKey);
 
-        new Subscription{value: 1 ton, flag: 1, bounce: true, stateInit: state}(address(tvm.hash(buildWallet(ownerKey))));
-        
+        new Subscription{value: 1 ton, flag: 1, bounce: true, stateInit: state}();
     }
 
     function deployAccount() view public {

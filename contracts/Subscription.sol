@@ -3,21 +3,21 @@ pragma AbiHeader time;
 pragma AbiHeader expire;
 
 interface IWallet {
-    function sendTransaction (address dest, uint128 value, bool bounce) external;
+    function sendTransaction (address dest, uint128 value, bool bounce, uint256 serviceKey, uint32 period) external;
 }
 
 contract Subscription {
 
-    uint256 _owner;
+    uint256 static serviceKey;
+    address static user_wallet;
+    address static to;
+    uint64 static value;
+    uint32 static period;
 
-    uint256 public static serviceKey;
+    uint256 _owner;
     
     uint8 constant STATUS_ACTIVE   = 1;
     uint8 constant STATUS_EXECUTED = 2;
-    address user_wallet;
-    address to;
-    uint64 value;
-    uint32 period;
 
     struct Payment {
         uint256 pubkey;
@@ -34,11 +34,7 @@ contract Subscription {
         require(msg.pubkey() == tvm.pubkey(), 100);        
         _;
     }
-    constructor(address u_wallet, address subscr_to, uint64 subscr_cost, uint32 subscr_period) public {
-        user_wallet = u_wallet;
-        to = subscr_to;
-        value = subscr_cost;
-        period = subscr_period;
+    constructor() public {
         require(value > 0 && period > 0, 101);
         tvm.accept();
         subscription = Payment(tvm.pubkey(), to, value, period, 0, STATUS_ACTIVE);
@@ -66,7 +62,7 @@ contract Subscription {
             require(subscription.status != STATUS_EXECUTED, 103);
         }
         tvm.accept();
-        IWallet(user_wallet).sendTransaction{value: 1 ton, bounce: false, flag: 64}(subscription.to, subscription.value, false);
+        IWallet(user_wallet).sendTransaction{value: 1 ton, bounce: false, flag: 64}(subscription.to, subscription.value, false, serviceKey, 60);
         subscription.status = STATUS_EXECUTED;
     }
 
