@@ -28,12 +28,13 @@ contract SubsMan is Debot {
     uint32 m_sbHandle;
     address m_subscription;
     string m_nonce;
-    uint256[] m_pubkeys;
     // helper vars
     uint32 m_gotoId;
     uint32 m_continue;
 
     Invoke m_invokeType;
+
+    TvmCell m_subscriptionWalletImage;
 
     enum Invoke {
         NewSubscription,
@@ -54,6 +55,10 @@ contract SubsMan is Debot {
         m_subscriptionBaseImage = image;
     }
  
+     function setSubscriptionWalletCode(TvmCell image) public onlyOwner {
+        m_subscriptionWalletImage = image;
+    }
+
     /// @notice Entry point function for DeBot.
     function start() public override {
         
@@ -91,11 +96,20 @@ contract SubsMan is Debot {
         image = newImage;
     }
 
+    function buildWallet(uint256 ownerKey) private view returns (TvmCell image) {
+        TvmCell code = m_subscriptionWalletImage.toSlice().loadRef();
+        TvmCell newImage = tvm.buildStateInit({
+            code: code,
+            pubkey: ownerKey
+        });
+        image = newImage;
+    }
+
     function deployAccountHelper(uint256 ownerKey, uint256 serviceKey) public view {
         require(msg.value >= 1 ton, 102);
         TvmCell state = buildAccount(ownerKey, serviceKey);
 
-        new Subscription{value: 1 ton, flag: 1, bounce: true, stateInit: state}();
+        new Subscription{value: 1 ton, flag: 1, bounce: true, stateInit: state}(address(tvm.hash(buildWallet(ownerKey))));
         
     }
 
@@ -201,33 +215,18 @@ contract SubsMan is Debot {
         return code;
     }
 
-/*    function _decodeAccountAddress(TvmCell data) internal pure returns (address) {
+    function _decodeAccountAddress(TvmCell data) internal pure returns (uint256) {
         // pubkey, timestamp, ctor flag, address
-        (, , , address acc) = data.toSlice().decode(uint256, uint64, bool, address);
-        return acc;
-    }
-*/
-    
-    function setServiceKeys(uint256 pubkey) public {
-        m_pubkeys.push(pubkey);
+        (, , , uint256 serviceKey) = data.toSlice().decode(uint256, uint64, bool, uint256);
+        return serviceKey;
     }
 
     function setInvites(AccData[] accounts) public view {
-        optional(uint256) none;
+        uint256[] pubkeys;
         for (uint i = 0; i < accounts.length; i++) {
-            ISubscription(accounts[i].id).serviceKey{
-                abiVer: 2,
-                extMsg: true,
-                sign: false,
-                pubkey: none,
-                time: uint64(now),
-                expire: 0,
-                callbackId: tvm.functionId(setServiceKeys),
-                onErrorId: 0
-            }();
+            pubkeys.push(_decodeAccountAddress(accounts[i].data));
         }
-        IonQuerySubscriptions(m_invoker).onQuerySubscriptions(m_pubkeys);
-
+       IonQuerySubscriptions(m_invoker).onQuerySubscriptions(pubkeys);
     }
 
     function returnOnError(Status status) internal view {
