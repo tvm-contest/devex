@@ -1,0 +1,9 @@
+*.abi.json
+*.addr
+*.code
+*.tvc
+*.keys.json
+*.pub
+*.seed
+*.key
+debot_err.log
