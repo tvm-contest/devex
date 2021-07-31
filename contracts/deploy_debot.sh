@@ -2,6 +2,10 @@
 #!/bin/bash
 set -xe
 
+for i in SubsMan deployerDebot Subscription; do
+	tondev sol compile $i.sol;
+done
+
 tos=tonos-cli
 
 DEBOT_NAME=SubsMan
@@ -75,6 +79,8 @@ echo client $DEBOT_ADDRESS
 echo debot $ACCMAN_ADDRESS
 echo msig $MSIG_ADDRESS
 
-cat *msig*
+cat msig.addr
+cat Wallet.keys.json
+cat Service.keys.json
 
 $tos --url $NETWORK debot fetch $DEBOT_ADDRESS
