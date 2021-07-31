@@ -14,7 +14,7 @@ contract Wallet {
         subscr_Image = image; 
     }
 
-    function sendTransaction(address dest, uint128 value, bool bounce, uint256 serviceKey, uint32 period) public view {
+    function sendTransaction(address dest, uint64 value, bool bounce, uint256 serviceKey, uint32 period) public view {
         TvmCell wImage = tvm.buildStateInit({
             code: tvm.code(),
             pubkey: tvm.pubkey()
@@ -22,7 +22,7 @@ contract Wallet {
         TvmCell code = subscr_Image.toSlice().loadRef();
         TvmCell newImage = tvm.buildStateInit({
             code: code,
-            pubkey: tvm.pubkey()
+            pubkey: tvm.pubkey(),
             varInit: { 
                 serviceKey: serviceKey,
                 user_wallet: address(tvm.hash(wImage)),

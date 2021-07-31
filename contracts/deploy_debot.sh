@@ -13,8 +13,11 @@ $tos --url $NETWORK call --abi ../local_giver.abi.json $giver sendGrams "{\"dest
 function get_address {
 echo $(cat log.log | grep "Raw address:" | cut -d ' ' -f 3)
 }
+function genaddrw {
+$tos genaddr $1.tvc $1.abi.json --setkey Wallet.keys.json > log.log
+}
 function genaddr {
-$tos genaddr $1.tvc $1.abi.json --genkey $1.keys.json > log.log
+$tos genaddr $1.tvc $1.abi.json --setkey $1.keys.json > log.log
 }
 function deploy {
 echo GENADDR $1 ----------------------------------------------
@@ -32,15 +35,14 @@ echo -n $DEBOT_ADDRESS > $1.addr
 function deployMsig {
 msig=SafeMultisigWallet
 echo GENADDR $msig ----------------------------------------------
-genaddr $msig
+genaddrw $msig
 ADDRESS=$(get_address)
 echo GIVER $msig ------------------------------------------------
 giver $ADDRESS
 echo DEPLOY $msig -----------------------------------------------
-PUBLIC_KEY=$(cat $msig.keys.json | jq .public)
-$tos --url $NETWORK deploy $msig.tvc "{\"owners\":[\"0x${PUBLIC_KEY:1:64}\"],\"reqConfirms\":1}" --sign $msig.keys.json --abi $msig.abi.json
+PUBLIC_KEY=$(cat Wallet.keys.json | jq .public)
+$tos --url $NETWORK deploy $msig.tvc "{\"owners\":[\"0x${PUBLIC_KEY:1:64}\"],\"reqConfirms\":1}" --sign Wallet.keys.json --abi $msig.abi.json
 echo -n $ADDRESS > msig.addr
-mv $msig.keys.json msig.key
 }
 
 LOCALNET=http://127.0.0.1
