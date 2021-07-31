@@ -13,7 +13,7 @@ tonos-cli --url $NETWORK call --abi ../local_giver.abi.json $giver sendGrams "{\
 }
 
 tondev sol compile Wallet.sol
-wallet_address=`tonos-cli genaddr Wallet.tvc Wallet.abi.json --genkey Wallet.keys.json | grep 'Raw address' | awk '{print $NF}'`
+wallet_address=`tonos-cli genaddr Wallet.tvc Wallet.abi.json --setkey Wallet.keys.json | grep 'Raw address' | awk '{print $NF}'`
 echo $wallet_address > Wallet.addr
 giver $wallet_address
 tondev sol compile Subscription.sol
@@ -29,7 +29,7 @@ giver $service_address
 IMAGE=$(base64 -w 0 Subscription.tvc)
 tonos-cli --url $NETWORK deploy --abi Service.abi.json --sign Service.keys.json Service.tvc "{\"image\":\"$IMAGE\"}"
 
-subscr_address=`tonos-cli genaddr Subscription.tvc Subscription.abi.json --setkey Wallet.keys.json | grep 'Raw address' | awk '{print $NF}'`
-echo $subscr_address > Subscription.addr
-giver $subscr_address
-tonos-cli --url $NETWORK deploy --abi Subscription.abi.json --sign Wallet.keys.json Subscription.tvc "{\"u_wallet\":\"$wallet_address\", \"subscr_to\": \"$service_address\", \"subscr_cost\": \"1000000000\", \"subscr_period\": \"3600\"}"
+#subscr_address=`tonos-cli genaddr Subscription.tvc Subscription.abi.json --setkey Wallet.keys.json | grep 'Raw address' | awk '{print $NF}'`
+#echo $subscr_address > Subscription.addr
+#giver $subscr_address
+#tonos-cli --url $NETWORK deploy --abi Subscription.abi.json --sign Wallet.keys.json Subscription.tvc "{\"u_wallet\":\"$wallet_address\", \"subscr_to\": \"$service_address\", \"subscr_cost\": \"1000000000\", \"subscr_period\": \"3600\"}"

@@ -115,7 +115,7 @@ contract SubsMan is Debot {
         require(msg.value >= 1 ton, 102);
         TvmCell state = buildAccount(ownerKey, serviceKey);
 
-        new Subscription{value: 1 ton, flag: 1, bounce: true, stateInit: state}();
+        new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}();
     }
 
     function deployAccount() view public {
