@@ -8,11 +8,11 @@ interface IWallet {
 
 contract Subscription {
 
-    uint256 static serviceKey;
-    address static user_wallet;
-    address static to;
-    uint64 static value;
-    uint32 static period;
+    uint256 static public serviceKey;
+    address static public user_wallet;
+    address static public to;
+    uint128 static public value;
+    uint32 static public period;
 
     uint256 _owner;
     
@@ -22,7 +22,7 @@ contract Subscription {
     struct Payment {
         uint256 pubkey;
         address to;
-        uint64 value;
+        uint128 value;
         uint32 period;
         uint32 start;
         uint8 status;
