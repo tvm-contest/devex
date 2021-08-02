@@ -12,6 +12,7 @@ import "ISubsManCallbacks.sol";
 import "IMultisig.sol";
 import "Subscription.sol";
 import "Wallet.sol";
+import "SubscriptionService.sol";
 
 
 contract SubsMan is Debot {
@@ -20,6 +21,14 @@ contract SubsMan is Debot {
     TvmCell m_subscriptionBaseImage;
 
     // invoke arguments
+    address s_invoker;
+    uint256 s_ownerKey;
+    address s_to;
+    uint32 s_period;
+    uint128 s_value;
+    TvmCell s_args;
+    uint32 s_sbHandle;
+
     address m_invoker;
     uint256 m_ownerKey;
     uint256 m_serviceKey;
@@ -36,11 +45,14 @@ contract SubsMan is Debot {
     uint8 m_deployFlags;
 
     Invoke m_invokeType;
+    Invoke s_invokeType;
 
+    TvmCell s_subscriptionServiceImage;
     TvmCell m_subscriptionWalletImage;
 
     enum Invoke {
         NewSubscription,
+        NewSubscriptionService,
         QuerySubscriptions
     }
 
@@ -201,6 +213,9 @@ contract SubsMan is Debot {
         if (m_gotoId == tvm.functionId(checkAccount)) {
             this.checkAccount();
         }
+        if (m_gotoId == tvm.functionId(printServiceStatus)) {
+            this.printServiceStatus();
+        }
     }
 
     function onError(uint32 sdkError, uint32 exitCode) public {
@@ -248,6 +263,71 @@ contract SubsMan is Debot {
     }
 
     /// @notice API function.
+    function invokeDeploySubscriptionService(
+        uint256 ownerKey,
+        address to,
+        uint32 sbHandle,
+        uint32 period,
+        uint128 value,
+        TvmCell args
+    ) public {
+        s_invoker = msg.sender;
+        m_invokeType = Invoke.NewSubscriptionService;
+        if (ownerKey == 0) {
+            returnOnError(Status.ZeroKey);
+            return;
+        }
+        if (sbHandle == 0) {
+            returnOnError(Status.InvalidSigningBoxHandle);
+            return;
+        }
+        s_ownerKey = ownerKey;
+        s_to = to;
+        s_period = period;
+        s_value = value;
+        s_args = args;
+        s_sbHandle = sbHandle;
+        deployService();
+    }
+    
+    function setSubscriptionService(TvmCell image) public onlyOwner {
+        s_subscriptionServiceImage = image;
+    }
+
+    function buildService(uint256 ownerKey, address to, uint32 period, uint128 value) private view returns (TvmCell image) {
+        TvmCell code = s_subscriptionServiceImage.toSlice().loadRef();
+        TvmCell newImage = tvm.buildStateInit({
+            code: code,
+            pubkey: ownerKey,
+            varInit: { 
+                to: to,
+                value: value,
+                period: period
+            },
+            contr: SubscriptionService
+        });
+        image = newImage;
+    }
+
+    function deployServiceHelper(uint256 ownerKey, address to, uint32 period, uint128 value) public view {
+        require(msg.value >= 1 ton, 102);
+        TvmCell state = buildService(ownerKey, to, period, value);
+        new SubscriptionService{value: 1 ton, flag: 1, bounce: true, stateInit: state}();
+    }
+
+    function deployService() view public {
+        TvmCell body = tvm.encodeBody(SubsMan.deployServiceHelper, s_ownerKey, s_to, s_period, s_value);
+        this.callMultisig(address(this), body, 3 ton, tvm.functionId(printServiceStatus));
+    }
+
+    function printServiceStatus() public {
+        Terminal.print(0, "Service deployed.");
+        address addr = address(0);
+        ISubsManCallbacksService(s_invoker).onSubscriptionServiceDeploy(Status.Success, addr);
+    }
+
+
+    /// @notice API function.
     function invokeQuerySubscriptions() public {
         m_invokeType = Invoke.QuerySubscriptions;
         m_invoker = msg.sender;
@@ -281,10 +361,17 @@ contract SubsMan is Debot {
         if (m_invokeType == Invoke.NewSubscription) {
             returnOnDeployStatus(status, address(0));
         }
+        if (s_invokeType == Invoke.NewSubscriptionService) {
+            returnOnDeploySubscriptionService(status, address(0));
+        }
     }
 
     function returnOnDeployStatus(Status status, address addr) internal view {
         ISubsManCallbacks(m_invoker).onSubscriptionDeploy(status, addr);
+    }
+
+    function returnOnDeploySubscriptionService(Status status, address addr) internal view {
+        ISubsManCallbacksService(s_invoker).onSubscriptionServiceDeploy(status, addr);
     }
     
 }

@@ -68,12 +68,23 @@ $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionBase "{\"image\":\"$IMAGE
 #$tos --url $NETWORK call $DEBOT_ADDRESS setIcon "{\"icon\":\"$ICON\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 IMAGE=$(base64 -w 0 Wallet.tvc)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionWalletCode "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
+
+# SET IMAGE for SERVICE
+IMAGE=$(base64 -w 0 SubscriptionService.tvc)
+$tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionService "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
+
 echo DONE ------------------------------------------------------------------
 echo debot $DEBOT_ADDRESS
 
 deploy $DEBOT_CLIENT
 DEBOT_ADDRESS=$(cat $DEBOT_CLIENT.addr)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign $DEBOT_CLIENT.keys.json --abi $DEBOT_CLIENT.abi.json
+
+# SERVICE DEBOT DEPLOY
+deploy serviceDebot
+genaddr serviceDebot
+DEBOT_ADDRESS=$(cat serviceDebot.addr)
+$tos --url $NETWORK call $DEBOT_ADDRESS setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign serviceDebot.keys.json --abi serviceDebot.abi.json
 
 echo client $DEBOT_ADDRESS
 echo debot $ACCMAN_ADDRESS
