@@ -11,6 +11,7 @@ import "https://raw.githubusercontent.com/tonlabs/debots/main/Sdk.sol";
 import "ISubsManCallbacks.sol";
 import "IMultisig.sol";
 import "Subscription.sol";
+import "Wallet.sol";
 
 
 contract SubsMan is Debot {
@@ -31,6 +32,8 @@ contract SubsMan is Debot {
     // helper vars
     uint32 m_gotoId;
     uint32 m_continue;
+
+    uint8 m_deployFlags;
 
     Invoke m_invokeType;
 
@@ -111,6 +114,30 @@ contract SubsMan is Debot {
         image = newImage;
     }
 
+    function menuCheckWallet(uint32 index) public {
+        index;
+        checkWallet();
+    }
+
+    function checkWallet() public {
+        address walletAddr = address(tvm.hash(buildWallet(m_ownerKey)));
+        Sdk.getAccountType(tvm.functionId(checkWalletState), walletAddr);
+    }
+
+    function checkWalletState(int8 acc_type) public {
+        if (acc_type != 1) {
+            if (acc_type == 2) {
+                // frozen account
+                returnOnError(Status.WalletFrozen);
+                return;
+            }
+            Terminal.print(0, "User Wallet is inactive. Deploying...");
+            deployWallet();
+        } else {
+            Terminal.print(0, format("User Wallet is active: {}.", address(tvm.hash(buildWallet(m_ownerKey)))));
+        }
+    }
+
     function deployAccountHelper(uint256 ownerKey, uint256 serviceKey) public view {
         require(msg.value >= 1 ton, 102);
         TvmCell state = buildAccount(ownerKey, serviceKey);
@@ -123,6 +150,15 @@ contract SubsMan is Debot {
         this.callMultisig(address(this), body, 3 ton, tvm.functionId(checkAccount));
     }
  
+    function deployWallet() view public {
+        TvmCell body = tvm.encodeBody(SubsMan.deployWalletHelper, m_ownerKey);
+        this.callMultisig(address(this), body, 2 ton, tvm.functionId(printWalletStatus));
+    }
+
+    function printWalletStatus() public {
+        Terminal.print(0, "Wallet deployed.");
+    }
+
     function checkAccount() public {
         address account = address(tvm.hash(buildAccount(m_ownerKey, m_serviceKey)));
         Sdk.getAccountCodeHash(tvm.functionId(checkHash), account);
@@ -178,6 +214,11 @@ contract SubsMan is Debot {
         Terminal.print(m_continue, "Deploying account...");
     }
 
+    function deployWalletHelper(uint256 ownerKey) public view {
+        TvmCell state = tvm.insertPubkey(m_subscriptionWalletImage, ownerKey);
+        new Wallet {value: 1 ton, flag: 1, stateInit: state}(m_subscriptionBaseImage);
+    }
+
     /// @notice API function.
     function invokeDeploySubscription(
         uint256 ownerKey,
@@ -186,6 +227,7 @@ contract SubsMan is Debot {
         uint32 sbHandle,
         TvmCell args
     ) public {
+        m_deployFlags = 0;
         m_invokeType = Invoke.NewSubscription;
         m_invoker = msg.sender;
         if (ownerKey == 0) {
@@ -201,6 +243,7 @@ contract SubsMan is Debot {
         m_wallet = wallet;
         m_args = args;
         m_sbHandle = sbHandle;
+        checkWallet();
         setResult();
     }
 

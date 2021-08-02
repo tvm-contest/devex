@@ -2,7 +2,7 @@ pragma ton-solidity >=0.43.0;
 
 enum Status {
     Success, ZeroKey, EmptySubscription, InvalidSigningBoxHandle,
-    MultisigFailed, LowWalletBalance, InactiveWallet
+    MultisigFailed, LowWalletBalance, InactiveWallet, WalletFrozen
 }
 
 interface ISubsManCallbacks {

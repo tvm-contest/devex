@@ -51,5 +51,8 @@ contract Wallet {
         mperiod = period;
         require(msg.pubkey() == tvm.pubkey() || msg.sender == address(tvm.hash(newImage)), 100);
         dest.transfer(value, bounce, 0);
+        if (msg.isInternal) {
+             msg.sender.transfer(0, false, 64);
+        }
     }
 }
