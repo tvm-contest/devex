@@ -28,6 +28,8 @@ contract SubsMan is Debot {
     uint128 s_value;
     TvmCell s_args;
     uint32 s_sbHandle;
+    address s_wallet;
+
 
     address m_invoker;
     uint256 m_ownerKey;
@@ -86,9 +88,9 @@ contract SubsMan is Debot {
     ) {
         name = "Subscription Manager";
         version = "0.2.0";
-        publisher = "TON Labs";
+        publisher = "INTONATION";
         caption = "Managing user subscriptions";
-        author = "TON Labs";
+        author = "INTONATION";
         support = address.makeAddrStd(0, 0x841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94);
         hello = "Hello, I am an Subscription Manager DeBot.";
         language = "en";
@@ -159,12 +161,12 @@ contract SubsMan is Debot {
 
     function deployAccount() view public {
         TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey);
-        this.callMultisig(address(this), body, 3 ton, tvm.functionId(checkAccount));
+        this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 3 ton, tvm.functionId(checkAccount));
     }
  
     function deployWallet() view public {
         TvmCell body = tvm.encodeBody(SubsMan.deployWalletHelper, m_ownerKey);
-        this.callMultisig(address(this), body, 2 ton, tvm.functionId(printWalletStatus));
+        this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 2 ton, tvm.functionId(printWalletStatus));
     }
 
     function printWalletStatus() public {
@@ -192,11 +194,11 @@ contract SubsMan is Debot {
         returnOnDeployStatus(Status.Success, account);
     }
 
-    function callMultisig(address dest, TvmCell payload, uint128 value, uint32 gotoId) public {
-        optional(uint256) pubkey = m_ownerKey;
-        optional(uint32) sbhandle = m_sbHandle;
+    function callMultisig(address src, uint256 pubkey, uint32 sbhandle, address dest, TvmCell payload, uint128 value, uint32 gotoId) public {
+        optional(uint256) pubkey = pubkey;
+        optional(uint32) sbhandle = sbhandle;
         m_gotoId = gotoId;
-        IMultisig(m_wallet).sendTransaction{
+        IMultisig(src).sendTransaction{
             abiVer: 2,
             extMsg: true,
             sign: true,
@@ -266,13 +268,14 @@ contract SubsMan is Debot {
     function invokeDeploySubscriptionService(
         uint256 ownerKey,
         address to,
+        address wallet,
         uint32 sbHandle,
         uint32 period,
         uint128 value,
         TvmCell args
     ) public {
         s_invoker = msg.sender;
-        m_invokeType = Invoke.NewSubscriptionService;
+        s_invokeType = Invoke.NewSubscriptionService;
         if (ownerKey == 0) {
             returnOnError(Status.ZeroKey);
             return;
@@ -287,6 +290,7 @@ contract SubsMan is Debot {
         s_value = value;
         s_args = args;
         s_sbHandle = sbHandle;
+        s_wallet = wallet;
         deployService();
     }
     
@@ -317,15 +321,14 @@ contract SubsMan is Debot {
 
     function deployService() view public {
         TvmCell body = tvm.encodeBody(SubsMan.deployServiceHelper, s_ownerKey, s_to, s_period, s_value);
-        this.callMultisig(address(this), body, 3 ton, tvm.functionId(printServiceStatus));
+        this.callMultisig(s_wallet, s_ownerKey, s_sbHandle, address(this), body, 1 ton, tvm.functionId(printServiceStatus));
     }
 
     function printServiceStatus() public {
         Terminal.print(0, "Service deployed.");
-        address addr = address(0);
+        address addr = address(tvm.hash(buildService(s_ownerKey, s_to, s_period, s_value)));
         ISubsManCallbacksService(s_invoker).onSubscriptionServiceDeploy(Status.Success, addr);
     }
-
 
     /// @notice API function.
     function invokeQuerySubscriptions() public {
@@ -357,7 +360,7 @@ contract SubsMan is Debot {
        IonQuerySubscriptions(m_invoker).onQuerySubscriptions(pubkeys);
     }
 
-    function returnOnError(Status status) internal view {
+    function returnOnError(Status status) internal {
         if (m_invokeType == Invoke.NewSubscription) {
             returnOnDeployStatus(status, address(0));
         }
@@ -370,7 +373,8 @@ contract SubsMan is Debot {
         ISubsManCallbacks(m_invoker).onSubscriptionDeploy(status, addr);
     }
 
-    function returnOnDeploySubscriptionService(Status status, address addr) internal view {
+    function returnOnDeploySubscriptionService(Status status, address addr) internal {
+        Terminal.print(0, "Send error back from invoked debot.");
         ISubsManCallbacksService(s_invoker).onSubscriptionServiceDeploy(status, addr);
     }
     

@@ -127,8 +127,8 @@ contract ServiceDebot is Debot, ISubsManCallbacksService {
     }
 
     function getSigningBox() public {
-        uint256[] keys = [s_ownerKey];
         if (s_sbHandle == 0) {
+            uint256[] keys;
             SigningBoxInput.get(
                 tvm.functionId(setSigningBoxHandle),
                 "Choose your keys to sign transactions from multisig.",
@@ -150,6 +150,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService {
         SubsMan(s_subsman).invokeDeploySubscriptionService(
             s_ownerKey,
             s_wallet,
+            s_to,
             s_sbHandle,
             s_period,
             s_value,

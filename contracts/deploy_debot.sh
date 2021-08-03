@@ -2,7 +2,7 @@
 #!/bin/bash
 set -xe
 
-for i in SubsMan deployerDebot Subscription; do
+for i in SubsMan deployerDebot Subscription serviceDebot; do
 	tondev sol compile $i.sol;
 done
 
@@ -23,6 +23,9 @@ $tos genaddr $1.tvc $1.abi.json --setkey Wallet.keys.json > log.log
 function genaddr {
 $tos genaddr $1.tvc $1.abi.json --setkey $1.keys.json > log.log
 }
+function genaddrgen {
+$tos genaddr $1.tvc $1.abi.json --genkey $1.keys.json > log.log
+}
 function deploy {
 echo GENADDR $1 ----------------------------------------------
 genaddr $1
@@ -35,7 +38,18 @@ DEBOT_ABI=$(cat $1.abi.json | xxd -ps -c 20000)
 $tos --url $NETWORK call $DEBOT_ADDRESS setABI "{\"dabi\":\"$DEBOT_ABI\"}" --sign $1.keys.json --abi $1.abi.json
 echo -n $DEBOT_ADDRESS > $1.addr
 }
-
+function deploygen {
+echo GENADDR $1 ----------------------------------------------
+genaddrgen $1
+DEBOT_ADDRESS=$(get_address)
+echo GIVER $1 ------------------------------------------------
+giver $DEBOT_ADDRESS
+echo DEPLOY $1 -----------------------------------------------
+$tos --url $NETWORK deploy $1.tvc "{}" --sign $1.keys.json --abi $1.abi.json
+DEBOT_ABI=$(cat $1.abi.json | xxd -ps -c 20000)
+$tos --url $NETWORK call $DEBOT_ADDRESS setABI "{\"dabi\":\"$DEBOT_ABI\"}" --sign $1.keys.json --abi $1.abi.json
+echo -n $DEBOT_ADDRESS > $1.addr
+}
 function deployMsig {
 msig=SafeMultisigWallet
 echo GENADDR $msig ----------------------------------------------
@@ -81,12 +95,12 @@ DEBOT_ADDRESS=$(cat $DEBOT_CLIENT.addr)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign $DEBOT_CLIENT.keys.json --abi $DEBOT_CLIENT.abi.json
 
 # SERVICE DEBOT DEPLOY
-deploy serviceDebot
-genaddr serviceDebot
-DEBOT_ADDRESS=$(cat serviceDebot.addr)
-$tos --url $NETWORK call $DEBOT_ADDRESS setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign serviceDebot.keys.json --abi serviceDebot.abi.json
+deploygen serviceDebot
+DEBOT_ADDRESS_SVC=$(cat serviceDebot.addr)
+$tos --url $NETWORK call $DEBOT_ADDRESS_SVC setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign serviceDebot.keys.json --abi serviceDebot.abi.json
 
 echo client $DEBOT_ADDRESS
+echo service $DEBOT_ADDRESS_SVC
 echo debot $ACCMAN_ADDRESS
 echo msig $MSIG_ADDRESS
 
