@@ -157,6 +157,7 @@ contract SubsMan is Debot {
             deployWallet();
         } else {
             Terminal.print(0, format("User Wallet is active: {}.", address(tvm.hash(buildWallet(m_ownerKey)))));
+            QueryService();
         }
     }
 
@@ -169,7 +170,6 @@ contract SubsMan is Debot {
     }
 
     function deployAccount() public {
-        QueryService();
         TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey, svcParams);
         this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 3 ton, tvm.functionId(checkAccount));
     }
@@ -180,7 +180,8 @@ contract SubsMan is Debot {
     }
 
     function printWalletStatus() public {
-        Terminal.print(0, "Wallet deployed.");
+        m_continue = tvm.functionId(QueryService);
+        Terminal.print(m_continue, "Wallet has been deployed.\nDeploying subscription contract...");
     }
 
     function checkAccount() public {
@@ -222,6 +223,9 @@ contract SubsMan is Debot {
     function onSuccess() public view {
         if (m_gotoId == tvm.functionId(checkAccount)) {
             this.checkAccount();
+        }
+        if (m_gotoId == tvm.functionId(printWalletStatus)) {
+            this.printWalletStatus();
         }
         if (m_gotoId == tvm.functionId(printServiceStatus)) {
             this.printServiceStatus();
@@ -265,7 +269,6 @@ contract SubsMan is Debot {
         m_args = args;
         m_sbHandle = sbHandle;
         checkWallet();
-        QueryService();
     }
 
     /// @notice API function.
@@ -315,8 +318,9 @@ contract SubsMan is Debot {
         );
     }
 
-    function _decodeServiceParams(TvmCell data) internal pure returns (ServiceParams) {
+    function _decodeServiceParams(TvmCell data) internal returns (ServiceParams) {
         ServiceParams svcparams;
+        Terminal.print(0, "_decodeServiceParams...");
         (, , , address to, uint128 value, uint32 period) = data.toSlice().decode(uint256, uint64, bool, address, uint128, uint32);
         svcparams.to = to;
         svcparams.value = value;
@@ -326,15 +330,18 @@ contract SubsMan is Debot {
 
     function getServiceParams(AccData[] accounts) public {
         ServiceParams[] params;
+        Terminal.print(0, "getServiceParams...");
         for (uint i = 0; i < accounts.length; i++) {
             params.push(_decodeServiceParams(accounts[i].data));
         }
+        Terminal.print(0, "set svcParams...");
         svcParams = params[0];
         m_continue = tvm.functionId(deployAccount);
         Terminal.print(m_continue, "Deploying account...");
     }
 
-    function buildServiceHelper(uint256 serviceKey) private view returns (TvmCell) {
+    function buildServiceHelper(uint256 serviceKey) private returns (TvmCell) {
+        Terminal.print(0, "buildServiceHelper");
         TvmBuilder saltBuilder;
         saltBuilder.store(serviceKey);
         TvmCell code = tvm.setCodeSalt(
@@ -344,7 +351,7 @@ contract SubsMan is Debot {
         return code;      
     }
 
-    function buildService(uint256 serviceKey, address to, uint32 period, uint128 value) private view returns (TvmCell image) {
+    function buildService(uint256 serviceKey, address to, uint32 period, uint128 value) private returns (TvmCell image) {
         TvmCell code = buildServiceHelper(serviceKey);
         TvmCell state = tvm.buildStateInit({
             code: code,
@@ -359,7 +366,7 @@ contract SubsMan is Debot {
         image = tvm.insertPubkey(state, serviceKey);
     }
 
-    function deployServiceHelper(uint256 ownerKey, address to, uint32 period, uint128 value, bytes signature) public view {
+    function deployServiceHelper(uint256 ownerKey, address to, uint32 period, uint128 value, bytes signature) public {
         require(msg.value >= 1 ton, 102);
         TvmCell state = buildService(ownerKey, to, period, value);
         new SubscriptionService{value: 1 ton, flag: 1, bounce: true, stateInit: state}(signature);

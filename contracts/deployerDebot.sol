@@ -68,7 +68,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     }
 
     function getSigningBox() public {
-        uint256[] keys = [m_ownerKey];
+        uint256[] keys;
         if (m_sbHandle == 0) {
             SigningBoxInput.get(
                 tvm.functionId(setSigningBoxHandle),
