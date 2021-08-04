@@ -18,7 +18,7 @@ function get_address {
 echo $(cat log.log | grep "Raw address:" | cut -d ' ' -f 3)
 }
 function genaddrw {
-$tos genaddr $1.tvc $1.abi.json --setkey Wallet.keys.json > log.log
+$tos genaddr $1.tvc $1.abi.json --setkey Service.keys.json > log.log
 }
 function genaddr {
 $tos genaddr $1.tvc $1.abi.json --setkey $1.keys.json > log.log
@@ -58,8 +58,8 @@ ADDRESS=$(get_address)
 echo GIVER $msig ------------------------------------------------
 giver $ADDRESS
 echo DEPLOY $msig -----------------------------------------------
-PUBLIC_KEY=$(cat Wallet.keys.json | jq .public)
-$tos --url $NETWORK deploy $msig.tvc "{\"owners\":[\"0x${PUBLIC_KEY:1:64}\"],\"reqConfirms\":1}" --sign Wallet.keys.json --abi $msig.abi.json
+PUBLIC_KEY=$(cat Service.keys.json | jq .public)
+$tos --url $NETWORK deploy $msig.tvc "{\"owners\":[\"0x${PUBLIC_KEY:1:64}\"],\"reqConfirms\":1}" --sign Service.keys.json --abi $msig.abi.json
 echo -n $ADDRESS > msig.addr
 }
 

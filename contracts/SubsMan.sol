@@ -295,9 +295,13 @@ contract SubsMan is Debot {
         s_args = args;
         s_sbHandle = sbHandle;
         s_wallet = wallet;
-        deployService();
+        signServiceCode(s_ownerKey);
     }
-    
+
+    function signServiceCode(uint256 serviceKey) public {
+        Sdk.signHash(tvm.functionId(deployService), s_sbHandle, tvm.hash(buildServiceHelper(serviceKey)));
+    }
+
     function setSubscriptionService(TvmCell image) public onlyOwner {
         s_subscriptionServiceImage = image;
     }
@@ -355,14 +359,14 @@ contract SubsMan is Debot {
         image = tvm.insertPubkey(state, serviceKey);
     }
 
-    function deployServiceHelper(uint256 ownerKey, address to, uint32 period, uint128 value) public view {
+    function deployServiceHelper(uint256 ownerKey, address to, uint32 period, uint128 value, bytes signature) public view {
         require(msg.value >= 1 ton, 102);
         TvmCell state = buildService(ownerKey, to, period, value);
-        new SubscriptionService{value: 1 ton, flag: 1, bounce: true, stateInit: state}();
+        new SubscriptionService{value: 1 ton, flag: 1, bounce: true, stateInit: state}(signature);
     }
 
-    function deployService() view public {
-        TvmCell body = tvm.encodeBody(SubsMan.deployServiceHelper, s_ownerKey, s_to, s_period, s_value);
+    function deployService(bytes signature) view public {
+        TvmCell body = tvm.encodeBody(SubsMan.deployServiceHelper, s_ownerKey, s_to, s_period, s_value, signature);
         this.callMultisig(s_wallet, s_ownerKey, s_sbHandle, address(this), body, 1 ton, tvm.functionId(printServiceStatus));
     }
 
