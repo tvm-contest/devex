@@ -321,20 +321,23 @@ contract SubsMan is Debot {
     function _decodeServiceParams(TvmCell data) internal returns (ServiceParams) {
         ServiceParams svcparams;
         Terminal.print(0, "_decodeServiceParams...");
-        (, , , address to, uint128 value, uint32 period) = data.toSlice().decode(uint256, uint64, bool, address, uint128, uint32);
-        svcparams.to = to;
-        svcparams.value = value;
-        svcparams.period = period;
+        //(, , , address to, uint128 value, uint32 period) = data.toSlice().decode(uint256, uint64, bool, address, uint128, uint32);
+        //svcparams.to = to;
+        //svcparams.value = value;
+        //svcparams.period = period;
+        svcparams.to = address(0x205d3a5f73c36272018004b6544bbb3a88e2a69d82806db3a7716a4b71551af9);
+        svcparams.value = 1000000000;
+        svcparams.period = 60;
         return svcparams;
     }
 
     function getServiceParams(AccData[] accounts) public {
-        ServiceParams[] params;
-        Terminal.print(0, "getServiceParams...");
+        ServiceParams[] params; 
+        Terminal.print(0, format("getServiceParams: {}.", accounts.length));
         for (uint i = 0; i < accounts.length; i++) {
             params.push(_decodeServiceParams(accounts[i].data));
         }
-        Terminal.print(0, "set svcParams...");
+        //TODO: need to ensure that we always take only latest contract
         svcParams = params[0];
         m_continue = tvm.functionId(deployAccount);
         Terminal.print(m_continue, "Deploying account...");
