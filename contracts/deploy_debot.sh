@@ -2,7 +2,7 @@
 #!/bin/bash
 set -xe
 
-for i in SubsMan deployerDebot Subscription serviceDebot; do
+for i in SubsMan deployerDebot Subscription serviceDebot SubscriptionService; do
 	tondev sol compile $i.sol;
 done
 
