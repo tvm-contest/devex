@@ -5,10 +5,20 @@ pragma AbiHeader expire;
 
 contract SubscriptionService {
 
-    address static to;
-    uint128 static value;
-    uint32 static  period;
+    TvmCell static params;
     uint256 public serviceKey;
+
+    struct ServiceParams {
+        address to;
+        uint128 value;
+        uint32 period;
+    }
+
+    function getParams() public returns (ServiceParams){
+        ServiceParams svcparams;
+        (svcparams.to, svcparams.value, svcparams.period) = params.toSlice().decode(address, uint128, uint32);
+        return svcparams;
+    }
 
     constructor(bytes signature) public {
         TvmCell code = tvm.code();
