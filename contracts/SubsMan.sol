@@ -399,12 +399,12 @@ contract SubsMan is Debot {
     }
 
     /// @notice API function.
-    function invokeQuerySubscriptions() public {
+    function invokeQuerySubscriptions(uint256 ownerKey) public {
         m_invokeType = Invoke.QuerySubscriptions;
         m_invoker = msg.sender;
         Sdk.getAccountsDataByHash(
             tvm.functionId(setInvites),
-            tvm.hash(_getAccountCode()),
+            tvm.hash(buildSubscriptionIndex(ownerKey)),
             address.makeAddrStd(-1, 0)
         );
     }

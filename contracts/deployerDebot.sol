@@ -53,9 +53,12 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         }
     }
 
-    function menuShowSubscription(uint32 index) public view {
+    function menuShowSubscription(uint32 index) public {
         index;
-        SubsMan(m_subsman).invokeQuerySubscriptions();
+        if (m_ownerKey == 0 ) {
+            Terminal.input(tvm.functionId(setOwnerKey), "Enter public key of service which you want to subscribe to:", false);
+        }
+        SubsMan(m_subsman).invokeQuerySubscriptions(m_ownerKey);
     }
 
     function setOwnerKey(string value) public {
