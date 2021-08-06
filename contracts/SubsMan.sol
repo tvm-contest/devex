@@ -14,7 +14,6 @@ import "Subscription.sol";
 import "Wallet.sol";
 import "SubscriptionService.sol";
 
-
 contract SubsMan is Debot {
     bytes m_icon;
 
@@ -50,6 +49,8 @@ contract SubsMan is Debot {
 
     TvmCell s_subscriptionServiceImage;
     TvmCell m_subscriptionWalletImage;
+    TvmCell m_subscriptionIndexImage;
+
     uint256 subscriberKey;
 
     TvmCell svcParams;
@@ -67,18 +68,18 @@ contract SubsMan is Debot {
         _;
     }
 
-    function setIcon(bytes icon) public onlyOwner {
-        m_icon = icon;
-    }
-
     function setSubscriptionBase(TvmCell image) public onlyOwner {
         m_subscriptionBaseImage = image;
     }
  
-     function setSubscriptionWalletCode(TvmCell image) public onlyOwner {
+    function setSubscriptionWalletCode(TvmCell image) public onlyOwner {
         m_subscriptionWalletImage = image;
     }
 
+    function setSubscriptionIndexCode(TvmCell image) public onlyOwner {
+        m_subscriptionIndexImage = image;
+    }
+    
     /// @notice Entry point function for DeBot.
     function start() public override {
         
@@ -169,15 +170,25 @@ contract SubsMan is Debot {
         }
     }
 
+    function buildSubscriptionIndex(uint256 ownerKey) public view returns (TvmCell) {
+        TvmBuilder saltBuilder;
+        saltBuilder.store(ownerKey);
+        TvmCell code = tvm.setCodeSalt(
+            m_subscriptionIndexImage.toSlice().loadRef(),
+            saltBuilder.toCell()
+        );
+        return code;             
+    }
+
     function deployAccountHelper(uint256 ownerKey, uint256 serviceKey, SubscriptionService.ServiceParams params) public {
         require(msg.value >= 1 ton, 102);
 
         TvmCell state = buildAccount(ownerKey,serviceKey,params);
 
-        new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}();
+        new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}(buildSubscriptionIndex(ownerKey));
     }
 
-    function deployAccount() public {
+    function deployAccount() public view {
         TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey, decodedSvcParams);
         this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 3 ton, tvm.functionId(checkAccount));
     }

@@ -1,6 +1,7 @@
 pragma ton-solidity ^0.47.0;
 pragma AbiHeader time;
 pragma AbiHeader expire;
+import "SubscriptionIndex.sol";
 
 interface IWallet {
     function sendTransaction (address dest, uint128 value, bool bounce, uint256 serviceKey, uint32 period) external;
@@ -13,9 +14,10 @@ contract Subscription {
     address static public to;
     uint128 static public value;
     uint32 static public period;
-
-    uint256 _owner;
     
+    TvmCell m_subscriptionIndexImage;
+    TvmCell subscriptionIndexState;
+
     uint8 constant STATUS_ACTIVE   = 1;
     uint8 constant STATUS_EXECUTED = 2;
 
@@ -34,10 +36,20 @@ contract Subscription {
         require(msg.pubkey() == tvm.pubkey(), 100);        
         _;
     }
-    constructor() public {
+
+    constructor(TvmCell image) public {
         require(value > 0 && period > 0, 101);
         tvm.accept();
         subscription = Payment(tvm.pubkey(), to, value, period, 0, STATUS_ACTIVE);
+        TvmCell state = tvm.buildStateInit({
+            code: image,
+            pubkey: tvm.pubkey(),
+            varInit: { 
+                subscr_pubkey: serviceKey
+            },
+            contr: SubscriptionIndex
+        });
+        new SubscriptionIndex{value: 1 ton, flag: 1, bounce: true, stateInit: state}();
     }
 
     function getWallet() public view returns (address) {

@@ -2,7 +2,7 @@
 #!/bin/bash
 set -xe
 
-for i in SubsMan deployerDebot Subscription serviceDebot SubscriptionService; do
+for i in SubsMan deployerDebot Subscription serviceDebot SubscriptionService SubscriptionIndex; do
 	tondev sol compile $i.sol;
 done
 
@@ -83,6 +83,8 @@ $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionBase "{\"image\":\"$IMAGE
 IMAGE=$(base64 -w 0 Wallet.tvc)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionWalletCode "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 
+IMAGE=$(base64 -w 0 SubscriptionIndex.tvc)
+$tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionIndexCode "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 # SET IMAGE for SERVICE
 IMAGE=$(base64 -w 0 SubscriptionService.tvc)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionService "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json

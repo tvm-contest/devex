@@ -14,7 +14,7 @@ contract SubscriptionService {
         uint32 period;
     }
 
-    function getParams() public returns (ServiceParams){
+    function getParams() public view returns (ServiceParams){
         ServiceParams svcparams;
         (svcparams.to, svcparams.value, svcparams.period) = params.toSlice().decode(address, uint128, uint32);
         return svcparams;
