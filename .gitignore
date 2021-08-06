@@ -6,4 +6,4 @@
 *.pub
 *.seed
 *.key
-debot_err.log
+*.log
