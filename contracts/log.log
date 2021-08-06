@@ -1,0 +1,17 @@
+Config: /home/sostrovskyi/ton/tonos-cli.conf.json
+Input arguments:
+     tvc: serviceDebot.tvc
+      wc: None
+    keys: serviceDebot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "grab system clerk feel eager monkey luxury orphan fortune shock forget slim"
+Raw address: 0:276b501c6db608c1b13cc8fa5612a431bf1caacfe152731602dc6431017e58b7
+testnet:
+Non-bounceable address (for init): 0QAna1AcbbYIwbE8yPpWEqQxvxyqz-FScxYC3GQxAX5Yt81d
+Bounceable address (for later access): kQAna1AcbbYIwbE8yPpWEqQxvxyqz-FScxYC3GQxAX5Yt5CY
+mainnet:
+Non-bounceable address (for init): UQAna1AcbbYIwbE8yPpWEqQxvxyqz-FScxYC3GQxAX5Yt3bX
+Bounceable address (for later access): EQAna1AcbbYIwbE8yPpWEqQxvxyqz-FScxYC3GQxAX5YtysS
+Succeeded

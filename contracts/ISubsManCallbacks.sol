@@ -16,3 +16,7 @@ interface ISubsManCallbacksService {
 interface IonQuerySubscriptions {
     function onQuerySubscriptions(uint256[] keys) external;
 }
+
+interface IonQuerySubscribers {
+    function onQuerySubscribers(uint256[] keys) external;
+}

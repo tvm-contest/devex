@@ -50,6 +50,7 @@ contract SubsMan is Debot {
 
     TvmCell s_subscriptionServiceImage;
     TvmCell m_subscriptionWalletImage;
+    uint256 subscriberKey;
 
     TvmCell svcParams;
     SubscriptionService.ServiceParams decodedSvcParams;
@@ -104,8 +105,8 @@ contract SubsMan is Debot {
         return [ Menu.ID, SigningBoxInput.ID ];
     }
 
-    function buildAccount(uint256 ownerKey, uint256 serviceKey, SubscriptionService.ServiceParams svcparams) private view returns (TvmCell image) {
-        TvmCell code = m_subscriptionBaseImage.toSlice().loadRef();
+    function buildAccount(uint256 ownerKey, uint256 serviceKey, SubscriptionService.ServiceParams svcparams) private returns (TvmCell image) {
+        TvmCell code = buildAccountHelper(serviceKey);
         TvmCell newImage = tvm.buildStateInit({
             code: code,
             pubkey: ownerKey,
@@ -120,6 +121,18 @@ contract SubsMan is Debot {
         });
         image = newImage;
     }
+
+    function buildAccountHelper(uint256 serviceKey) private returns (TvmCell) {
+        Terminal.print(0, "buildAccountHelper");
+        TvmBuilder saltBuilder;
+        saltBuilder.store(serviceKey);
+        TvmCell code = tvm.setCodeSalt(
+            m_subscriptionBaseImage.toSlice().loadRef(),
+            saltBuilder.toCell()
+        );
+        return code;
+    }
+
 
 
     function buildWallet(uint256 ownerKey) private view returns (TvmCell image) {
@@ -156,7 +169,7 @@ contract SubsMan is Debot {
         }
     }
 
-    function deployAccountHelper(uint256 ownerKey, uint256 serviceKey, SubscriptionService.ServiceParams params) public view {
+    function deployAccountHelper(uint256 ownerKey, uint256 serviceKey, SubscriptionService.ServiceParams params) public {
         require(msg.value >= 1 ton, 102);
 
         TvmCell state = buildAccount(ownerKey,serviceKey,params);
@@ -390,6 +403,21 @@ contract SubsMan is Debot {
         return code;
     }
 
+    /// @notice API function.
+    function invokeQuerySubscribers(uint256 serviceKey) public {
+        s_invoker = msg.sender;
+        Sdk.getAccountsDataByHash(
+            tvm.functionId(setInvitesSubscriber),
+            tvm.hash(_getAccountCodeSubscriber(serviceKey)),
+            address.makeAddrStd(-1, 0)
+        );
+    }
+    
+    function _getAccountCodeSubscriber(uint256 serviceKey) private returns (TvmCell) {
+        TvmCell code = buildAccountHelper(serviceKey);
+        return code;
+    }
+
     function _decodeAccountAddress(TvmCell data) internal pure returns (uint256) {
         // pubkey, timestamp, ctor flag, address
         (, , , uint256 serviceKey) = data.toSlice().decode(uint256, uint64, bool, uint256);
@@ -402,6 +430,20 @@ contract SubsMan is Debot {
             pubkeys.push(_decodeAccountAddress(accounts[i].data));
         }
        IonQuerySubscriptions(m_invoker).onQuerySubscriptions(pubkeys);
+    }
+
+    function _decodeAccountAddressSubscriber(TvmCell data) internal returns (uint256) {
+        // pubkey, timestamp, ctor flag, address
+        (subscriberKey) = data.toSlice().decode(uint256);
+        return subscriberKey;
+    }
+
+    function setInvitesSubscriber(AccData[] accounts) public {
+        uint256[] pubkeys;
+        for (uint i = 0; i < accounts.length; i++) {
+            pubkeys.push(_decodeAccountAddressSubscriber(accounts[i].data));
+        }
+       IonQuerySubscribers(s_invoker).onQuerySubscribers(pubkeys);
     }
 
     function returnOnError(Status status) internal {

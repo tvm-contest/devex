@@ -15,7 +15,7 @@ import "Subscription.sol";
 import "Wallet.sol";
 import "SubsMan.sol";
 
-contract ServiceDebot is Debot, ISubsManCallbacksService {
+contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     
     bytes s_icon;
 
@@ -87,6 +87,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService {
 
     function menuShowSubscribers(uint32 index) public {
         index;
+        subsmanInvokeQuerySubscribers();
     }
 
     function setWalletAddress(address value) public {
@@ -169,5 +170,18 @@ contract ServiceDebot is Debot, ISubsManCallbacksService {
         this.start();
     }
 
+    function subsmanInvokeQuerySubscribers() public view {
+        SubsMan(s_subsman).invokeQuerySubscribers(
+            s_ownerKey
+        );
+    }
+
+    function onQuerySubscribers(uint256[] keys) external override {
+        Terminal.print(0, format("You have {} subscribers", keys.length));
+        for (uint i = 0; i < keys.length; i++) {
+            Terminal.print(0, format("0x{:X}", keys[i]));
+        }
+        this.start();
+    }
 
 }
