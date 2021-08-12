@@ -1,11 +1,10 @@
-pragma ton-solidity >=0.43.0;
+pragma ton-solidity ^ 0.47.0;
 pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Debot.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/SigningBoxInput/SigningBoxInput.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Menu/Menu.sol";
-import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/ConfirmInput/ConfirmInput.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Sdk.sol";
 import "ISubsManCallbacks.sol";
@@ -63,7 +62,6 @@ contract SubsMan is Debot {
     }
 
     modifier onlyOwner() {
-        require(msg.pubkey() == tvm.pubkey(), 100);
         tvm.accept();
         _;
     }
@@ -79,7 +77,11 @@ contract SubsMan is Debot {
     function setSubscriptionIndexCode(TvmCell image) public onlyOwner {
         m_subscriptionIndexImage = image;
     }
-    
+
+    function setSubscriptionService(TvmCell image) public onlyOwner {
+        s_subscriptionServiceImage = image;
+    }
+
     /// @notice Entry point function for DeBot.
     function start() public override {
         
@@ -134,8 +136,6 @@ contract SubsMan is Debot {
         return code;
     }
 
-
-
     function buildWallet(uint256 ownerKey) private view returns (TvmCell image) {
         TvmCell code = m_subscriptionWalletImage.toSlice().loadRef();
         TvmCell newImage = tvm.buildStateInit({
@@ -180,16 +180,16 @@ contract SubsMan is Debot {
         return code;             
     }
 
-    function deployAccountHelper(uint256 ownerKey, uint256 serviceKey, SubscriptionService.ServiceParams params) public {
+    function deployAccountHelper(uint256 ownerKey, uint256 serviceKey, SubscriptionService.ServiceParams params, bytes signature) public {
         require(msg.value >= 1 ton, 102);
 
         TvmCell state = buildAccount(ownerKey,serviceKey,params);
 
-        new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}(buildSubscriptionIndex(ownerKey));
+        new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}(buildSubscriptionIndex(ownerKey),signature);
     }
 
-    function deployAccount() public view {
-        TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey, decodedSvcParams);
+    function deployAccount(bytes signature) public view {
+        TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey, decodedSvcParams, signature);
         this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 3 ton, tvm.functionId(checkAccount));
     }
  
@@ -257,7 +257,6 @@ contract SubsMan is Debot {
         returnOnError(Status.MultisigFailed);
     }
 
-
     function deployWalletHelper(uint256 ownerKey) public view {
         TvmCell state = tvm.insertPubkey(m_subscriptionWalletImage, ownerKey);
         new Wallet {value: 1 ton, flag: 1, stateInit: state}(m_subscriptionBaseImage);
@@ -324,8 +323,8 @@ contract SubsMan is Debot {
         Sdk.signHash(tvm.functionId(deployService), s_sbHandle, tvm.hash(buildServiceHelper(serviceKey)));
     }
 
-    function setSubscriptionService(TvmCell image) public onlyOwner {
-        s_subscriptionServiceImage = image;
+    function signSubscriptionIndexCode(uint256 ownerKey) public {
+        Sdk.signHash(tvm.functionId(deployAccount), m_sbHandle, tvm.hash(buildSubscriptionIndex(ownerKey)));
     }
 
     function QueryService() public {
@@ -353,8 +352,8 @@ contract SubsMan is Debot {
         }
         //TODO: need to ensure that we always take only latest contract
         decodedSvcParams = params[0];
-        m_continue = tvm.functionId(deployAccount);
-        Terminal.print(m_continue, "Deploying account...");
+        Terminal.print(0, "Ask to sign subscription index code...");
+        signSubscriptionIndexCode(m_ownerKey);
     }
 
     function buildServiceHelper(uint256 serviceKey) private returns (TvmCell) {

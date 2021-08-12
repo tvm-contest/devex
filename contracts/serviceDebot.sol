@@ -1,4 +1,4 @@
-pragma ton-solidity >=0.43.0;
+pragma ton-solidity ^ 0.47.0;
 pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
@@ -11,8 +11,6 @@ import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Addre
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Sdk.sol";
 import "ISubsManCallbacks.sol";
 import "IMultisig.sol";
-import "Subscription.sol";
-import "Wallet.sol";
 import "SubsMan.sol";
 
 contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {

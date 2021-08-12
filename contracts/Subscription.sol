@@ -1,4 +1,4 @@
-pragma ton-solidity ^0.47.0;
+pragma ton-solidity ^ 0.47.0;
 pragma AbiHeader time;
 pragma AbiHeader expire;
 import "SubscriptionIndex.sol";
@@ -37,7 +37,7 @@ contract Subscription {
         _;
     }
 
-    constructor(TvmCell image) public {
+    constructor(TvmCell image, bytes signature) public {
         require(value > 0 && period > 0, 101);
         tvm.accept();
         subscription = Payment(tvm.pubkey(), to, value, period, 0, STATUS_ACTIVE);
@@ -49,7 +49,8 @@ contract Subscription {
             },
             contr: SubscriptionIndex
         });
-        new SubscriptionIndex{value: 1 ton, flag: 1, bounce: true, stateInit: state}();
+        TvmCell stateInit = tvm.insertPubkey(state, tvm.pubkey());
+        new SubscriptionIndex{value: 1 ton, flag: 1, bounce: true, stateInit: stateInit}(signature);
     }
 
     function getWallet() public view returns (address) {
