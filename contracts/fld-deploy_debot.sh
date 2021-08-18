@@ -8,6 +8,10 @@ done
 
 tos=tonos-cli
 
+## SETUP CONFIG
+TONOSCLI_CONFIG=./tonos-cli.config.json
+$tos config --url https://gql.custler.net --wc 0 --lifetime 3600 --local_run true --retries 3 --timeout 600 --async_call true
+
 DEBOT_NAME=SubsMan
 DEBOT_CLIENT=deployerDebot
 giver=0:841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94
