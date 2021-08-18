@@ -7,3 +7,4 @@
 *.seed
 *.key
 *.log
+*.conf.json
