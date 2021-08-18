@@ -10,15 +10,34 @@ tos=tonos-cli
 
 DEBOT_NAME=SubsMan
 DEBOT_CLIENT=deployerDebot
-giver=0:694d57c9a5c144f1896242ef89f83056545093d0e29a9effc252e602eb4c4938
+giver=0:841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94
+
+
 function giver {
 $tos --url $NETWORK call --abi ../local_giver.abi.json $giver sendGrams "{\"dest\":\"$1\",\"amount\":20000000000}"
 }
 function get_address {
 echo $(cat log.log | grep "Raw address:" | cut -d ' ' -f 3)
 }
-function genaddrw {
-$tos genaddr $1.tvc $1.abi.json --setkey Service.keys.json > log.log
+
+function genseed {
+$tos genphrase > $1.seed
+}
+
+function genpubkey {
+$tos genpubkey "$1" > $2.pub
+}
+
+function genkeypair {
+$tos getkeypair $1.keys.json "$2"
+}
+
+function genaddrclient {
+$tos genaddr $1.tvc $1.abi.json --setkey client.keys.json > log.log
+}
+
+function genaddrservice {
+$tos genaddr $1.tvc $1.abi.json --setkey service.keys.json > log.log
 }
 function genaddr {
 $tos genaddr $1.tvc $1.abi.json --setkey $1.keys.json > log.log
@@ -26,7 +45,15 @@ $tos genaddr $1.tvc $1.abi.json --setkey $1.keys.json > log.log
 function genaddrgen {
 $tos genaddr $1.tvc $1.abi.json --genkey $1.keys.json > log.log
 }
+
 function deploy {
+genseed $1
+seed=`cat $1.seed | grep -o '".*"' | tr -d '"'`
+echo "DeBot seed - $seed"
+genpubkey "$seed" "client"
+pub=`cat $1.pub | grep "Public key" | awk '{print $3}'`
+echo "Debot pubkey - $pub"
+genkeypair "$1" "$seed"
 echo GENADDR $1 ----------------------------------------------
 genaddr $1
 DEBOT_ADDRESS=$(get_address)
@@ -50,18 +77,47 @@ DEBOT_ABI=$(cat $1.abi.json | xxd -ps -c 20000)
 $tos --url $NETWORK call $DEBOT_ADDRESS setABI "{\"dabi\":\"$DEBOT_ABI\"}" --sign $1.keys.json --abi $1.abi.json
 echo -n $DEBOT_ADDRESS > $1.addr
 }
-function deployMsig {
+
+function deployMsigClient {
+genseed client
+seed=`cat client.seed | grep -o '".*"' | tr -d '"'`
+echo "Client seed - $seed"
+genpubkey "$seed" "client"
+pub=`cat client.pub | grep "Public key" | awk '{print $3}'`
+echo "Client pubkey - $pub"
+genkeypair "client" "$seed"
 msig=SafeMultisigWallet
 echo GENADDR $msig ----------------------------------------------
-genaddrw $msig
+genaddrclient $msig
 ADDRESS=$(get_address)
 echo GIVER $msig ------------------------------------------------
 giver $ADDRESS
 echo DEPLOY $msig -----------------------------------------------
-PUBLIC_KEY=$(cat Service.keys.json | jq .public)
-$tos --url $NETWORK deploy $msig.tvc "{\"owners\":[\"0x${PUBLIC_KEY:1:64}\"],\"reqConfirms\":1}" --sign Service.keys.json --abi $msig.abi.json
-echo -n $ADDRESS > msig.addr
+PUBLIC_KEY=$(cat client.keys.json | jq .public)
+$tos --url $NETWORK deploy $msig.tvc "{\"owners\":[\"0x${PUBLIC_KEY:1:64}\"],\"reqConfirms\":1}" --sign client.keys.json --abi $msig.abi.json
+echo -n $ADDRESS > msig.client.addr
 }
+
+function deployMsigService {
+genseed service
+seed=`cat service.seed | grep -o '".*"' | tr -d '"'`
+echo "Service seed - $seed"
+genpubkey "$seed" "service"
+pub=`cat service.pub | grep "Public key" | awk '{print $3}'`
+echo "Service pubkey - $pub"
+genkeypair "service" "$seed"
+msig=SafeMultisigWallet
+echo GENADDR $msig ----------------------------------------------
+genaddrservice $msig
+ADDRESS=$(get_address)
+echo GIVER $msig ------------------------------------------------
+giver $ADDRESS
+echo DEPLOY $msig -----------------------------------------------
+PUBLIC_KEY=$(cat service.keys.json | jq .public)
+$tos --url $NETWORK deploy $msig.tvc "{\"owners\":[\"0x${PUBLIC_KEY:1:64}\"],\"reqConfirms\":1}" --sign service.keys.json --abi $msig.abi.json
+echo -n $ADDRESS > msig.service.addr
+}
+
 
 LOCALNET=http://127.0.0.1
 DEVNET=https://net.ton.dev
@@ -69,8 +125,10 @@ MAINNET=https://main.ton.dev
 FLD=https://gql.custler.net
 NETWORK=$FLD
 
-#deployMsig
-MSIG_ADDRESS=$(cat msig.addr)
+deployMsigClient
+deployMsigService
+MSIG_CLIENT_ADDRESS=$(cat msig.client.addr)
+MSIG_SERVICE_ADDRESS=$(cat msig.service.addr)
 
 deploy $DEBOT_NAME
 DEBOT_ADDRESS=$(cat $DEBOT_NAME.addr)
@@ -105,9 +163,11 @@ $tos --url $NETWORK call $DEBOT_ADDRESS_SVC setSubsman "{\"addr\":\"$ACCMAN_ADDR
 echo client $DEBOT_ADDRESS
 echo service $DEBOT_ADDRESS_SVC
 echo debot $ACCMAN_ADDRESS
-echo msig $MSIG_ADDRESS
+echo msig_client $MSIG_CLIENT_ADDRESS
+echo msig_service $MSIG_SERVICE_ADDRESS
 
-cat msig.addr
+cat msig.client.addr
+cat msig.service.addr
 cat Wallet.keys.json
 cat Service.keys.json
 
