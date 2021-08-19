@@ -126,7 +126,6 @@ contract SubsMan is Debot {
     }
 
     function buildAccountHelper(uint256 serviceKey) private returns (TvmCell) {
-        Terminal.print(0, "buildAccountHelper");
         TvmBuilder saltBuilder;
         saltBuilder.store(serviceKey);
         TvmCell code = tvm.setCodeSalt(

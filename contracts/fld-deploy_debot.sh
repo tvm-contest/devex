@@ -180,4 +180,5 @@ cat msig.service.addr
 cat client.keys.json
 cat service.keys.json
 
+tonos-cli config --pubkey 0x$(cat client.keys.json | jq .public -r) --wallet $(cat msig.client.addr)
 $tos --url $NETWORK debot fetch $DEBOT_ADDRESS
