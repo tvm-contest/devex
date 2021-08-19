@@ -2,7 +2,7 @@
 #!/bin/bash
 set -xe
 
-for i in SubsMan deployerDebot Subscription serviceDebot SubscriptionService SubscriptionIndex; do
+for i in SubsMan deployerDebot Subscription serviceDebot SubscriptionService SubscriptionIndex Wallet; do
 	tondev sol compile $i.sol;
 done
 
@@ -155,9 +155,14 @@ $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionService "{\"image\":\"$IM
 echo DONE ------------------------------------------------------------------
 echo debot $DEBOT_ADDRESS
 
+
 deploy $DEBOT_CLIENT
 DEBOT_ADDRESS=$(cat $DEBOT_CLIENT.addr)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign $DEBOT_CLIENT.keys.json --abi $DEBOT_CLIENT.abi.json
+
+#deploy Example
+#DEBOT_ADDRESS=$(cat $DEBOT_CLIENT.addr)
+#$tos --url $NETWORK call $DEBOT_ADDRESS setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign $DEBOT_CLIENT.keys.json --abi $DEBOT_CLIENT.abi.json
 
 # SERVICE DEBOT DEPLOY
 deploygen serviceDebot
@@ -172,7 +177,7 @@ echo msig_service $MSIG_SERVICE_ADDRESS
 
 cat msig.client.addr
 cat msig.service.addr
-cat Wallet.keys.json
-cat Service.keys.json
+cat client.keys.json
+cat service.keys.json
 
 $tos --url $NETWORK debot fetch $DEBOT_ADDRESS

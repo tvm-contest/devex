@@ -11,8 +11,8 @@ contract SubscriptionIndex {
         require(salt.hasValue(), 101);
         ownerKey = salt.get().toSlice().decode(uint256);
         tvmKey = tvm.pubkey();
-        //require(msg.sender != address(0), 101);
-        //require(tvm.checkSign(tvm.hash(code), signature.toSlice(), tvm.pubkey()), 102);
-        //require(tvm.checkSign(tvm.hash(code), signature.toSlice(), ownerKey), 103);
+        require(msg.sender != address(0), 101);
+        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), tvm.pubkey()), 102);
+        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), ownerKey), 103);
     }
 }

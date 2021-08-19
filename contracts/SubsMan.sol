@@ -163,7 +163,7 @@ contract SubsMan is Debot {
                 return;
             }
             Terminal.print(0, "User Wallet is inactive. Deploying...");
-            deployWallet();
+            signSubscriptionWalletCode();
         } else {
             Terminal.print(0, format("User Wallet is active: {}.", address(tvm.hash(buildWallet(m_ownerKey)))));
             QueryService();
@@ -193,9 +193,18 @@ contract SubsMan is Debot {
         this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 3 ton, tvm.functionId(checkAccount));
     }
  
-    function deployWallet() view public {
-        TvmCell body = tvm.encodeBody(SubsMan.deployWalletHelper, m_ownerKey);
+     function deployWalletHelper(uint256 ownerKey, bytes signature) public view {
+        TvmCell state = tvm.insertPubkey(tvm.buildStateInit({pubkey: ownerKey, code: m_subscriptionWalletImage.toSlice().loadRef()}), ownerKey);
+        new Wallet {value: 1 ton, flag: 1, stateInit: state}(m_subscriptionBaseImage, signature);
+    }
+
+    function deployWallet(bytes signature) view public {
+        TvmCell body = tvm.encodeBody(SubsMan.deployWalletHelper, m_ownerKey, signature);
         this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 2 ton, tvm.functionId(printWalletStatus));
+    }
+
+    function signSubscriptionWalletCode() public {
+        Sdk.signHash(tvm.functionId(deployWallet), m_sbHandle, tvm.hash(m_subscriptionWalletImage.toSlice().loadRef()));
     }
 
     function printWalletStatus() public {
@@ -257,11 +266,6 @@ contract SubsMan is Debot {
         returnOnError(Status.MultisigFailed);
     }
 
-    function deployWalletHelper(uint256 ownerKey) public view {
-        TvmCell state = tvm.insertPubkey(m_subscriptionWalletImage, ownerKey);
-        new Wallet {value: 1 ton, flag: 1, stateInit: state}(m_subscriptionBaseImage);
-    }
-
     /// @notice API function.
     function invokeDeploySubscription(
         uint256 ownerKey,
@@ -316,11 +320,11 @@ contract SubsMan is Debot {
         s_args = args;
         s_sbHandle = sbHandle;
         s_wallet = wallet;
-        signServiceCode(s_ownerKey);
+        signServiceCode();
     }
 
-    function signServiceCode(uint256 serviceKey) public {
-        Sdk.signHash(tvm.functionId(deployService), s_sbHandle, tvm.hash(buildServiceHelper(serviceKey)));
+    function signServiceCode() public {
+        Sdk.signHash(tvm.functionId(deployService), s_sbHandle, tvm.hash(buildServiceHelper()));
     }
 
     function signSubscriptionIndexCode(uint256 ownerKey) public {
@@ -328,7 +332,7 @@ contract SubsMan is Debot {
     }
 
     function QueryService() public {
-        TvmCell code = buildServiceHelper(m_serviceKey);
+        TvmCell code = buildServiceHelper();
         Sdk.getAccountsDataByHash(
             tvm.functionId(getServiceParams),
             tvm.hash(code),
@@ -344,42 +348,49 @@ contract SubsMan is Debot {
         return svcparams;
     }
 
+    function _decodeServiceKey(TvmCell data) internal returns (uint256) {
+        Terminal.print(0, "_decodeServiceKey...");
+        (uint256 svcKey, ,) = data.toSlice().decode(uint256, uint64, bool);
+        return svcKey;
+    }
+
     function getServiceParams(AccData[] accounts) public {
         SubscriptionService.ServiceParams[] params; 
         Terminal.print(0, format("getServiceParams: {}.", accounts.length));
         for (uint i = 0; i < accounts.length; i++) {
-            params.push(_decodeServiceParams(accounts[i].data));
+            Terminal.print(0, format("Compare {:X} and {:X}", _decodeServiceKey(accounts[i].data), m_serviceKey));
+            if (_decodeServiceKey(accounts[i].data) == m_serviceKey) {
+                params.push(_decodeServiceParams(accounts[i].data));
+            }
         }
-        //TODO: need to ensure that we always take only latest contract
         decodedSvcParams = params[0];
-        Terminal.print(0, "Ask to sign subscription index code...");
+        Terminal.print(0, format("decodedSvcParams: period --> {}.", decodedSvcParams.period));
+        Terminal.print(0, "Signing subscription index code...");
         signSubscriptionIndexCode(m_ownerKey);
     }
 
-    function buildServiceHelper(uint256 serviceKey) private returns (TvmCell) {
-        Terminal.print(0, "buildServiceHelper");
-        TvmBuilder saltBuilder;
-        saltBuilder.store(serviceKey);
-        TvmCell code = tvm.setCodeSalt(
-            s_subscriptionServiceImage.toSlice().loadRef(),
-            saltBuilder.toCell()
-        );
+    //On-chain function
+    function buildServiceHelper() private returns (TvmCell) {
+        TvmCell code = s_subscriptionServiceImage.toSlice().loadRef();
         return code;      
     }
 
+    //On-chain function
     function buildService(uint256 serviceKey, TvmCell params) private returns (TvmCell image) {
-        TvmCell code = buildServiceHelper(serviceKey);
+        TvmCell code = buildServiceHelper();
         TvmCell state = tvm.buildStateInit({
             code: code,
             pubkey: serviceKey,
-            varInit: { 
-                params: params
+            varInit: {
+                params: params,
+                serviceKey: serviceKey
             },
             contr: SubscriptionService
         });
         image = tvm.insertPubkey(state, serviceKey);
     }
 
+    //On-chain function
     function deployServiceHelper(uint256 serviceKey, TvmCell params, bytes signature) public {
         require(msg.value >= 1 ton, 102);
         TvmCell state = buildService(serviceKey, params);
@@ -388,7 +399,7 @@ contract SubsMan is Debot {
 
     function deployService(bytes signature) view public {
         TvmCell body = tvm.encodeBody(SubsMan.deployServiceHelper, s_ownerKey, svcParams, signature);
-        this.callMultisig(s_wallet, s_ownerKey, s_sbHandle, address(this), body, 1 ton, tvm.functionId(printServiceStatus));
+        this.callMultisig(s_wallet, s_ownerKey, s_sbHandle, address(this), body, 2 ton, tvm.functionId(printServiceStatus));
     }
 
     function printServiceStatus() public {

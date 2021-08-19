@@ -107,7 +107,10 @@ echo debot $ACCMAN_ADDRESS
 echo msig $MSIG_ADDRESS
 
 cat msig.addr
-cat Wallet.keys.json
-cat Service.keys.json
+cat msig.client.addr
 
-$tos --url $NETWORK debot fetch $DEBOT_ADDRESS
+cat client.keys.json
+cat service.keys.json
+
+#$tos --url $NETWORK debot fetch $DEBOT_ADDRESS
+$tos --url $NETWORK debot fetch `cat deployerDebot.addr`

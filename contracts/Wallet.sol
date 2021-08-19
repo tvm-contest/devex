@@ -14,11 +14,14 @@ contract Wallet {
     uint256 public mserviceKey;
     uint32 public mperiod;
 
+    uint256 public tvmKey;
+    uint256 public msgKey;
 
-    constructor(TvmCell image) public {
-
+    constructor(TvmCell image, bytes signature) public {
+        tvmKey = tvm.pubkey();
+        msgKey = msg.pubkey();  // need to verify external message deployment
         require(tvm.pubkey() != 0, 101);
-        require(msg.pubkey() == tvm.pubkey(), 102);
+        require(tvm.checkSign(tvm.hash(tvm.code()), signature.toSlice(), tvm.pubkey()), 102);
         tvm.accept();
         subscr_Image = image;
         TvmCell wImage = tvm.buildStateInit({

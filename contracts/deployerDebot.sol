@@ -1,10 +1,10 @@
-pragma ton-solidity ^ 0.47.0;
+pragma ton-solidity >=0.43.0;
 pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Debot.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
-import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/AddressInput/AddressInput.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/UserInfo/UserInfo.sol";
 import "SubsMan.sol";
 import "ISubsManCallbacks.sol";
 
@@ -39,30 +39,36 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
 
     function menuDeploySubscription(uint32 index) public {
         index;
-        if (m_wallet == address(0)) {
-            AddressInput.get(tvm.functionId(setWalletAddress), "Choose multisig wallet which I can use to pay for subscription deployment:");
-        }
-        if (m_ownerKey == 0) {
-            Terminal.input(tvm.functionId(setOwnerKey), "Enter your public key:", false);
-        }
-        if (m_serviceKey == 0) {
-            Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to:", false);
-        }
-        if (m_ownerKey != 0 && m_wallet != address(0)) {
-            Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to:", false);
-        }
+        UserInfo.getAccount(tvm.functionId(setDefaultAccount));
+        UserInfo.getPublicKey(tvm.functionId(setDefaultPubkey));
+        Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to: ", false);
+    }
+
+    function setDefaultAccount(address value) public {
+        Terminal.print(0, format("User account {}", value));
+        m_wallet = value;
+    }
+
+    function setDefaultPubkey(uint256 value) public {
+        Terminal.print(0, format("User public key {:X}", value));
+        m_ownerKey = value;
+    }
+
+    function setSigningBox(uint32 handle) public {
+        Terminal.print(0, format("Signing box handle {}", handle));
+        m_sbHandle = handle;
     }
 
     function menuShowSubscription(uint32 index) public {
         index;
-        if (m_ownerKey == 0 ) {
-            Terminal.input(tvm.functionId(setOwnerKey), "Enter public key of service which you want to subscribe to:", false);
-        }
+        UserInfo.getAccount(tvm.functionId(setDefaultAccount));
+        UserInfo.getPublicKey(tvm.functionId(setDefaultPubkey));
         SubsMan(m_subsman).invokeQuerySubscriptions(m_ownerKey);
     }
 
-    function setOwnerKey(string value) public {
-        if (!_parseKey(value)) return;
+    function _decodeWalletKey(TvmCell data) internal returns (uint256) {
+        (uint256 walletKey, ,) = data.toSlice().decode(uint256, uint64, bool);
+        return walletKey;        
     }
 
     function setServiceKey(string value) public {
@@ -80,13 +86,6 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
             );
         } else {
             setSigningBoxHandle(m_sbHandle);
-        }
-    }
-
-    function setWalletAddress(address value) public {
-        m_wallet = value;
-        if (m_ownerKey != 0) {
-            getSigningBox();
         }
     }
 
@@ -117,7 +116,6 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
 
         this.start();
     }
-
     function onQuerySubscriptions(uint256[] keys) external override{
         Terminal.print(0, format("You have {} subscriptions", keys.length));
         for (uint i = 0; i < keys.length; i++) {
@@ -144,22 +142,12 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     }
 
     function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
-        return [ Terminal.ID ];
+        return [ Terminal.ID, UserInfo.ID ];
     }
 
     //
     // Private Helpers
     //
-
-    function _parseKey(string value) private returns (bool) {
-        (uint256 key, bool res) = stoi("0x" + value);
-        if (!res) {
-            Terminal.print(tvm.functionId(Debot.start), "Invalid public key.");
-            return res;
-        }
-        m_ownerKey = key;
-        return res;
-    }
 
     function _parseServiceKey(string value) private returns (bool) {
         (uint256 key, bool res) = stoi("0x" + value);
