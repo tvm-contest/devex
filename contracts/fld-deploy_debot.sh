@@ -166,6 +166,7 @@ $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionService "{\"image\":\"$IM
 deploygen serviceDebot
 DEBOT_ADDRESS_SVC=$(cat serviceDebot.addr)
 $tos --url $NETWORK call $DEBOT_ADDRESS_SVC setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign serviceDebot.keys.json --abi serviceDebot.abi.json
+$tos --url $NETWORK call $DEBOT_ADDRESS_SVC setSubscriptionService "{\"image\":\"$IMAGE\"}" --sign serviceDebot.keys.json --abi serviceDebot.abi.json
 
 echo client $DEBOT_ADDRESS
 echo service $DEBOT_ADDRESS_SVC

@@ -27,6 +27,19 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     uint32 s_period;
     string s_description;
     string s_name;
+    uint64 deployment_date;
+    TvmCell m_subscriptionServiceImage;
+    uint32 service_period;
+    uint256 subscribers;
+
+    modifier onlyOwner() {
+        tvm.accept();
+        _;
+    }
+
+    function setSubscriptionService(TvmCell image) public onlyOwner {
+        m_subscriptionServiceImage = image;
+    }
 
     function setIcon(bytes icon) public {
         require(msg.pubkey() == tvm.pubkey(), 100);
@@ -44,13 +57,13 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         string name, string version, string publisher, string caption, string author,
         address support, string hello, string language, string dabi, bytes icon
     ) {
-        name = "Subscription Service Deployer";
+        name = "Service Deployer";
         version = "0.1.0";
         publisher = "INTONNATION";
-        caption = "Subscription Service Deployment";
+        caption = "Service Deployer";
         author = "INTONNATION";
         support = address.makeAddrStd(0, 0);
-        hello = "Hello, I am a Service Subscription Deployer DeBot.";
+        hello = "Hello, I am a service deployer DeBot.";
         language = "en";
         dabi = m_debotAbi.get();
         icon = s_icon;
@@ -64,28 +77,28 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     function start() public override {
         UserInfo.getAccount(tvm.functionId(setWalletAddress));
         UserInfo.getPublicKey(tvm.functionId(setOwnerKey));
-        Menu.select("I can manage your services", "", [
-            MenuItem("Deploy a new service", "", tvm.functionId(menuDeployService)),
-            MenuItem("Show my subscribers", "", tvm.functionId(menuShowSubscribers))
+        Menu.select("Available options:", "", [
+            MenuItem("Deploy service", "", tvm.functionId(menuDeployService)),
+            MenuItem("Get service info", "", tvm.functionId(menuShowSubscribers))
         ]);
     }
 
     function menuDeployService(uint32 index) public {
         index;
         if (s_name.empty()) {
-            Terminal.input(tvm.functionId(setSubscriptionName), "Choose a name of your service:", false);
+            Terminal.input(tvm.functionId(setSubscriptionName), "Input the name of your service:", false);
         }
         if (s_description.empty()) {
-            Terminal.input(tvm.functionId(setSubscriptionDesciption), "Choose a description for subscribers:", false);
+            Terminal.input(tvm.functionId(setSubscriptionDesciption), "Provide description for subscribers:", false);
         }     
         if (s_period == 0 ) {
-            Terminal.input(tvm.functionId(setSubscriptionPeriod), "Choose a payment period for subscribers:", false);
+            Terminal.input(tvm.functionId(setSubscriptionPeriod), "Input payment period for subscribers:", false);
         }
         if (s_value == 0) {
-            Terminal.input(tvm.functionId(setubscriptionValue), "Choose a cost of your subscription for selected period:", false);
+            Terminal.input(tvm.functionId(setubscriptionValue), "Input a cost of your service subscription for selected period:", false);
         }
         if (s_to == address(0)) {
-            AddressInput.get(tvm.functionId(setPaymentAddress), "Choose an address to receive payments for subscriptions:");
+            AddressInput.get(tvm.functionId(setPaymentAddress), "Input an address to receive payments:");
         }   
     }
 
@@ -158,12 +171,12 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         );
     }
 
-    function onSubscriptionServiceDeploy(Status status, address addr) external override{
+    function onSubscriptionServiceDeploy(Status status, address addr) external override {
         uint8 stat = uint8(status);
         if (status == Status.Success) {
-            Terminal.print(0, format("Subscription successfully deployed:\n{}", addr));
+            Terminal.print(0, format("Service deployed successfully:\n{}", addr));
         } else {
-            Terminal.print(0, format("Subscription deploy failed. Error status {}", stat));
+            Terminal.print(0, format("Service deploy failed. Error status {}", stat));
         }
 
         this.start();
@@ -176,11 +189,43 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     }
 
     function onQuerySubscribers(uint256[] keys) external override {
-        Terminal.print(0, format("You have {} subscribers", keys.length));
-        for (uint i = 0; i < keys.length; i++) {
-            Terminal.print(0, format("0x{:X}", keys[i]));
-        }
+        //Terminal.print(0, format("Service name: {}\nDescription: {}\nSubscription period: {}\nPrice per period: {}\nDeployment date: {}\nSubscribers count: {}\nExpected monthly income: {}",s_name, s_description, s_period, s_value, deployment_date, keys.length, keys.length*s_value));
+        //for (uint i = 0; i < keys.length; i++) {
+        //    Terminal.print(0, format("0x{:X}", keys[i]));
+        //}
+        subscribers = keys.length;
+        QueryServices();
         this.start();
+    }
+
+    function printSubscriprionsList(AccData[] accounts) public {
+        SubscriptionService.ServiceParams svcparams;
+        for (uint i = 0; i < accounts.length; i++) {
+            if (_decodeServiceKey(accounts[i].data) == s_ownerKey) {
+                (, , , TvmCell _params) = accounts[i].data.toSlice().decode(uint256, uint64, bool, TvmCell);
+                (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = _params.toSlice().decode(address, uint128, uint32, string, string);
+                Terminal.print(0, format("Name: {}\nDescription: {}\nPeriod: {}\nPrice per period: {}\nSubscribers count: {}\nExpected monthly income: {}", svcparams.name, svcparams.description, svcparams.period, svcparams.value, subscribers, subscribers*svcparams.value));
+            }
+        }
+    }
+
+    function buildServiceHelper() private returns (TvmCell) {
+        TvmCell code = m_subscriptionServiceImage.toSlice().loadRef();
+        return code;
+    }
+
+    function _decodeServiceKey(TvmCell data) internal returns (uint256) {
+        (uint256 svcKey, ,) = data.toSlice().decode(uint256, uint64, bool);
+        return svcKey;
+    }
+
+    function QueryServices() public {
+        TvmCell code = buildServiceHelper();
+        Sdk.getAccountsDataByHash(
+            tvm.functionId(printSubscriprionsList),
+            tvm.hash(code),
+            address.makeAddrStd(-1, 0)
+        );
     }
 
 }
