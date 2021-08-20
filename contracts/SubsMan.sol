@@ -300,6 +300,8 @@ contract SubsMan is Debot {
         uint32 sbHandle,
         uint32 period,
         uint128 value,
+        string name,
+        string description,
         TvmCell args
     ) public {
         s_invoker = msg.sender;
@@ -314,7 +316,7 @@ contract SubsMan is Debot {
         }
         s_ownerKey = ownerKey;
         TvmBuilder params;
-        params.store(to, value, period);
+        params.store(to, value, period, name, description);
         svcParams = params.toCell();
         s_args = args;
         s_sbHandle = sbHandle;
@@ -363,7 +365,7 @@ contract SubsMan is Debot {
             }
         }
         decodedSvcParams = params[0];
-        Terminal.print(0, format("decodedSvcParams: period --> {}.", decodedSvcParams.period));
+        Terminal.print(0, format("decodedSvcParams: name --> {}.", decodedSvcParams.name));
         Terminal.print(0, "Signing subscription index code...");
         signSubscriptionIndexCode(m_ownerKey);
     }

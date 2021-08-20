@@ -8,6 +8,7 @@ import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Menu/
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/ConfirmInput/ConfirmInput.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/AddressInput/AddressInput.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/UserInfo/UserInfo.sol";
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Sdk.sol";
 import "ISubsManCallbacks.sol";
 import "IMultisig.sol";
@@ -24,7 +25,8 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     address s_to;
     uint128 s_value;
     uint32 s_period;
-
+    string s_description;
+    string s_name;
 
     function setIcon(bytes icon) public {
         require(msg.pubkey() == tvm.pubkey(), 100);
@@ -60,7 +62,8 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
 
     /// @notice Entry point function for DeBot.
     function start() public override {
-        getOwnerKey();
+        UserInfo.getAccount(tvm.functionId(setWalletAddress));
+        UserInfo.getPublicKey(tvm.functionId(setOwnerKey));
         Menu.select("I can manage your services", "", [
             MenuItem("Deploy a new service", "", tvm.functionId(menuDeployService)),
             MenuItem("Show my subscribers", "", tvm.functionId(menuShowSubscribers))
@@ -69,9 +72,12 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
 
     function menuDeployService(uint32 index) public {
         index;
-        if (s_wallet == address(0)) {
-            AddressInput.get(tvm.functionId(setWalletAddress), "Choose a wallet which I can use to pay for service deployment:");
+        if (s_name.empty()) {
+            Terminal.input(tvm.functionId(setSubscriptionName), "Choose a name of your service:", false);
         }
+        if (s_description.empty()) {
+            Terminal.input(tvm.functionId(setSubscriptionDesciption), "Choose a description for subscribers:", false);
+        }     
         if (s_period == 0 ) {
             Terminal.input(tvm.functionId(setSubscriptionPeriod), "Choose a payment period for subscribers:", false);
         }
@@ -80,7 +86,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         }
         if (s_to == address(0)) {
             AddressInput.get(tvm.functionId(setPaymentAddress), "Choose an address to receive payments for subscriptions:");
-        }
+        }   
     }
 
     function menuShowSubscribers(uint32 index) public {
@@ -96,6 +102,14 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         s_period = value;
     }
 
+    function setSubscriptionName(string value) public {
+        s_name = value;
+    }
+
+    function setSubscriptionDesciption(string value) public {
+        s_description = value;
+    }
+
     function setubscriptionValue(uint128 value) public {
         s_value = value;
     }
@@ -105,24 +119,9 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         getSigningBox();
     }
 
-    function getOwnerKey() public {
-        if (s_ownerKey == 0) {
-            Terminal.input(tvm.functionId(setOwnerKey), "Enter your service public key:", false);
-        }
-    }
-
-    function setOwnerKey(string value) public {
-        if (!_parseKey(value)) return;
-    }
-
-    function _parseKey(string value) private returns (bool) {
-        (uint256 key, bool res) = stoi("0x" + value);
-        if (!res) {
-            Terminal.print(tvm.functionId(Debot.start), "Invalid public key.");
-            return res;
-        }
-        s_ownerKey = key;
-        return res;
+    function setOwnerKey(uint256 value) public {
+        Terminal.print(0, format("Your public key {:X}", value));
+        s_ownerKey = value;    
     }
 
     function getSigningBox() public {
@@ -153,6 +152,8 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
             s_sbHandle,
             s_period,
             s_value,
+            s_name,
+            s_description,
             args.toCell()
         );
     }

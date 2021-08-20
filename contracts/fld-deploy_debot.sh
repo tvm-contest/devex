@@ -161,9 +161,6 @@ $tos --url $NETWORK call $DEBOT_ADDRESS setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\
 # SET IMAGE for SERVICE
 IMAGE=$(base64 -w 0 SubscriptionService.tvc)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionService "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
-#deploy Example
-#DEBOT_ADDRESS=$(cat $DEBOT_CLIENT.addr)
-#$tos --url $NETWORK call $DEBOT_ADDRESS setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign $DEBOT_CLIENT.keys.json --abi $DEBOT_CLIENT.abi.json
 
 # SERVICE DEBOT DEPLOY
 deploygen serviceDebot
@@ -181,5 +178,6 @@ cat msig.service.addr
 cat client.keys.json
 cat service.keys.json
 
-tonos-cli config --pubkey 0x$(cat client.keys.json | jq .public -r) --wallet $(cat msig.client.addr)
+#tonos-cli config --pubkey 0x$(cat client.keys.json | jq .public -r) --wallet $(cat msig.client.addr)
+tonos-cli config --pubkey 0x$(cat service.keys.json | jq .public -r) --wallet $(cat msig.service.addr)
 $tos --url $NETWORK debot fetch $DEBOT_ADDRESS

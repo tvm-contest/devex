@@ -7,6 +7,7 @@ import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Termi
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/UserInfo/UserInfo.sol";
 import "SubsMan.sol";
 import "ISubsManCallbacks.sol";
+import "SubscriptionService.sol";
 
 contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     bytes m_icon;
@@ -60,17 +61,18 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to: ", false);
     }
 
-    function _decodeServiceKey(TvmCell data) internal returns (uint256) {
-        Terminal.print(0, "_decodeServiceKey...");
-        (uint256 svcKey, ,) = data.toSlice().decode(uint256, uint64, bool);
-        return svcKey;
+    function _decodeServiceParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
+        SubscriptionService.ServiceParams svcparams;
+        (, , , TvmCell params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
+        (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = params.toSlice().decode(address, uint128, uint32, string, string);
+        return svcparams;
     }
 
     function printSubscriprionsList(AccData[] accounts) public {
         MenuItem[] items;
         m_accounts = accounts;
         for(uint i = 0; i < accounts.length; i++) {
-            items.push(MenuItem(format("{}", _decodeServiceKey(accounts[i].data)), "", tvm.functionId(getSigningBox)));
+            items.push(MenuItem(format("{}: {}\nPeriod: {}\nPrice: {}", _decodeServiceParams(accounts[i].data).name, _decodeServiceParams(accounts[i].data).description, _decodeServiceParams(accounts[i].data).period, _decodeServiceParams(accounts[i].data).value), "", tvm.functionId(getSigningBox)));
         }
         items.push(MenuItem("Select subcription service by pubkey", "", tvm.functionId(menuServiceKey)) );
         Menu.select(format("{} Subscription services has been found. Choose service from the list or enter its pubkey manually:", accounts.length), "", items);
@@ -120,6 +122,12 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function setServiceKey(string value) public {
         if (!_parseServiceKey(value)) return;
         getSigningBox(0);
+    }
+
+    function _decodeServiceKey(TvmCell data) internal returns (uint256) {
+        Terminal.print(0, "_decodeServiceKey...");
+        (uint256 svcKey, ,) = data.toSlice().decode(uint256, uint64, bool);
+        return svcKey;
     }
 
     function getSigningBox(uint32 index) public {
