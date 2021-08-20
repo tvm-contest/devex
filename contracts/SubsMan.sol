@@ -165,7 +165,7 @@ contract SubsMan is Debot {
             signSubscriptionWalletCode();
         } else {
             Terminal.print(0, format("User Wallet is active: {}.", address(tvm.hash(buildWallet(m_ownerKey)))));
-            QueryService();
+            QueryServices();
         }
     }
 
@@ -207,7 +207,7 @@ contract SubsMan is Debot {
     }
 
     function printWalletStatus() public {
-        m_continue = tvm.functionId(QueryService);
+        m_continue = tvm.functionId(QueryServices);
         Terminal.print(m_continue, "Wallet has been deployed.\nDeploying subscription contract...");
     }
 
@@ -330,7 +330,7 @@ contract SubsMan is Debot {
         Sdk.signHash(tvm.functionId(deployAccount), m_sbHandle, tvm.hash(buildSubscriptionIndex(ownerKey)));
     }
 
-    function QueryService() public {
+    function QueryServices() public {
         TvmCell code = buildServiceHelper();
         Sdk.getAccountsDataByHash(
             tvm.functionId(getServiceParams),

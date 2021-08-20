@@ -16,6 +16,8 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     uint256 m_serviceKey;
     uint32 m_sbHandle;
     address m_wallet;
+    TvmCell m_subscriptionServiceImage;
+    AccData[] m_accounts;
 
     function setIcon(bytes icon) public {
         require(msg.pubkey() == tvm.pubkey(), 100);
@@ -27,6 +29,15 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         require(msg.pubkey() == tvm.pubkey(), 100);
         tvm.accept();
         m_subsman = addr;
+    }
+
+    modifier onlyOwner() {
+        tvm.accept();
+        _;
+    }
+
+    function setSubscriptionService(TvmCell image) public onlyOwner {
+        m_subscriptionServiceImage = image;
     }
 
     /// @notice Entry point function for DeBot.
@@ -41,7 +52,42 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         index;
         UserInfo.getAccount(tvm.functionId(setDefaultAccount));
         UserInfo.getPublicKey(tvm.functionId(setDefaultPubkey));
+        QueryServices();
+    }
+
+    function menuServiceKey(uint32 index) public {
+        index = index;
         Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to: ", false);
+    }
+
+    function _decodeServiceKey(TvmCell data) internal returns (uint256) {
+        Terminal.print(0, "_decodeServiceKey...");
+        (uint256 svcKey, ,) = data.toSlice().decode(uint256, uint64, bool);
+        return svcKey;
+    }
+
+    function printSubscriprionsList(AccData[] accounts) public {
+        MenuItem[] items;
+        m_accounts = accounts;
+        for(uint i = 0; i < accounts.length; i++) {
+            items.push(MenuItem(format("{}", _decodeServiceKey(accounts[i].data)), "", tvm.functionId(getSigningBox)));
+        }
+        items.push(MenuItem("Select subcription service by pubkey", "", tvm.functionId(menuServiceKey)) );
+        Menu.select(format("{} Subscription services has been found. Choose service from the list or enter its pubkey manually:", accounts.length), "", items);
+    }
+
+    function buildServiceHelper() public returns (TvmCell) {
+        TvmCell code = m_subscriptionServiceImage.toSlice().loadRef();
+        return code;      
+    }
+
+    function QueryServices() public {
+        TvmCell code = buildServiceHelper();
+        Sdk.getAccountsDataByHash(
+            tvm.functionId(printSubscriprionsList),
+            tvm.hash(code),
+            address.makeAddrStd(-1, 0)
+        );
     }
 
     function setDefaultAccount(address value) public {
@@ -73,11 +119,14 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
 
     function setServiceKey(string value) public {
         if (!_parseServiceKey(value)) return;
-        getSigningBox();
+        getSigningBox(0);
     }
 
-    function getSigningBox() public {
+    function getSigningBox(uint32 index) public {
         uint256[] keys;
+        if (m_serviceKey == 0) {
+            m_serviceKey = _decodeServiceKey(m_accounts[index].data);
+        }
         if (m_sbHandle == 0) {
             SigningBoxInput.get(
                 tvm.functionId(setSigningBoxHandle),
