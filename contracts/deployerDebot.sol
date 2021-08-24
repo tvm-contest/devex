@@ -5,6 +5,7 @@ pragma AbiHeader pubkey;
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Debot.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/UserInfo/UserInfo.sol";
+import "https://raw.githubusercontent.com/tonlabs/debots/main/Sdk.sol";
 import "SubsMan.sol";
 import "ISubsManCallbacks.sol";
 import "SubscriptionService.sol";
@@ -22,6 +23,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     uint32 m_sbHandle;
     address m_wallet;
     address subscrAddr;
+    uint128 m_balance;
     TvmCell m_subscriptionServiceImage;
     AccData[] s_accounts;
     AccData[] m_accounts;
@@ -51,7 +53,8 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function start() public override {
         Menu.select("I can manage your subscriptions", "", [
             MenuItem("Deploy new subscription", "", tvm.functionId(menuDeploySubscription)),
-            MenuItem("Show my subscriptions", "", tvm.functionId(menuShowSubscription))
+            MenuItem("Show my subscriptions", "", tvm.functionId(menuShowSubscription)),
+            MenuItem("Manage wallet", "", tvm.functionId(menuManageWallet))
         ]);
     }
 
@@ -65,6 +68,16 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function menuServiceKey(uint32 index) public {
         index = index;
         Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to: ", false);
+    }
+    
+    function menuManageWallet(uint32 index) public {
+        index;
+        UserInfo.getAccount(tvm.functionId(setDefaultAccount));
+        UserInfo.getPublicKey(tvm.functionId(setDefaultPubkey));
+        if (m_wallet == address(0)) {
+            Terminal.input(0,"Wallet doesn't exist",false);
+        }
+        getWalletbalance(m_wallet);
     }
 
     function _decodeServiceParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
@@ -97,6 +110,23 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         return code;      
     }
 
+    function getWalletbalance(address value) public {
+        m_wallet = value;
+        Sdk.getBalance(tvm.functionId(setBalance), value);
+        (uint64 dec, uint64 float) = tokens(m_balance);
+        Terminal.print(0,format("Wallet balance is {}.{} tons", dec, float));
+    }
+
+    function setBalance(uint128 nanotokens) public {
+        m_balance = nanotokens;
+    } 
+
+    function tokens(uint128 nanotokens) private pure returns (uint64, uint64) {
+        uint64 decimal = uint64(nanotokens / 1e9);
+        uint64 float = uint64(nanotokens - (decimal * 1e9));
+        return (decimal, float);
+    }
+    
     function QueryServices() public {
         TvmCell code = buildServiceHelper();
         Sdk.getAccountsDataByHash(
