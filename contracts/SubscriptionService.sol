@@ -1,4 +1,6 @@
 pragma ton-solidity >=0.47.0;
+pragma AbiHeader expire;
+pragma AbiHeader time;
 
 contract SubscriptionService {
 
@@ -9,10 +11,11 @@ contract SubscriptionService {
         address to;
         uint128 value;
         uint32 period;
+        address myaddress;
         string name;
         string description;
     }
-    
+
     function getParams() public view returns (ServiceParams){
         ServiceParams svcparams;
         (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = params.toSlice().decode(address, uint128, uint32, string, string);

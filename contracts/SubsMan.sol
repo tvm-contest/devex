@@ -183,8 +183,10 @@ contract SubsMan is Debot {
         require(msg.value >= 1 ton, 102);
 
         TvmCell state = buildAccount(ownerKey,serviceKey,params);
-
-        new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}(buildSubscriptionIndex(ownerKey),signature);
+        address subscrAddr = address(tvm.hash(buildAccount(ownerKey,serviceKey,params)));
+        TvmBuilder subscr_params;
+        subscr_params.store(params.to, params.value, params.period, subscrAddr);
+        new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}(buildSubscriptionIndex(ownerKey), signature, subscr_params.toCell());
     }
 
     function deployAccount(bytes signature) public view {
@@ -411,6 +413,7 @@ contract SubsMan is Debot {
 
     /// @notice API function.
     function invokeQuerySubscriptions(uint256 ownerKey) public {
+        Terminal.print(0, format("User public key {:X}", ownerKey));
         m_invokeType = Invoke.QuerySubscriptions;
         m_invoker = msg.sender;
         Sdk.getAccountsDataByHash(
@@ -447,11 +450,7 @@ contract SubsMan is Debot {
     }
 
     function setInvites(AccData[] accounts) public view {
-        uint256[] pubkeys;
-        for (uint i = 0; i < accounts.length; i++) {
-            pubkeys.push(_decodeAccountAddress(accounts[i].data));
-        }
-       IonQuerySubscriptions(m_invoker).onQuerySubscriptions(pubkeys);
+       IonQuerySubscriptions(m_invoker).onQuerySubscriptions(accounts);
     }
 
     function _decodeAccountAddressSubscriber(TvmCell data) internal returns (uint256) {
