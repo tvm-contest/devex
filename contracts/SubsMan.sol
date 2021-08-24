@@ -336,38 +336,30 @@ contract SubsMan is Debot {
 
     function QueryServices() public {
         TvmCell code = buildServiceHelper();
+        uint256 svc_addr = tvm.hash(buildService(m_serviceKey));
+        address addr = address.makeAddrStd(-1, svc_addr);
         Sdk.getAccountsDataByHash(
             tvm.functionId(getServiceParams),
             tvm.hash(code),
-            address.makeAddrStd(-1, 0)
+            addr
         );
     }
 
     function _decodeServiceParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
         SubscriptionService.ServiceParams svcparams;
-        Terminal.print(0, "_decodeServiceParams...");
         (, , , TvmCell _params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
         (svcparams.to, svcparams.value, svcparams.period) = _params.toSlice().decode(address, uint128, uint32);
         return svcparams;
     }
 
     function _decodeServiceKey(TvmCell data) internal returns (uint256) {
-        Terminal.print(0, "_decodeServiceKey...");
         (uint256 svcKey, ,) = data.toSlice().decode(uint256, uint64, bool);
         return svcKey;
     }
 
     function getServiceParams(AccData[] accounts) public {
         SubscriptionService.ServiceParams[] params; 
-        Terminal.print(0, format("getServiceParams: {}.", accounts.length));
-        for (uint i = 0; i < accounts.length; i++) {
-            Terminal.print(0, format("Compare {:X} and {:X}", _decodeServiceKey(accounts[i].data), m_serviceKey));
-            if (_decodeServiceKey(accounts[i].data) == m_serviceKey) {
-                params.push(_decodeServiceParams(accounts[i].data));
-            }
-        }
-        decodedSvcParams = params[0];
-        Terminal.print(0, format("decodedSvcParams: name --> {}.", decodedSvcParams.name));
+        decodedSvcParams = _decodeServiceParams(accounts[0].data);
         Terminal.print(0, "Signing subscription index code...");
         signSubscriptionIndexCode(m_ownerKey);
     }
@@ -379,13 +371,12 @@ contract SubsMan is Debot {
     }
 
     //On-chain function
-    function buildService(uint256 serviceKey, TvmCell params) private returns (TvmCell image) {
+    function buildService(uint256 serviceKey) private returns (TvmCell image) {
         TvmCell code = buildServiceHelper();
         TvmCell state = tvm.buildStateInit({
             code: code,
             pubkey: serviceKey,
             varInit: {
-                params: params,
                 serviceKey: serviceKey
             },
             contr: SubscriptionService
@@ -396,8 +387,8 @@ contract SubsMan is Debot {
     //On-chain function
     function deployServiceHelper(uint256 serviceKey, TvmCell params, bytes signature) public {
         require(msg.value >= 1 ton, 102);
-        TvmCell state = buildService(serviceKey, params);
-        new SubscriptionService{value: 1 ton, flag: 1, bounce: true, stateInit: state}(signature);
+        TvmCell state = buildService(serviceKey);
+        new SubscriptionService{value: 1 ton, flag: 1, bounce: true, stateInit: state}(signature, params);
     }
 
     function deployService(bytes signature) view public {
@@ -407,7 +398,7 @@ contract SubsMan is Debot {
 
     function printServiceStatus() public {
         Terminal.print(0, "Service deployed.");
-        address addr = address(tvm.hash(buildService(s_ownerKey, svcParams)));
+        address addr = address(tvm.hash(buildService(s_ownerKey)));
         ISubsManCallbacksService(s_invoker).onSubscriptionServiceDeploy(Status.Success, addr);
     }
 

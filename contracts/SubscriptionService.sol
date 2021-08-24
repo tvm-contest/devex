@@ -4,7 +4,7 @@ pragma AbiHeader time;
 
 contract SubscriptionService {
 
-    TvmCell static params;
+    TvmCell params;
     uint256 static serviceKey;
 
     struct ServiceParams {
@@ -22,10 +22,11 @@ contract SubscriptionService {
         return svcparams;
     }
 
-    constructor(bytes signature) public {
+    constructor(bytes signature, TvmCell svc_params) public {
         TvmCell code = tvm.code();
         require(msg.sender != address(0), 101);
         require(tvm.checkSign(tvm.hash(code), signature.toSlice(), tvm.pubkey()), 102);
         require(tvm.checkSign(tvm.hash(code), signature.toSlice(), serviceKey), 103);
+        params = svc_params;
     }
 }

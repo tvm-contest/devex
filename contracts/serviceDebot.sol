@@ -189,24 +189,22 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     }
 
     function onQuerySubscribers(uint256[] keys) external override {
-        //Terminal.print(0, format("Service name: {}\nDescription: {}\nSubscription period: {}\nPrice per period: {}\nDeployment date: {}\nSubscribers count: {}\nExpected monthly income: {}",s_name, s_description, s_period, s_value, deployment_date, keys.length, keys.length*s_value));
-        //for (uint i = 0; i < keys.length; i++) {
-        //    Terminal.print(0, format("0x{:X}", keys[i]));
-        //}
         subscribers = keys.length;
         QueryServices();
         this.start();
     }
 
-    function printSubscriprionsList(AccData[] accounts) public {
-        SubscriptionService.ServiceParams svcparams;
-        for (uint i = 0; i < accounts.length; i++) {
-            if (_decodeServiceKey(accounts[i].data) == s_ownerKey) {
-                (, , , TvmCell _params) = accounts[i].data.toSlice().decode(uint256, uint64, bool, TvmCell);
-                (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = _params.toSlice().decode(address, uint128, uint32, string, string);
-                Terminal.print(0, format("Name: {}\nDescription: {}\nPeriod: {}\nPrice per period: {}\nSubscribers count: {}\nExpected monthly income: {}", svcparams.name, svcparams.description, svcparams.period, svcparams.value, subscribers, subscribers*svcparams.value));
-            }
-        }
+    function buildService() private returns (TvmCell image) {
+        TvmCell code = buildServiceHelper();
+        TvmCell state = tvm.buildStateInit({
+            code: code,
+            pubkey: s_ownerKey,
+            varInit: {
+                serviceKey: s_ownerKey
+            },
+            contr: SubscriptionService
+        });
+        image = tvm.insertPubkey(state, s_ownerKey);
     }
 
     function buildServiceHelper() private returns (TvmCell) {
@@ -214,17 +212,21 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         return code;
     }
 
-    function _decodeServiceKey(TvmCell data) internal returns (uint256) {
-        (uint256 svcKey, ,) = data.toSlice().decode(uint256, uint64, bool);
-        return svcKey;
+    function printSubscriprionsList(AccData[] accounts) public {
+        SubscriptionService.ServiceParams svcparams;
+        (, , , TvmCell _params) = accounts[0].data.toSlice().decode(uint256, uint64, bool, TvmCell);
+        (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = _params.toSlice().decode(address, uint128, uint32, string, string);
+        Terminal.print(0, format("Name: {}\nDescription: {}\nPeriod: {}\nPrice per period: {}\nSubscribers count: {}\nExpected monthly income: {}", svcparams.name, svcparams.description, svcparams.period, svcparams.value, subscribers, subscribers*svcparams.value));
     }
 
     function QueryServices() public {
         TvmCell code = buildServiceHelper();
+        uint256 svc_addr = tvm.hash(buildService());
+        address addr = address.makeAddrStd(-1, svc_addr);
         Sdk.getAccountsDataByHash(
             tvm.functionId(printSubscriprionsList),
             tvm.hash(code),
-            address.makeAddrStd(-1, 0)
+            addr
         );
     }
 
