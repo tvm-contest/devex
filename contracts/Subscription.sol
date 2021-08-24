@@ -1,10 +1,15 @@
 pragma ton-solidity ^ 0.47.0;
-pragma AbiHeader time;
 pragma AbiHeader expire;
+pragma AbiHeader time;
+pragma AbiHeader pubkey;
 import "SubscriptionIndex.sol";
 
 interface IWallet {
     function sendTransaction (address dest, uint128 value, bool bounce, uint256 serviceKey, uint32 period) external;
+}
+
+interface ISubscriptionIndex {
+    function cancel () external;
 }
 
 contract Subscription {
@@ -17,6 +22,8 @@ contract Subscription {
     
     TvmCell m_subscriptionIndexImage;
     TvmCell subscriptionIndexState;
+
+    address subscriptionIndexAddress;
 
     uint8 constant STATUS_ACTIVE   = 1;
     uint8 constant STATUS_EXECUTED = 2;
@@ -33,11 +40,12 @@ contract Subscription {
     
 
     modifier onlyOwner {
-        require(msg.pubkey() == tvm.pubkey(), 100);        
-        _;
+		require(msg.pubkey() == tvm.pubkey(), 102);
+		tvm.accept();
+		_;
     }
 
-    constructor(TvmCell image, bytes signature) public {
+    constructor(TvmCell image, bytes signature, TvmCell params) public {
         require(value > 0 && period > 0, 101);
         tvm.accept();
         subscription = Payment(tvm.pubkey(), to, value, period, 0, STATUS_ACTIVE);
@@ -45,11 +53,13 @@ contract Subscription {
             code: image,
             pubkey: tvm.pubkey(),
             varInit: { 
-                subscr_pubkey: serviceKey
+                params: params,
+                user_wallet: user_wallet
             },
             contr: SubscriptionIndex
         });
         TvmCell stateInit = tvm.insertPubkey(state, tvm.pubkey());
+        subscriptionIndexAddress = address(tvm.hash(stateInit));
         new SubscriptionIndex{value: 1 ton, flag: 1, bounce: true, stateInit: stateInit}(signature);
     }
 
@@ -63,8 +73,8 @@ contract Subscription {
 
     function cancel() public onlyOwner {
         require(subscription.status != 0, 101);
-        tvm.accept();
-        delete subscription;
+        ISubscriptionIndex(subscriptionIndexAddress).cancel();
+        selfdestruct(user_wallet);
     }
 
     function executeSubscription() public {
@@ -77,10 +87,5 @@ contract Subscription {
         tvm.accept();
         IWallet(user_wallet).sendTransaction{value: 1 ton, bounce: false, flag: 0}(subscription.to, subscription.value, false, serviceKey, 60);
         subscription.status = STATUS_EXECUTED;
-    }
-
-    function sendAllMoney(address dest_addr) public onlyOwner {
-        tvm.accept();
-        selfdestruct(dest_addr);
     }
 }

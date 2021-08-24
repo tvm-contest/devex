@@ -1,5 +1,6 @@
 pragma ton-solidity ^ 0.47.0;
 pragma AbiHeader expire;
+pragma AbiHeader time;
 import "Subscription.sol";
 
 contract Wallet {

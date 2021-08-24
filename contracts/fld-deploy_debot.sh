@@ -133,16 +133,13 @@ deployMsigClient
 deployMsigService
 MSIG_CLIENT_ADDRESS=$(cat msig.client.addr)
 MSIG_SERVICE_ADDRESS=$(cat msig.service.addr)
-
+#
 deploy $DEBOT_NAME
 DEBOT_ADDRESS=$(cat $DEBOT_NAME.addr)
 ACCMAN_ADDRESS=$DEBOT_ADDRESS
 
-#ICON_BYTES=$(base64 -w 0 hellodebot.png)
-#ICON=$(echo -n "data:image/png;base64,$ICON_BYTES" | xxd -ps -c 20000)
 IMAGE=$(base64 -w 0 Subscription.tvc)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionBase "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
-#$tos --url $NETWORK call $DEBOT_ADDRESS setIcon "{\"icon\":\"$ICON\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 IMAGE=$(base64 -w 0 Wallet.tvc)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionWalletCode "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
 
@@ -155,12 +152,13 @@ $tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionService "{\"image\":\"$IM
 echo DONE ------------------------------------------------------------------
 echo debot $DEBOT_ADDRESS
 
+##ACCMAN_ADDRESS=0:e20b930f512c6bee12e3f62f868eb428ec10e7159d4394d6377cc8a306ddf49f
 deploy $DEBOT_CLIENT
 DEBOT_ADDRESS=$(cat $DEBOT_CLIENT.addr)
 $tos --url $NETWORK call $DEBOT_ADDRESS setSubsman "{\"addr\":\"$ACCMAN_ADDRESS\"}" --sign $DEBOT_CLIENT.keys.json --abi $DEBOT_CLIENT.abi.json
-# SET IMAGE for SERVICE
+## SET IMAGE for SERVICE
 IMAGE=$(base64 -w 0 SubscriptionService.tvc)
-$tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionService "{\"image\":\"$IMAGE\"}" --sign $DEBOT_NAME.keys.json --abi $DEBOT_NAME.abi.json
+$tos --url $NETWORK call $DEBOT_ADDRESS setSubscriptionService "{\"image\":\"$IMAGE\"}" --sign $DEBOT_CLIENT.keys.json --abi $DEBOT_CLIENT.abi.json
 
 # SERVICE DEBOT DEPLOY
 deploygen serviceDebot
@@ -177,7 +175,8 @@ cat msig.client.addr
 cat msig.service.addr
 cat client.keys.json
 cat service.keys.json
-
+#
 #tonos-cli config --pubkey 0x$(cat client.keys.json | jq .public -r) --wallet $(cat msig.client.addr)
+#$tos --url $NETWORK debot fetch `cat deployerDebot.addr`
 tonos-cli config --pubkey 0x$(cat service.keys.json | jq .public -r) --wallet $(cat msig.service.addr)
-$tos --url $NETWORK debot fetch $DEBOT_ADDRESS
+$tos --url $NETWORK debot fetch `cat serviceDebot.addr`
