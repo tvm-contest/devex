@@ -270,7 +270,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
             );
         } else {
             Menu.select("You have no service deployed. Do you want to create it?", "", [
-                MenuItem("Yes", "", tvm.functionId(menuDeployService)),
+                MenuItem("Yes", "", tvm.functionId(preDeployCheck)),
                 MenuItem("No", "", tvm.functionId(this.start))
             ]);
         }
