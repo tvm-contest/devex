@@ -397,6 +397,7 @@ contract SubsMan is Debot {
     }
 
     function printServiceStatus() public {
+        // need to add check for code_hash by address
         Terminal.print(0, "Service deployed.");
         address addr = address(tvm.hash(buildService(s_ownerKey)));
         ISubsManCallbacksService(s_invoker).onSubscriptionServiceDeploy(Status.Success, addr);

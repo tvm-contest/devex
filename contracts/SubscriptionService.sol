@@ -1,11 +1,13 @@
 pragma ton-solidity >=0.47.0;
 pragma AbiHeader expire;
 pragma AbiHeader time;
+pragma AbiHeader pubkey;
 
 contract SubscriptionService {
 
     TvmCell params;
     uint256 static serviceKey;
+    ServiceParams svcparams;
 
     struct ServiceParams {
         address to;
@@ -16,10 +18,10 @@ contract SubscriptionService {
         string description;
     }
 
-    function getParams() public view returns (ServiceParams){
-        ServiceParams svcparams;
-        (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = params.toSlice().decode(address, uint128, uint32, string, string);
-        return svcparams;
+    modifier onlyOwner {
+		require(msg.pubkey() == tvm.pubkey(), 100);
+		tvm.accept();
+		_;
     }
 
     constructor(bytes signature, TvmCell svc_params) public {
@@ -27,6 +29,11 @@ contract SubscriptionService {
         require(msg.sender != address(0), 101);
         require(tvm.checkSign(tvm.hash(code), signature.toSlice(), tvm.pubkey()), 102);
         require(tvm.checkSign(tvm.hash(code), signature.toSlice(), serviceKey), 103);
+        (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = svc_params.toSlice().decode(address, uint128, uint32, string, string);
         params = svc_params;
+    }
+
+    function selfdelete() public onlyOwner {
+        selfdestruct(svcparams.to);
     }
 }
