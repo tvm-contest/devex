@@ -164,7 +164,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
                 Terminal.input(tvm.functionId(setSubscriptionDesciption), "Provide description for subscribers:", false);
             }     
             if (s_period == 0 ) {
-                Terminal.input(tvm.functionId(setSubscriptionPeriod), "Input payment period for subscribers (hours):", false);
+                Terminal.input(tvm.functionId(setSubscriptionPeriod), "Input payment period for subscribers (days):", false);
             }
             if (s_value == 0) {
                 Terminal.input(tvm.functionId(setubscriptionValue), "Input a cost of your service subscription for selected period (TONs):", false);

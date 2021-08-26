@@ -83,7 +83,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         UserInfo.getAccount(tvm.functionId(setDefaultAccount));
         UserInfo.getPublicKey(tvm.functionId(setDefaultPubkey));
         walletAddr = address(tvm.hash(buildWallet(m_ownerKey)));
-        getWalletbalance(m_wallet);
+        getWalletbalance(walletAddr);
     }
 
     function menuManageWallet() public {
@@ -109,7 +109,11 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     }
 
     function TopUpWallet() public {
-        AmountInput.get(tvm.functionId(setTons), "How many tokens to send?", 9, 1e7, m_balance);
+        AmountInput.get(tvm.functionId(setTransaction), "How many tokens to send?", 9, 1e7, m_balance);
+    }
+
+    function setTransaction(uint128 value) public {
+        m_tons = value;
         optional(uint256) pubkey = 0;
         TvmCell m_payload;
         IMultisig(m_wallet).submitTransaction{
@@ -119,13 +123,17 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
             pubkey: pubkey,
             time: uint64(now),
             expire: 0,
-            callbackId: tvm.functionId(onSuccess),
-            onErrorId: tvm.functionId(onError)
+            callbackId: tvm.functionId(_onSuccess),
+            onErrorId: tvm.functionId(_onError)
         } (walletAddr, m_tons, false, false, m_payload);
     }
 
-    function setTons(uint128 value) public {
-        m_tons = value;
+    function _onSuccess(uint64 transId) public {
+        Terminal.print(0, format("Success."));
+    }
+
+    function _onError(uint32 sdkError, uint32 exitCode) public {
+        Terminal.print(0, format("Transaction failed."));
     }
 
     function _decodeServiceParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
@@ -138,7 +146,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function _decodeSubscriptionIndexParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
         SubscriptionService.ServiceParams svcparams;
         (, , , TvmCell params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
-        (svcparams.to, svcparams.value, svcparams.period, svcparams.myaddress) = params.toSlice().decode(address, uint128, uint32, address);
+        (svcparams.to, svcparams.value, svcparams.period, svcparams.myaddress, svcparams.name, svcparams.description) = params.toSlice().decode(address, uint128, uint32, address, string, string);
         return svcparams;
     }
 
@@ -162,6 +170,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         m_wallet = value;
         if (m_wallet == address(0)) {
             Terminal.input(0,"Wallet doesn't exist",false);
+            this.start();
         }
         else {
             Sdk.getBalance(tvm.functionId(setBalance), value);

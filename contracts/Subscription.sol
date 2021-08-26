@@ -48,7 +48,7 @@ contract Subscription {
     constructor(TvmCell image, bytes signature, TvmCell params) public {
         require(value > 0 && period > 0, 101);
         tvm.accept();
-        uint32 _period = period * 3600;
+        uint32 _period = period * 3600 * 24;
         uint128 _value = value * 1000000000;
         subscription = Payment(tvm.pubkey(), to, _value, _period, 0, STATUS_ACTIVE);
         TvmCell state = tvm.buildStateInit({

@@ -185,7 +185,7 @@ contract SubsMan is Debot {
         TvmCell state = buildAccount(ownerKey,serviceKey,params);
         address subscrAddr = address(tvm.hash(buildAccount(ownerKey,serviceKey,params)));
         TvmBuilder subscr_params;
-        subscr_params.store(params.to, params.value, params.period, subscrAddr);
+        subscr_params.store(params.to, params.value, params.period, subscrAddr, params.name, params.description);
         new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}(buildSubscriptionIndex(ownerKey), signature, subscr_params.toCell());
     }
 
@@ -336,8 +336,8 @@ contract SubsMan is Debot {
 
     function QueryServices() public {
         TvmCell code = buildServiceHelper();
-        uint256 svc_addr = tvm.hash(buildService(m_serviceKey));
-        address addr = address.makeAddrStd(-1, svc_addr);
+        uint256 svc_addr = tvm.hash(buildService(m_serviceKey))-1;
+        address addr = address.makeAddrStd(0, svc_addr);
         Sdk.getAccountsDataByHash(
             tvm.functionId(getServiceParams),
             tvm.hash(code),
@@ -348,7 +348,7 @@ contract SubsMan is Debot {
     function _decodeServiceParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
         SubscriptionService.ServiceParams svcparams;
         (, , , TvmCell _params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
-        (svcparams.to, svcparams.value, svcparams.period) = _params.toSlice().decode(address, uint128, uint32);
+        (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = _params.toSlice().decode(address, uint128, uint32, string, string);
         return svcparams;
     }
 
