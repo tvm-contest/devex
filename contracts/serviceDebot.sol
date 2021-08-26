@@ -93,12 +93,13 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
 
     function menuCheckService(uint32 index) public {
         index;
+        serviceAddr = address(tvm.hash(buildService()));
         QueryServices(tvm.functionId(menuDeleteService));
     }
 
     function menuDeleteService(AccData[] accounts) public {
-        if (accounts.length != 0) {
-            serviceAddr = address(tvm.hash(buildService()));
+        address addr = address.makeAddrStd(0, tvm.hash(buildService()));
+        if (accounts.length != 0 && accounts[0].id == addr) {
             uint256[] keys;
             if (s_sbHandle == 0) {
                 SigningBoxInput.get(
@@ -154,7 +155,8 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     }
 
     function menuDeployService(AccData[] accounts) public {
-        if (accounts.length == 0) {
+        address addr = address.makeAddrStd(0, tvm.hash(buildService()));
+        if (accounts.length != 0 && accounts[0].id != addr) {
             if (s_name.empty()) {
                 Terminal.input(tvm.functionId(setSubscriptionName), "Input the name of your service:", false);
             }
@@ -233,6 +235,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
 
     function setSigningBoxHandle2(uint32 handle) public {
         s_sbHandle = handle;
+        invokeDelete();
     }
 
     function subsmanInvokeDeployService() public view {
@@ -258,12 +261,12 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         } else {
             Terminal.print(0, format("Service deploy failed. Error status {}", stat));
         }
-
         this.start();
     }
 
     function subsmanInvokeQuerySubscribers(AccData[] accounts) public {
-        if (accounts.length != 0) {
+        address addr = address.makeAddrStd(0, tvm.hash(buildService()));
+        if (accounts.length != 0 && accounts[0].id == addr) {
             Terminal.print(0, "Service exist.");
             SubsMan(s_subsman).invokeQuerySubscribers(
                 s_ownerKey
@@ -317,5 +320,4 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
             addr
         );
     }
-
 }
