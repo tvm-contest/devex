@@ -5,6 +5,7 @@ pragma AbiHeader pubkey;
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Debot.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/UserInfo/UserInfo.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/AmountInput/AmountInput.sol";
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Sdk.sol";
 import "SubsMan.sol";
 import "ISubsManCallbacks.sol";
@@ -16,6 +17,7 @@ interface ISubscription {
 
 contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     bytes m_icon;
+    uint128 m_tons;
 
     address m_subsman;
     uint256 m_ownerKey;
@@ -25,8 +27,10 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     address subscrAddr;
     uint128 m_balance;
     TvmCell m_subscriptionServiceImage;
+    TvmCell m_subscriptionWalletImage;
     AccData[] s_accounts;
     AccData[] m_accounts;
+    address walletAddr;
 
     function setIcon(bytes icon) public {
         require(msg.pubkey() == tvm.pubkey(), 100);
@@ -38,6 +42,10 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         require(msg.pubkey() == tvm.pubkey(), 100);
         tvm.accept();
         m_subsman = addr;
+    }
+
+    function setSubscriptionWalletCode(TvmCell image) public onlyOwner {
+        m_subscriptionWalletImage = image;
     }
 
     modifier onlyOwner() {
@@ -54,7 +62,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         Menu.select("I can manage your subscriptions", "", [
             MenuItem("Deploy new subscription", "", tvm.functionId(menuDeploySubscription)),
             MenuItem("Show my subscriptions", "", tvm.functionId(menuShowSubscription)),
-            MenuItem("Manage wallet", "", tvm.functionId(menuManageWallet))
+            MenuItem("Manage wallet", "", tvm.functionId(ManageWallet))
         ]);
     }
 
@@ -70,14 +78,54 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         Terminal.input(tvm.functionId(setServiceKey), "Enter public key of service which you want to subscribe to: ", false);
     }
     
-    function menuManageWallet(uint32 index) public {
+    function ManageWallet(uint32 index) public {
         index;
         UserInfo.getAccount(tvm.functionId(setDefaultAccount));
         UserInfo.getPublicKey(tvm.functionId(setDefaultPubkey));
-        if (m_wallet == address(0)) {
-            Terminal.input(0,"Wallet doesn't exist",false);
-        }
+        walletAddr = address(tvm.hash(buildWallet(m_ownerKey)));
         getWalletbalance(m_wallet);
+    }
+
+    function menuManageWallet() public {
+        Menu.select("Available actions", "", [
+            MenuItem("Top up wallet", "", tvm.functionId(menuTopUpWallet)),
+            MenuItem("Main menu", "", tvm.functionId(this.start))
+        ]);
+    }
+
+    function buildWallet(uint256 ownerKey) private view returns (TvmCell image) {
+        TvmCell code = m_subscriptionWalletImage.toSlice().loadRef();
+        TvmCell newImage = tvm.buildStateInit({
+            code: code,
+            pubkey: m_ownerKey
+        });
+        image = newImage;
+    }
+
+    function menuTopUpWallet(uint32 index) public {
+        index = index;
+        TopUpWallet();
+        this.start();
+    }
+
+    function TopUpWallet() public {
+        AmountInput.get(tvm.functionId(setTons), "How many tokens to send?", 9, 1e7, m_balance);
+        optional(uint256) pubkey = 0;
+        TvmCell m_payload;
+        IMultisig(m_wallet).submitTransaction{
+            abiVer: 2,
+            extMsg: true,
+            sign: true,
+            pubkey: pubkey,
+            time: uint64(now),
+            expire: 0,
+            callbackId: tvm.functionId(onSuccess),
+            onErrorId: tvm.functionId(onError)
+        } (walletAddr, m_tons, false, false, m_payload);
+    }
+
+    function setTons(uint128 value) public {
+        m_tons = value;
     }
 
     function _decodeServiceParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
@@ -110,15 +158,21 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         return code;      
     }
 
-    function getWalletbalance(address value) public {
+    function getWalletbalance(address value) public returns (uint128){
         m_wallet = value;
-        Sdk.getBalance(tvm.functionId(setBalance), value);
-        (uint64 dec, uint64 float) = tokens(m_balance);
-        Terminal.print(0,format("Wallet balance is {}.{} tons", dec, float));
+        if (m_wallet == address(0)) {
+            Terminal.input(0,"Wallet doesn't exist",false);
+        }
+        else {
+            Sdk.getBalance(tvm.functionId(setBalance), value);
+        }
     }
 
     function setBalance(uint128 nanotokens) public {
         m_balance = nanotokens;
+        (uint64 dec, uint64 float) = tokens(m_balance);
+        Terminal.print(0,format("Wallet balance is {}.{} tons", dec, float));
+        menuManageWallet();
     } 
 
     function tokens(uint128 nanotokens) private pure returns (uint64, uint64) {
@@ -249,7 +303,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         m_accounts = accounts;
         Terminal.print(0, format("You have {} subscriptions", accounts.length));
         for(uint i = 0; i < accounts.length; i++) {
-            items.push(MenuItem(format("Period: {}\nPrice: {}\nTo: {}", _decodeSubscriptionIndexParams(accounts[i].data).period, _decodeSubscriptionIndexParams(accounts[i].data).value,_decodeSubscriptionIndexParams(accounts[i].data).to), "", tvm.functionId(menuManageSubscription)));
+            items.push(MenuItem(format("Name: {}\nDescription: {}\nPeriod: {}\nPrice: {}", _decodeSubscriptionIndexParams(accounts[i].data).name, _decodeSubscriptionIndexParams(accounts[i].data).description, _decodeSubscriptionIndexParams(accounts[i].data).period, _decodeSubscriptionIndexParams(accounts[i].data).value), "", tvm.functionId(menuManageSubscription)));
         }
         items.push(MenuItem("Select your subcription by subscription service key", "", tvm.functionId(menuServiceKey)) );
         items.push(MenuItem("Main menu", "", tvm.functionId(this.start)));
