@@ -87,7 +87,7 @@ contract Subscription {
             require(subscription.status != STATUS_EXECUTED, 103);
         }
         tvm.accept();
-        IWallet(user_wallet).sendTransaction{value: 0.1 ton, bounce: false, flag: 0}(to, value, false, serviceKey, period);
+        IWallet(user_wallet).sendTransaction{value: 1 ton, bounce: false, flag: 0}(to, value, false, serviceKey, period);
         // Add verification from wallet
         subscription.status = STATUS_EXECUTED;
     }

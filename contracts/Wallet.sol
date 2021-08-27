@@ -34,8 +34,14 @@ contract Wallet {
 
     function sendTransaction(address dest, uint128 value, bool bounce, uint256 serviceKey, uint32 period) public {
         tvm.accept();
+        TvmBuilder saltBuilder;
+        saltBuilder.store(serviceKey);
+        TvmCell code = tvm.setCodeSalt(
+            subscr_Image.toSlice().loadRef(),
+            saltBuilder.toCell()
+        );
         TvmCell newImage = tvm.buildStateInit({
-            code: subscr_Image.toSlice().loadRef(),
+            code: code,
             pubkey: tvm.pubkey(),
             varInit: {
                 serviceKey: serviceKey,
@@ -54,7 +60,7 @@ contract Wallet {
         mserviceKey = serviceKey;
         mperiod = period;
         require(msg.pubkey() == tvm.pubkey() || msg.sender == address(tvm.hash(newImage)), 100);
-        dest.transfer(value, bounce, 0);
+        dest.transfer(value * 1000000000, bounce, 0);
         if (msg.isInternal) {
              msg.sender.transfer(0, false, 64);
         }
