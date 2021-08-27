@@ -5,7 +5,7 @@ import "Subscription.sol";
 
 contract Wallet {
 
-    TvmCell subscr_Image;
+    TvmCell public subscr_Image;
     address public myaddress;
     address public last_req_exp_address;
     address public last_req_real_address;
