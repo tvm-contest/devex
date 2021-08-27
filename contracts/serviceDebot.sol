@@ -156,7 +156,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
 
     function menuDeployService(AccData[] accounts) public {
         address addr = address.makeAddrStd(0, tvm.hash(buildService()));
-        if (accounts.length != 0 && accounts[0].id != addr) {
+        if (accounts.length == 0 || accounts[0].id != addr) {
             if (s_name.empty()) {
                 Terminal.input(tvm.functionId(setSubscriptionName), "Input the name of your service:", false);
             }
