@@ -211,7 +211,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function setBalance2(uint128 nanotokens) public {
         s_balance = nanotokens;
         (uint64 dec, uint64 float) = tokens(s_balance);
-        Terminal.print(0,format("Wallet balance is {}.{} tons", dec, float));
+        Terminal.print(0,format("Subscription wallet balance is {}.{} tons", dec, float));
         menuManageWallet();
     } 
 
