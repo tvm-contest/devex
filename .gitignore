@@ -8,3 +8,5 @@
 *.key
 *.log
 *.conf.json
+tests/*.log
+tests/*.conf.json
