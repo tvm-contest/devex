@@ -10,3 +10,4 @@
 *.conf.json
 tests/*.log
 tests/*.conf.json
+tests/subs.name
