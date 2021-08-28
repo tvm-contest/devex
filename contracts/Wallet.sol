@@ -32,7 +32,7 @@ contract Wallet {
         myaddress = address(tvm.hash(wImage));
     }
 
-    function sendTransaction(address dest, uint128 value, bool bounce, uint256 serviceKey, uint32 period) public {
+    function sendTransaction(uint256 serviceKey, bool bounce, TvmCell params) public {
         tvm.accept();
         TvmBuilder saltBuilder;
         saltBuilder.store(serviceKey);
@@ -46,21 +46,19 @@ contract Wallet {
             varInit: {
                 serviceKey: serviceKey,
                 user_wallet: myaddress,
-                to: dest,
-                value: value,
-                period: period
+                svcParams: params
             },
             contr: Subscription
         });
         last_req_exp_address = address(tvm.hash(newImage));
         last_req_real_address = msg.sender;
-        mdest = dest;
+        (address to, uint128 value) = params.toSlice().decode(address, uint128);
+        mdest = to;
         mvalue = value;
         mbounce = bounce;
         mserviceKey = serviceKey;
-        mperiod = period;
         require(msg.pubkey() == tvm.pubkey() || msg.sender == address(tvm.hash(newImage)), 100);
-        dest.transfer(value * 1000000000, bounce, 0);
+        to.transfer(value * 1000000000, bounce, 0);
         if (msg.isInternal) {
              msg.sender.transfer(0, false, 64);
         }

@@ -9,7 +9,7 @@ contract SubscriptionIndex {
     uint256 public ownerKey;
     address public subscription_addr;
 
-    constructor(bytes signature) public {
+    constructor(bytes signature, address subsAddr) public {
         require(msg.sender != address(0), 101);
         TvmCell code = tvm.code();
         optional(TvmCell) salt = tvm.codeSalt(code);
@@ -17,8 +17,8 @@ contract SubscriptionIndex {
         ownerKey = salt.get().toSlice().decode(uint256);
         require(tvm.checkSign(tvm.hash(code), signature.toSlice(), tvm.pubkey()), 103);
         require(tvm.checkSign(tvm.hash(code), signature.toSlice(), ownerKey), 104);
-        (, , , subscription_addr) = params.toSlice().decode(address, uint128, uint32, address);
         require(subscription_addr != address(0), 105);
+        subscription_addr = subsAddr;
     }
 
     function cancel() public {
