@@ -200,8 +200,11 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         s_description = value;
     }
 
-    function setubscriptionValue(uint128 value) public {
-        s_value = value;
+    function setubscriptionValue(string value) public {
+        bool status;
+        uint uvalue;
+        (uvalue, status) = stoi(value);
+        s_value = uint128(uvalue);
     }
 
     function setPaymentAddress(address value) public {

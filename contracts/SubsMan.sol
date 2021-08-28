@@ -53,7 +53,6 @@ contract SubsMan is Debot {
     uint256 subscriberKey;
 
     TvmCell svcParams;
-    SubscriptionService.ServiceParams decodedSvcParams;
 
     enum Invoke {
         NewSubscription,
@@ -108,7 +107,7 @@ contract SubsMan is Debot {
         return [ Menu.ID, SigningBoxInput.ID ];
     }
 
-    function buildAccount(uint256 ownerKey, uint256 serviceKey, SubscriptionService.ServiceParams svcparams) private returns (TvmCell image) {
+    function buildAccount(uint256 ownerKey, uint256 serviceKey, TvmCell params) private returns (TvmCell image) {
         TvmCell code = buildAccountHelper(serviceKey);
         TvmCell newImage = tvm.buildStateInit({
             code: code,
@@ -116,9 +115,7 @@ contract SubsMan is Debot {
             varInit: { 
                 serviceKey: serviceKey,
                 user_wallet: address(tvm.hash(buildWallet(ownerKey))),
-                to: svcparams.to,
-                value: svcparams.value,
-                period: svcparams.period
+                svcParams: params
             },
             contr: Subscription
         });
@@ -179,18 +176,15 @@ contract SubsMan is Debot {
         return code;             
     }
 
-    function deployAccountHelper(uint256 ownerKey, uint256 serviceKey, SubscriptionService.ServiceParams params, bytes signature) public {
+    function deployAccountHelper(uint256 ownerKey, uint256 serviceKey, TvmCell params, bytes signature) public {
         require(msg.value >= 1 ton, 102);
-
         TvmCell state = buildAccount(ownerKey,serviceKey,params);
-        address subscrAddr = address(tvm.hash(buildAccount(ownerKey,serviceKey,params)));
-        TvmBuilder subscr_params;
-        subscr_params.store(params.to, params.value, params.period, subscrAddr, params.name, params.description);
-        new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}(buildSubscriptionIndex(ownerKey), signature, subscr_params.toCell());
+        address subsAddr = address(tvm.hash(state));
+        new Subscription{value: 10 ton, flag: 1, bounce: true, stateInit: state}(buildSubscriptionIndex(ownerKey), signature, subsAddr);
     }
 
     function deployAccount(bytes signature) public view {
-        TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey, decodedSvcParams, signature);
+        TvmCell body = tvm.encodeBody(SubsMan.deployAccountHelper, m_ownerKey, m_serviceKey, svcParams, signature);
         this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 3 ton, tvm.functionId(checkAccount));
     }
  
@@ -214,7 +208,7 @@ contract SubsMan is Debot {
     }
 
     function checkAccount() public {
-        address account = address(tvm.hash(buildAccount(m_ownerKey, m_serviceKey, decodedSvcParams)));
+        address account = address(tvm.hash(buildAccount(m_ownerKey, m_serviceKey, svcParams)));
         Sdk.getAccountCodeHash(tvm.functionId(checkHash), account);
     }
 
@@ -225,12 +219,12 @@ contract SubsMan is Debot {
 
     function checkHash(uint256 code_hash) public {
         Terminal.print(0, "onSuccess -> checkAccount -> checkHash");
-        if (code_hash == tvm.hash(buildAccount(m_ownerKey, m_serviceKey, decodedSvcParams)) || code_hash == 0) {
+        if (code_hash == tvm.hash(buildAccount(m_ownerKey, m_serviceKey, svcParams)) || code_hash == 0) {
             Menu.select("Waiting for the Account deployment...", "", [ MenuItem("Check again", "", tvm.functionId(menuCheckAccount)) ]);
             return;
         }
         Terminal.print(0, "Done");
-        address account = address(tvm.hash(buildAccount(m_ownerKey, m_serviceKey, decodedSvcParams)));
+        address account = address(tvm.hash(buildAccount(m_ownerKey, m_serviceKey, svcParams)));
         returnOnDeployStatus(Status.Success, account);
     }
 
@@ -345,11 +339,9 @@ contract SubsMan is Debot {
         );
     }
 
-    function _decodeServiceParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
-        SubscriptionService.ServiceParams svcparams;
-        (, , , TvmCell _params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
-        (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = _params.toSlice().decode(address, uint128, uint32, string, string);
-        return svcparams;
+    function _decodeServiceParams(TvmCell data) internal returns (TvmCell) {
+        (, , , TvmCell params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
+        return params;
     }
 
     function _decodeServiceKey(TvmCell data) internal returns (uint256) {
@@ -359,7 +351,7 @@ contract SubsMan is Debot {
 
     function getServiceParams(AccData[] accounts) public {
         SubscriptionService.ServiceParams[] params; 
-        decodedSvcParams = _decodeServiceParams(accounts[0].data);
+        svcParams = _decodeServiceParams(accounts[0].data);
         Terminal.print(0, "Signing subscription index code...");
         signSubscriptionIndexCode(m_ownerKey);
     }
