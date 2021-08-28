@@ -5,11 +5,7 @@ pragma AbiHeader pubkey;
 import "SubscriptionIndex.sol";
 
 interface IWallet {
-    function sendTransaction (uint256 serviceKey, bool bounce, TvmCell params) external;
-}
-
-interface ISubscriptionIndex {
-    function cancel () external;
+    function paySubscription (uint256 serviceKey, bool bounce, TvmCell params) external responsible returns (uint8);
 }
 
 contract Subscription {
@@ -36,13 +32,6 @@ contract Subscription {
     }
     Payment subscription;
     
-
-    modifier onlyOwner {
-		require(msg.pubkey() == tvm.pubkey(), 102);
-		tvm.accept();
-		_;
-    }
-
     constructor(TvmCell image, bytes signature, address subsAddr) public {
         (address to, uint128 value, uint32 period) = svcParams.toSlice().decode(address, uint128, uint32);
         require(value > 0 && period > 0, 101);
@@ -72,22 +61,25 @@ contract Subscription {
         return subscription;
     }
 
-    function cancel() public onlyOwner {
-        require(subscription.status != 0, 101);
-        ISubscriptionIndex(subscriptionIndexAddress).cancel();
+    function cancel() public {
+        require(msg.sender == subscriptionIndexAddress, 106);
         selfdestruct(user_wallet);
     }
 
     function executeSubscription() public {
         require(subscription.status != 0, 101);
-        /*if (now > (subscription.start + subscription.period)) {
+        if (now > (subscription.start + subscription.period)) {
             subscription.start = uint32(now);
         } else {
             require(subscription.status != STATUS_EXECUTED, 103);
-        }*/
+        }
         tvm.accept();
-        IWallet(user_wallet).sendTransaction{value: 1 ton, bounce: false, flag: 0}(serviceKey, false, svcParams);
-        // Add verification from wallet
-        subscription.status = STATUS_EXECUTED;
+        IWallet(user_wallet).paySubscription{value: 1 ton, bounce: false, flag: 0, callback: Subscription.onPaySubscription}(serviceKey, false, svcParams);
+    }
+
+    function onPaySubscription(uint8 status) public {
+        if (status == 0) {
+            subscription.status = STATUS_EXECUTED;
+        }
     }
 }
