@@ -351,7 +351,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         for(uint i = 0; i < accounts.length; i++) {
             // handle in case of empty data
             sparams = _decodeSubscriptionParams(accounts[i].data);
-            items.push(MenuItem(format("Name: {}\nDescription: {}\nPeriod: {}\nPrice: {}", sparams.name, sparams.description, sparams.period, sparams.value), "", tvm.functionId(menuManageSubscription)));
+            items.push(MenuItem(format("Name: {}\nDescription: {}\nPeriod: {}\nPrice: {}\nAddress: {}", sparams.name, sparams.description, sparams.period, sparams.value, accounts[i].id), "", tvm.functionId(menuManageSubscription)));
         }
         items.push(MenuItem("Main menu", "", tvm.functionId(this.start)));
         Menu.select(format("{} your subscriptions has been found. To manage it choose subscription from the list:", accounts.length), "", items);
