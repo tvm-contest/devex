@@ -188,8 +188,11 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         UserInfo.getPublicKey(tvm.functionId(setOwnerKey));
     }
 
-    function setSubscriptionPeriod(uint32 value) public {
-        s_period = value;
+    function setSubscriptionPeriod(string value) public {
+        bool status;
+        uint uvalue;
+        (uvalue, status) = stoi(value);
+        s_period = uint32(uvalue);
     }
 
     function setSubscriptionName(string value) public {

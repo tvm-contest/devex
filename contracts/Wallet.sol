@@ -32,8 +32,13 @@ contract Wallet {
         myaddress = address(tvm.hash(wImage));
     }
 
-    function sendTransaction(uint256 serviceKey, bool bounce, TvmCell params) public {
+    function sendTransaction(uint128 value, address dest, bool bounce) public {
+        require(msg.pubkey() == tvm.pubkey(), 100);
         tvm.accept();
+        dest.transfer(value, bounce, 0);
+    }
+
+    function buildSubscriptionState(uint256 serviceKey, TvmCell params) private returns (TvmCell) {
         TvmBuilder saltBuilder;
         saltBuilder.store(serviceKey);
         TvmCell code = tvm.setCodeSalt(
@@ -50,17 +55,15 @@ contract Wallet {
             },
             contr: Subscription
         });
-        last_req_exp_address = address(tvm.hash(newImage));
-        last_req_real_address = msg.sender;
+        return newImage;
+    }
+
+    function paySubscription(uint256 serviceKey, bool bounce, TvmCell params) public responsible returns (uint8) {
+        // Add check for .value
+        tvm.accept();
         (address to, uint128 value) = params.toSlice().decode(address, uint128);
-        mdest = to;
-        mvalue = value;
-        mbounce = bounce;
-        mserviceKey = serviceKey;
-        require(msg.pubkey() == tvm.pubkey() || msg.sender == address(tvm.hash(newImage)), 100);
+        require(msg.sender == address(tvm.hash(buildSubscriptionState(serviceKey,params))), 100);
         to.transfer(value * 1000000000, bounce, 0);
-        if (msg.isInternal) {
-             msg.sender.transfer(0, false, 64);
-        }
+        return{value: 0, bounce: false, flag: 64} 0;  
     }
 }

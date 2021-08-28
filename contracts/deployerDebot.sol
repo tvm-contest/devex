@@ -165,27 +165,24 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         Terminal.print(0, format("Transaction failed."));
     }
 
-    function _decodeServiceParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
-        SubscriptionService.ServiceParams svcparams;
+    function _decodeSubscriptionParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
+        SubscriptionService.ServiceParams sparams;
+        Terminal.print(0, "decode");
         (, , , TvmCell params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
-        (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = params.toSlice().decode(address, uint128, uint32, string, string);
-        return svcparams;
-    }
-
-    function _decodeSubscriptionIndexParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
-        SubscriptionService.ServiceParams svcparams;
-        (, , , TvmCell params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
-        (svcparams.to, svcparams.value, svcparams.period, svcparams.myaddress, svcparams.name, svcparams.description) = params.toSlice().decode(address, uint128, uint32, address, string, string);
-        return svcparams;
+        (sparams.to, sparams.value, sparams.period, sparams.name, sparams.description) = params.toSlice().decode(address, uint128, uint32, string, string);
+        Terminal.print(0, format("Decoded name: {}", sparams.name));
+        return sparams;
     }
 
     function printSubscriprionsList(AccData[] accounts) public {
         MenuItem[] items;
         s_accounts = accounts;
+        SubscriptionService.ServiceParams sparams;
         for(uint i = 0; i < accounts.length; i++) {
-            items.push(MenuItem(format("{}: {}\nPeriod: {}\nPrice: {}\nAddress: {}", _decodeServiceParams(accounts[i].data).name, 
-            _decodeServiceParams(accounts[i].data).description, _decodeServiceParams(accounts[i].data).period, 
-            _decodeServiceParams(accounts[i].data).value, accounts[i].id), "", tvm.functionId(getSigningBox)));
+            sparams = _decodeSubscriptionParams(accounts[i].data);
+            items.push(MenuItem(format("{}: {}\nPeriod: {}\nPrice: {}\nAddress: {}", sparams.name, 
+            sparams.description, sparams.period, 
+            sparams.value, accounts[i].id), "", tvm.functionId(getSigningBox)));
         }
         items.push(MenuItem("Select subcription service by address", "", tvm.functionId(menuServiceAddress)));
         items.push(MenuItem("Main menu", "", tvm.functionId(this.start)));
@@ -312,7 +309,6 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function invokeCancel() public {
         optional(uint256) pubkey = m_ownerKey;
         optional(uint32) sbhandle = m_sbHandle;
-        // add .await when abi 2.1 will be supported in debots
         ISubscription(subscrAddr).cancel{
             abiVer: 2,
             extMsg: true,
@@ -351,17 +347,19 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function onQuerySubscriptions(AccData[] accounts) external override{
         MenuItem[] items;
         m_accounts = accounts;
-        Terminal.print(0, format("You have {} subscriptions", accounts.length));
+        SubscriptionService.ServiceParams sparams;
         for(uint i = 0; i < accounts.length; i++) {
-            items.push(MenuItem(format("Name: {}\nDescription: {}\nPeriod: {}\nPrice: {}", _decodeSubscriptionIndexParams(accounts[i].data).name, _decodeSubscriptionIndexParams(accounts[i].data).description, _decodeSubscriptionIndexParams(accounts[i].data).period, _decodeSubscriptionIndexParams(accounts[i].data).value), "", tvm.functionId(menuManageSubscription)));
+            // handle in case of empty data
+            sparams = _decodeSubscriptionParams(accounts[i].data);
+            items.push(MenuItem(format("Name: {}\nDescription: {}\nPeriod: {}\nPrice: {}", sparams.name, sparams.description, sparams.period, sparams.value), "", tvm.functionId(menuManageSubscription)));
         }
         items.push(MenuItem("Main menu", "", tvm.functionId(this.start)));
-        Menu.select(format("{} your subscriptions has been found. To manage it choose subscription from the list or enter its address manually:", accounts.length), "", items);
+        Menu.select(format("{} your subscriptions has been found. To manage it choose subscription from the list:", accounts.length), "", items);
     }
 
     function menuManageSubscription(uint32 index) public {
-        subscrAddr = _decodeSubscriptionIndexParams(m_accounts[index].data).myaddress;
-        Terminal.print(0, format("Subscription address: {}", subscrAddr));
+        subscrAddr = m_accounts[index].id;
+        Terminal.print(0, format("Subscription index address: {}", subscrAddr));
         Menu.select("Manage your subscription status", "", [
             MenuItem("Cancel this subscription", "", tvm.functionId(cancelSubscription)),
             MenuItem("Main menu", "", tvm.functionId(this.start))
