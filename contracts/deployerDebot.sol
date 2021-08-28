@@ -167,10 +167,8 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
 
     function _decodeSubscriptionParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
         SubscriptionService.ServiceParams sparams;
-        Terminal.print(0, "decode");
         (, , , TvmCell params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
         (sparams.to, sparams.value, sparams.period, sparams.name, sparams.description) = params.toSlice().decode(address, uint128, uint32, string, string);
-        Terminal.print(0, format("Decoded name: {}", sparams.name));
         return sparams;
     }
 
