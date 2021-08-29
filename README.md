@@ -26,13 +26,13 @@ This solustion is the set of rules that allows third parties spend user assets a
 
 ## Entities
 
-`Subscription` - 
+`Subscription` - Contract that represents user's subscription status. Connects `Services` and `Users` (aka `Multisigs`) with each other and acts like escrow between them. `Users` manage their subscriptions, start and stop using this contract. `Services` use this contract as a trusted proxy when recurring payment is required. 
 
-`Service` - 
+`Service` - Custom contract (can be heavily modified) that represents a service that is used by `Users`. Can have multiple tiers - subscruption types with different conditions.
 
-`SubscribeMultisig` - 
+`SubscribeMultisig` - Custom `SafeMultisig` that supports `Subscription` contract to be used as an escrow.
 
-## Work flow
+## Workflow
 
 TODO
 
