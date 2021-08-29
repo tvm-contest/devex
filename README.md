@@ -20,7 +20,9 @@
 
 Decentralized problems require decentralized solutions.
 
-At first an idea about someone charging you a fee automatically in a decentralized blockchain sounds crazy. System where control over user's assets and their spending is first and utmost priority shoudn't allow someone spend these assets for you. It is yet another field where UX, ease of use and convenience battle with security and safety. To please both worlds a set of rules shoud be created. This solustion is the set of rules that allows third parties spend user assets automatically, but using a strict set of rules to keep user's assets safe and secure.
+At first an idea about someone charging you a fee automatically in a decentralized blockchain sounds crazy. System where control over user's assets and their spending is first and utmost priority shoudn't allow someone spend these assets for you. It is yet another field where UX, ease of use and convenience battle with security and safety. To please both worlds a set of rules shoud be created. 
+
+This solustion is the set of rules that allows third parties spend user assets automatically, but using a strict set of rules to keep user's assets safe and secure.
 
 ## Entities
 
@@ -75,7 +77,7 @@ Please use the address with your `TON OS SE` is installed.
 | **Safety first**. If the architecture is not able to keep user funds secure, it is a non-starter | Fully compliant. |
 | **Minimize UX Complexity**. A user should have closest as possible experience to legacy web but with all blockchain benefits | Hope it looks almost the same. Fully compliant. |
 | **Opt-Out First**. A user should not need to perform actions on an on-going basis. It should be a “set it and forget it” experience. A subscriber performs one transaction to set the subscription in motion and transactions should happen `automatically` between the parties | Fully compliant. |
-| **Minimizes Gas Use**. The smart contract(s) should be as efficient of a consumer of on-chain resources as possible | Brevity and efficiensy are top priorities. Fully compliant. |
+| **Minimizes Gas Use**. The smart contract(s) should be as efficient of a consumer of on-chain resources as possible | Brevity and efficiency are top priorities. Fully compliant. |
 | **No Staking**. A user should not have to stake funds. i.e. lock 1200 TON for a subscription that pays out 100 TON per month. | No staking used. Fully compliant. |
-| **Bonus: Extensibility**. It’d be great if the smart contract could be extended to any recurring action (not just TIP3/TON Crystal transfers) | Contracts were designed with extensibility in mind. Fully compliant. |
+| **Bonus: Extensibility**. It’d be great if the smart contract could be extended to any recurring action (not just TIP3/TON Crystal transfers) | Contracts were designed with extensibility in mind. Partially compliant (only because no extensions provided with this subscription). |
 | **Bonus: Notifications**. It’d be great if the smart contract could notify users regarding payment date or insufficient balance on the wallet, send bills (e.q. with TON Surf) | Doesn't comply with **Minimizes Gas Use** requirement. |
