@@ -78,8 +78,8 @@ Service exist.\r
 *\r
 "
 send -- "y\r"
-expect -exact "y\r
+expect "*\r
+*\r
+3) Delete my service\r
 *\r
 "
-send -- ""
-expect eof

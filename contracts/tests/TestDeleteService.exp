@@ -96,5 +96,3 @@ Available options:\r
 3) Delete my service\r
 \r
 debash\$ "
-send -- ""
-expect eof
