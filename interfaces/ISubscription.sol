@@ -9,7 +9,7 @@ interface ISubscription
 {
     //========================================
     // Create subscription. Params were filled out by Wallet and now need to be confirmed by the service.
-    function getInfo() external view returns (uint256 subscriptionPlan, uint32 period, uint128 periodPrice, uint32 dtStart, uint32 dtEnd, bool confirmed);
+    function getInfo() external view returns (uint256 planID, uint32 period, uint128 periodPrice, uint32 dtStart, uint32 dtEnd, bool confirmed);
 
     //========================================
     // Create subscription. Params were filled out by Wallet and now need to be confirmed by the service.

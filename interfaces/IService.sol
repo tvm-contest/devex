@@ -19,6 +19,8 @@ interface IService
     //========================================
     //
     function getSubscriptionPlans() external view returns (SubscriptionPlan[] plans);
+    function addSubscriptionPlan   (uint256 planID, uint32 period, uint128 periodPrice) external;
+    function removeSubscriptionPlan(uint256 planID) external;
     
     //========================================
     //

@@ -26,14 +26,14 @@ contract Subscription is IBase, ISubscription
 
     //========================================
     // Variables
-    address static _walletAddress;    // 
-    address static _serviceAddress;   // 
-    uint256        _subscriptionPlan; // If this one is not static one Multisig can have only 1 subscription per service, no multriple subscriptions per service;
-    bool           _confirmed;        // After the Subscription is created it needs to be confirmed by Service
-    uint32         _dtStart;          // When subscription started
-    uint32         _period;           // Period in seconds
-    uint32         _lastPaid;         // Last paid date
-    uint128        _periodPrice;      // Price per period cycle
+    address static _walletAddress;  // 
+    address static _serviceAddress; // 
+    uint256        _planID;         // If this one is not static one Multisig can have only 1 subscription per service, no multriple subscriptions per service;
+    bool           _confirmed;      // After the Subscription is created it needs to be confirmed by Service
+    uint32         _dtStart;        // When subscription started
+    uint32         _period;         // Period in seconds
+    uint32         _lastPaid;       // Last paid date
+    uint128        _periodPrice;    // Price per period cycle
 
     //========================================  
     // Modifiers
@@ -50,14 +50,14 @@ contract Subscription is IBase, ISubscription
     function subscriptionIsActive()      external             view         returns (bool) {    return                     (_isActive());    }
     function callSsubscriptionIsActive() external responsible view reserve returns (bool) {    return{value: 0, flag: 128}(_isActive());    }
 
-    function getInfo() external view override returns (uint256 subscriptionPlan, uint32 period, uint128 periodPrice, uint32 dtStart, uint32 dtEnd, bool confirmed)
+    function getInfo() external view override returns (uint256 planID, uint32 period, uint128 periodPrice, uint32 dtStart, uint32 dtEnd, bool confirmed)
     {
-        subscriptionPlan = _subscriptionPlan;
-        period           = _period;
-        periodPrice      = _periodPrice;
-        dtStart          = _dtStart;
-        dtEnd            = _dtStart + _period;
-        confirmed        = _confirmed;
+        planID      = planID;
+        period      = _period;
+        periodPrice = _periodPrice;
+        dtStart     = _dtStart;
+        dtEnd       = _dtStart + _period;
+        confirmed   = _confirmed;
     }
     
     //========================================  
@@ -72,17 +72,17 @@ contract Subscription is IBase, ISubscription
 
     //========================================  
     // 
-    function createSubscription(uint256 subscriptionPlan, uint32 period, uint128 periodPrice) external override onlyWallet
+    function createSubscription(uint256 planID, uint32 period, uint128 periodPrice) external override onlyWallet
     {
         require(msg.value > periodPrice, ERROR_NOT_ENOUGH_VALUE);
         _reserve();
 
-        _subscriptionPlan = subscriptionPlan;
-        _period           = period;
-        _periodPrice      = periodPrice;
-        _dtStart          = now;
+        _planID      = planID;
+        _period      = period;
+        _periodPrice = periodPrice;
+        _dtStart     = now;
 
-        IService(_serviceAddress).confirmSubscription{value: 0, flag: 128, callback: confirmSubscription}(_walletAddress, subscriptionPlan, period, periodPrice);
+        IService(_serviceAddress).confirmSubscription{value: 0, flag: 128, callback: confirmSubscription}(_walletAddress, planID, period, periodPrice);
     }
 
     //========================================  
@@ -108,7 +108,7 @@ contract Subscription is IBase, ISubscription
     {
         if(msg.sender == _walletAddress)
         {
-            IService(_serviceAddress).cancelSubscription{value: 0, bounce: false, flag: 128+32}(_walletAddress, _subscriptionPlan, _period, _periodPrice, _lastPaid);
+            IService(_serviceAddress).cancelSubscription{value: 0, bounce: false, flag: 128+32}(_walletAddress, _planID, _period, _periodPrice, _lastPaid);
         }
         else
         {

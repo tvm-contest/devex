@@ -7,12 +7,9 @@ from   freeton_utils import *
 
 class Subscription(BaseContract):
     
-    def __init__(self, tonClient: TonClient, ownerAddress: str, signer: Signer = None):
+    def __init__(self, tonClient: TonClient, signer: Signer = None):
         genSigner = generateSigner() if signer is None else signer
-
         BaseContract.__init__(self, tonClient=tonClient, contractName="Subscription", pubkey=genSigner.keys.public, signer=genSigner)
-        self.CONSTRUCTOR = {"ownerAddress":ownerAddress}
-        self.ADDRESS     = getAddress(abiPath=self.ABI, tvcPath=self.TVC, signer=self.SIGNER, initialPubkey=self.PUBKEY, initialData=self.INITDATA)
 
     def _callFromMultisig(self, msig: SetcodeMultisig, functionName, functionParams, value, flags):
         messageBoc = prepareMessageBoc(abiPath=self.ABI, functionName=functionName, functionParams=functionParams)
@@ -21,8 +18,8 @@ class Subscription(BaseContract):
 
     #========================================
     #
-    def createSubscription(self, msig: SetcodeMultisig, subscriptionPlan: int, period: int, periodPrice: int, value, flags):
-        result = self._callFromMultisig(msig=msig, functionName="createSubscription", functionParams={"subscriptionPlan":subscriptionPlan, "period":period, "periodPrice":periodPrice}, value=value, flags=flags)
+    def createSubscription(self, msig: SetcodeMultisig, planID: int, period: int, periodPrice: int, value, flags):
+        result = self._callFromMultisig(msig=msig, functionName="createSubscription", functionParams={"planID":planID, "period":period, "periodPrice":periodPrice}, value=value, flags=flags)
         return result
 
     def payForSubscription(self, msig: SetcodeMultisig, value, flags):

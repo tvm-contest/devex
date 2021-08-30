@@ -40,6 +40,18 @@ contract Service is IOwnable, IService
             plans.push(sub);
         }
     }
+
+    function addSubscriptionPlan(uint256 planID, uint32 period, uint128 periodPrice) external override onlyOwner reserve returnChange
+    {
+        _plans[planID].planID      = planID;
+        _plans[planID].period      = period;
+        _plans[planID].periodPrice = periodPrice;        
+    }
+
+    function removeSubscriptionPlan(uint256 planID) external override onlyOwner reserve returnChange
+    {
+        delete _plans[planID];
+    }
     
     //========================================
     // Subscription functions
