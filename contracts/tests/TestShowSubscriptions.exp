@@ -42,67 +42,34 @@ if {$force_conservative} {
 # -Don
 
 
+set addr [exec cat ../DeployerDebot.addr]
+set wallet [exec cat ../msig.client.addr]
+set pubkey [exec cat ../client.keys.json | jq .public -r]
+set subsname [exec cat subs.name]
+
 set timeout -1
-spawn tonos-cli --url https://gql.custler.net debot fetch 0:0c50a165bf947e1bcd30c2f62d63d34af8e5dc6a0dffc9f300c65476631f748e
+spawn tonos-cli config --pubkey 0x$pubkey --wallet $wallet
+spawn tonos-cli --url https://gql.custler.net debot fetch $addr
 match_max 100000
-expect -exact "Config: /Users/azavodovskiy/projects/SubscriptionsManager/contracts/tonos-cli.conf.json\r
-Connecting to https://gql.custler.net\r
-DeBot Info:\r
-Name   : Subscription Deployer\r
-Version: 0.2.0\r
-Author : INTONNATION\r
-Publisher: INTONNATION\r
-Support: 0:0000000000000000000000000000000000000000000000000000000000000000\r
-Description: Subscription Deployment\r
-Hello, I am a Subscription Deployer DeBot.\r
-Run the DeBot (y/n)?\r
+expect  "Config: *\r
+*\r
 "
 send -- "y\r"
-expect -exact "y\r
-\r
-User account 0:7195b99c08532ee6b7343143d41a91cd3fd7b8108751cec077445e2559705081\r
-User public key 3B0D7FE8026952F9BD43DFBA7CB9B41C13DD626C411416CDFC9090CD4ABFB1AD\r
-I can manage your subscriptions\r
-1) Deploy new subscription\r
-2) Show my subscriptions\r
-3) Manage wallet\r
-\r
-debash\$ "
+expect "y\r
+DeBot Info:*\r
+*\r
+"
 send -- "2\r"
-expect -exact "2\r
-User public key 3B0D7FE8026952F9BD43DFBA7CB9B41C13DD626C411416CDFC9090CD4ABFB1AD\r
-DeBot Info:\r
-Name   : Subscription Manager\r
-Version: 0.2.0\r
-Author : INTONATION\r
-Publisher: INTONATION\r
-Support: 0:841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94\r
-Description: Managing user subscriptions\r
-Hello, I am an Subscription Manager DeBot.\r
-Run the DeBot (y/n)?\r
+expect "debash$ User public key *\r
+*\r
 "
 send -- "y\r"
-expect -exact "y\r
-User public key 3B0D7FE8026952F9BD43DFBA7CB9B41C13DD626C411416CDFC9090CD4ABFB1AD\r
-You have 2 subscriptions\r
-2 your subscriptions has been found. To manage it choose subscription from the list or enter its address manually:\r
-1) Name: Autotest 1630154813\r
-Description: Autotest\r
-Period: 3331\r
-Price: 31\r
-2) Name: Anton test2\r
-Description: test2\r
-Period: 3331\r
-Price: 31\r
-3) Main menu\r
-\r
-debash\$ "
-send -- ""
-expect -exact "^Ddebash\$ "
-send -- ""
-expect -exact "^Ddebash\$ "
-send -- "\r"
-expect -exact "\r
-debash\$ "
+expect  "y\r
+User public key *\r
+*\r
+ "
+send \x03
+expect " "
 send -- ""
 expect eof
+
