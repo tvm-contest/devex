@@ -257,6 +257,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
 
     function walletDetails() public {
         Terminal.print(0,format("Subscription wallet successfully deployed."));
+        this.start();
     }
 
     function tokens(uint128 nanotokens) private pure returns (uint64, uint64) {
@@ -399,9 +400,10 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
                 Terminal.print(1, format("You don't have subscriptions yet."));
             }
         } else {
+            delete calc_global; 
             for(uint i = 0; i < accounts.length; i++) {
                 sparams = _decodeSubscriptionParams(accounts[i].data);
-                uint128 calc = sparams.period/sparams.value*30;
+                uint128 calc = sparams.value/sparams.period*30;
                 calc_global = calc_global + calc;
             }
                 Terminal.print(0, format("Recommended sufficient balance - {}. Top up you wallet to ensure next payment.", calc_global));

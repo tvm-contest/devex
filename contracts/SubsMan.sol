@@ -263,6 +263,9 @@ contract SubsMan is Debot {
         if (m_gotoId == tvm.functionId(printServiceStatus)) {
             this.printServiceStatus();
         }
+        if (m_gotoId == tvm.functionId(onSignSubscriptionWalletCode)) {
+            this.onSignSubscriptionWalletCode();
+        }
     }
 
     function onError(uint32 sdkError, uint32 exitCode) public {
