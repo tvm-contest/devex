@@ -111,9 +111,9 @@
 			"name": "createSubscription",
 			"inputs": [
 				{"name":"serviceAddress","type":"address"},
-				{"name":"subscriptionPlan","type":"uint256"},
+				{"name":"planID","type":"uint256"},
 				{"name":"period","type":"uint32"},
-				{"name":"periodPrice","type":"uint32"}
+				{"name":"periodPrice","type":"uint128"}
 			],
 			"outputs": [
 			]

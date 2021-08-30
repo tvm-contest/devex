@@ -23,6 +23,7 @@ contract Subscription is IBase, ISubscription
     uint constant ERROR_SERVICE_ADDRESS_IS_ZERO          = 105;
     uint constant ERROR_NOT_ENOUGH_VALUE                 = 200;
     uint constant ERROR_TOO_EARLY_TO_PROLONGATE          = 201;
+    uint constant ERROR_SUBSCRIPTION_NOT_CONFIRMED       = 202;
 
     //========================================
     // Variables
@@ -50,8 +51,9 @@ contract Subscription is IBase, ISubscription
     function subscriptionIsActive()      external             view         returns (bool) {    return                     (_isActive());    }
     function callSsubscriptionIsActive() external responsible view reserve returns (bool) {    return{value: 0, flag: 128}(_isActive());    }
 
-    function getInfo() external view override returns (uint256 planID, uint32 period, uint128 periodPrice, uint32 dtStart, uint32 dtEnd, bool confirmed)
+    function getInfo() external view override returns (bool isActive, uint256 planID, uint32 period, uint128 periodPrice, uint32 dtStart, uint32 dtEnd, bool confirmed)
     {
+        isActive    = _isActive();
         planID      = planID;
         period      = _period;
         periodPrice = _periodPrice;
@@ -74,7 +76,7 @@ contract Subscription is IBase, ISubscription
     // 
     function createSubscription(uint256 planID, uint32 period, uint128 periodPrice) external override onlyWallet
     {
-        require(msg.value > periodPrice, ERROR_NOT_ENOUGH_VALUE);
+        require(msg.value >= periodPrice, ERROR_NOT_ENOUGH_VALUE);
         _reserve();
 
         _planID      = planID;
@@ -93,7 +95,7 @@ contract Subscription is IBase, ISubscription
         if(confirmed)
         {
             _reserve();
-            _serviceAddress.transfer(0, false, 128);
+            _walletAddress.transfer(0, false, 128);
         }
         else
         {
@@ -131,11 +133,15 @@ contract Subscription is IBase, ISubscription
     // 
     function payForSubscription() public override onlyWallet
     {
-        require(msg.value > _periodPrice, ERROR_NOT_ENOUGH_VALUE); // msg.value should be guaranteed by Wallet, but you never know
+        require(msg.value > _periodPrice, ERROR_NOT_ENOUGH_VALUE          ); // msg.value should be guaranteed by Wallet, but you never know
+        require(_confirmed,               ERROR_SUBSCRIPTION_NOT_CONFIRMED); // Sanity;
+        _reserve();
 
         // If we are paying too late, we need to reset "_lastPaid";
         bool expired = (now > _lastPaid + _period);
         _lastPaid = (expired ? now : _lastPaid + _period);
+
+        IService(_serviceAddress).payForSubscription{value: 0, flag: 128}(_walletAddress, _planID, _period, _periodPrice);
     }
 
     //========================================

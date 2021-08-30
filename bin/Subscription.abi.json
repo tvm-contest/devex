@@ -31,7 +31,8 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"subscriptionPlan","type":"uint256"},
+				{"name":"isActive","type":"bool"},
+				{"name":"planID","type":"uint256"},
 				{"name":"period","type":"uint32"},
 				{"name":"periodPrice","type":"uint128"},
 				{"name":"dtStart","type":"uint32"},
@@ -42,7 +43,7 @@
 		{
 			"name": "createSubscription",
 			"inputs": [
-				{"name":"subscriptionPlan","type":"uint256"},
+				{"name":"planID","type":"uint256"},
 				{"name":"period","type":"uint32"},
 				{"name":"periodPrice","type":"uint128"}
 			],

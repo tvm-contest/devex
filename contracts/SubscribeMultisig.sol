@@ -402,7 +402,7 @@ contract SubscribeMultisig is ISubscribeMultisig
     //========================================
     // Current implementation requires only one custodian ownership to create a subscription;
     // Multi-custodian Multisigs are not supported, but can be in the future.
-    function createSubscription(address serviceAddress, uint256 planID, uint32 period, uint32 periodPrice) external override 
+    function createSubscription(address serviceAddress, uint256 planID, uint32 period, uint128 periodPrice) external override 
     { 
         require(m_custodianCount == 1,          108);
         require(msg.pubkey()     == m_ownerKey, 100);
@@ -421,8 +421,7 @@ contract SubscribeMultisig is ISubscribeMultisig
 
         tvm.accept();
 
-        subscriptionAddress.transfer(periodPrice, true, 1); // flag:1 because Subscription contract needs to get the exact amount.
-                                                            // We will bounce if there's not enough balance, this is expected; Subscription will catch the bounce.
+        ISubscription(subscriptionAddress).payForSubscription{value: periodPrice, bounce: true, flag: 64+1}(); // We will bounce if there's not enough balance, this is expected; Subscription will catch the bounce.
     }
 }
 

@@ -24,11 +24,13 @@ interface IService
     
     //========================================
     //
-    function confirmSubscription(address walletAddress, uint256 subscriptionPlan, uint32 period, uint128 periodPrice) external responsible returns (bool confirmed);
+    function confirmSubscription       (address walletAddress, uint256 planID, uint32 period, uint128 periodPrice) external responsible returns (bool confirmed);
+    function payForSubscription        (address walletAddress, uint256 planID, uint32 period, uint128 periodPrice) external;
+    function subscriptionPaymentRequest(address walletAddress) external;
     
     //========================================
     //
-    function cancelSubscription (address walletAddress, uint256 subscriptionPlan, uint32 period, uint128 periodPrice, uint32 lastPaid) external;
+    function cancelSubscription (address walletAddress, uint256 planID, uint32 period, uint128 periodPrice, uint32 lastPaid) external;
 }
 
 //================================================================================

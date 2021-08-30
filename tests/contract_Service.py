@@ -10,6 +10,7 @@ class Service(BaseContract):
     def __init__(self, tonClient: TonClient, ownerAddress: str, signer: Signer = None):
         genSigner = generateSigner() if signer is None else signer
         self.CONSTRUCTOR = {"ownerAddress":ownerAddress}
+        self.INITDATA    = {"_subscriptionCode":getCodeFromTvc(tvcPath="../bin/Subscription.tvc")}
         BaseContract.__init__(self, tonClient=tonClient, contractName="Service", pubkey=genSigner.keys.public, signer=genSigner)
 
     def _callFromMultisig(self, msig: SetcodeMultisig, functionName, functionParams, value, flags):
@@ -25,6 +26,10 @@ class Service(BaseContract):
 
     def removeSubscriptionPlan(self, msig: SetcodeMultisig, planID: int, value, flags):
         result = self._callFromMultisig(msig=msig, functionName="removeSubscriptionPlan", functionParams={"planID":planID}, value=value, flags=flags)
+        return result
+
+    def subscriptionPaymentRequest(self, msig: SetcodeMultisig, walletAddress: str, value, flags):
+        result = self._callFromMultisig(msig=msig, functionName="subscriptionPaymentRequest", functionParams={"walletAddress":walletAddress}, value=value, flags=flags)
         return result
     
     #========================================

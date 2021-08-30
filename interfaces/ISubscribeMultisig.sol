@@ -20,7 +20,7 @@ interface ISubscribeMultisig is IAccept
     
     //========================================
     //
-    function createSubscription(address serviceAddress, uint256 planID, uint32 period, uint32 periodPrice) external;
+    function createSubscription(address serviceAddress, uint256 planID, uint32 period, uint128 periodPrice) external;
     
     //========================================
     //

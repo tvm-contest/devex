@@ -29,6 +29,9 @@ contract Service is IOwnable, IService
     {
         tvm.accept();
         _ownerAddress = ownerAddress;
+
+        _reserve();
+        _ownerAddress.transfer(0, false, 128);
     }
     
     //========================================
@@ -71,19 +74,19 @@ contract Service is IOwnable, IService
 
     //========================================
     //
-    function confirmSubscription(address walletAddress, uint256 subscriptionPlan, uint32 period, uint128 periodPrice) external responsible override returns (bool confirmed)
+    function confirmSubscription(address walletAddress, uint256 planID, uint32 period, uint128 periodPrice) external responsible override returns (bool confirmed)
     {
         (address subscriptionAddress, ) = calculateFutureSubscriptionAddress(walletAddress);
         require(msg.sender == subscriptionAddress, ERROR_MESSAGE_SENDER_IS_NOT_MY_SUBSCRIPTION);
 
         _reserve();
 
-        if(!_plans.exists(subscriptionPlan))
+        if(!_plans.exists(planID))
         {
             return {value: 0, flag: 128}(false);
         }
 
-        SubscriptionPlan p = _plans[subscriptionPlan];
+        SubscriptionPlan p = _plans[planID];
         confirmed = (p.period == period && p.periodPrice == periodPrice);
 
         // Collect subscription fee;
@@ -93,8 +96,24 @@ contract Service is IOwnable, IService
     }
 
     //========================================
+    //
+    function payForSubscription(address walletAddress, uint256 planID, uint32 period, uint128 periodPrice) external override
+    {
+        (address subscriptionAddress, ) = calculateFutureSubscriptionAddress(walletAddress);
+        require(msg.sender == subscriptionAddress, ERROR_MESSAGE_SENDER_IS_NOT_MY_SUBSCRIPTION);
+
+        planID; period; // unused, but can be used for Event or anything else;
+
+        _reserve();
+
+        // Collect subscription fee;
+        _ownerAddress.transfer(periodPrice, false, 1  ); //
+        walletAddress.transfer(0,           false, 128); // return the change to the Wallet;
+    }
+
+    //========================================
     // Greedy Service won't return any change. Fair and honest Service will return unspent change to the Wallet;
-    function cancelSubscription(address walletAddress, uint256 subscriptionPlan, uint32 period, uint128 periodPrice, uint32 lastPaid) external override
+    function cancelSubscription(address walletAddress, uint256 planID, uint32 period, uint128 periodPrice, uint32 lastPaid) external override
     {
         (address subscriptionAddress, ) = calculateFutureSubscriptionAddress(walletAddress);
         require(msg.sender == subscriptionAddress, ERROR_MESSAGE_SENDER_IS_NOT_MY_SUBSCRIPTION);
@@ -102,7 +121,7 @@ contract Service is IOwnable, IService
         _reserve();
 
         // No plan, return change to the Wallet;
-        if(!_plans.exists(subscriptionPlan))
+        if(!_plans.exists(planID))
         {
             walletAddress.transfer(0, false, 128);
             return;
@@ -121,6 +140,14 @@ contract Service is IOwnable, IService
             //  - First:  congratulations for coming this far!
             //  - Second: please, it's a feature, not a bug;
         }
+    }
+
+    //========================================
+    //
+    function subscriptionPaymentRequest(address walletAddress) external override onlyOwner reserve
+    {
+        (address subscriptionAddress, ) = calculateFutureSubscriptionAddress(walletAddress);
+        ISubscription(subscriptionAddress).subscriptionPaymentRequested{value: 0, flag: 128}();
     }
 }
 

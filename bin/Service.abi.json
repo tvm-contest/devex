@@ -19,11 +19,29 @@
 			]
 		},
 		{
+			"name": "addSubscriptionPlan",
+			"inputs": [
+				{"name":"planID","type":"uint256"},
+				{"name":"period","type":"uint32"},
+				{"name":"periodPrice","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "removeSubscriptionPlan",
+			"inputs": [
+				{"name":"planID","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "confirmSubscription",
 			"inputs": [
 				{"name":"_answer_id","type":"uint32"},
 				{"name":"walletAddress","type":"address"},
-				{"name":"subscriptionPlan","type":"uint256"},
+				{"name":"planID","type":"uint256"},
 				{"name":"period","type":"uint32"},
 				{"name":"periodPrice","type":"uint128"}
 			],
@@ -32,13 +50,32 @@
 			]
 		},
 		{
+			"name": "payForSubscription",
+			"inputs": [
+				{"name":"walletAddress","type":"address"},
+				{"name":"planID","type":"uint256"},
+				{"name":"period","type":"uint32"},
+				{"name":"periodPrice","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "cancelSubscription",
 			"inputs": [
 				{"name":"walletAddress","type":"address"},
-				{"name":"subscriptionPlan","type":"uint256"},
+				{"name":"planID","type":"uint256"},
 				{"name":"period","type":"uint32"},
 				{"name":"periodPrice","type":"uint128"},
 				{"name":"lastPaid","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subscriptionPaymentRequest",
+			"inputs": [
+				{"name":"walletAddress","type":"address"}
 			],
 			"outputs": [
 			]

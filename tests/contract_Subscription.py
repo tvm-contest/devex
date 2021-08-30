@@ -7,9 +7,11 @@ from   freeton_utils import *
 
 class Subscription(BaseContract):
     
-    def __init__(self, tonClient: TonClient, signer: Signer = None):
+    def __init__(self, tonClient: TonClient, walletAddress:str, serviceAddress:str, signer: Signer = None):
         genSigner = generateSigner() if signer is None else signer
+        self.INITDATA = {"_walletAddress":walletAddress, "_serviceAddress":serviceAddress}
         BaseContract.__init__(self, tonClient=tonClient, contractName="Subscription", pubkey=genSigner.keys.public, signer=genSigner)
+        self.ADDRESS  = getAddressZeroPubkey(abiPath=self.ABI, tvcPath=self.TVC, initialData=self.INITDATA)
 
     def _callFromMultisig(self, msig: SetcodeMultisig, functionName, functionParams, value, flags):
         messageBoc = prepareMessageBoc(abiPath=self.ABI, functionName=functionName, functionParams=functionParams)

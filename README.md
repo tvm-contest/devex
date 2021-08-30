@@ -22,7 +22,7 @@ Decentralized problems require decentralized solutions.
 
 At first an idea about someone charging you a fee automatically in a decentralized blockchain sounds crazy. System where control over user's assets and their spending is first and utmost priority shoudn't allow someone spend these assets for you. It is yet another field where UX, ease of use and convenience battle with security and safety. To please both worlds a set of rules shoud be created. 
 
-This solustion is the set of rules that allows third parties spend user assets automatically, but using a strict set of rules to keep user's assets safe and secure.
+This solution is the set of rules that allows third parties spend user assets automatically, but using a strict set of rules to keep user's assets safe and secure.
 
 ## Entities
 
@@ -31,6 +31,12 @@ This solustion is the set of rules that allows third parties spend user assets a
 `Service` - Custom contract (can be heavily modified) that represents a service that is used by `Users`. Can have multiple tiers - subscruption types with different conditions.
 
 `SubscribeMultisig` - Custom `SafeMultisig` that supports `Subscription` contract to be used as an escrow.
+
+At any given moment of time all entities (except 0000) don't keep any money except the minimal reserved one (0.01 TON in this MVP).
+
+## MVP limitations
+
+* DeBot has 3 `Services` hardcoded.
 
 ## Workflow
 
