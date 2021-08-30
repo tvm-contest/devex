@@ -159,7 +159,8 @@ contract SubsMan is Debot {
                 return;
             }
             Terminal.print(0, "User Wallet is inactive. Deploying...");
-            signSubscriptionWalletCode();
+            m_gotoId = tvm.functionId(printWalletStatus);
+            signSubscriptionWalletCode(m_sbHandle, m_wallet, m_ownerKey);
         } else {
             Terminal.print(0, format("User Wallet is active: {}.", address(tvm.hash(buildWallet(m_ownerKey)))));
             QueryServices();
@@ -195,11 +196,22 @@ contract SubsMan is Debot {
 
     function deployWallet(bytes signature) view public {
         TvmCell body = tvm.encodeBody(SubsMan.deployWalletHelper, m_ownerKey, signature);
-        this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 2 ton, tvm.functionId(printWalletStatus));
+        this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 2 ton, m_gotoId);
     }
 
-    function signSubscriptionWalletCode() public {
+    function signSubscriptionWalletCode(uint32 sbHandle, address wallet, uint256 ownerKey) public {
+        m_invoker = msg.sender;
+        m_sbHandle = sbHandle;
+        m_ownerKey = ownerKey;
+        m_wallet = wallet;
+        if ( m_gotoId != tvm.functionId(printWalletStatus) ) {
+            m_gotoId = tvm.functionId(onSignSubscriptionWalletCode);
+        }
         Sdk.signHash(tvm.functionId(deployWallet), m_sbHandle, tvm.hash(m_subscriptionWalletImage.toSlice().loadRef()));
+    }
+
+    function onSignSubscriptionWalletCode() public {
+       IonSignSubscriptionWalletCode(m_invoker).walletDetails();
     }
 
     function printWalletStatus() public {
@@ -218,12 +230,10 @@ contract SubsMan is Debot {
     }
 
     function checkHash(uint256 code_hash) public {
-        Terminal.print(0, "onSuccess -> checkAccount -> checkHash");
         if (code_hash == tvm.hash(buildAccount(m_ownerKey, m_serviceKey, svcParams)) || code_hash == 0) {
             Menu.select("Waiting for the Account deployment...", "", [ MenuItem("Check again", "", tvm.functionId(menuCheckAccount)) ]);
             return;
         }
-        Terminal.print(0, "Done");
         address account = address(tvm.hash(buildAccount(m_ownerKey, m_serviceKey, svcParams)));
         returnOnDeployStatus(Status.Success, account);
     }
@@ -352,7 +362,6 @@ contract SubsMan is Debot {
     function getServiceParams(AccData[] accounts) public {
         SubscriptionService.ServiceParams[] params; 
         svcParams = _decodeServiceParams(accounts[0].data);
-        Terminal.print(0, "Signing subscription index code...");
         signSubscriptionIndexCode(m_ownerKey);
     }
 
@@ -390,18 +399,16 @@ contract SubsMan is Debot {
 
     function printServiceStatus() public {
         // need to add check for code_hash by address
-        Terminal.print(0, "Service deployed.");
         address addr = address(tvm.hash(buildService(s_ownerKey)));
         ISubsManCallbacksService(s_invoker).onSubscriptionServiceDeploy(Status.Success, addr);
     }
 
     /// @notice API function.
     function invokeQuerySubscriptions(uint256 ownerKey) public {
-        Terminal.print(0, format("User public key {:X}", ownerKey));
         m_invokeType = Invoke.QuerySubscriptions;
         m_invoker = msg.sender;
         Sdk.getAccountsDataByHash(
-            tvm.functionId(setInvites),
+            tvm.functionId(setSubscriptions),
             tvm.hash(buildSubscriptionIndex(ownerKey)),
             address.makeAddrStd(-1, 0)
         );
@@ -416,7 +423,7 @@ contract SubsMan is Debot {
     function invokeQuerySubscribers(uint256 serviceKey) public {
         s_invoker = msg.sender;
         Sdk.getAccountsDataByHash(
-            tvm.functionId(setInvitesSubscriber),
+            tvm.functionId(setSubscriptionsSubscriber),
             tvm.hash(_getAccountCodeSubscriber(serviceKey)),
             address.makeAddrStd(-1, 0)
         );
@@ -433,7 +440,7 @@ contract SubsMan is Debot {
         return serviceKey;
     }
 
-    function setInvites(AccData[] accounts) public view {
+    function setSubscriptions(AccData[] accounts) public view {
        IonQuerySubscriptions(m_invoker).onQuerySubscriptions(accounts);
     }
 
@@ -443,7 +450,7 @@ contract SubsMan is Debot {
         return subscriberKey;
     }
 
-    function setInvitesSubscriber(AccData[] accounts) public {
+    function setSubscriptionsSubscriber(AccData[] accounts) public {
         uint256[] pubkeys;
         for (uint i = 0; i < accounts.length; i++) {
             pubkeys.push(_decodeAccountAddressSubscriber(accounts[i].data));
@@ -465,7 +472,6 @@ contract SubsMan is Debot {
     }
 
     function returnOnDeploySubscriptionService(Status status, address addr) internal {
-        Terminal.print(0, "Send error back from invoked debot.");
         ISubsManCallbacksService(s_invoker).onSubscriptionServiceDeploy(status, addr);
     }
     

@@ -21,3 +21,7 @@ interface IonQuerySubscriptions {
 interface IonQuerySubscribers {
     function onQuerySubscribers(uint256[] keys) external;
 }
+
+interface IonSignSubscriptionWalletCode {
+    function walletDetails() external;
+}

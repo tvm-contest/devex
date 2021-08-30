@@ -2,7 +2,7 @@
 #!/bin/bash
 set -xe
 
-for i in SubsMan deployerDebot Subscription serviceDebot SubscriptionService SubscriptionIndex Wallet; do
+for i in SubsMan clientDebot Subscription serviceDebot SubscriptionService SubscriptionIndex Wallet; do
 	tondev sol compile $i.sol;
 done
 
@@ -13,7 +13,7 @@ tos=tonos-cli
 ##$tos config --url https://gql.custler.net --wc 0 --lifetime 3600 --retries 3 --timeout 600 --async_call true
 
 DEBOT_NAME=SubsMan
-DEBOT_CLIENT=deployerDebot
+DEBOT_CLIENT=clientDebot
 giver=0:841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94
 
 
@@ -181,6 +181,6 @@ cat client.keys.json
 cat service.keys.json
 #
 #tonos-cli config --pubkey 0x$(cat client.keys.json | jq .public -r) --wallet $(cat msig.client.addr)
-#$tos --url $NETWORK debot fetch `cat deployerDebot.addr`
+#$tos --url $NETWORK debot fetch `cat clientDebot.addr`
 tonos-cli config --pubkey 0x$(cat service.keys.json | jq .public -r) --wallet $(cat msig.service.addr)
 $tos --url $NETWORK debot fetch `cat serviceDebot.addr`

@@ -6,6 +6,7 @@ import "https://raw.githubusercontent.com/tonlabs/debots/main/Debot.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/UserInfo/UserInfo.sol";
 import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/AmountInput/AmountInput.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/ConfirmInput/ConfirmInput.sol";
 import "https://raw.githubusercontent.com/tonlabs/debots/main/Sdk.sol";
 import "SubsMan.sol";
 import "ISubsManCallbacks.sol";
@@ -34,6 +35,10 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     AccData[] m_accounts;
     address walletAddr;
     address serviceAddr;
+    uint8 query_type; 
+    // 0 - menu
+    // 1 - for calculations
+    uint128 calc_global;
 
     function setIcon(bytes icon) public {
         require(msg.pubkey() == tvm.pubkey(), 100);
@@ -66,9 +71,9 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     }
 
     function mainMenu() public {
-        Menu.select("I can manage your subscriptions", "", [
-            MenuItem("Deploy new subscription", "", tvm.functionId(menuDeploySubscription)),
-            MenuItem("Show my subscriptions", "", tvm.functionId(menuShowSubscription)),
+        Menu.select("Available actions:", "", [
+            MenuItem("Subscribe", "", tvm.functionId(menuDeploySubscription)),
+            MenuItem("My subscriptions", "", tvm.functionId(menuShowSubscription)),
             MenuItem("Manage wallet", "", tvm.functionId(ManageWallet))
         ]);
     }
@@ -93,9 +98,9 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function setServiceKey(AccData[] accounts) public {
         if (accounts.length != 0 && accounts[0].id == serviceAddr) {
             m_serviceKey = _decodeKeyFromData(accounts[0].data);
-            getSigningBox(0);
+            getSigningBox();
         } else {
-            Terminal.print(0, "There is no such service. Please try again...");
+            Terminal.print(0, "There is no such service.");
             this.start();
         }
     }
@@ -180,11 +185,11 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
             sparams = _decodeSubscriptionParams(accounts[i].data);
             items.push(MenuItem(format("{}: {}\nPeriod: {}\nPrice: {}\nAddress: {}", sparams.name, 
             sparams.description, sparams.period, 
-            sparams.value, accounts[i].id), "", tvm.functionId(getSigningBox)));
+            sparams.value, accounts[i].id), "", tvm.functionId(setServiceKeyHandle)));
         }
-        items.push(MenuItem("Select subcription service by address", "", tvm.functionId(menuServiceAddress)));
+        items.push(MenuItem("Subscribe to the specific service using address", "", tvm.functionId(menuServiceAddress)));
         items.push(MenuItem("Main menu", "", tvm.functionId(this.start)));
-        Menu.select(format("{} Subscription services has been found.", accounts.length), "", items);
+        Menu.select(format("{} subscription services has been found.", accounts.length), "", items);
     }
 
     function buildServiceHelper() public returns (TvmCell) {
@@ -207,8 +212,13 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         s_balance = nanotokens;
         (uint64 dec, uint64 float) = tokens(s_balance);
         Terminal.print(0,format("Subscription wallet balance is {}.{} tons", dec, float));
-        menuManageWallet();
+        calculate();
     } 
+
+    function calculate() public {
+        query_type = 1;
+        SubsMan(m_subsman).invokeQuerySubscriptions(m_ownerKey);
+    }
 
     function getWalletBalance2(address value) public returns (uint128){
         Sdk.getAccountType(tvm.functionId(checkStatus), value);
@@ -216,12 +226,37 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
 
     function checkStatus(int8 acc_type) public {
         if (acc_type == -1 || acc_type == 0) {
-            Terminal.print(0,"Subscription wallet doesn't exist. Deploy it first.");
-            this.start();
+            ConfirmInput.get(tvm.functionId(checkStatusDeploy), "Subscription wallet doesn't exist. It will be deployed when you subscribe first time. Or you can deploy it now. Deploy?");
         } else {
             Terminal.print(0,format("Subscription wallet address: {}", walletAddr));
             Sdk.getBalance(tvm.functionId(setBalance2), walletAddr);
         }        
+    }
+
+    function checkStatusDeploy(bool value) public {
+        if ( value == true ) {
+            depWallet();
+        } else {
+            this.start();
+        }
+    }
+
+    function depWallet() public {
+        uint256[] keys;
+        if (m_sbHandle == 0) {
+            SigningBoxInput.get(
+                tvm.functionId(setSigningBoxHandle3),
+                "Choose your keys to sign transactions from multisig.",
+                keys
+            );
+        }
+        else {
+           SubsMan(m_subsman).signSubscriptionWalletCode(m_sbHandle, m_wallet, m_ownerKey); 
+        }
+    }
+
+    function walletDetails() public {
+        Terminal.print(0,format("Subscription wallet successfully deployed."));
     }
 
     function tokens(uint128 nanotokens) private pure returns (uint64, uint64) {
@@ -240,20 +275,17 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     }
 
     function setDefaultAccount(address value) public {
-        Terminal.print(0, format("User account {}", value));
         m_wallet = value;
         UserInfo.getPublicKey(tvm.functionId(setDefaultPubkey));
 
     }
 
     function setDefaultPubkey(uint256 value) public {
-        Terminal.print(0, format("User public key {:X}", value));
         m_ownerKey = value;
         mainMenu();
     }
 
     function setSigningBox(uint32 handle) public {
-        Terminal.print(0, format("Signing box handle {}", handle));
         m_sbHandle = handle;
     }
 
@@ -263,7 +295,6 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     }
 
     function setDefaultPubkey2(uint256 value) public {
-        Terminal.print(0, format("User public key {:X}", value));
         m_ownerKey = value;
         SubsMan(m_subsman).invokeQuerySubscriptions(m_ownerKey);
     }
@@ -278,11 +309,8 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         return svcKey;
     }
 
-    function getSigningBox(uint32 index) public {
+    function getSigningBox() public {
         uint256[] keys;
-        if (m_serviceKey == 0) {
-            m_serviceKey = _decodeServiceKey(s_accounts[index].data);
-        }
         if (m_sbHandle == 0) {
             SigningBoxInput.get(
                 tvm.functionId(setSigningBoxHandle),
@@ -294,6 +322,13 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         }
     }
 
+    function setServiceKeyHandle(uint32 index) public {
+        if (m_serviceKey == 0) {
+            m_serviceKey = _decodeServiceKey(s_accounts[index].data);
+        }
+        getSigningBox();
+    }
+
     function setSigningBoxHandle(uint32 handle) public {
         m_sbHandle = handle;
         subsmanInvokeDeploy();
@@ -302,6 +337,11 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function setSigningBoxHandle2(uint32 handle) public {
         m_sbHandle = handle;
         invokeCancel();
+    }
+
+    function setSigningBoxHandle3(uint32 handle) public {
+        m_sbHandle = handle;
+        SubsMan(m_subsman).signSubscriptionWalletCode(m_sbHandle, m_wallet, m_ownerKey);
     }
 
     function invokeCancel() public {
@@ -346,20 +386,34 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         MenuItem[] items;
         m_accounts = accounts;
         SubscriptionService.ServiceParams sparams;
-        for(uint i = 0; i < accounts.length; i++) {
-            // handle in case of empty data
-            sparams = _decodeSubscriptionParams(accounts[i].data);
-            items.push(MenuItem(format("Name: {}\nDescription: {}\nPeriod: {}\nPrice: {}\nAddress: {}", sparams.name, sparams.description, sparams.period, sparams.value, accounts[i].id), "", tvm.functionId(menuManageSubscription)));
+        if (query_type == 0) { 
+            for(uint i = 0; i < accounts.length; i++) {
+                // handle in case of empty data
+                sparams = _decodeSubscriptionParams(accounts[i].data);
+                items.push(MenuItem(format("Name: {}\nDescription: {}\nPeriod: {}\nPrice: {}\nAddress: {}", sparams.name, sparams.description, sparams.period, sparams.value, accounts[i].id), "", tvm.functionId(menuManageSubscription)));
+            }
+            items.push(MenuItem("Main menu", "", tvm.functionId(this.start)));
+            if (accounts.length > 0) {
+                Menu.select(format("{} your subscriptions has been found. To manage it choose subscription from the list:", accounts.length), "", items);
+            } else {
+                Terminal.print(1, format("You don't have subscriptions yet."));
+            }
+        } else {
+            for(uint i = 0; i < accounts.length; i++) {
+                sparams = _decodeSubscriptionParams(accounts[i].data);
+                uint128 calc = sparams.period/sparams.value*30;
+                calc_global = calc_global + calc;
+            }
+                Terminal.print(0, format("Recommended sufficient balance - {}. Top up you wallet to ensure next payment.", calc_global));
+                menuManageWallet();
         }
-        items.push(MenuItem("Main menu", "", tvm.functionId(this.start)));
-        Menu.select(format("{} your subscriptions has been found. To manage it choose subscription from the list:", accounts.length), "", items);
     }
 
     function menuManageSubscription(uint32 index) public {
         subscrAddr = m_accounts[index].id;
         Terminal.print(0, format("Subscription index address: {}", subscrAddr));
-        Menu.select("Manage your subscription status", "", [
-            MenuItem("Cancel this subscription", "", tvm.functionId(cancelSubscription)),
+        Menu.select("Available actions:", "", [
+            MenuItem("Cancel subscription", "", tvm.functionId(cancelSubscription)),
             MenuItem("Main menu", "", tvm.functionId(this.start))
         ]);
     }
@@ -394,13 +448,13 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         string name, string version, string publisher, string caption, string author,
         address support, string hello, string language, string dabi, bytes icon
     ) {
-        name = "Subscription Deployer";
-        version = "0.2.0";
+        name = "Subscriber DeBot";
+        version = "0.1.0";
         publisher = "INTONNATION";
-        caption = "Subscription Deployment";
+        caption = "Subscriber DeBot";
         author = "INTONNATION";
-        support = address.makeAddrStd(0, 0);
-        hello = "Hello, I am a Subscription Deployer DeBot.";
+        support = address(0x1dfa35539efbcec0703a25f77a166ca1ab97919ae430101bfb54c6f7a1e12a37);
+        hello = "Hello! Use this DeBot to manage your subscriptions";
         language = "en";
         dabi = m_debotAbi.get();
         icon = m_icon;

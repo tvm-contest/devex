@@ -58,13 +58,13 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         string name, string version, string publisher, string caption, string author,
         address support, string hello, string language, string dabi, bytes icon
     ) {
-        name = "Service Deployer";
+        name = "Subscription service DeBot";
         version = "0.1.0";
         publisher = "INTONNATION";
-        caption = "Service Deployer";
+        caption = "Subscription service DeBot";
         author = "INTONNATION";
-        support = address.makeAddrStd(0, 0);
-        hello = "Hello, I am a service deployer DeBot.";
+        support = address(0x1dfa35539efbcec0703a25f77a166ca1ab97919ae430101bfb54c6f7a1e12a37);
+        hello = "Hello! Use this DeBot to manage your subscription service.";
         language = "en";
         dabi = m_debotAbi.get();
         icon = s_icon;
@@ -112,7 +112,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
                 invokeDelete();
             }
         } else {
-            Menu.select("You have no service deployed. Do you want to create it?", "", [
+            Menu.select("You don't have service deployed. Do you want to create it?", "", [
                 MenuItem("Yes", "", tvm.functionId(preDeployCheck)),
                 MenuItem("No", "", tvm.functionId(this.start))
             ]);  
@@ -183,7 +183,6 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     }
 
     function setWalletAddress(address value) public {
-        Terminal.print(0, format("User account {}", value));
         s_wallet = value;
         UserInfo.getPublicKey(tvm.functionId(setOwnerKey));
     }
@@ -216,7 +215,6 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     }
 
     function setOwnerKey(uint256 value) public {
-        Terminal.print(0, format("User public key {:X}", value));
         s_ownerKey = value;
         mainMenu();
     }
@@ -273,7 +271,6 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     function subsmanInvokeQuerySubscribers(AccData[] accounts) public {
         address addr = address.makeAddrStd(0, tvm.hash(buildService()));
         if (accounts.length != 0 && accounts[0].id == addr) {
-            Terminal.print(0, "Service exist.");
             SubsMan(s_subsman).invokeQuerySubscribers(
                 s_ownerKey
             );
