@@ -136,7 +136,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     }
 
     function onSuccess() public {
-        Terminal.print(0, format("You successfully deleted your service {}", serviceAddr));
+        Terminal.print(0, "You successfully deleted your service.");
         delete s_name;
         delete s_to;
         delete s_description;
