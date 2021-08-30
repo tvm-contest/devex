@@ -73,7 +73,7 @@ send -- "1\r"
 expect "*\r
 *\r
 "
-send -- "0.01\r"
+send -- "1\r"
 expect  "*\r
 enter seed phrase or path to keypair file\r
 "
