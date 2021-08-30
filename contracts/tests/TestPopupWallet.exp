@@ -73,7 +73,7 @@ send -- "1\r"
 expect "*\r
 *\r
 "
-send -- "1\r"
+send -- "0.01\r"
 expect  "*\r
 enter seed phrase or path to keypair file\r
 "
@@ -83,26 +83,7 @@ expect "../client.keys.json\r
 "
 send -- "y\r"
 expect  "y\r
-Sending message 60b9fc684cbe2e80471ac888f76a1bbf8f78a7f3a758aa45558c4928e6900ffc\r
+Sending message *\r
 Success.*\r
 *\r
 "
-send -- "3\r"
-expect -exact "3\r
-Wallet balance is *\r
-*\r
-"
-send -- "2\r"
-expect "2\r
-User account *\r
-User public key *\r
-I can manage your subscriptions\r
-1) Deploy new subscription\r
-2) Show my subscriptions\r
-3) Manage wallet\r
-*\r
-"
-send -- ""
-expect -exact "^Ddebash\$ "
-send -- ""
-expect eof

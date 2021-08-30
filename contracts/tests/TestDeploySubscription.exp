@@ -77,7 +77,7 @@ User Wallet is active: *\r
 *\r
 "
 send -- "y\r"
-expect -exact "y\r
+expect "*\r
 Sending message *\r
 *\r
 "

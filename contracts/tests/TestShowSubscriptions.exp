@@ -64,12 +64,8 @@ expect "debash$ User public key *\r
 *\r
 "
 send -- "y\r"
-expect  "y\r
-User public key *\r
+expect "y\r
 *\r
- "
-send \x03
-expect " "
-send -- ""
-expect eof
-
+3) Main menu\r
+*\r
+"

@@ -45,7 +45,7 @@ set date [clock seconds]
 set addr [exec cat ../ServiceDebot.addr]
 set wallet [exec cat ../msig.service.addr]
 set pubkey [exec cat ../service.keys.json | jq .public -r]
-set subsname [exec echo "Autotest $date" >> subs.name]
+set subsname [exec echo "Autotest $date" > subs.name]
 
 set timeout -1
 spawn tonos-cli config --pubkey 0x$pubkey --wallet $wallet
@@ -144,4 +144,3 @@ Available options:\r
 \r
 debash\$ "
 send -- ""
-expect eof
