@@ -41,7 +41,7 @@ if {$force_conservative} {
 #
 # -Don
 
-set addr [exec cat ../DeployerDebot.addr]
+set addr [exec cat ../clientDebot.addr]
 set wallet [exec cat ../msig.client.addr]
 set pubkey [exec cat ../client.keys.json | jq .public -r]
 set subsname [exec cat subs.name]
@@ -73,11 +73,11 @@ expect "../client.keys.json\r
 "
 send -- "y\r"
 expect "y\r
-User Wallet is active: *\r
+*\r
 *\r
 "
 send -- "y\r"
-expect "*\r
-Sending message *\r
+expect "y\r
 *\r
-"
+3) Manage wallet
+*\r"

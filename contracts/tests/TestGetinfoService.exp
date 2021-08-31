@@ -42,7 +42,7 @@ if {$force_conservative} {
 # -Don
 
 
-set addr [exec cat ../ServiceDebot.addr]
+set addr [exec cat ../serviceDebot.addr]
 set wallet [exec cat ../msig.service.addr]
 set pubkey [exec cat ../service.keys.json | jq .public -r]
 set timeout -1
@@ -52,20 +52,18 @@ match_max 100000
 expect  "Config: *\r
 Connecting to https://gql.custler.net\r
 DeBot Info:\r
-Name   : Service Deployer\r
+Name   : Subscription service DeBot\r
 Version: *\r
 Author : INTONNATION\r
 Publisher: INTONNATION\r
 Support: *\r
-Description: Service Deployer\r
-Hello, I am a service deployer DeBot.\r
+Description: Subscription service DeBot\r
+Hello! Use this DeBot to manage your subscription service.\r
 Run the DeBot (y/n)?\r
 "
 send -- "y\r"
 expect "y\r
 \r
-User account *\r
-User public key *\r
 Available options:\r
 1) Deploy service\r
 2) Get service info\r
@@ -74,7 +72,7 @@ Available options:\r
 debash\$ "
 send -- "2\r"
 expect "2\r
-Service exist.\r
+*\r
 *\r
 "
 send -- "y\r"
