@@ -149,7 +149,7 @@ contract Subscription is IBase, ISubscription
     onBounce(TvmSlice slice) external view
     {
         uint32 functionId = slice.decode(uint32);
-        if (functionId == tvm.functionId(ISubscribeMultisig.subscriptionPaymentRequested)) 
+        if(functionId == tvm.functionId(ISubscribeMultisig.subscriptionPaymentRequested) && !_isActive()) 
         {
             tvm.accept();
             _walletAddress.transfer(0, false, 128+32); // not enough money to continue sunscription, destroy it;

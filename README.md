@@ -36,11 +36,23 @@ At any given moment of time all entities (except 0000) don't keep any money exce
 
 ## MVP limitations
 
-* DeBot has 3 `Services` hardcoded.
+MVP is not a release version, it has some experimental features, some corners cut and some non-implemented design ideas.
+
+Before it becomes a release it needs to run several rounds of testing.
+
+Here are the limitations of current MVP version:
+
+* `DeBot` has 3 `Services` hardcoded (should build the list dynamically in release version).
+* `SubscribeMultisig` Subscriptions work for only single custodian. For multiple custodians `SubmitSubscription` and `ConfirmSubscription` should be implemented.
+* Using TIP-3 tokens is possible but was not implemented in MVP because straightforward approach has security problems (implementing both `No staking` and `Keep user's assets secure` requirements). 
 
 ## Workflow
 
-TODO
+![Create Subscription](createSubscription.jpg)
+
+![Cancel Subscription](cancelSubscription.jpg)
+
+![Prolongate Subscription](prolongateSubscription.jpg)
 
 ## Running the tests
 

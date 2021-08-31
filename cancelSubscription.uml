@@ -1,0 +1,15 @@
+title Cancel Subscription
+
+actor "Service Owner (multisig)" as owner
+actor "User (multisig)" as user
+participant "User's SubscribeMultisig" as ssig
+participant "Subscription" as sub
+participant "Service" as service
+
+user->ssig: (EXT) transfer()
+note over ssig: Encoding cancelSubscription()\nfunction to transfer() payload
+ssig->sub: cancelSubscription()
+sub->service: cancelSubscription()
+sub->sub: destroy contract
+service->ssig: transfer()
+note over service: Service transfers unused payment\nfor Subscription to the User

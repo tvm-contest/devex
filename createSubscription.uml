@@ -1,0 +1,18 @@
+title Create Subscription
+
+actor "Service Owner (multisig)" as owner
+actor "User (multisig)" as user
+participant "User's SubscribeMultisig" as ssig
+participant "Subscription" as sub
+participant "Service" as service
+
+user->ssig: (EXT) createSubscription()
+ssig->sub: deploy()
+ssig->sub: createSubscription()
+sub->service: confirmSubscription()
+note over service:Service confirms Subscription only if\ndeployment parameters are correct and\nmatch Plan information in Service contract
+service->owner: transfer()
+note over service:Service transfers Subscription payment\nto Service Owner only if confirmed.
+service->sub: confirmSubscription(bool confirmed)
+sub->ssig: transfer()
+note over sub: Subscription returns\nunused change to User
