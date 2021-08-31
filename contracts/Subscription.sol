@@ -77,7 +77,7 @@ contract Subscription {
             require(subscription.status != STATUS_EXECUTED, 103);
         }
         tvm.accept();
-        IWallet(user_wallet).paySubscription{value: 0.1 ton, bounce: false, flag: 0, callback: Subscription.onPaySubscription}(serviceKey, false, svcParams);
+        IWallet(user_wallet).paySubscription{value: 0.2 ton, bounce: false, flag: 0, callback: Subscription.onPaySubscription}(serviceKey, false, svcParams);
     }
 
     function onPaySubscription(uint8 status) public {
