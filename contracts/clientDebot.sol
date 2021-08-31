@@ -38,7 +38,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     uint8 query_type; 
     // 0 - menu
     // 1 - for calculations
-    uint64 calc_global;
+    uint128 calc_global;
     SubscriptionService.ServiceParams[] m_sparams;
     function setIcon(bytes icon) public {
         require(msg.pubkey() == tvm.pubkey(), 100);
@@ -159,15 +159,16 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
             callbackId: tvm.functionId(_onSuccess),
             onErrorId: tvm.functionId(_onError)
         } (walletAddr, m_tons, false, false, m_payload);
-        this.start();
     }
 
-    function _onSuccess() public {
-        Terminal.print(0, format("Success."));
+    function _onSuccess(uint64 transId) public {
+        Terminal.print(0, "Success.");
+        this.start();
     }
 
     function _onError(uint32 sdkError, uint32 exitCode) public {
         Terminal.print(0, format("Error: sdk code = {}, exit code = {}", sdkError, exitCode));
+        this.start();
     }
 
     function _decodeSubscriptionParams(TvmCell data) internal view returns (SubscriptionService.ServiceParams) {
@@ -417,7 +418,6 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
             delete calc_global; 
             for(uint i = 0; i < accounts.length; i++) {
                 sparams = _decodeSubscriptionParams(accounts[i].data);
-                Terminal.print(0, format("sparams.value: {}", sparams.value));
                 calc_global = calc_global + sparams.value;
             }
             if (calc_global != 0) {
@@ -426,7 +426,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
                     dec = 1;
                 }
                 float;
-                if (calc_global < dec) {
+                if (calc_global <= dec) {
                     Terminal.print(0, format("You have sufficient balance to ensure the next payment."));
                 } else {
                     Terminal.print(0, format("Recommended sufficient balance - {}. Top up you wallet on {} to ensure the next payment.", calc_global, calc_global - dec + 1));
