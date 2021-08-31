@@ -54,20 +54,18 @@ match_max 100000
 expect  "Config: *\r
 Connecting to https://gql.custler.net\r
 DeBot Info:\r
-Name   : Service Deployer\r
+Name   : Subscription service DeBot\r
 Version: *\r
 Author : INTONNATION\r
 Publisher: INTONNATION\r
 Support: *\r
-Description: Service Deployer\r
-Hello, I am a service deployer DeBot.\r
+Description: Subscription service DeBot\r
+Hello! Use this DeBot to manage your subscription service.\r
 Run the DeBot (y/n)?\r
 "
 send -- "y\r"
 expect  "y\r
 \r
-User account *\r
-User public key *\r
 Available options:\r
 1) Deploy service\r
 2) Get service info\r
@@ -132,11 +130,8 @@ expect "y\r
 send -- "y\r"
 expect  "y\r
 Sending message *\r
-Service deployed.\r
 Service deployed successfully:\r
 *\r
-User account *\r
-User public key *\r
 Available options:\r
 1) Deploy service\r
 2) Get service info\r
