@@ -4,21 +4,20 @@
 echo -e "START testing....\n"
 echo -e "\nDeploying Service.."
 sleep 5
-./TestCreateService.exp
+expect -f ./TestCreateService.exp
 echo -e "\nGet Info Service.."
 sleep 5
-./TestGetInfoService.exp
+expect -f ./TestGetInfoService.exp
 echo -e "\nDeploy subscription.."
 sleep 5
-./TestDeploySubscription.exp
+expect -f ./TestDeploySubscription.exp
 echo -e "\nShow subscription.."
 sleep 5
-./TestShowSubscriptions.exp
+expect -f ./TestShowSubscriptions.exp
 echo -e "\nPopup wallet 1 TON"
 sleep 5
-./TestPopupWallet
+expect -f ./TestPopupWallet.exp
 echo -e "\nDelete Service.."
 sleep 5
-./TestDeleteService.exp
-
+expect -f ./TestDeleteService.exp
 echo -e "\nCompleted successfully."
