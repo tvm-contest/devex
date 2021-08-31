@@ -92,8 +92,9 @@ contract SubscribeMultisig is ISubscribeMultisig
     /// @param reqConfirms Default number of confirmations required for executing transaction.
     constructor(uint256[] owners, uint8 reqConfirms) public 
     {
-        require(msg.pubkey() == tvm.pubkey(),                              100);
-        require(owners.length > 0 && owners.length <= MAX_CUSTODIAN_COUNT, 117);
+        // msg.isInternal for on-chain deployment
+        require((msg.pubkey() == tvm.pubkey()) || (msg.isInternal && owners[0] == tvm.pubkey()), 100);
+        require(owners.length > 0 && owners.length <= MAX_CUSTODIAN_COUNT,                       117);
         tvm.accept();
         
         uint8 ownerCount = 0;

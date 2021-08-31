@@ -28,7 +28,7 @@ This solution is the set of rules that allows third parties spend user assets au
 
 `Subscription` - Contract that represents user's subscription status. Connects `Services` and `Users` (aka `Multisigs`) with each other and acts like escrow between them. `Users` manage their subscriptions, start and stop using this contract. `Services` use this contract as a trusted proxy when recurring payment is required. 
 
-`Service` - Custom contract (can be heavily modified) that represents a service that is used by `Users`. Can have multiple tiers - subscruption types with different conditions.
+`Service` - Custom contract (can be heavily modified) that represents a service that is used by `Users`. Can have multiple tiers - subscruption types with different conditions. `Service` Owner is responsible for Subscription renewal transaction initiation.
 
 `SubscribeMultisig` - Custom `SafeMultisig` that supports `Subscription` contract to be used as an escrow.
 
@@ -36,7 +36,7 @@ At any given moment of time all entities (except 0000) don't keep any money exce
 
 ## MVP limitations
 
-MVP is not a release version, it has some experimental features, some corners cut and some non-implemented design ideas.
+MVP is not a release version, it has some experimental features, some corners are cut and some non-implemented design ideas exist.
 
 Before it becomes a release it needs to run several rounds of testing.
 
@@ -44,7 +44,7 @@ Here are the limitations of current MVP version:
 
 * `DeBot` has 3 `Services` hardcoded (should build the list dynamically in release version).
 * `SubscribeMultisig` Subscriptions work for only single custodian. For multiple custodians `SubmitSubscription` and `ConfirmSubscription` should be implemented.
-* Using TIP-3 tokens is possible but was not implemented in MVP because straightforward approach has security problems (implementing both `No staking` and `Keep user's assets secure` requirements). 
+* Using TIP-3 tokens is included in design but was not implemented in MVP because straightforward approach has security problems (implementing both `No staking` and `Keep user's assets secure` requirements). 
 
 ## Workflow
 

@@ -13,6 +13,7 @@ from   pprint import pprint
 from   contract_Service           import Service
 from   contract_Subscription      import Subscription
 from   contract_SubscribeMultisig import SubscribeMultisig
+from   contract_SubscriptionDebot import SubscriptionDebot
 
 SERVER_ADDRESS = "https://net.ton.dev"
 
@@ -64,6 +65,10 @@ def _getExitCode(msgIdArray):
 # 
 print("DEPLOYING CONTRACTS...")
 # MSIGS
+msigConst = SetcodeMultisig(tonClient=getClient(), signer=loadSigner(keysFile="msig.json"))
+giverGive(getClient(), msigConst.ADDRESS, TON * 10)
+msigConst.deploy()
+
 msigServices = SetcodeMultisig(tonClient=getClient())
 giverGive(getClient(), msigServices.ADDRESS, TON * 10)
 msigServices.deploy()
@@ -96,6 +101,18 @@ service3.addSubscriptionPlan(msig=msigServices, planID=200, period=2,    periodP
 service3.addSubscriptionPlan(msig=msigServices, planID=300, period=9000, periodPrice=TON*10, value=DIME, flags=1)
 #print("SERVICE 3")
 #pprint(service3.getSubscriptionPlans())
+
+debot  = SubscriptionDebot(tonClient=getClient(), ownerAddress=msigServices.ADDRESS)
+giverGive(getClient(), debot.ADDRESS, TON * 1)
+result = debot.deploy()
+result = debot.setABI(msig=msigServices, value=DIME)
+result = debot.setSsigCode        (msig=msigServices, value=DIME, code=getCodeFromTvc(tvcPath="../bin/SubscribeMultisig.tvc"))
+result = debot.setSubscriptionCode(msig=msigServices, value=DIME, code=getCodeFromTvc(tvcPath="../bin/Subscription.tvc"))
+result = debot.addService(msig=msigServices, value=DIME, serviceName=stringToHex("Netflix"),     serviceAddress=service1.ADDRESS)
+result = debot.addService(msig=msigServices, value=DIME, serviceName=stringToHex("Hulu"),        serviceAddress=service2.ADDRESS)
+result = debot.addService(msig=msigServices, value=DIME, serviceName=stringToHex("Prime Video"), serviceAddress=service3.ADDRESS)
+
+print(" DEBOT ADDRESS:", debot.ADDRESS)
 
 # ==============================================================================
 # 

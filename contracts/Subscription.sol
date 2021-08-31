@@ -58,7 +58,7 @@ contract Subscription is IBase, ISubscription
         period      = _period;
         periodPrice = _periodPrice;
         dtStart     = _dtStart;
-        dtEnd       = _dtStart + _period;
+        dtEnd       = _lastPaid + _period;
         confirmed   = _confirmed;
     }
     
@@ -83,6 +83,7 @@ contract Subscription is IBase, ISubscription
         _period      = period;
         _periodPrice = periodPrice;
         _dtStart     = now;
+        _lastPaid    = _dtStart;
 
         IService(_serviceAddress).confirmSubscription{value: 0, flag: 128, callback: confirmSubscription}(_walletAddress, planID, period, periodPrice);
     }
