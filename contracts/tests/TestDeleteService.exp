@@ -41,7 +41,7 @@ if {$force_conservative} {
 #
 # -Don
 
-set addr [exec cat ../ServiceDebot.addr]
+set addr [exec cat ../serviceDebot.addr]
 set wallet [exec cat ../msig.service.addr]
 set pubkey [exec cat ../service.keys.json | jq .public -r]
 set timeout -1
@@ -84,11 +84,7 @@ expect  "vice.keys.json\r
 "
 send -- "y\r"
 expect "y\r
-Sending message *\r
-You successfully deleted your service *\r
-Available options:\r
-1) Deploy service\r
-2) Get service info\r
+*\r
 3) Delete my service\r
-\r
-debash\$ "
+*\r
+"

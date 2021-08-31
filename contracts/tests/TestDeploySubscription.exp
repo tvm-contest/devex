@@ -73,11 +73,11 @@ expect "../client.keys.json\r
 "
 send -- "y\r"
 expect "y\r
-User Wallet is active: *\r
+*\r
 *\r
 "
 send -- "y\r"
-expect "*\r
-Sending message *\r
+expect "y\r
 *\r
-"
+3) Manage wallet
+*\r"
