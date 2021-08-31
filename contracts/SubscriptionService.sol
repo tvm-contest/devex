@@ -19,16 +19,17 @@ contract SubscriptionService {
     }
 
     modifier onlyOwner {
-		require(msg.pubkey() == tvm.pubkey(), 100);
+		require(msg.pubkey() == tvm.pubkey(), 101);
 		tvm.accept();
 		_;
     }
 
     constructor(bytes signature, TvmCell svc_params) public {
+        require(msg.value >= 1 ton, 101);
         TvmCell code = tvm.code();
-        require(msg.sender != address(0), 101);
-        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), tvm.pubkey()), 102);
-        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), serviceKey), 103);
+        require(msg.sender != address(0), 102);
+        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), tvm.pubkey()), 103);
+        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), serviceKey), 104);
         (svcparams.to, svcparams.value, svcparams.period, svcparams.name, svcparams.description) = svc_params.toSlice().decode(address, uint128, uint32, string, string);
         params = svc_params;
     }

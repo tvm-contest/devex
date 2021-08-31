@@ -131,7 +131,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         TvmCell code = m_subscriptionWalletImage.toSlice().loadRef();
         TvmCell newImage = tvm.buildStateInit({
             code: code,
-            pubkey: m_ownerKey
+            pubkey: ownerKey
         });
         image = newImage;
     }
@@ -162,22 +162,20 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         this.start();
     }
 
-    function _onSuccess(uint64 transId) public {
+    function _onSuccess() public {
         Terminal.print(0, format("Success."));
     }
 
     function _onError(uint32 sdkError, uint32 exitCode) public {
-        Terminal.print(0, format("Transaction failed."));
+        Terminal.print(0, format("Error: sdk code = {}, exit code = {}", sdkError, exitCode));
     }
 
-    function _decodeSubscriptionParams(TvmCell data) internal returns (SubscriptionService.ServiceParams) {
+    function _decodeSubscriptionParams(TvmCell data) internal view returns (SubscriptionService.ServiceParams) {
         SubscriptionService.ServiceParams sparams;
         (, , , TvmCell params) = data.toSlice().decode(uint256, uint64, bool, TvmCell);
         (sparams.to, sparams.value, sparams.period, sparams.name, sparams.description) = params.toSlice().decode(address, uint128, uint32, string, string);
         return sparams;
     }
-
-
 
     function printSubscriprionsList(AccData[] accounts) public {
         MenuItem[] items;
@@ -193,7 +191,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         Menu.select(format("{} subscription services has been found.", accounts.length), "", items);
     }
 
-    function buildServiceHelper() public returns (TvmCell) {
+    function buildServiceHelper() public view returns (TvmCell) {
         TvmCell code = m_subscriptionServiceImage.toSlice().loadRef();
         return code;      
     }
@@ -262,7 +260,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     }
 
     function tokens(uint128 nanotokens) private pure returns (uint64, uint64) {
-        uint64 decimal = uint64(nanotokens / 1e9);
+        uint64 decimal = uint64(nanotokens /  1e9);
         uint64 float = uint64(nanotokens - (decimal * 1e9));
         return (decimal, float);
     }
@@ -301,12 +299,12 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         SubsMan(m_subsman).invokeQuerySubscriptions(m_ownerKey);
     }
 
-    function _decodeKeyFromData(TvmCell data) internal returns (uint256) {
+    function _decodeKeyFromData(TvmCell data) internal pure returns (uint256) {
         (uint256 key, ,) = data.toSlice().decode(uint256, uint64, bool);
         return key;        
     }
 
-    function _decodeServiceKey(TvmCell data) internal returns (uint256) {
+    function _decodeServiceKey(TvmCell data) internal pure returns (uint256) {
         (uint256 svcKey, ,) = data.toSlice().decode(uint256, uint64, bool);
         return svcKey;
     }
@@ -358,7 +356,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         SubsMan(m_subsman).signSubscriptionWalletCode(m_sbHandle, m_wallet, m_ownerKey);
     }
 
-    function invokeCancel() public {
+    function invokeCancel() public view {
         optional(uint256) pubkey = m_ownerKey;
         optional(uint32) sbhandle = m_sbHandle;
         ISubscription(subscrAddr).cancel{
@@ -416,21 +414,18 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
                 Terminal.print(tvm.functionId(this.start), format("You don't have subscriptions yet."));
             }
         } else {
-            //delete calc_global; 
+            delete calc_global; 
             for(uint i = 0; i < accounts.length; i++) {
                 sparams = _decodeSubscriptionParams(accounts[i].data);
                 Terminal.print(0, format("sparams.value: {}", sparams.value));
-                Terminal.print(0, format("sparams.period: {}", sparams.period));
-                uint128 calc = (uint128(sparams.value)/uint128(sparams.period))*uint128(30);
-                Terminal.print(0, format("calc: {}", calc));
-                calc_global = calc_global + calc;
-                Terminal.print(0, format("calc_global: {}", calc_global));
+                calc_global = calc_global + sparams.value;
             }
-            Terminal.print(0, format("calc_global: {}", calc_global));
             if (calc_global != 0) {
-                Terminal.print(0, format("s_balance: {}", s_balance));
                 (uint64 dec, uint64 float) = tokens(s_balance);
-                Terminal.print(0, format("dec: {}", dec));
+                if (dec == 0) {
+                    dec = 1;
+                }
+                float;
                 if (calc_global < dec) {
                     Terminal.print(0, format("You have sufficient balance to ensure the next payment."));
                 } else {

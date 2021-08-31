@@ -119,7 +119,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         }
     }
 
-    function invokeDelete() public {
+    function invokeDelete() public view {
         optional(uint256) pubkey = s_ownerKey;
         optional(uint32) sbhandle = s_sbHandle;
         SubscriptionService(serviceAddr).selfdelete{
@@ -151,6 +151,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     }
 
     function preDeployCheck(uint32 index) public {
+        index;
         QueryServices(tvm.functionId(menuDeployService));
     }
 
@@ -287,7 +288,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         QueryServices(tvm.functionId(printSubscriprionsList));
     }
 
-    function buildService() private returns (TvmCell image) {
+    function buildService() private view returns (TvmCell image) {
         TvmCell code = buildServiceHelper();
         TvmCell state = tvm.buildStateInit({
             code: code,
@@ -300,7 +301,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         image = tvm.insertPubkey(state, s_ownerKey);
     }
 
-    function buildServiceHelper() private returns (TvmCell) {
+    function buildServiceHelper() private view returns (TvmCell) {
         TvmCell code = s_subscriptionServiceImage.toSlice().loadRef();
         return code;
     }

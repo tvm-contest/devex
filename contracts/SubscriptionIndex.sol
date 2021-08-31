@@ -16,20 +16,21 @@ contract SubscriptionIndex {
 
 
     modifier onlyOwner {
-		require(msg.pubkey() == tvm.pubkey(), 102);
+		require(msg.pubkey() == tvm.pubkey(), 101);
 		tvm.accept();
 		_;
     }
 
     constructor(bytes signature, address subsAddr) public {
-        require(msg.sender != address(0), 101);
+        require(msg.value >= 0.5 ton, 102);
+        require(msg.sender != address(0), 103);
         TvmCell code = tvm.code();
         optional(TvmCell) salt = tvm.codeSalt(code);
-        require(salt.hasValue(), 102);
+        require(salt.hasValue(), 104);
         ownerKey = salt.get().toSlice().decode(uint256);
-        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), tvm.pubkey()), 103);
-        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), ownerKey), 104);
-        require(subsAddr != address(0), 105);
+        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), tvm.pubkey()), 105);
+        require(tvm.checkSign(tvm.hash(code), signature.toSlice(), ownerKey), 106);
+        require(subsAddr != address(0), 107);
         subscription_addr = subsAddr;
     }
 

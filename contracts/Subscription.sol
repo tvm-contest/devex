@@ -34,7 +34,8 @@ contract Subscription {
     
     constructor(TvmCell image, bytes signature, address subsAddr) public {
         (address to, uint128 value, uint32 period) = svcParams.toSlice().decode(address, uint128, uint32);
-        require(value > 0 && period > 0, 101);
+        require(msg.value >= 1 ton, 101);
+        require(value > 0 && period > 0, 102);
         tvm.accept();
         uint32 _period = period * 3600 * 24;
         uint128 _value = value * 1000000000;
@@ -50,7 +51,7 @@ contract Subscription {
         });
         TvmCell stateInit = tvm.insertPubkey(state, tvm.pubkey());
         subscriptionIndexAddress = address(tvm.hash(stateInit));
-        new SubscriptionIndex{value: 1 ton, flag: 1, bounce: true, stateInit: stateInit}(signature, subsAddr);
+        new SubscriptionIndex{value: 0.5 ton, flag: 1, bounce: true, stateInit: stateInit}(signature, subsAddr);
     }
 
     function getWallet() public view returns (address) {
@@ -67,6 +68,8 @@ contract Subscription {
     }
 
     function executeSubscription() public {
+        require(msg.value >= 0.2 ton, 101);
+        tvm.accept();
         require(subscription.status != 0, 101);
         if (now > (subscription.start + subscription.period)) {
             subscription.start = uint32(now);
@@ -74,7 +77,7 @@ contract Subscription {
             require(subscription.status != STATUS_EXECUTED, 103);
         }
         tvm.accept();
-        IWallet(user_wallet).paySubscription{value: 1 ton, bounce: false, flag: 0, callback: Subscription.onPaySubscription}(serviceKey, false, svcParams);
+        IWallet(user_wallet).paySubscription{value: 0.1 ton, bounce: false, flag: 0, callback: Subscription.onPaySubscription}(serviceKey, false, svcParams);
     }
 
     function onPaySubscription(uint8 status) public {
