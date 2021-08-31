@@ -7,7 +7,7 @@ enum Status {
 }
 
 interface ISubsManCallbacks {
-    function onSubscriptionDeploy(Status status, address addr) external;
+    function onSubscriptionDeploy(Status status) external;
 }
 
 interface ISubsManCallbacksService {

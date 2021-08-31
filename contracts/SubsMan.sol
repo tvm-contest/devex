@@ -141,11 +141,6 @@ contract SubsMan is Debot {
         image = newImage;
     }
 
-    function menuCheckWallet(uint32 index) public {
-        index;
-        checkWallet();
-    }
-
     function checkWallet() public {
         address walletAddr = address(tvm.hash(buildWallet(m_ownerKey)));
         Sdk.getAccountType(tvm.functionId(checkWalletState), walletAddr);
@@ -162,7 +157,6 @@ contract SubsMan is Debot {
             m_gotoId = tvm.functionId(printWalletStatus);
             signSubscriptionWalletCode(m_sbHandle, m_wallet, m_ownerKey);
         } else {
-            Terminal.print(0, format("User Wallet is active: {}.", address(tvm.hash(buildWallet(m_ownerKey)))));
             QueryServices();
         }
     }
@@ -199,12 +193,13 @@ contract SubsMan is Debot {
         this.callMultisig(m_wallet, m_ownerKey, m_sbHandle, address(this), body, 2 ton, m_gotoId);
     }
 
+    // API function
     function signSubscriptionWalletCode(uint32 sbHandle, address wallet, uint256 ownerKey) public {
-        m_invoker = msg.sender;
         m_sbHandle = sbHandle;
         m_ownerKey = ownerKey;
         m_wallet = wallet;
-        if ( m_gotoId != tvm.functionId(printWalletStatus) ) {
+        if (m_gotoId != tvm.functionId(printWalletStatus) ) {
+            m_invoker = msg.sender;
             m_gotoId = tvm.functionId(onSignSubscriptionWalletCode);
         }
         Sdk.signHash(tvm.functionId(deployWallet), m_sbHandle, tvm.hash(m_subscriptionWalletImage.toSlice().loadRef()));
@@ -234,8 +229,7 @@ contract SubsMan is Debot {
             Menu.select("Waiting for the Account deployment...", "", [ MenuItem("Check again", "", tvm.functionId(menuCheckAccount)) ]);
             return;
         }
-        address account = address(tvm.hash(buildAccount(m_ownerKey, m_serviceKey, svcParams)));
-        returnOnDeployStatus(Status.Success, account);
+        returnOnDeployStatus(Status.Success);
     }
 
     function callMultisig(address src, uint256 pubkey, uint32 sbhandle, address dest, TvmCell payload, uint128 value, uint32 gotoId) public {
@@ -262,6 +256,9 @@ contract SubsMan is Debot {
         }
         if (m_gotoId == tvm.functionId(printServiceStatus)) {
             this.printServiceStatus();
+        }
+        if (m_gotoId == tvm.functionId(onSignSubscriptionWalletCode)) {
+            this.onSignSubscriptionWalletCode();
         }
     }
 
@@ -460,15 +457,15 @@ contract SubsMan is Debot {
 
     function returnOnError(Status status) internal {
         if (m_invokeType == Invoke.NewSubscription) {
-            returnOnDeployStatus(status, address(0));
+            returnOnDeployStatus(status);
         }
         if (s_invokeType == Invoke.NewSubscriptionService) {
             returnOnDeploySubscriptionService(status, address(0));
         }
     }
 
-    function returnOnDeployStatus(Status status, address addr) internal view {
-        ISubsManCallbacks(m_invoker).onSubscriptionDeploy(status, addr);
+    function returnOnDeployStatus(Status status) internal view {
+        ISubsManCallbacks(m_invoker).onSubscriptionDeploy(status);
     }
 
     function returnOnDeploySubscriptionService(Status status, address addr) internal {
