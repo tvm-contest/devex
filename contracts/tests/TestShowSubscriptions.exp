@@ -42,7 +42,7 @@ if {$force_conservative} {
 # -Don
 
 
-set addr [exec cat ../deployerDebot.addr]
+set addr [exec cat ../clientDebot.addr]
 set wallet [exec cat ../msig.client.addr]
 set pubkey [exec cat ../client.keys.json | jq .public -r]
 set subsname [exec cat subs.name]
