@@ -38,7 +38,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     uint8 query_type; 
     // 0 - menu
     // 1 - for calculations
-    uint128 calc_global;
+    uint64 calc_global;
     SubscriptionService.ServiceParams[] m_sparams;
     function setIcon(bytes icon) public {
         require(msg.pubkey() == tvm.pubkey(), 100);
@@ -184,7 +184,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         for(uint i = 0; i < accounts.length; i++) {
             sparams = _decodeSubscriptionParams(accounts[i].data);
             m_sparams.push(sparams);
-            items.push(MenuItem(format("➤{}", sparams.name), "", tvm.functionId(printSubscriprionInfo)));
+            items.push(MenuItem(format("➤ {}", sparams.name), "", tvm.functionId(printSubscriprionInfo)));
         }
         items.push(MenuItem("Subscribe to the specific service using address", "", tvm.functionId(menuServiceAddress)));
         items.push(MenuItem("Main menu", "", tvm.functionId(this.start)));
@@ -405,7 +405,7 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
                 // handle in case of empty data
                 sparams = _decodeSubscriptionParams(accounts[i].data);
                 m_sparams.push(sparams);
-                items.push(MenuItem(format("➤{}", sparams.name), "", tvm.functionId(menuManageSubscription)));
+                items.push(MenuItem(format("➤ {}", sparams.name), "", tvm.functionId(menuManageSubscription)));
             }
             items.push(MenuItem("Main menu", "", tvm.functionId(this.start)));
             if (accounts.length > 0) {
