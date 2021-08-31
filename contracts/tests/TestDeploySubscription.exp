@@ -51,21 +51,37 @@ spawn tonos-cli config --pubkey 0x$pubkey --wallet $wallet
 spawn tonos-cli --url https://gql.custler.net debot fetch $addr
 match_max 100000
 expect  "Config: *\r
-*\r
+Connecting to https://gql.custler.net\r
+DeBot Info:\r
+Name   : Subscriber DeBot\r
+Version: *\r
+Author : INTONNATION\r
+Publisher: INTONNATION\r
+Support: *\r
+Description: Subscriber DeBot\r
+Hello! Use this DeBot to manage your subscriptions\r
+Run the DeBot (y/n)?\r
 "
 send -- "y\r"
 expect "y\r
 *\r
-User account *\r
-User public key *\r
+3) Manage wallet*\r
 *\r
 "
 send -- "1\r"
-expect -re "(\\d)\\)\ $subsname"
+expect -re "(\\d)\\)\ ➤ $subsname"
 send "$expect_out(1,string)\r"
-expect -exact "$expect_out(1,string)\r
-Choose your keys to sign transactions from multisig.\r
-enter seed phrase or path to keypair file\r
+expect "$expect_out(1,string)\r
+Name: *\r
+Description: *\r
+Period: *\r
+Price: *\r
+Address: *\r
+Subscribe? (y/n)\r
+"
+send -- "y\r"
+expect "*\r
+*\r
 "
 send -- "../client.keys.json\r"
 expect "../client.keys.json\r
@@ -79,5 +95,5 @@ expect "y\r
 send -- "y\r"
 expect "y\r
 *\r
-3) Manage wallet
+3) Manage wallet\r
 *\r"
