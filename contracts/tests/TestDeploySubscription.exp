@@ -87,7 +87,11 @@ expect "../client.keys.json\r
 *\r
 "
 send -- "y\r"
+expect "*\r"
+send -- "y\r"
 expect "*\r
+Confirm the transaction (y/n)?\r
+*\r
 "
 send -- "y\r"
 expect "y\r
