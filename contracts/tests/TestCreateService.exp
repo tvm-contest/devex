@@ -129,7 +129,7 @@ expect "y\r
 send -- "y\r"
 expect  "y\r
 Sending message *\r
-Service deployed successfully:\r
+Service successfully registered:\r
 *\r
 Available options:\r
 1) Register service\r
