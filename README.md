@@ -47,19 +47,19 @@ In order to add [fld.ton.dev](https://fld.ton.live/landing) to TON Surf networks
 If you are an on-chain/off-chain service provider you can register your service in our smart-contract system in order to make it visible for potential subscribers, manage payments, track service usage and statistics. 
 
 * Service Registration (“Register service” button)
-<img src="images/image01.png" width="70">
+<img src="images/image01.png" width="500">
 
 
 
 
 * Get information about your service (“Get Service info” button)
-<img src="images/image02.png" width="70">
+<img src="images/image02.png" width="500">
 
 
 
 
 * Delete service registration (“Delete Service” button)
-<img src="images/image03.png" width="70">
+<img src="images/image03.png" width="500">
 
 
 
@@ -69,33 +69,33 @@ If you are an on-chain/off-chain service provider you can register your service 
 As a potential customer you can find various on-chain/off-chain services which are registered in our smart-contract system and subscribe. You are able to manage your subscriptions together with a subscription wallet deployed especially for service payments.
 
 * Get a list of registered services and subscribe (“Subscribe” button). When you do this for the first time, a subscription wallet will be deployed. Subscription wallet allows only authorized services (those which are in your subscriptions list) to withdraw payments.
-<img src="images/image04.png" width="70">
-<img src="images/image05.png" width="70">
+<img src="images/image04.png" width="500">
+<img src="images/image05.png" width="500">
 
 
 
 
 * List your subscription (“My subscriptions” button)
-<img src="images/image06.png" width="70">
+<img src="images/image06.png" width="500">
 
 
 
 
 * Cancel subscription (choose one of subscriptions and push “Cancel subscription” button)
-<img src="images/image07.png" width="70">
+<img src="images/image07.png" width="500">
 
 
 
 
 * Top up your subscription wallet to have sufficient balance and make the service able to withdraw money from your subscription wallet (“Top up wallet” button). If you don’t have a subscription wallet  deployed, DeBot will ask to deploy it.
-<img src="images/image08.png" width="70">
-<img src="images/image09.png" width="70">
+<img src="images/image08.png" width="500">
+<img src="images/image09.png" width="500">
 
 
 
 
 ### Architecture
-<img src="images/image10.png" width="70">
+<img src="images/image10.png" width="500">
 
 There are 3 DeBots: clientDebot, SubsMan, serviceDebot. Client and Service DeBots can be accessed by any user but SubsMan is for internal usage only. SubsMan contains all codes of contracts and is used as a single place for address calculation and contracts deployments. This system is called “Subscription Manager”. There are no mappings and loops. All operations work according to the Web Free Paradigm, including address calculations and ability to search all contracts.  So this system can be infinitely scalable without increasing gas usage.
 
