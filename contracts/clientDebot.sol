@@ -40,6 +40,37 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     // 1 - for calculations
     uint128 calc_global;
     SubscriptionService.ServiceParams[] m_sparams;
+
+    modifier onlyOwner() {
+        tvm.accept();
+        _;
+    }
+
+    /// @notice Returns Metadata about DeBot.
+    function getDebotInfo() public functionID(0xDEB) override view returns(
+        string name, string version, string publisher, string caption, string author,
+        address support, string hello, string language, string dabi, bytes icon
+    ) {
+        name = "Subscriber DeBot";
+        version = "0.1.0";
+        publisher = "INTONNATION";
+        caption = "Subscriber DeBot";
+        author = "INTONNATION";
+        support = address(0x1dfa35539efbcec0703a25f77a166ca1ab97919ae430101bfb54c6f7a1e12a37);
+        hello = "Hello! Use this DeBot to manage your subscriptions";
+        language = "en";
+        dabi = m_debotAbi.get();
+        icon = m_icon;
+    }
+
+    function mainMenu() public {
+        Menu.select("Available actions:", "", [
+            MenuItem("Subscribe", "", tvm.functionId(menuDeploySubscription)),
+            MenuItem("My subscriptions", "", tvm.functionId(menuShowSubscription)),
+            MenuItem("Manage wallet", "", tvm.functionId(ManageWallet))
+        ]);
+    }
+
     function setIcon(bytes icon) public {
         require(msg.pubkey() == tvm.pubkey(), 100);
         tvm.accept();
@@ -56,11 +87,6 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
         m_subscriptionWalletImage = image;
     }
 
-    modifier onlyOwner() {
-        tvm.accept();
-        _;
-    }
-
     function setSubscriptionService(TvmCell image) public onlyOwner {
         m_subscriptionServiceImage = image;
     }
@@ -68,14 +94,6 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     /// @notice Entry point function for DeBot.
     function start() public override {
         UserInfo.getAccount(tvm.functionId(setDefaultAccount));
-    }
-
-    function mainMenu() public {
-        Menu.select("Available actions:", "", [
-            MenuItem("Subscribe", "", tvm.functionId(menuDeploySubscription)),
-            MenuItem("My subscriptions", "", tvm.functionId(menuShowSubscription)),
-            MenuItem("Manage wallet", "", tvm.functionId(ManageWallet))
-        ]);
     }
 
     function menuDeploySubscription(uint32 index) public {
@@ -474,23 +492,6 @@ contract DeployerDebot is Debot, ISubsManCallbacks, IonQuerySubscriptions  {
     function onError(uint32 sdkError, uint32 exitCode) public {
         // TODO: handle errors
         Terminal.print(0, format("Error: sdk code = {}, exit code = {}", sdkError, exitCode));
-    }
-
-    /// @notice Returns Metadata about DeBot.
-    function getDebotInfo() public functionID(0xDEB) override view returns(
-        string name, string version, string publisher, string caption, string author,
-        address support, string hello, string language, string dabi, bytes icon
-    ) {
-        name = "Subscriber DeBot";
-        version = "0.1.0";
-        publisher = "INTONNATION";
-        caption = "Subscriber DeBot";
-        author = "INTONNATION";
-        support = address(0x1dfa35539efbcec0703a25f77a166ca1ab97919ae430101bfb54c6f7a1e12a37);
-        hello = "Hello! Use this DeBot to manage your subscriptions";
-        language = "en";
-        dabi = m_debotAbi.get();
-        icon = m_icon;
     }
 
     function getRequiredInterfaces() public view override returns (uint256[] interfaces) {

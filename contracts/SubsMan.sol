@@ -67,6 +67,23 @@ contract SubsMan is Debot {
         _;
     }
 
+    /// @notice Returns Metadata about DeBot.
+    function getDebotInfo() public functionID(0xDEB) override view returns(
+        string name, string version, string publisher, string caption, string author,
+        address support, string hello, string language, string dabi, bytes icon
+    ) {
+        name = "Subscription Manager";
+        version = "0.2.0";
+        publisher = "INTONATION";
+        caption = "Managing user subscriptions";
+        author = "INTONATION";
+        support = address.makeAddrStd(0, 0x841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94);
+        hello = "Hello, I am an Subscription Manager DeBot.";
+        language = "en";
+        dabi = m_debotAbi.get();
+        icon = m_icon;
+    }
+
     function setSubscriptionBase(TvmCell image) public onlyOwner {
         m_subscriptionBaseImage = image;
     }
@@ -86,23 +103,6 @@ contract SubsMan is Debot {
     /// @notice Entry point function for DeBot.
     function start() public override {
         
-    }
-
-        /// @notice Returns Metadata about DeBot.
-    function getDebotInfo() public functionID(0xDEB) override view returns(
-        string name, string version, string publisher, string caption, string author,
-        address support, string hello, string language, string dabi, bytes icon
-    ) {
-        name = "Subscription Manager";
-        version = "0.2.0";
-        publisher = "INTONATION";
-        caption = "Managing user subscriptions";
-        author = "INTONATION";
-        support = address.makeAddrStd(0, 0x841288ed3b55d9cdafa806807f02a0ae0c169aa5edfe88a789a6482429756a94);
-        hello = "Hello, I am an Subscription Manager DeBot.";
-        language = "en";
-        dabi = m_debotAbi.get();
-        icon = m_icon;
     }
 
     function getRequiredInterfaces() public view override returns (uint256[] interfaces) {

@@ -17,7 +17,6 @@ import "SubsMan.sol";
 contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     
     bytes s_icon;
-
     address s_subsman;
     uint256 s_ownerKey;
     uint32 s_sbHandle;
@@ -38,22 +37,6 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         _;
     }
 
-    function setSubscriptionService(TvmCell image) public onlyOwner {
-        s_subscriptionServiceImage = image;
-    }
-
-    function setIcon(bytes icon) public {
-        require(msg.pubkey() == tvm.pubkey(), 100);
-        tvm.accept();
-        s_icon = icon;
-    }
-
-    function setSubsman(address addr) public {
-        require(msg.pubkey() == tvm.pubkey(), 100);
-        tvm.accept();
-        s_subsman = addr;
-    }
-
     function getDebotInfo() public functionID(0xDEB) override view returns(
         string name, string version, string publisher, string caption, string author,
         address support, string hello, string language, string dabi, bytes icon
@@ -70,6 +53,30 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
         icon = s_icon;
     }
 
+    function mainMenu() public {
+        Menu.select("Available options:", "", [
+            MenuItem("Deploy service", "", tvm.functionId(preDeployCheck)),
+            MenuItem("Get service info", "", tvm.functionId(menuShowSubscribers)),
+            MenuItem("Delete my service", "", tvm.functionId(menuCheckService))
+        ]);
+    }
+
+    function setSubscriptionService(TvmCell image) public onlyOwner {
+        s_subscriptionServiceImage = image;
+    }
+
+    function setIcon(bytes icon) public {
+        require(msg.pubkey() == tvm.pubkey(), 100);
+        tvm.accept();
+        s_icon = icon;
+    }
+
+    function setSubsman(address addr) public {
+        require(msg.pubkey() == tvm.pubkey(), 100);
+        tvm.accept();
+        s_subsman = addr;
+    }
+
     function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
         return [ Terminal.ID, UserInfo.ID ];
     }
@@ -77,14 +84,6 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     /// @notice Entry point function for DeBot.
     function start() public override {
         setUserInfo();
-    }
-
-    function mainMenu() public {
-        Menu.select("Available options:", "", [
-            MenuItem("Deploy service", "", tvm.functionId(preDeployCheck)),
-            MenuItem("Get service info", "", tvm.functionId(menuShowSubscribers)),
-            MenuItem("Delete my service", "", tvm.functionId(menuCheckService))
-        ]);
     }
 
     function setUserInfo() public {
