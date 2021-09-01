@@ -1,0 +1,85 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"image","type":"cell"},
+				{"name":"signature","type":"bytes"},
+				{"name":"subsAddr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getWallet",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "getSubscription",
+			"inputs": [
+			],
+			"outputs": [
+				{"components":[{"name":"pubkey","type":"uint256"},{"name":"to","type":"address"},{"name":"value","type":"uint128"},{"name":"period","type":"uint32"},{"name":"start","type":"uint32"},{"name":"status","type":"uint8"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "cancel",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "executeSubscription",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onPaySubscription",
+			"inputs": [
+				{"name":"status","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "serviceKey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"serviceKey","type":"uint256"}
+			]
+		},
+		{
+			"name": "user_wallet",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"user_wallet","type":"address"}
+			]
+		},
+		{
+			"name": "svcParams",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"svcParams","type":"cell"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"serviceKey","type":"uint256"},
+		{"key":2,"name":"user_wallet","type":"address"},
+		{"key":3,"name":"svcParams","type":"cell"}
+	],
+	"events": [
+	]
+}

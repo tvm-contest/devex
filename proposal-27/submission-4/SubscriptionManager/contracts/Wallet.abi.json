@@ -1,0 +1,129 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"image","type":"cell"},
+				{"name":"signature","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendTransaction",
+			"inputs": [
+				{"name":"value","type":"uint128"},
+				{"name":"dest","type":"address"},
+				{"name":"bounce","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "paySubscription",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"serviceKey","type":"uint256"},
+				{"name":"bounce","type":"bool"},
+				{"name":"params","type":"cell"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint8"}
+			]
+		},
+		{
+			"name": "subscr_Image",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"subscr_Image","type":"cell"}
+			]
+		},
+		{
+			"name": "myaddress",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"myaddress","type":"address"}
+			]
+		},
+		{
+			"name": "last_req_exp_address",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"last_req_exp_address","type":"address"}
+			]
+		},
+		{
+			"name": "last_req_real_address",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"last_req_real_address","type":"address"}
+			]
+		},
+		{
+			"name": "mdest",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"mdest","type":"address"}
+			]
+		},
+		{
+			"name": "mvalue",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"mvalue","type":"uint128"}
+			]
+		},
+		{
+			"name": "mbounce",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"mbounce","type":"bool"}
+			]
+		},
+		{
+			"name": "mserviceKey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"mserviceKey","type":"uint256"}
+			]
+		},
+		{
+			"name": "mperiod",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"mperiod","type":"uint32"}
+			]
+		},
+		{
+			"name": "tvmKey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"tvmKey","type":"uint256"}
+			]
+		},
+		{
+			"name": "msgKey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"msgKey","type":"uint256"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

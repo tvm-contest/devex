@@ -1,0 +1,13 @@
+*.addr
+*.code
+*.tvc
+*.keys.json
+*.pub
+*.seed
+*.key
+*.log
+*.conf.json
+*.swp
+tests/*.log
+tests/*.conf.json
+*.name

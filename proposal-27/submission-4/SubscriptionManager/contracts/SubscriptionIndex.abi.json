@@ -1,0 +1,52 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"signature","type":"bytes"},
+				{"name":"subsAddr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "cancel",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "params",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"params","type":"cell"}
+			]
+		},
+		{
+			"name": "ownerKey",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"ownerKey","type":"uint256"}
+			]
+		},
+		{
+			"name": "subscription_addr",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"subscription_addr","type":"address"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"params","type":"cell"},
+		{"key":2,"name":"user_wallet","type":"address"}
+	],
+	"events": [
+	]
+}

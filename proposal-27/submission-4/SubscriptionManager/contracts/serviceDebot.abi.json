@@ -1,0 +1,297 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "getDebotInfo",
+			"id": "0xDEB",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"version","type":"bytes"},
+				{"name":"publisher","type":"bytes"},
+				{"name":"caption","type":"bytes"},
+				{"name":"author","type":"bytes"},
+				{"name":"support","type":"address"},
+				{"name":"hello","type":"bytes"},
+				{"name":"language","type":"bytes"},
+				{"name":"dabi","type":"bytes"},
+				{"name":"icon","type":"bytes"}
+			]
+		},
+		{
+			"name": "mainMenu",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubscriptionService",
+			"inputs": [
+				{"name":"image","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setIcon",
+			"inputs": [
+				{"name":"icon","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubsman",
+			"inputs": [
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getRequiredInterfaces",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"interfaces","type":"uint256[]"}
+			]
+		},
+		{
+			"name": "start",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setUserInfo",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "menuCheckService",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "menuDeleteService",
+			"inputs": [
+				{"components":[{"name":"id","type":"address"},{"name":"data","type":"cell"}],"name":"accounts","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "invokeDelete",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onSuccess",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onError",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "preDeployCheck",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "menuDeployService",
+			"inputs": [
+				{"components":[{"name":"id","type":"address"},{"name":"data","type":"cell"}],"name":"accounts","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "menuShowSubscribers",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setWalletAddress",
+			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubscriptionPeriod",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubscriptionName",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubscriptionDesciption",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setubscriptionValue",
+			"inputs": [
+				{"name":"value","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setPaymentAddress",
+			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setOwnerKey",
+			"inputs": [
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getSigningBox",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSigningBoxHandle",
+			"inputs": [
+				{"name":"handle","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSigningBoxHandle2",
+			"inputs": [
+				{"name":"handle","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subsmanInvokeDeployService",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onSubscriptionServiceDeploy",
+			"inputs": [
+				{"name":"status","type":"uint8"},
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subsmanInvokeQuerySubscribers",
+			"inputs": [
+				{"components":[{"name":"id","type":"address"},{"name":"data","type":"cell"}],"name":"accounts","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onQuerySubscribers",
+			"inputs": [
+				{"name":"keys","type":"uint256[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "printSubscriprionsList",
+			"inputs": [
+				{"components":[{"name":"id","type":"address"},{"name":"data","type":"cell"}],"name":"accounts","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "QueryServices",
+			"inputs": [
+				{"name":"goto","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDebotOptions",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"options","type":"uint8"},
+				{"name":"debotAbi","type":"bytes"},
+				{"name":"targetAbi","type":"bytes"},
+				{"name":"targetAddr","type":"address"}
+			]
+		},
+		{
+			"name": "setABI",
+			"inputs": [
+				{"name":"dabi","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}
