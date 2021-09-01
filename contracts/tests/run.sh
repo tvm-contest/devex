@@ -2,7 +2,7 @@
 #!/bin/bash
 
 echo -e "START testing....\n"
-echo -e "\nDeploying Service.."
+echo -e "\nService registration.."
 sleep 10
 expect -f ./TestCreateService.exp
 echo -e "\nGet Info Service.."

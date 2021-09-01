@@ -55,7 +55,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
 
     function mainMenu() public {
         Menu.select("Available options:", "", [
-            MenuItem("Deploy service", "", tvm.functionId(preDeployCheck)),
+            MenuItem("Register service", "", tvm.functionId(preDeployCheck)),
             MenuItem("Get service info", "", tvm.functionId(menuShowSubscribers)),
             MenuItem("Delete my service", "", tvm.functionId(menuCheckService))
         ]);
@@ -111,7 +111,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
                 invokeDelete();
             }
         } else {
-            Menu.select("You don't have service deployed. Do you want to create it?", "", [
+            Menu.select("You don't have service registered. Do you want to register it?", "", [
                 MenuItem("Yes", "", tvm.functionId(preDeployCheck)),
                 MenuItem("No", "", tvm.functionId(this.start))
             ]);  
@@ -261,9 +261,9 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
     function onSubscriptionServiceDeploy(Status status, address addr) external override {
         uint8 stat = uint8(status);
         if (status == Status.Success) {
-            Terminal.print(0, format("Service deployed successfully:\n{}", addr));
+            Terminal.print(0, format("Service successfully registered:\n{}", addr));
         } else {
-            Terminal.print(0, format("Service deploy failed. Error status {}", stat));
+            Terminal.print(0, format("Service registration failed. Error status {}", stat));
         }
         this.start();
     }
@@ -275,7 +275,7 @@ contract ServiceDebot is Debot, ISubsManCallbacksService, IonQuerySubscribers {
                 s_ownerKey
             );
         } else {
-            Menu.select("You have no service deployed. Do you want to create it?", "", [
+            Menu.select("You don't have service registered. Do you want to register it?", "", [
                 MenuItem("Yes", "", tvm.functionId(preDeployCheck)),
                 MenuItem("No", "", tvm.functionId(this.start))
             ]);

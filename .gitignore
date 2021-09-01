@@ -1,4 +1,3 @@
-*.abi.json
 *.addr
 *.code
 *.tvc
@@ -8,6 +7,7 @@
 *.key
 *.log
 *.conf.json
+*.swp
 tests/*.log
 tests/*.conf.json
 *.name

@@ -63,7 +63,7 @@ send -- "y\r"
 expect  "y\r
 \r
 Available options:\r
-1) Deploy service\r
+1) Register service\r
 2) Get service info\r
 3) Delete my service\r
 \r
