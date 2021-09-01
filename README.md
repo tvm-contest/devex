@@ -6,13 +6,13 @@
 
 `Wallet Address`: 0:cba39007bdb0f025aac0609b25e96a7d2153f06d22fa47b5f6c26cf756b8b2d6
 
-`[devnet] Service 1 address`: 0:00000000000
+`[devnet] Service 1 address`: 0:211a6dcd322f9e6f97955d53da7e8a8e85c7425df6635c0e26f002ad641b59e9
 
-`[devnet] Service 2 address`: 0:00000000000
+`[devnet] Service 2 address`: 0:0b98484bede2205a8ba7d18fac427713270a2f8b2ebb690268110e9b0ff05162
 
-`[devnet] Service 3 address`: 0:00000000000
+`[devnet] Service 3 address`: 0:f37da5bbcc924466a5ba9d72e493b888effd0e58f4e73dd264818165deb14f3d
 
-`[devnet] DeBot address`: 0:00000000000
+`[devnet] DeBot address`: 0:ffa7df049e4e25a4a12c84aa120e1776e22347ab30ee3817728f717d5782199c
 
 `Code:` https://github.com/SolderingArmor/freeton-subscriptions
 
@@ -32,7 +32,7 @@ This solution is the set of rules that allows third parties spend user assets au
 
 `SubscribeMultisig` - Custom `SafeMultisig` that supports `Subscription` contract to be used as an escrow.
 
-At any given moment of time all entities (except 0000) don't keep any money except the minimal reserved one (0.01 TON in this MVP).
+At any given moment of time all entities (except `Service` owner's wallet and user's wallet) don't keep any money except the minimal reserved one (0.01 TON in this MVP).
 
 ## MVP limitations
 

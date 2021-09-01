@@ -61,6 +61,23 @@ library DTLib
         }
     }
 
+    function parseSecondsToReadable(uint initialSeconds) internal pure returns(uint daysNum, uint hoursNum, uint minutesNum, uint secondsNum)
+    {
+        if(initialSeconds >= DAY_IN_SECONDS)
+        {
+            (daysNum, ) = math.divmod(initialSeconds, DAY_IN_SECONDS);
+        }
+        if(initialSeconds >= HOUR_IN_SECONDS)
+        {
+            (hoursNum, ) = math.divmod(initialSeconds - daysNum*DAY_IN_SECONDS, HOUR_IN_SECONDS);
+        }
+        if(initialSeconds >= MINUTE_IN_SECONDS)
+        {
+            (minutesNum, ) = math.divmod(initialSeconds - daysNum*DAY_IN_SECONDS - hoursNum*HOUR_IN_SECONDS, MINUTE_IN_SECONDS);
+        }
+        secondsNum = initialSeconds - daysNum*DAY_IN_SECONDS - hoursNum*HOUR_IN_SECONDS - minutesNum*MINUTE_IN_SECONDS;
+    }
+
     function parseTimestamp(uint timestamp) internal pure returns (DateTime dt) 
     {
         uint secondsAccountedFor = 0;

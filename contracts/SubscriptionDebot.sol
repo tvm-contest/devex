@@ -347,10 +347,26 @@ contract SubscriptionDebot is IDebot
     {
         _plans = plans;
 
+        uint num = 1;
+        for(SubscriptionPlan plan : _plans)
+        {
+            (uint daysNum, uint hoursNum, uint minutesNum, uint secondsNum) = DTLib.parseSecondsToReadable(plan.period);
+            string periodString = "";
+            if(daysNum    > 0){ periodString.append(format("{} days ",    daysNum)   ); }
+            if(hoursNum   > 0){ periodString.append(format("{} hours ",   hoursNum)  ); }
+            if(minutesNum > 0){ periodString.append(format("{} minutes ", minutesNum)); }
+            if(secondsNum > 0){ periodString.append(format("{} seconds",  secondsNum)); }
+            Terminal.print(0, format("#{}\nID: {}; Period: {}; Price: {:t}", num, plan.planID, periodString, plan.periodPrice));
+            num++;
+        }
+
+        num = 1;
         MenuItem[] mi;
         for(SubscriptionPlan plan : _plans)
         {
-            mi.push(MenuItem(format("ID: {}\nPeriod: {} seconds\nPrice: {:t}", plan.planID, plan.period, plan.periodPrice), "", tvm.functionId(_listServices_6) ));
+            plan;
+            mi.push(MenuItem(format("#{}", num), "", tvm.functionId(_listServices_6) ));
+            num++;
         }
             
         mi.push(MenuItem("<- Back", "", tvm.functionId(mainMenu) ));
