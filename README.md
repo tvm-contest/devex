@@ -16,6 +16,8 @@
 
 `Code:` https://github.com/SolderingArmor/freeton-subscriptions
 
+`Video:` https://youtu.be/P7Na7a_nHdI
+
 ## Description
 
 Decentralized problems require decentralized solutions.
