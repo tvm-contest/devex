@@ -1,0 +1,89 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subscriptionIsActive",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"bool"}
+			]
+		},
+		{
+			"name": "callSsubscriptionIsActive",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"bool"}
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"isActive","type":"bool"},
+				{"name":"planID","type":"uint256"},
+				{"name":"period","type":"uint32"},
+				{"name":"periodPrice","type":"uint128"},
+				{"name":"dtStart","type":"uint32"},
+				{"name":"dtEnd","type":"uint32"},
+				{"name":"confirmed","type":"bool"}
+			]
+		},
+		{
+			"name": "createSubscription",
+			"inputs": [
+				{"name":"planID","type":"uint256"},
+				{"name":"period","type":"uint32"},
+				{"name":"periodPrice","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "confirmSubscription",
+			"inputs": [
+				{"name":"confirmed","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "cancelSubscription",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "subscriptionPaymentRequested",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "payForSubscription",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"_walletAddress","type":"address"},
+		{"key":2,"name":"_serviceAddress","type":"address"}
+	],
+	"events": [
+	]
+}
