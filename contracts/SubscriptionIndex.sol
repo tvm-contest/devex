@@ -16,7 +16,7 @@ contract SubscriptionIndex {
 
 
     modifier onlyOwner {
-		require(msg.pubkey() == tvm.pubkey(), 101);
+		require(msg.pubkey() == tvm.pubkey(), 100);
 		tvm.accept();
 		_;
     }

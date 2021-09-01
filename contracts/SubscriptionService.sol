@@ -1,4 +1,4 @@
-pragma ton-solidity >=0.47.0;
+pragma ton-solidity ^ 0.47.0;
 pragma AbiHeader expire;
 pragma AbiHeader time;
 pragma AbiHeader pubkey;
@@ -19,7 +19,7 @@ contract SubscriptionService {
     }
 
     modifier onlyOwner {
-		require(msg.pubkey() == tvm.pubkey(), 101);
+		require(msg.pubkey() == tvm.pubkey(), 100);
 		tvm.accept();
 		_;
     }

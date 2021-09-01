@@ -13,10 +13,8 @@ contract Subscription {
     uint256 static public serviceKey;
     address static public user_wallet;
     TvmCell static public svcParams;
-    
     TvmCell m_subscriptionIndexImage;
     TvmCell subscriptionIndexState;
-
     address subscriptionIndexAddress;
 
     uint8 constant STATUS_ACTIVE   = 1;
@@ -34,7 +32,7 @@ contract Subscription {
     
     constructor(TvmCell image, bytes signature, address subsAddr) public {
         (address to, uint128 value, uint32 period) = svcParams.toSlice().decode(address, uint128, uint32);
-        require(msg.value >= 1 ton, 101);
+        require(msg.value >= 1 ton, 100);
         require(value > 0 && period > 0, 102);
         tvm.accept();
         uint32 _period = period * 3600 * 24;
