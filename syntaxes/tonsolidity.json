@@ -473,7 +473,7 @@
                     "name": "variable.language.transaction"
                 },
                 {
-                    "match": "\\b(tvm\\.send|slice|block|tx|now)\\b",
+                    "match": "\\b(tvm|math|rnd)\\b",
                     "name": "variable.language.tvm"
                 },
                 {

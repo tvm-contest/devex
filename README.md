@@ -80,6 +80,7 @@ For ideas, issues, additions, modifications please raise an issue or a pull requ
 
 # Requested features
 
+- [ ] Formatter
 - [ ] Show Hovers
 - [ ] Help With Function and Method Signatures
 - [ ] Possible Actions on Errors or Warnings
