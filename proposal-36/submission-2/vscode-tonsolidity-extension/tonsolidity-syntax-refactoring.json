@@ -461,7 +461,7 @@
                     "name": "variable.language.builtin.abi"
                 },
                 {
-                    "match": "\\b(msg\\.sender|msg|block|tx|now)\\b",
+                    "match": "\\b(msg\\.sender|msg|block|tx|tvm|math|rnd|now)\\b",
                     "name": "variable.language.transaction"
                 },
                 {

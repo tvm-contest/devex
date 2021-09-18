@@ -7,3 +7,4 @@ tmp
 .nyc_output
 coverage
 
+/*.vsix
