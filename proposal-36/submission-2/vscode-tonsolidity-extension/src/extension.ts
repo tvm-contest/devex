@@ -8,7 +8,7 @@ import { lintAndfixCurrentDocument } from './linter/soliumClientFixer';
 // tslint:disable-next-line:no-duplicate-imports
 import {
     workspace, ExtensionContext, DiagnosticCollection,
-    languages, commands, TextDocument, TextEdit
+    languages, commands
 } from 'vscode';
 
 let diagnosticCollection: DiagnosticCollection;
@@ -48,8 +48,8 @@ export async function activate(context: ExtensionContext) {
         synchronize: {
             // Synchronize the setting section 'tonsolidity' to the server
             configurationSection: 'tonsolidity',
-            // Notify the server about file changes to '.sol.js files contain in the workspace (TODO node, linter)
-            // fileEvents: vscode.workspace.createFileSystemWatcher('**/.sol.js'),
+            // Notify the server about file changes to '.tsol.js files contain in the workspace (TODO node, linter)
+            // fileEvents: vscode.workspace.createFileSystemWatcher('**/.tsol.js'),
         },
         initializationOptions: context.extensionPath,
     };
