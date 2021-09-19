@@ -74,6 +74,17 @@ Solium is also supported by the extension https://github.com/duaraghav8/Solium, 
 },
 ```
 
+It can be used to fix some common issue automatically by running command "TON Solidity: Fix document rules using Solium"
+
+![Screenshot toggle file extension TON Solidity vscode extension](images/autofix-solium.gif)
+
+## Toggle file extenstion
+
+Due to fact that need to use `.tsol` file extension, that is not recognized by Github syntax module, etc. you can find the command "TON Solidity: Toggle file extension" usefull for quick solution such issue before publication. This command will change the file extension from `.sol` to `.tsol` and vice versa.
+To use this feature need to open the menu on any `folder` in your project explorer. Then choice "TON Solidity: Toggle file extension"
+
+![Screenshot toggle file extension TON Solidity vscode extension](images/toggle-file-extension.gif)
+
 ## Contributing / Issues / Requests
 
 For ideas, issues, additions, modifications please raise an issue or a pull request at https://github.com/mytonwallet/vscode-tonsolidity-extension

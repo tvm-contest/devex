@@ -104,12 +104,12 @@ export class SolcCompiler {
         let rawErrors = [];
         this.tondevTerminalOutput = [];
         for (let fileNameId in contracts.sources) {
-            if (fileNameId.substr(0,1) == '~') { // we don't need to compile temp file
+            //need to create temporary file and remove after saving
+            let fileName  = path.basename(fileNameId);
+            if (fileName.substr(0,1) == '~') { // we don't need to compile temp file
                 continue;
             }
-            //need to create temporary file and remove after saving
             const fileDir = path.dirname(fileNameId);
-            let fileName  = path.basename(fileNameId);
             fileName      = path.resolve(fileDir, "~" + fileName);
             try {
                 fs.writeFileSync(fileName, contracts.sources[fileNameId].content, { flag: 'w' });

@@ -5,6 +5,7 @@ import {
     TransportKind
 } from 'vscode-languageclient';
 import { lintAndfixCurrentDocument } from './linter/soliumClientFixer';
+import { toggleFileExtension } from './toggleFileExtension';
 // tslint:disable-next-line:no-duplicate-imports
 import {
     workspace, ExtensionContext, DiagnosticCollection,
@@ -22,6 +23,10 @@ export async function activate(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand('tonsolidity.fixDocument', () => {
         lintAndfixCurrentDocument();
+    }));
+
+    context.subscriptions.push(commands.registerCommand('tonsolidity.toggleFileExtension', () => {
+        toggleFileExtension();
     }));
 
     const serverModule = path.join(__dirname, './server.js');
