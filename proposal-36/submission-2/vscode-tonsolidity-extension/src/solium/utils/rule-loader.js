@@ -30,7 +30,7 @@ function resolveUpstream(upstream) {
     // Determine whether upstream is a solium core ruleset or a sharable config.
     if (coreRulesetRegExp.test(upstream)) {
         try {
-            return require("../../config/rulesets/solium-" + upstream.split(":") [1]).rules;
+            return require("../config/rulesets/solium-" + upstream.split(":") [1]).rules;
         } catch (e) {
             throw new Error("\"" + upstream + "\" is not a core ruleset.");
         }
