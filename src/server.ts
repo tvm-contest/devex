@@ -89,11 +89,10 @@ async function validate(document) {
                                                 packageDefaultDependenciesDirectory,
                                                 packageDefaultDependenciesContractsDirectory);
                 errors.forEach(errorItem => {
-                    //compileErrorDiagnostics.push(errorItem.diagnostic);
-                    const uriCompileError = URI.file(errorItem.fileName);
-                    //if (uri.indexOf(uriCompileError.toString().replace("file://", "")) !== -1) {
+                    const currentFileName = path.basename(filePath);
+                    if (errorItem.fileName === currentFileName) {
                         compileErrorDiagnostics.push(errorItem.diagnostic);
-                    //}
+                    }
                 });
             }
         } catch (e) {

@@ -155,7 +155,7 @@ export class SolcCompiler {
         } else {
             outputErrors = this.parseErrorsOtherPlatforms(rawErrors);
         }
-
+        
         return outputErrors;
     }
 
@@ -175,16 +175,17 @@ export class SolcCompiler {
                         prep1.push(sprep1.substr(sprep1.lastIndexOf(":")+1));
                         sprep1 = sprep1.substr(0, sprep1.lastIndexOf(":"));
                     }
-                    const file = sprep1;
+                    const file = String(sprep1).trim();
                     const fileDir = path.dirname(file);
                     let fileName: string;
                     if (fileDir == ".") {
                         fileName  = file.substr(0, 1) === '~' ? file.substr(1): file;
                     } else {
-                        fileName = path.basename(file);
+                        fileName = String(path.basename(file)).trim();
+                        //here 2 cases: from lint without ~ and from compiler with ~
                         fileName = fileName.substr(0, 1) === '~' ? fileName.substr(1): fileName;
-                        fileName = path.resolve(fileDir, fileName);
                     }
+
                     const line = prep1[2];
                     const column = prep1[1];
                     outputErrors.push({"severity": severity, "message": message, "file": fileName, "length": (er[4].match(/\^/g)||[]).length, "line": line, "column": column});
