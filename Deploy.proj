@@ -1,0 +1,13 @@
+<Project DefaultTargets="Build">
+    <Target Name="Build">
+        <Exec Command="docker build . -f .\Server\Dockerfile -t ghcr.io/ch1sel/app:latest" WorkingDirectory="src"/>        
+    </Target>
+    
+    <Target Name="Push" AfterTargets="Build">
+        <Exec Command="docker push ghcr.io/ch1sel/app:latest"/>
+    </Target>
+    
+    <Target Name="Deploy" AfterTargets="Push">
+        <Exec Command="ssh ch1sel@notify-contest.ddns.net &quot;cd ~/server/app; docker-compose pull; docker-compose up -d&quot;"/>
+    </Target>
+</Project>

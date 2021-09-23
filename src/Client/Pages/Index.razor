@@ -1,0 +1,18 @@
+﻿@page "/"
+
+<h1>Free TON HTTP Notification Provider</h1>
+
+<ul class="list-group list-group-flush">
+    <li class="list-group-item">Swagger: <a target="_blank" href="@SwaggerUrl">@SwaggerUrl</a></li>
+    <li class="list-group-item">GitHub: <a target="_blank" href="https://github.com/ton-actions/free-ton-http-notification-provider">ton-actions/free-ton-http-notification-provider</a></li>
+    <li class="list-group-item">Telegram: <a target="_blank" href="https://t.me/ton_actions_chat">Free TON Actions Chat</a></li>
+</ul>
+
+@code{
+
+    private string SwaggerUrl => MyNavigationManager.ToAbsoluteUri("swagger").ToString();
+
+    [Inject]
+    public NavigationManager MyNavigationManager { get; set; }
+
+}
