@@ -17,8 +17,8 @@ spec:
       imagePullSecrets:
         - name: regsecret
       containers:
-      - image: {{ .Values.werf.image.freeton-notification-service }}
+      - image: {{ .Values.werf.image.freetonnotificationservice }}
         name: app
         env:
           - name: PORT
-            value: {{ .Values.app.port }}
+            value: {{ .Values.app.port | quote }}

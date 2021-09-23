@@ -6,7 +6,10 @@ const cors = require( "cors" )
 const process = require( "process" )
 const dotenv = require( "dotenv" );
 
-dotenv.config();
+require('dotenv').config({ path: `.env.defaults` })
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
+require('dotenv').config()
+
 const app = express()
  
 // must parse body before morganBody as body will be logged
