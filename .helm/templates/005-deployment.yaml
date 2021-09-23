@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      imagePullSecrets:
+        - name: regsecret
+      containers:
+      - image: {{ .Values.werf.image.freeton-notification-service }}
+        name: app
+        env:
+          - name: PORT
+            value: {{ .Values.app.port }}
