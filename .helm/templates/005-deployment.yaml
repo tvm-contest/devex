@@ -20,5 +20,5 @@ spec:
       - image: {{ .Values.werf.image.freetonnotificationservice }}
         name: app
         env:
-          - name: PORT
-            value: {{ .Values.app.port | quote }}
+          - name: KAFKA_PASSWORD
+            value: {{ .Values.app.kafka_password | quote }}

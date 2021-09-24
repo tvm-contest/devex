@@ -1,4 +1,3 @@
 node_modules
 .helm
 werf.yaml
-Dockerfile
