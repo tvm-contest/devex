@@ -1,4 +1,4 @@
-const configuration = require('./../core/core.configuration')
+const configuration = require('./configuration.Manager')
 const { Kafka, logLevel } = require("kafkajs")
 
 const clientId = configuration.KAFKA_USERNAME

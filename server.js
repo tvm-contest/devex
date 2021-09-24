@@ -1,12 +1,11 @@
-
 const morganBody = require('morgan-body')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require( "cors" )
-const configuration = require('./server/modules/core/core.configuration')
+const configuration = require('./server/modules/libs/configuration.Manager')
 
 // import the `Kafka` instance from the kafkajs library
-const consume = require("./server/modules/kafka/kafka.consumer")
+const consume = require("./server/modules/libs/kafka.Consumer")
 consume().catch((err) => {
 	console.error("error in consumer: ", err)
 })

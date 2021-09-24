@@ -7,6 +7,7 @@ const apiController = require( "./modules/api/api.controller");
 
 module.exports = function ( app ) {
 	router.get( "/", apiController.index );
-	router.post( "/", apiController.indexPost );
+	router.get( "/hashes", apiController.hashes );
+	router.post( "/", apiController.indexPost ); //insert hash
 	app.use( "/", router );
 };
