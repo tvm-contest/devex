@@ -12,9 +12,11 @@ consume().catch((err) => {
 })
 
 const app = express()
- 
+
 // must parse body before morganBody as body will be logged
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 app.use( cors() );
 app.use( express.static( __dirname + "/public" ) );
 
