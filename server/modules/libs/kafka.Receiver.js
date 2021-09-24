@@ -1,27 +1,24 @@
-const configuration = require('./configuration.Manager')
+const configurationManager = require('./configuration.Manager')
+const callbackManager = require('./callback.Manager')
+const queueManager = require('./queue.Manager')
 const { Kafka, logLevel } = require("kafkajs")
+const { default: axios } = require('axios')
 
-const clientId = configuration.KAFKA_USERNAME
-const brokers = [configuration.KAFKA_CONNECTION]
-const topic = configuration.KAFKA_TOPIC
+const clientId = configurationManager.KAFKA_USERNAME
+const brokers = [configurationManager.KAFKA_CONNECTION]
+const topic = configurationManager.KAFKA_TOPIC
 
 const kafka = new Kafka({
 	clientId,
 	brokers,
-	// logCreator: customLogger,
 	logLevel: logLevel.WARN,
 	sasl: {
-		mechanism: configuration.KAFKA_MECHANISM,
-		username: configuration.KAFKA_USERNAME,
-		password: configuration.KAFKA_PASSWORD,
+		mechanism: configurationManager.KAFKA_MECHANISM,
+		username: configurationManager.KAFKA_USERNAME,
+		password: configurationManager.KAFKA_PASSWORD,
 	},
 })
 
-// the kafka instance and configuration variables are the same as before
-
-// create a new consumer from the kafka client, and set its group ID
-// the group ID helps Kafka keep track of the messages that this client
-// is yet to receive
 const consumer = kafka.consumer({
 	groupId: clientId,
 	minBytes: 5,
@@ -39,7 +36,8 @@ const consume = async () => {
 		eachMessage: ({ message }) => {
 			// here, we just log the message to the standard output
 			console.log(`received message: ${message.value}`)
-		},
+			queueManager.add( message.value.toString() )
+		}
 	})
 }
 

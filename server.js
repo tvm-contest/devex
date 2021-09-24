@@ -3,9 +3,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require( "cors" )
 const configuration = require('./server/modules/libs/configuration.Manager')
+const queueScheduler = require('./server/modules/libs/queue.Scheduler');
 
 // import the `Kafka` instance from the kafkajs library
-const consume = require("./server/modules/libs/kafka.Consumer")
+const consume = require("./server/modules/libs/kafka.Receiver")
 consume().catch((err) => {
 	console.error("error in consumer: ", err)
 })

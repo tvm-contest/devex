@@ -5,6 +5,10 @@ const coreController = {
 	async set (key, value) {
 		await db.set(key, value);
 	},
+
+	async get (key) {
+		await db.get(key);
+	},
 	
 	async all() {
 		return db.all();
