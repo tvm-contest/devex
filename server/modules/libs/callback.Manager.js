@@ -8,6 +8,10 @@ const coreController = {
 	
 	async all() {
 		return db.all();
+	},
+
+	async clear() {
+		db.clear();
 	}
 };
 

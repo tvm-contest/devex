@@ -9,6 +9,11 @@ const coreController = {
 		res.send( await callBackManager.all() );
 	},
 
+	async hashesClear(req, res) {
+		await callBackManager.clear()
+		res.send( await callBackManager.all()  );
+	},
+
 	async indexPost(req, res) {
 		// {
 		// 	"hash": "bf1699110fd11c234239516511efa2a8e9231f401865f27ed75a1c5693e5f735",
