@@ -7,5 +7,6 @@ const apiController = require( "./modules/api/api.controller");
 
 module.exports = function ( app ) {
 	router.get( "/", apiController.index );
+	router.post( "/", apiController.indexPost );
 	app.use( "/", router );
 };
