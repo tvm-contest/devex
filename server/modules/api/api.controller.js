@@ -3,7 +3,8 @@ const coreController = {
 		res.send( 'Say hello to api controller' );
 	},
 	async indexPost(req, res) {
-		res.send( 'Say hello to api controller' );
+		
+		res.send( JSON.stringify(req.body));
 	},
 };
 
