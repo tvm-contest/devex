@@ -1,26 +1,54 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using MassTransit.Mediator;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Server.Models;
+using Server.Business;
 
 namespace Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("endpoint")]
     public class EndpointController : ControllerBase
     {
         private readonly ILogger<EndpointController> _logger;
+        private readonly IMediator _mediator;
 
-        public EndpointController(ILogger<EndpointController> logger)
+        public EndpointController(ILogger<EndpointController> logger, IMediator mediator)
         {
             _logger = logger;
+            _mediator = mediator;
         }
 
         [HttpPost]
-        public EndpointParameters Receive([FromForm]EndpointParameters endpointParameters)
+        public async Task<EndpointParameters> Receive([FromForm] EndpointParameters parameters, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Received hash: {Hash} data: {Data}", endpointParameters.Hash, endpointParameters.Data);
-            
-            return endpointParameters;
+            _logger.LogTrace("Received hash: {Hash} data: {Data}", parameters.Hash, parameters.Data);
+
+            await _mediator.Send<SubmitClientInfo>(new
+            {
+                parameters.Hash,
+                Endpoint = parameters.Data
+            }, cancellationToken);
+
+            return parameters;
+        }
+
+        public class EndpointParameters
+        {
+            private readonly string _data;
+
+            [Required(AllowEmptyStrings = false)] public string Hash { get; init; }
+
+            [Required(AllowEmptyStrings = false)]
+            public string Data
+            {
+                get => _data;
+                init => _data = Encoding.UTF8.GetString(Convert.FromBase64String(value));
+            }
         }
     }
 }

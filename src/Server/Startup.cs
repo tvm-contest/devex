@@ -1,10 +1,18 @@
+using System.IO;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Server.Business;
+using Server.Database;
+using Server.Kafka;
+using Server.SignalR;
 
 namespace Server
 {
@@ -21,15 +29,40 @@ namespace Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options => { options.InputFormatters.Insert(options.InputFormatters.Count, new TextPlainInputFormatter()); });
             services.AddRazorPages();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo
+            services.AddSwaggerGen(c =>
             {
-                Title = "HTTP Notification Provider API",
-                Version = "v1"
-            }); });
-            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "HTTP Notification Provider API",
+                    Version = "v1"
+                });
+            });
+
+            services
+                .Configure<RouteOptions>(options => options.LowercaseUrls = true)
+                .Configure<KafkaOptions>(Configuration.GetSection(nameof(KafkaOptions)));
+
+            services
+                .AddMediator(k => k.AddConsumers(typeof(SubmitClientInfoConsumer)))
+                .AddMassTransit(k =>
+                {
+                    k.UsingInMemory();
+                    k.AddRider(RiderRegistrationConfiguratorExtensions.UsingKafka);
+                })
+                .AddMassTransitHostedService();
+
+            services.AddHttpClient();
+            services.AddSignalR();
+            services.AddDbContextFactory<ServerDbContext>(UseSqlLite);
+        }
+
+        private static void UseSqlLite(DbContextOptionsBuilder options)
+        {
+            var path = Directory.GetCurrentDirectory();
+            var dbPath = Path.Join(path, "Data", "server.db");
+            options.UseSqlite($"Data Source={dbPath}");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +77,11 @@ namespace Server
             {
                 app.UseExceptionHandler("/Error");
             }
-            
+
+            app.UseSerilogRequestLogging();
+
+            app.UseCors(builder => builder.AllowAnyOrigin());
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
 
@@ -57,6 +94,7 @@ namespace Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapHub<TestConsumerHub>("/test-consumer-hub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }

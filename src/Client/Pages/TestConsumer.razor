@@ -1,0 +1,56 @@
+﻿@page "/test-consumer"
+@inject NavigationManager _navigationManager
+@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+
+<label>Host connected: @IsConnected</label>
+<hr>
+<label>Recieved messages: @_messages.Count</label>
+<ul id="messagesList">
+    @foreach (var message in _messages)
+    {
+        <li>@message</li>
+    }
+</ul>
+
+@code {
+    private HubConnection _hubConnection;
+    private readonly List<string> _messages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(_navigationManager.ToAbsoluteUri("/test-consumer-hub"))
+            .WithAutomaticReconnect()
+            .Build();
+
+        _hubConnection.On<string>("ReceiveMessage", async message =>
+        {
+            _messages.Insert(0, message);
+            await UpdateStatus();
+        });
+        _hubConnection.Reconnecting += _ => UpdateStatus();
+        _hubConnection.Closed += _ => UpdateStatus();
+        _hubConnection.Reconnected += _ => UpdateStatus();
+
+        await _hubConnection.StartAsync();
+    }
+
+    private async Task UpdateStatus()
+    {
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    private bool IsConnected =>
+        _hubConnection.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+}
