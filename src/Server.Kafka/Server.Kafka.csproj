@@ -5,12 +5,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="ch1seL.DistributedLock.Abstraction" Version="0.1.2"/>
         <PackageReference Include="MassTransit.Kafka" Version="7.2.2"/>
         <PackageReference Include="MassTransit" Version="7.2.2"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Server.Business\Server.Business.csproj"/>
+        <ProjectReference Include="..\Utils\Utils.csproj"/>
     </ItemGroup>
 
 </Project>

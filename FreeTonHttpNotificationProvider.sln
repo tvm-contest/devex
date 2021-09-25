@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Database", "src\Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Business", "src\Server.Business\Server.Business.csproj", "{D0C38CC3-957D-4F2D-A972-2B8C098C44B2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleMessageSender", "SampleMessageSender", "{0475141E-1A26-4936-AB81-C3458FE2BE22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "src\Utils\Utils.csproj", "{4953764E-7D16-4341-896F-B11E8368A634}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +52,10 @@ Global
 		{D0C38CC3-957D-4F2D-A972-2B8C098C44B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0C38CC3-957D-4F2D-A972-2B8C098C44B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0C38CC3-957D-4F2D-A972-2B8C098C44B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4953764E-7D16-4341-896F-B11E8368A634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4953764E-7D16-4341-896F-B11E8368A634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4953764E-7D16-4341-896F-B11E8368A634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4953764E-7D16-4341-896F-B11E8368A634}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

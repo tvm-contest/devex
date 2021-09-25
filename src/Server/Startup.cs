@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,7 +47,7 @@ namespace Server
                 .Configure<KafkaOptions>(Configuration.GetSection(nameof(KafkaOptions)));
 
             services
-                .AddMediator(k => k.AddConsumers(typeof(SubmitClientInfoConsumer)))
+                .AddMediator(k => k.AddConsumers(typeof(SubmitClientInfoConsumer).Assembly))
                 .AddMassTransit(k =>
                 {
                     k.UsingInMemory();
@@ -56,6 +58,10 @@ namespace Server
             services.AddHttpClient();
             services.AddSignalR();
             services.AddDbContextFactory<ServerDbContext>(UseSqlLite);
+            services.AddSingleton<IDistributedCache, RedisCache>()
+                .Configure<RedisCacheOptions>(options => options.Configuration = "localhost");
+            services.AddSingleton<IDistributedLock, RedisLock>()
+                .Configure<RedisLockOptions>(options => options.Configuration = "localhost");
         }
 
         private static void UseSqlLite(DbContextOptionsBuilder options)

@@ -1,12 +1,11 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Server.Business;
+using Utils;
 
 namespace Server.Controllers
 {
@@ -31,7 +30,7 @@ namespace Server.Controllers
             await _mediator.Send<SubmitClientInfo>(new
             {
                 parameters.Hash,
-                Endpoint = parameters.Data
+                Endpoint = parameters.Data.FromBase64()
             }, cancellationToken);
 
             return parameters;
@@ -39,16 +38,9 @@ namespace Server.Controllers
 
         public class EndpointParameters
         {
-            private readonly string _data;
-
             [Required(AllowEmptyStrings = false)] public string Hash { get; init; }
 
-            [Required(AllowEmptyStrings = false)]
-            public string Data
-            {
-                get => _data;
-                init => _data = Encoding.UTF8.GetString(Convert.FromBase64String(value));
-            }
+            [Required(AllowEmptyStrings = false)] public string Data { get; init; }
         }
     }
 }

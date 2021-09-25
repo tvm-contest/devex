@@ -5,17 +5,12 @@
 
 <label>Host connected: @IsConnected</label>
 <hr>
-<label>Recieved messages: @_messages.Count</label>
-<ul id="messagesList">
-    @foreach (var message in _messages)
-    {
-        <li>@message</li>
-    }
-</ul>
+<MessagesTable Messages="@_messages"/>
 
 @code {
     private HubConnection _hubConnection;
-    private readonly List<string> _messages = new();
+    private readonly List<(DateTime dateTime, string consumer, string message)> _messages = new();
+    private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
 
     protected override async Task OnInitializedAsync()
     {
@@ -24,26 +19,23 @@
             .WithAutomaticReconnect()
             .Build();
 
-        _hubConnection.On<string>("ReceiveMessage", async message =>
+        _hubConnection.On<string, string>("ReceiveMessage", async (consumer, message) =>
         {
-            _messages.Insert(0, message);
-            await UpdateStatus();
+            _messages.Insert(0, (DateTime.Now, consumer, message));
+            await UpdateStatusAsync();
         });
-        _hubConnection.Reconnecting += _ => UpdateStatus();
-        _hubConnection.Closed += _ => UpdateStatus();
-        _hubConnection.Reconnected += _ => UpdateStatus();
+        _hubConnection.Reconnecting += _ => UpdateStatusAsync();
+        _hubConnection.Closed += _ => UpdateStatusAsync();
+        _hubConnection.Reconnected += _ => UpdateStatusAsync();
 
         await _hubConnection.StartAsync();
     }
 
-    private async Task UpdateStatus()
+    private Task UpdateStatusAsync()
     {
         StateHasChanged();
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
-
-    private bool IsConnected =>
-        _hubConnection.State == HubConnectionState.Connected;
 
     public async ValueTask DisposeAsync()
     {

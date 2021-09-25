@@ -19,16 +19,13 @@ namespace Server.Controllers
             _testConsumerHub = testConsumerHub;
         }
 
-        [HttpPost]
+        [HttpPost("{consumer}")]
         [Consumes("text/plain")]
-        public async Task<IActionResult> Receive([FromBody] string message)
+        public async Task<IActionResult> Receive([FromBody] string message, string consumer)
         {
-            _logger.LogTrace("Received message: {Message}", message);
+            _logger.LogTrace("Received message: {Consumer} {Message}", consumer, message);
 
-            await _testConsumerHub.Clients.All.SendAsync("ReceiveMessage", message);
-
-            _logger.LogTrace("Message '{Message}' was sent to clients", message);
-
+            await _testConsumerHub.Clients.All.SendAsync("ReceiveMessage", consumer, message);
             return Ok(message);
         }
     }
