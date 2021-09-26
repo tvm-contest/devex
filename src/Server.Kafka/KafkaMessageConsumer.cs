@@ -45,7 +45,7 @@ namespace Server.Kafka
             // send message to subscriber
             await _mediator.Send<SendSubscription>(new { message.Hash, message.Nonce, message.EncodedMessage }, cancellationToken);
             // mark as consumed
-            await _distributedCache.SetAsync(key, new byte[1], new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(1) },
+            await _distributedCache.SetAsync(key, new byte[1], new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(25) },
                 cancellationToken);
         }
     }

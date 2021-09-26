@@ -1,0 +1,11 @@
+﻿@page "/status"
+
+
+@code{
+
+    private string SwaggerUrl => MyNavigationManager.ToAbsoluteUri("swagger").ToString();
+
+    [Inject]
+    public NavigationManager MyNavigationManager { get; set; }
+
+}

@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @implements IAsyncDisposable
 
-<label>Host connected: @IsConnected</label>
+<HostConnectionStatus IsConnected="@IsConnected"/>
 <hr>
 <MessagesTable Messages="@_messages"/>
 

@@ -12,8 +12,9 @@ namespace Server.Kafka
             using var reader = new StreamReader(stream);
 
             var value = reader.ReadToEnd().Split(' ');
+            var (hash, nonce, encodedMessage) = (value[0], value[1], value[2]);
 
-            return new KafkaMessage { Hash = value[0], Nonce = value[1], EncodedMessage = value[2] };
+            return new KafkaMessage { Hash = hash, Nonce = nonce, EncodedMessage = encodedMessage };
         }
     }
 }

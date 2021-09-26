@@ -6,9 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ch1seL.DistributedLock.RedisLock" Version="5.0.0"/>
+        <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="5.0.2"/>
+        <PackageReference Include="ch1seL.DistributedLock.RedisLock" Version="5.0.2"/>
         <PackageReference Include="MassTransit.AspNetCore" Version="7.2.2"/>
         <PackageReference Include="MassTransit.Kafka" Version="7.2.2"/>
+        <PackageReference Include="MassTransit.Prometheus" Version="7.2.2"/>
+        <PackageReference Include="MassTransit.Redis" Version="7.2.2"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
@@ -16,8 +19,10 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.10"/>
         <PackageReference Include="Serilog.AspNetCore" Version="4.1.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.2"/>
+        <PackageReference Include="prometheus-net.AspNetCore" Version="4.2.0"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -32,10 +37,6 @@
         <Content Update="appsettings.Development.json">
             <DependentUpon>appsettings.json</DependentUpon>
         </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="Data\**"/>
     </ItemGroup>
 
 </Project>

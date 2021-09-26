@@ -21,7 +21,7 @@ namespace Server.Controllers
 
         [HttpPost("{consumer}")]
         [Consumes("text/plain")]
-        public async Task<IActionResult> Receive([FromBody] string message, string consumer)
+        public async Task<IActionResult> Receive(string consumer, [FromBody] string message)
         {
             _logger.LogTrace("Received message: {Consumer} {Message}", consumer, message);
 

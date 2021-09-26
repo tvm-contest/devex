@@ -1,6 +1,10 @@
+using System;
 using System.IO;
+using HealthChecks.Redis;
 using MassTransit;
+using MassTransit.PrometheusIntegration;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -8,10 +12,13 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Prometheus;
 using Serilog;
-using Server.Business;
+using Server.Business.SubmitClientInfoCommand;
 using Server.Database;
 using Server.Kafka;
 using Server.SignalR;
@@ -37,10 +44,12 @@ namespace Server
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "HTTP Notification Provider API",
+                    Title = "Notification Provider API",
                     Version = "v1"
                 });
             });
+
+            services.AddCors(o => o.AddPolicy("SubmitEndpoint", builder => builder.AllowAnyOrigin()));
 
             services
                 .Configure<RouteOptions>(options => options.LowercaseUrls = true)
@@ -50,18 +59,33 @@ namespace Server
                 .AddMediator(k => k.AddConsumers(typeof(SubmitClientInfoConsumer).Assembly))
                 .AddMassTransit(k =>
                 {
-                    k.UsingInMemory();
+                    k.SetKebabCaseEndpointNameFormatter();
+                    k.UsingInMemory((_, configurator) => configurator.UsePrometheusMetrics());
                     k.AddRider(RiderRegistrationConfiguratorExtensions.UsingKafka);
                 })
                 .AddMassTransitHostedService();
 
             services.AddHttpClient();
+
             services.AddSignalR();
-            services.AddDbContextFactory<ServerDbContext>(UseSqlLite);
+
+            //setup database
+            services.AddDbContextFactory<ServerDbContext>(UseSqlLite)
+                .AddDbContext<ServerDbContext>();
+            services.AddHealthChecks()
+                .AddDbContextCheck<ServerDbContext>();
+
+            //setup lock and cache
             services.AddSingleton<IDistributedCache, RedisCache>()
                 .Configure<RedisCacheOptions>(options => options.Configuration = "localhost");
             services.AddSingleton<IDistributedLock, RedisLock>()
                 .Configure<RedisLockOptions>(options => options.Configuration = "localhost");
+            services.AddHealthChecks()
+                .Add(new HealthCheckRegistration("redis", (Func<IServiceProvider, IHealthCheck>)(sp =>
+                {
+                    var redisConfiguration = sp.GetRequiredService<IOptions<RedisCacheOptions>>().Value.Configuration;
+                    return new RedisHealthCheck(redisConfiguration);
+                }), null, null, null));
         }
 
         private static void UseSqlLite(DbContextOptionsBuilder options)
@@ -86,23 +110,27 @@ namespace Server
 
             app.UseSerilogRequestLogging();
 
-            app.UseCors(builder => builder.AllowAnyOrigin());
-
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
 
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-                endpoints.MapControllers();
-                endpoints.MapHub<TestConsumerHub>("/test-consumer-hub");
-                endpoints.MapFallbackToFile("index.html");
-            });
+            app.UseRouting()
+                .UseCors()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapRazorPages();
+                    endpoints.MapControllers();
+                    endpoints.MapHub<TestConsumerHub>("/test-consumer-hub");
+                    endpoints.MapFallbackToFile("index.html");
+                    endpoints.MapHealthChecks("/health");
+                    endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
+                    {
+                        Predicate = check => check.Tags.Contains("ready"),
+                    });
+                    endpoints.MapMetrics();
+                });
         }
     }
 }

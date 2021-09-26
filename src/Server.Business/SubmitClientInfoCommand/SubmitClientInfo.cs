@@ -1,4 +1,4 @@
-namespace Server.Business
+namespace Server.Business.SubmitClientInfoCommand
 {
     public interface SubmitClientInfo
     {

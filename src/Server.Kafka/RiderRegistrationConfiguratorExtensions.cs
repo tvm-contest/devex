@@ -28,12 +28,12 @@ namespace Server.Kafka
                 factoryConfigurator.TopicEndpoint<string, KafkaMessage>(kafkaOptions.Topic, "group-1",
                     e =>
                     {
-                        e.UseScheduledRedelivery(c => c.Incremental(5, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5)));
-                        e.UseMessageRetry(c => c.Immediate(3));
-                        e.AutoOffsetReset = AutoOffsetReset.Latest;
-                        e.SetOffsetsCommittedHandler(OffsetsCommittedHandler(context));
+                        e.AutoOffsetReset = AutoOffsetReset.Earliest;
                         e.SetValueDeserializer(new KafkaMessageDeserializer());
                         e.ConfigureConsumer<KafkaMessageConsumer>(context);
+                        e.SetOffsetsCommittedHandler(OffsetsCommittedHandler(context));
+                        e.UseScheduledRedelivery(c => c.Incremental(144, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10)));
+                        e.UseMessageRetry(c => c.Immediate(3));
                     });
             });
         }
