@@ -6,7 +6,7 @@ using MassTransit.Mediator;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Server.Business.SubmitClientInfoCommand;
+using Server.Business.Requests;
 using Utils;
 
 namespace Server.Controllers

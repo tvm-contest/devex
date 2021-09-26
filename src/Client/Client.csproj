@@ -15,4 +15,8 @@
         <None Include="Pages\TestConsumer.razor"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\Shared\Shared.csproj"/>
+    </ItemGroup>
+
 </Project>

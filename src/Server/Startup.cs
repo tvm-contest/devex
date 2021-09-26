@@ -18,7 +18,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Prometheus;
 using Serilog;
-using Server.Business.SubmitClientInfoCommand;
+using Server.Business.Requests;
 using Server.Database;
 using Server.Kafka;
 using Server.SignalR;

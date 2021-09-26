@@ -30,6 +30,7 @@
         <ProjectReference Include="..\Server.Database\Server.Database.csproj"/>
         <ProjectReference Include="..\Server.Kafka\Server.Kafka.csproj"/>
         <ProjectReference Include="..\Server.SignalR\Server.SignalR.csproj"/>
+        <ProjectReference Include="..\Shared\Shared.csproj"/>
         <ProjectReference Include="..\Utils\Utils.csproj"/>
     </ItemGroup>
 

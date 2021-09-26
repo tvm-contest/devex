@@ -1,4 +1,4 @@
-﻿namespace Server.Business
+﻿namespace Server.Business.Requests
 {
     public interface SendSubscription
     {

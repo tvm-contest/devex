@@ -1,11 +1,32 @@
-﻿@page "/status"
+﻿@page "/server-status"
+@using global::Shared.Requests
+@inject HttpClient _httpClient;
 
+<h1>Server status</h1>
+
+@if (ServerStatus == null)
+{
+    <div class="d-flex align-items-center">
+        <strong>Loading...</strong>
+        <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+    </div>
+}
+else
+{
+    <table class="table table-striped table-hover">
+        <tr>
+            <th scope="row">Registred users:</th>
+            <td >@ServerStatus.UserCount</td>
+        </tr>
+    </table>
+}
 
 @code{
 
-    private string SwaggerUrl => MyNavigationManager.ToAbsoluteUri("swagger").ToString();
+    protected override async Task OnInitializedAsync()
+    {
+        ServerStatus = await _httpClient.GetFromJsonAsync<GetServerStatusResult>("api/client/get-server-status");
+    }
 
-    [Inject]
-    public NavigationManager MyNavigationManager { get; set; }
-
+    private GetServerStatusResult ServerStatus { get; set; }
 }

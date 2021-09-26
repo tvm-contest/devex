@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Server.Database;
 
-namespace Server.Business
+namespace Server.Business.Requests
 {
     public class SendSubscriptionConsumer : IConsumer<SendSubscription>
     {

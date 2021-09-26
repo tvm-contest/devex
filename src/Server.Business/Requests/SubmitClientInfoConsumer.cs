@@ -3,7 +3,7 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using Server.Database;
 
-namespace Server.Business.SubmitClientInfoCommand
+namespace Server.Business.Requests
 {
     public class SubmitClientInfoConsumer : IConsumer<SubmitClientInfo>
     {

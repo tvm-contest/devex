@@ -4,7 +4,7 @@ using MassTransit;
 using MassTransit.Mediator;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Server.Business;
+using Server.Business.Requests;
 
 namespace Server.Kafka
 {
