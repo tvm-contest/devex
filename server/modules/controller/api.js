@@ -1,4 +1,4 @@
-const callBackManager = require('../libs/callback.Manager')
+const callBackManager = require('../libs/callbackManager')
 
 const coreController = {
 	async index(req, res) {

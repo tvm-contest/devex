@@ -1,9 +1,9 @@
 var CronJob = require('cron').CronJob;
-const queueManager = require('./queue.Manager');
-const callBackManager = require('./callback.Manager');
+const queueManager = require('./queueManager');
+const callBackManager = require('./callbackManager');
 const axios = require('axios');
 
-const configurationManager = require('./configuration.Manager');
+const configurationManager = require('./configurationManager');
 
 var job = new CronJob(configurationManager.SCHEDULE, async function() {
 	

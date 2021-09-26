@@ -1,12 +1,13 @@
+require( 'console-stamp' )( console );
 const morganBody = require('morgan-body')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require( "cors" )
-const configuration = require('./server/modules/libs/configuration.Manager')
-const queueScheduler = require('./server/modules/libs/queue.Scheduler');
+const configuration = require('./server/modules/libs/configurationManager')
+const queueScheduler = require('./server/modules/libs/queueScheduler');
 
 // import the `Kafka` instance from the kafkajs library
-const consume = require("./server/modules/libs/kafka.Receiver")
+const consume = require("./server/modules/libs/kafkaReceiver")
 consume().catch((err) => {
 	console.error("error in consumer: ", err)
 })

@@ -1,6 +1,6 @@
-const configurationManager = require('./configuration.Manager')
-const callbackManager = require('./callback.Manager')
-const queueManager = require('./queue.Manager')
+const configurationManager = require('./configurationManager')
+const callbackManager = require('./callbackManager')
+const queueManager = require('./queueManager')
 const { Kafka, logLevel } = require("kafkajs")
 const { default: axios } = require('axios')
 
