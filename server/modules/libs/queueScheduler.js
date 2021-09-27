@@ -11,16 +11,19 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 	const queue = await queueManager.all()
 	
 	for (const [key, value] of Object.entries(queue)) {
+		console.log(`Trying to send message: ${key}`)
 		const messageArray = value.split(" ");
 		if(messageArray.length === 3){
+
 			const customerId = messageArray[0];
+			console.log(`Customer id: ${customerId}`)
 
-			const body = {
-				nonce: messageArray[1],
-				encodedMessage: messageArray[2],
-			}
+			const body = { nonce: messageArray[1], encodedMessage: messageArray[2]}
+			const urlBase64 = await callBackManager.get(customerId)
 
-			if(urlBase64 = await callBackManager.get(customerId))
+			console.log(`Base64 Url: ${urlBase64}`)
+
+			if(urlBase64)
 			{
 				const buff = Buffer.from(urlBase64, 'base64');
 				const url = buff.toString('utf-8');

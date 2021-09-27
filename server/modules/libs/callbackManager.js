@@ -7,11 +7,11 @@ const coreController = {
 	},
 
 	async get (key) {
-		await db.get(key);
+		return await db.get(key);
 	},
 	
 	async all() {
-		return db.all();
+		return await db.all();
 	},
 
 	async clear() {
