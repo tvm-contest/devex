@@ -19,6 +19,13 @@ spec:
       containers:
       - image: {{ .Values.werf.image.freetonnotificationservice }}
         name: app
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
         env:
           - name: KAFKA_PASSWORD
             value: {{ .Values.app.kafka_password | quote }}
