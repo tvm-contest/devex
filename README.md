@@ -8,7 +8,9 @@ Before start using FNS you need to have.
 
 1. Serf wallet.
 
-2. External web address for receiving messages. For example, https://myshop.com.
+2. External web address for receiving messages. For example, https://myshop.com. For testing enough to use services like https://hookbin.com/. Open hookbin.com and press the button `CREATE NEW ENDPOINT`. You will receive an external https address which could be used for testing later.
+
+![image](https://user-images.githubusercontent.com/54890287/134901676-482b8b7f-da22-4ba6-9f80-a71d8140e08a.png)
 
 ## How to use
 
@@ -16,17 +18,24 @@ Before start using FNS you need to have.
 
 2. [Switch](https://help.ton.surf/ru-RU/support/solutions/articles/77000267280-%D0%9E%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D0%B0%D1%8F-%D0%B8-%D1%82%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D0%B0%D1%8F-%D1%81%D0%B5%D1%82%D0%B8-mainnet-devnet-) to Test Network and get some Ruby using https://faucet.extraton.io/. 
 
-3. Open Debot Browser and open Debot https://web.ton.surf/debot?address=0%3A433f7b97e4e613397175a2d9d1094643b5b90d1f095c423997f95fbf905a3ae3&net=devnet.
+3. Open Debot using Debot Browser or [link](https://web.ton.surf/debot?address=0%3A433f7b97e4e613397175a2d9d1094643b5b90d1f095c423997f95fbf905a3ae3&net=devnet). After the siging two transactions you will see the menu.
 
-4. Press the button `Send callbackUrl | deviceToken to provider` and choose `github.com/nrukavkov/freeton-notification-service, ID = TNS` from the list. Then enter data to the provider. Here you need to use your own external web address.
+![image](https://user-images.githubusercontent.com/54890287/134902058-b2459691-9aeb-437b-96cf-69d4db7f5342.png)
 
-5. Press the button `Set Rules` and follow the instruction. At the first line you need to set up ID. In our case it will be generated `ID=TNS`. And the second line will be an address in blockchain and message type. Final example
+4. Press the button `Send callbackUrl | deviceToken to provider` and choose `github.com/nrukavkov/freeton-notification-service, ID = TNS` from the list. Then enter data to the provider. Here you need to use your own external web address. If you created an external link using **hookbin** just paste the Url received before. This will be looked like `https://hookbin.com/E7lOm0O89ksVjY66jYoO`
+
+5. Press the button `Set Rules` and follow the instruction received from Debot. At the first line you need to set up ID. In our case it will be generated `ID=TNS`. And the second line will be an address in blockchain and message type. Final example
 
 ```
 ID=TNS
 
+# HERE YOU NEED TO USE YOUR OWN ADDRESS. IT IS JUST EXAMPLE.
 0:392300ae37bdccb044a8e2ba13f9f3a2f966f26c53a776bc10706f2ed591487d all
 ```
+
+6. Final step try to send some Rubi to addreess you set before. 
+
+7. Please wait some time 
 
 ## For Developers
 
@@ -40,4 +49,4 @@ We use HELM and WERF for deploying the application to kubernetes.To do it just u
 
 ### Local run
 
-```werf run app --docker-options="-ti --rm -p 8080:8080```
+```werf run app --docker-options="-ti --rm -p 8000:8000```
