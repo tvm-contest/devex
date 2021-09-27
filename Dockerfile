@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/nrukavkov/freeton-notif
 ENV NODE_ENV=production
 
 WORKDIR /app
+RUN mkdir -p /app/databases
 
 COPY ["package.json", "package-lock.json*", "./"]
 

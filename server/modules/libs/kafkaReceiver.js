@@ -28,6 +28,7 @@ const consumer = kafka.consumer({
 })
 
 const consume = async () => {
+	console.log(`Connecting to ${brokers}... (topic: ${topic})`)
 	// first, we wait for the client to connect and subscribe to the given topic
 	await consumer.connect()
 	await consumer.subscribe({ topic, fromBeginning: true })

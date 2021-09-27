@@ -7,9 +7,8 @@ const configurationManager = require('./configurationManager');
 
 var job = new CronJob(configurationManager.SCHEDULE, async function() {
 	
-	console.log(`Running scheduler: ${configurationManager.SCHEDULE}`);
+	console.log(`Running queue scheduler: ${configurationManager.SCHEDULE}`);
 	const queue = await queueManager.all()
-	console.log(JSON.stringify(queue));
 	
 	for (const [key, value] of Object.entries(queue)) {
 		const messageArray = value.split(" ");
@@ -28,15 +27,15 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 	
 				try{
 					await axios.post(url, body);
-					queueManager.delete(key);
 				}
 				catch(e){
 					console.log(e);
 				}
+				await queueManager.delete(key);
 			}
 			else{
 				console.log(`Could not find customer's url. The message ${key} will be deleted`)
-				queueManager.delete(key);
+				await queueManager.delete(key);
 			}
 
 		}
