@@ -15,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
 using Prometheus;
 using Serilog;
 using Server.Business.Requests;
@@ -40,14 +39,7 @@ namespace Server
         {
             services.AddControllersWithViews(options => { options.InputFormatters.Insert(options.InputFormatters.Count, new TextPlainInputFormatter()); });
             services.AddRazorPages();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Notification Provider API",
-                    Version = "v1"
-                });
-            });
+            services.AddSwaggerDocument();
 
             services.AddCors(o => o.AddPolicy("SubmitEndpoint", builder => builder.AllowAnyOrigin()));
 
@@ -110,8 +102,8 @@ namespace Server
 
             app.UseSerilogRequestLogging();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();

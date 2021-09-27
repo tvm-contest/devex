@@ -3,22 +3,21 @@ using System.Threading.Tasks;
 using MassTransit.Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Server.Business.Requests;
-using Shared.Requests;
 
 namespace Server.Controllers
 {
     [ApiController]
-    [Route("api/client")]
-    public class ClientController : ControllerBase
+    [Route("api/status")]
+    public class ApiController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public ClientController(IMediator mediator)
+        public ApiController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpGet("get-server-status")]
+        [HttpGet]
         public async Task<GetServerStatusResult> GetServerStatus(CancellationToken cancellationToken)
         {
             var response = await _mediator

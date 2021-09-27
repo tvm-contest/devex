@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Shared.Requests
+namespace Server.Business.Requests
 {
     public class GetServerStatusResult
     {

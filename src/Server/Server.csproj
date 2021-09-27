@@ -3,6 +3,8 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <UserSecretsId>f23c0d3d-d0c4-4fd7-9dc4-aa5e56cc1232</UserSecretsId>
+        <Configurations>Debug;Release;NoClient</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,17 +22,20 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1"/>
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.10"/>
+        <PackageReference Include="NSwag.AspNetCore" Version="13.13.2"/>
+        <PackageReference Include="NSwag.MSBuild" Version="13.13.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Serilog.AspNetCore" Version="4.1.0"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.2"/>
         <PackageReference Include="prometheus-net.AspNetCore" Version="4.2.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Client\Client.csproj"/>
+        <ProjectReference Condition="'$(Configuration)'!='NoClient'" Include="..\Client\Client.csproj"/>
         <ProjectReference Include="..\Server.Database\Server.Database.csproj"/>
         <ProjectReference Include="..\Server.Kafka\Server.Kafka.csproj"/>
         <ProjectReference Include="..\Server.SignalR\Server.SignalR.csproj"/>
-        <ProjectReference Include="..\Shared\Shared.csproj"/>
         <ProjectReference Include="..\Utils\Utils.csproj"/>
     </ItemGroup>
 

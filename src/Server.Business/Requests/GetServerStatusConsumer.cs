@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Server.Database;
-using Shared.Requests;
 
 namespace Server.Business.Requests
 {

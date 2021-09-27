@@ -1,6 +1,5 @@
 ﻿@page "/server-status"
-@using global::Shared.Requests
-@inject HttpClient _httpClient;
+@inject IApiClient _apiClient;
 
 <h1>Server status</h1>
 
@@ -25,8 +24,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        ServerStatus = await _httpClient.GetFromJsonAsync<GetServerStatusResult>("api/client/get-server-status");
+        ServerStatus = await _apiClient.GetServerStatusAsync();
     }
 
     private GetServerStatusResult ServerStatus { get; set; }
+
 }
