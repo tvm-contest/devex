@@ -21,6 +21,15 @@ spec:
       containers:
       - image: {{ .Values.werf.image.freetonnotificationservice }}
         name: app
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.app.port }}
+            httpHeaders:
+            - name: Custom-Header
+              value: Awesome
+          initialDelaySeconds: 3
+          periodSeconds: 3
         resources:
           requests:
             memory: "50Mi"
