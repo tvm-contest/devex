@@ -9,6 +9,7 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 	
 	console.log(`Running queue scheduler: ${configurationManager.SCHEDULE}`);
 	const queue = await queueManager.all()
+	console.log(queue)
 	
 	for (const [key, value] of Object.entries(queue)) {
 		console.log(`Trying to send message: ${key}`)
@@ -39,7 +40,7 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 			}
 			else{
 				console.log(`Could not find customer's url. The message ${key} will be deleted`)
-				await queueManager.delete(key);
+				//await queueManager.delete(key);
 			}
 
 		}
