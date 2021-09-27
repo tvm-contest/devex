@@ -26,6 +26,7 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 				const url = buff.toString('utf-8');
 	
 				try{
+					console.log(`Post request to ${url} with body ${body}`)
 					await axios.post(url, body);
 				}
 				catch(e){
