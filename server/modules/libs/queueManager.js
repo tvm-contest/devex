@@ -4,6 +4,8 @@ const queueFolder = path.join(__filename, "../../../../databases/queue");
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 
+fs.mkdirSync(queueFolder,{ recursive: true })
+
 const queueManager = {
 	async add (value) {
 		return fs.writeFileSync(path.join(queueFolder, uuidv4()), value)
