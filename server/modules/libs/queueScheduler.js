@@ -20,7 +20,6 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 
 			const body = { nonce: messageArray[1], encodedMessage: messageArray[2]}
 			const urlBase64 = await callBackManager.get(customerId)
-
 			console.log(`Base64 Url: ${urlBase64}`)
 
 			if(urlBase64)
@@ -39,7 +38,7 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 			}
 			else{
 				console.log(`Could not find customer's url. The message ${key} will be deleted`)
-				//await queueManager.delete(key);
+				await queueManager.delete(key);
 			}
 
 		}
