@@ -14,7 +14,7 @@ Before start using FNS you need to have.
 
 1. Open Serf and log in using your credentials.
 
-2. Switch to Test Network and get some Ruby using https://faucet.extraton.io/.
+2. [Switch](https://help.ton.surf/ru-RU/support/solutions/articles/77000267280-%D0%9E%D1%81%D0%BD%D0%BE%D0%B2%D0%BD%D0%B0%D1%8F-%D0%B8-%D1%82%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D0%B0%D1%8F-%D1%81%D0%B5%D1%82%D0%B8-mainnet-devnet-) to Test Network and get some Ruby using https://faucet.extraton.io/. 
 
 3. Open Debot Browser and open Debot https://web.ton.surf/debot?address=0%3A433f7b97e4e613397175a2d9d1094643b5b90d1f095c423997f95fbf905a3ae3&net=devnet.
 
