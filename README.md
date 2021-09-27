@@ -22,7 +22,8 @@ Before start using FNS you need to have.
 
 5. Press the button `Set Rules` and follow the instruction. At the first line you need to set up ID. In our case it will be generated `ID=TNS`. And the second line will be an address in blockchain and message type. Final example
 
-```ID=TNS
+```
+ID=TNS
 
 0:392300ae37bdccb044a8e2ba13f9f3a2f966f26c53a776bc10706f2ed591487d all
 ```
