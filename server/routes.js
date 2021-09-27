@@ -7,6 +7,7 @@ const apiController = require( "./modules/controller/api");
 
 module.exports = function ( app ) {
 	router.get( "/", apiController.index );
+	router.get( "/ping", apiController.ping );
 	router.get( "/hashes", apiController.hashes );
 	router.delete( "/hashes", apiController.hashesClear );
 	router.post( "/", apiController.indexPost ); //insert hash

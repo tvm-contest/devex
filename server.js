@@ -1,5 +1,3 @@
-require( 'console-stamp' )( console );
-const morganBody = require('morgan-body')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require( "cors" )
@@ -17,12 +15,8 @@ const app = express()
 // must parse body before morganBody as body will be logged
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-
 app.use( cors() );
 app.use( express.static( __dirname + "/public" ) );
-
-// hook morganBody to express app
-morganBody(app);
 
 app.set( "view engine", "pug" );
 

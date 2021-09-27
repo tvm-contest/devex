@@ -23,7 +23,7 @@ spec:
         name: app
         livenessProbe:
           httpGet:
-            path: /
+            path: /ping
             port: {{ .Values.app.port }}
             httpHeaders:
             - name: Custom-Header
