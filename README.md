@@ -33,9 +33,9 @@ ID=TNS
 0:392300ae37bdccb044a8e2ba13f9f3a2f966f26c53a776bc10706f2ed591487d all
 ```
 
-6. Final step try to send some Rubi to addreess you set before. 
+6. Final step try to send some Rubi to addreess you set before. A few seconds later you will get a POST request to your endpoint.  
 
-7. Please wait some time 
+![image](https://user-images.githubusercontent.com/54890287/134955180-2a92ef39-8d30-4f43-bdaa-285894807c46.png)
 
 ## For Developers
 
