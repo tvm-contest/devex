@@ -3,7 +3,7 @@
 const express = require( "express" );
 const router = express.Router();
 
-const apiController = require( "./modules/controller/api");
+const apiController = require( "./controller/api");
 
 module.exports = function ( app ) {
 	router.get( "/", apiController.index );

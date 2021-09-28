@@ -1,4 +1,4 @@
-const callBackManager = require('../libs/callbackManager')
+const callBackManager = require('../modules/libs/callbackManager')
 
 const coreController = {
 	async ping(req, res) {
@@ -6,7 +6,7 @@ const coreController = {
 	},
 
 	async index(req, res) {
-		res.send( 'Say hello to api controller' );
+		res.render("index");
 	},
 
 	async hashes(req, res) {
