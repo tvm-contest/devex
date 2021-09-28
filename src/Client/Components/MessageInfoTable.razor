@@ -1,0 +1,32 @@
+﻿@using Client.Storage
+<label>Recieved messages: @MessageInfos.Count</label>
+<button type="button" class="btn btn-outline-dark btn-sm" @onclick="OnClearClickCallback">Clear All</button>
+<table class="table table-striped table-sm">
+    <thead>
+    <tr>
+        <th scope="col">Time</th>
+        <th scope="col">Message</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var messageInfo in MessageInfos)
+    {
+        <tr>
+            <td style="word-wrap: normal;">@messageInfo.DateTime.ToString("G")</td>
+            <td style="word-wrap: anywhere;">@messageInfo.Message.Split(" ")[0]</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code
+{
+    [Parameter]
+    public IReadOnlyCollection<MessageInfo> MessageInfos { get; set; }
+
+    [Parameter]
+    public EventCallback UpdateMessagesEvent { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClearClickCallback { get; set; }
+}

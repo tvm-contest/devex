@@ -24,8 +24,7 @@ namespace Server.Controllers
         public async Task<IActionResult> Receive(string consumer, [FromBody] string message)
         {
             _logger.LogTrace("Received message: {Consumer} {Message}", consumer, message);
-
-            await _testConsumerHub.Clients.All.SendAsync("ReceiveMessage", consumer, message);
+            await _testConsumerHub.Clients.User(consumer).SendAsync("ReceiveMessage", message);
             return Ok(message);
         }
     }

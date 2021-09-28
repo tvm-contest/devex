@@ -26,8 +26,10 @@ namespace Server.Kafka
 
         public async Task Consume(ConsumeContext<KafkaMessage> context)
         {
-            var key = context.GetKey<string>();
             var message = context.Message;
+            _logger.LogInformation("SentTime: {SentTime}", context.SentTime);
+
+            var key = $"KafkaMessageKey:{context.GetKey<string>()}";
             var cancellationToken = context.CancellationToken;
 
             // lock consuming for this key

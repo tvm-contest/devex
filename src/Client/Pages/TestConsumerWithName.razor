@@ -1,0 +1,60 @@
+﻿@page "/test-consumer/{Consumer}"
+@inject NavigationManager _navigationManager
+@inject IMessageInfoStorage _storage
+@using Microsoft.AspNetCore.SignalR.Client
+@using Client.Storage
+@implements IAsyncDisposable
+
+<HostConnectionStatus IsConnected="@IsConnected"/>
+<hr>
+<MessageInfoTable MessageInfos="@_messages" OnClearClickCallback="@OnClear"/>
+
+@code {
+
+    [ParameterAttribute]
+    public string Consumer { get; set; }
+
+    private HubConnection _hubConnection;
+    private IReadOnlyCollection<MessageInfo> _messages = Array.Empty<MessageInfo>();
+    private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(_navigationManager.ToAbsoluteUri("/test-consumer-hub"), options => { options.Headers["Consumer"] = Consumer; })
+            .WithAutomaticReconnect(Enumerable.Range(0, 20).Select(r => TimeSpan.FromSeconds(r * 2)).ToArray())
+            .Build();
+        _hubConnection.On<string>("ReceiveMessage", async message =>
+        {
+            _messages = await _storage.Push(new MessageInfo { DateTime = DateTime.Now, Message = message });
+            StateHasChanged();
+        });
+        _hubConnection.Reconnecting += _ => StateHasChangedAsync();
+        _hubConnection.Closed += _ => StateHasChangedAsync();
+        _hubConnection.Reconnected += _ => StateHasChangedAsync();
+        _messages = await _storage.GetAll();
+        await _hubConnection.StartAsync();
+    }
+
+    private Task StateHasChangedAsync()
+    {
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+    private async Task OnClear()
+    {
+        await _storage.ClearAll();
+        _messages = await _storage.GetAll();
+    // StateHasChanged();
+    }
+
+}

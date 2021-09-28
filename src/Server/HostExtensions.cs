@@ -10,8 +10,7 @@ namespace Server
         public static IHost ApplyDatabaseMigrations(this IHost host)
         {
             using var scope = host.Services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ServerDbContext>>();
-            using var context = db.CreateDbContext();
+            using var context = scope.ServiceProvider.GetRequiredService<ServerDbContext>();
             context.Database.Migrate();
             return host;
         }

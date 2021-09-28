@@ -1,48 +1,5 @@
 ﻿@page "/test-consumer"
 @inject NavigationManager _navigationManager
-@using Microsoft.AspNetCore.SignalR.Client
-@implements IAsyncDisposable
 
-<HostConnectionStatus IsConnected="@IsConnected"/>
-<hr>
-<MessagesTable Messages="@_messages"/>
+<h1>WebHook testing</h1>
 
-@code {
-    private HubConnection _hubConnection;
-    private readonly List<(DateTime dateTime, string consumer, string message)> _messages = new();
-    private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl(_navigationManager.ToAbsoluteUri("/test-consumer-hub"))
-            .WithAutomaticReconnect()
-            .Build();
-
-        _hubConnection.On<string, string>("ReceiveMessage", async (consumer, message) =>
-        {
-            _messages.Insert(0, (DateTime.Now, consumer, message));
-            await UpdateStatusAsync();
-        });
-        _hubConnection.Reconnecting += _ => UpdateStatusAsync();
-        _hubConnection.Closed += _ => UpdateStatusAsync();
-        _hubConnection.Reconnected += _ => UpdateStatusAsync();
-
-        await _hubConnection.StartAsync();
-    }
-
-    private Task UpdateStatusAsync()
-    {
-        StateHasChanged();
-        return Task.CompletedTask;
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_hubConnection is not null)
-        {
-            await _hubConnection.DisposeAsync();
-        }
-    }
-
-}

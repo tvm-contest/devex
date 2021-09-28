@@ -4,4 +4,8 @@
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="ch1seL.Blazored.LocalStorage.Concurrent" Version="0.0.4"/>
+    </ItemGroup>
+
 </Project>

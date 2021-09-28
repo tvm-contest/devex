@@ -2,8 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Configurations>Debug;Release;NoClient</Configurations>
-        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,8 +19,9 @@
         <None Include="Pages\TestConsumer.razor"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <!--        <ProjectReference Include="..\Shared\Shared.csproj" />-->
+    <ItemGroup><!--        <ProjectReference Include="..\Shared\Shared.csproj" />-->
+
+        <ProjectReference Include="..\..\Client.Storage\Client.Storage.csproj"/>
     </ItemGroup>
 
     <Target Name="NSwag" BeforeTargets="Build">

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
@@ -60,6 +61,7 @@ namespace Server
             services.AddHttpClient();
 
             services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, ByHashUserIdProvider>();
 
             //setup database
             services.AddDbContextFactory<ServerDbContext>(UseSqlLite)
