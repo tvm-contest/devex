@@ -13,7 +13,7 @@
     "compiler",
     "solium"
   ],
-  "version": "1.0.6",
+  "version": "1.0.8",
   "publisher": "mytonwallet",
   "license": "Apache-2.0",
   "engines": {
@@ -174,7 +174,8 @@
           "TON solidity"
         ],
         "extensions": [
-          ".tsol"
+          ".tsol",
+          ".sol"
         ],
         "configuration": "./tonsolidity.configuration.json"
       }
@@ -190,9 +191,9 @@
       }
     ],
     "menus": {
-      "explorer/context": [
+      "editor/context": [
         {
-          "when": "explorerResourceIsFolder",
+          "when": "editorLangId == 'tonsolidity'",
           "command": "tonsolidity.toggleFileExtension"
         }
       ]

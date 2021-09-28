@@ -1,4 +1,3 @@
-import * as path from 'path';
 import * as vscode from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
 
@@ -367,6 +366,7 @@ export class Function extends ParsedCode {
         this.location; //
         this.initialiseParamters();                
     }
+    
     public initialiseParamters(){
         this.input = Parameter.extractParameters(this.element.params);
         this.output = Parameter.extractParameters(this.element.returnParams);

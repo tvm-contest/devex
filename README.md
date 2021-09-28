@@ -39,6 +39,12 @@ Auto compilation of files and error highlighting can be enabled or disabled usin
 "tonsolidity.validationDelay": 1500
 ```
 
+## Additional information by hover event
+
+If hover on a variable with some TVM functions that pop up with the information about property will be shown.
+
+![Screenshot hover event TON Solidity vscode extension](images/hover.gif)
+
 ## Linting
 
 There are two linters included with the extension, solhint and solium / ethlint. You can chose your preferred linter using this setting, or disable it by typing ''
@@ -85,6 +91,12 @@ To use this feature need to open the menu on any `folder` in your project explor
 
 ![Screenshot toggle file extension TON Solidity vscode extension](images/toggle-file-extension.gif)
 
+## Legacy compatibility with .sol file extension
+
+For compatibility with legacy code base you can select the parser for `.sol` extension, that can be used instead Solidity language extension. By this fact you can comfortably work with the same file extension.
+
+![Screenshot legacy file extension TON Solidity vscode extension](images/legacy-file-extension.gif)
+
 ## Contributing / Issues / Requests
 
 For ideas, issues, additions, modifications please raise an issue or a pull request at https://github.com/mytonwallet/vscode-tonsolidity-extension
@@ -92,7 +104,7 @@ For ideas, issues, additions, modifications please raise an issue or a pull requ
 # Requested features
 
 - [ ] Formatter
-- [ ] Show Hovers
+- [x] Show Hovers
 - [ ] Help With Function and Method Signatures
 - [ ] Possible Actions on Errors or Warnings
 - [ ] Incrementally Format Code as the User Types

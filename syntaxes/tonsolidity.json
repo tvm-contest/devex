@@ -1,6 +1,7 @@
 {
     "fileTypes": [
-        "tsol"
+        "tsol",
+        "sol"
     ],
     "name": "TON Solidity",
     "patterns": [

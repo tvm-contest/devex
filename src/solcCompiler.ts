@@ -72,8 +72,8 @@ export class SolcCompiler {
         outputDir?: string,
     }): Promise<any[]> {
         const ext = path.extname(args.file);
-        if (ext !== ".tsol") {
-            terminal.log(`Choose TON solidity source file.`);
+        if (ext !== ".tsol" && ext !== ".sol") {
+            terminal.log(`Choose TON solidity source file (.tsol or .sol).`);
             return;
         }
         await Component.ensureInstalledAll(terminal, components);
@@ -155,7 +155,6 @@ export class SolcCompiler {
         } else {
             outputErrors = this.parseErrorsOtherPlatforms(rawErrors);
         }
-        
         return outputErrors;
     }
 
@@ -169,7 +168,7 @@ export class SolcCompiler {
                     const _er = er[0].split(/:/g);
                     const severity = _er[0];
                     const message = _er[1];
-                    let sprep1 = er[1].replace(/  --> /g, "");
+                    let sprep1 = er[1].replace(/ --> /g, "");
                     let prep1 = [];
                     for( let k = 2; k >= 0 ; k--) {
                         prep1.push(sprep1.substr(sprep1.lastIndexOf(":")+1));
