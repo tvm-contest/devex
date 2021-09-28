@@ -13,7 +13,9 @@ import './interfaces/IIndexBasis.sol';
 
 contract NftRoot is DataResolver, IndexResolver {
 
-    uint256 _totalMinted;
+    address static _addrOwner;
+    bytes static public _name;
+    uint256 public _totalMinted;
     address _addrBasis;
 
     constructor(TvmCell codeIndex, TvmCell codeData) public {
@@ -22,16 +24,18 @@ contract NftRoot is DataResolver, IndexResolver {
         _codeData = codeData;
     }
 
-    function mintNft() public {
+    function mintNft(bytes metadata) public {
+        require(msg.sender == _addrOwner, 100);
+        tvm.rawReserve(0 ton, 4);
         TvmCell codeData = _buildDataCode(address(this));
-        TvmCell stateData = _buildDataState(codeData, _totalMinted);
-        new Data{stateInit: stateData, value: 1.1 ton}(msg.sender, _codeIndex);
+        TvmCell stateData = _buildDataState(codeData, _totalMinted,_name);
+        new Data{stateInit: stateData, value: 1.3 ton}(msg.sender, _codeIndex,metadata);
 
         _totalMinted++;
     }
 
     function deployBasis(TvmCell codeIndexBasis) public {
-        require(msg.value > 0.5 ton, 104);
+        tvm.rawReserve(0 ton, 4);
         uint256 codeHasData = resolveCodeHashData();
         TvmCell state = tvm.buildStateInit({
             contr: IndexBasis,

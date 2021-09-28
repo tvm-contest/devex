@@ -7,6 +7,8 @@ interface IData {
     function getInfo() external view returns (
         address addrRoot,
         address addrOwner,
-        address addrData
+        address addrData,
+        bytes nameRoot,
+        bytes metadata
     );
 }

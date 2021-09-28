@@ -6,7 +6,7 @@ pragma AbiHeader time;
 import '../Data.sol';
 
 contract DataResolver {
-    TvmCell _codeData;
+    TvmCell public _codeData;
 
     function resolveCodeHashData() public view returns (uint256 codeHashData) {
         return tvm.hash(_buildDataCode(address(this)));
