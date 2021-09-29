@@ -6,7 +6,9 @@ html
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/overload.css')
     link(href='https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css', rel='stylesheet')
+    link(href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css", rel='stylesheet')
     script(src='js/jquery-3.6.0.min.js')
+    script(src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js")
     script(src='js/messages.js')
     script(src='https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js')
     script(src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js")
@@ -22,8 +24,8 @@ html
             a.nav-link(href="/endpoints") Endpoints
           li.nav-item
             a.nav-link(href="/messages") Messages
+        input(type="checkbox" checked data-toggle="toggle" data-on="User" data-off="Admin" data-onstyle="success" data-offstyle="danger")
         form.form-inline.my-2.my-lg-0
           input.form-control.mr-sm-2(type="text" placeholder="Hash")
           button.btn.btn-primary.my-2.my-sm-0(type="submit") SET
-    
     block content
