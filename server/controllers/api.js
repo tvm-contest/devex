@@ -1,4 +1,5 @@
-const callBackManager = require('../modules/libs/callbackManager')
+const endpointManager = require('../modules/endpoint/endpoint.manager')
+const messsageManager = require('../modules/message/message.manager')
 
 const coreController = {
 	async ping(req, res) {
@@ -9,18 +10,23 @@ const coreController = {
 		res.render("index");
 	},
 
-	async hashes(req, res) {
-		res.send( await callBackManager.all() );
+	async endpoint(req, res) {
+		res.json(await endpointManager.get() );
+	},
+	async endpointSet(req, res) {
+		await endpointManager.set(req.body.hash, req.body.data)
+		res.send("Your endpoint was successfully set. Please set notification rules and follow the instructions https://github.com/nrukavkov/freeton-notification-service/blob/master/README.md")
+	},
+	async endpointDelete(req, res) {
+		res.json( await endpointManager.delete(req.params.id) );
 	},
 
-	async hashesClear(req, res) {
-		await callBackManager.clear()
-		res.send( await callBackManager.all()  );
+	async message(req, res) {
+		res.json( await messsageManager.get() );
 	},
 
-	async indexPost(req, res) {
-		callBackManager.set(req.body.hash, req.body.data)
-		res.send( "Success" );
+	async messageDelete(req, res) {
+		res.json( await messsageManager.delete(req.params.id) );
 	},
 };
 

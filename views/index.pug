@@ -1,8 +1,17 @@
 extends layout
 
 block content
-    h1(style="text-align:center;") FreeTON Notification Service
     p Customer Id: 
-        input( type='text' name='customerId' placeholder='213123123123123123123123')
+        input( type='text' id='customerId' placeholder='213123123123123123123123')
+
+    h2(style="text-align:center;") Messages
+    table.table-sm(id='table' data-toggle="table" data-url="message" data-search="true" data-row-style="rowStyle")
+        thead
+            tr
+                th(data-field='createdAt') Date / Time
+                th(data-field='hash') Hash
+                th(data-field='nonce') Nonce
+                th(data-field='lastError') Last Error
+        tbody
     include footer.pug
 

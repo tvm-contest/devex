@@ -1,6 +1,6 @@
 const configurationManager = require('./configurationManager')
-const callbackManager = require('./callbackManager')
-const queueManager = require('./queueManager')
+const callbackManager = require('../endpoint/endpoint.manager')
+const messsageManager = require('../message/message.manager')
 const { Kafka, logLevel } = require("kafkajs")
 const { default: axios } = require('axios')
 
@@ -35,9 +35,11 @@ const consume = async () => {
 	await consumer.run({
 		// this function is called every time the consumer gets a new message
 		eachMessage: ({ message }) => {
+			const rawMessage = message.value.toString();
 			// here, we just log the message to the standard output
-			console.log(`received message: ${message.value}`)
-			queueManager.add( message.value.toString() )
+			console.log(`received message: ${rawMessage}`)
+			const rawMessageArray =rawMessage.split(' ')
+			messsageManager.add( {hash: rawMessageArray[0], nonce: rawMessageArray[1], message: rawMessageArray[2]} )
 		}
 	})
 }

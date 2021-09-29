@@ -2,10 +2,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require( "cors" )
 const configuration = require('./server/modules/libs/configurationManager')
-const queueScheduler = require('./server/modules/libs/queueScheduler');
+const queueScheduler = require('./server/modules/message/message.scheduler');
 
 // import the `Kafka` instance from the kafkajs library
-const consume = require("./server/modules/libs/kafkaReceiver")
+const consume = require("./server/modules/libs/kafka")
 consume().catch((err) => {
 	console.error("error in consumer: ", err)
 })
@@ -21,6 +21,7 @@ app.use( express.static( __dirname + "/public" ) );
 app.set( "view engine", "pug" );
 
 require( "./server/routes" )( app );
+require( "./server/modules/libs/mongodb" );
 
 app.listen( configuration.PORT, function () {
 	console.log( "Server listening on port " + configuration.PORT );

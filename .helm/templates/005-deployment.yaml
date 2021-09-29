@@ -40,10 +40,5 @@ spec:
         env:
           - name: KAFKA_PASSWORD
             value: {{ .Values.app.kafka_password | quote }}
-        volumeMounts:
-        - mountPath: /app/databases
-          name: volume    
-      volumes:
-      - name: volume
-        persistentVolumeClaim:
-          claimName: databases-volume-claim
+          - name: MONGODB_CONNECTION_STRING
+            value: {{ .Values.app.mongodb_connection_string | quote }}

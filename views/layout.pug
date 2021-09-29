@@ -2,8 +2,18 @@ doctype html
 html
   head
     title= `${title}`
+    link(rel="stylesheet", href="https://use.fontawesome.com/releases/v5.6.3/css/all.css", integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/", crossorigin="anonymous")
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/overload.css')
-
+    link(href='https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css', rel='stylesheet')
+    script(src='js/jquery-3.6.0.min.js')
+    script(src='https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js')
+    script(src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js")
+    script(src='js/main.js')
   body.m-2
+    nav.navbar.navbar-dark.bg-primary
+      div.container-fluid
+        a.navbar-brand(href="#") 
+          img(src="https://static.tildacdn.com/tild3937-6533-4637-a539-633162636539/diamond_1_1.svg", alt="", width="30", height="24", class="d-inline-block align-text-top") 
+          | FreeTON Notification Service
     block content
