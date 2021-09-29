@@ -1,6 +1,5 @@
 ﻿@using Client.Storage
-<label>Recieved messages: @MessageInfos.Count</label>
-<button type="button" class="btn btn-outline-dark btn-sm" @onclick="OnClearClickCallback">Clear All</button>
+<button type="button" class="btn btn-outline-dark btn-sm" @onclick="OnClearClickCallback">Clear @MessageInfos.Count recieved messages</button>
 <table class="table table-striped table-sm">
     <thead>
     <tr>

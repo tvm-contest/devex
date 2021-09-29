@@ -16,11 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Pages\TestConsumer.razor"/>
-    </ItemGroup>
-
-    <ItemGroup><!--        <ProjectReference Include="..\Shared\Shared.csproj" />-->
-
         <ProjectReference Include="..\..\Client.Storage\Client.Storage.csproj"/>
     </ItemGroup>
 

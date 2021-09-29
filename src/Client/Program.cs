@@ -17,9 +17,11 @@ namespace Client
 
             builder.Services
                 .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
-                .AddTransient<IApiClient, ApiClient>()
-                .AddTransient<IMessageInfoStorage, MessageInfoStorage>()
-                .AddBlazoredLocalStorage();
+                .AddTransient<IApiClient, ApiClient>();
+
+            builder.Services
+                .AddBlazoredLocalStorage()
+                .AddScoped<IMessageInfoStorage, MessageInfoStorage>();
 
             await builder.Build().RunAsync();
         }
