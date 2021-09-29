@@ -28,6 +28,14 @@ const coreController = {
 	async messageDelete(req, res) {
 		res.json( await messsageManager.delete(req.params.id) );
 	},
+
+	async messages(req, res) {
+		res.render("messages");
+	},
+
+	async endpoints(req, res) {
+		res.render("endpoints");
+	},
 };
 
 module.exports = coreController;

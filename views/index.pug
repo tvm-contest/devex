@@ -1,17 +1,9 @@
 extends layout
 
 block content
-    p Customer Id: 
-        input( type='text' id='customerId' placeholder='213123123123123123123123')
-
-    h2(style="text-align:center;") Messages
-    table.table-sm(id='table' data-toggle="table" data-url="message" data-search="true" data-row-style="rowStyle")
-        thead
-            tr
-                th(data-field='createdAt') Date / Time
-                th(data-field='hash') Hash
-                th(data-field='nonce') Nonce
-                th(data-field='lastError') Last Error
-        tbody
-    include footer.pug
-
+    div.jumbotron
+      h1.display-4 FreeTON — Notification Service
+      p.lead The eseast way to get HTTP callbacks from FreeTON Network to your service.
+      hr.my-4
+      p It allows you to forward encrypted messages from FreeTON Network to http(s) web services.
+      a.btn.btn-primary.btn-lg(target="_blank" href="https://github.com/nrukavkov/freeton-notification-service#readme" role="button") Documentation

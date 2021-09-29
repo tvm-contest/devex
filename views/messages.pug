@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    h2(style="text-align:center;") Messages
+    table.table-sm(id='table' data-toggle="table" data-url="message" data-search="true" data-row-style="rowStyle")
+        thead
+            tr
+                th(data-field='createdAt') Date / Time
+                th(data-field='hash') Hash
+                th(data-field='nonce') Nonce
+                th(data-field='lastError') Last Error
+        tbody
+    include footer.pug
+

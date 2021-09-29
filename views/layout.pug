@@ -9,11 +9,19 @@ html
     script(src='js/jquery-3.6.0.min.js')
     script(src='https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js')
     script(src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js")
-    script(src='js/main.js')
   body.m-2
-    nav.navbar.navbar-dark.bg-primary
-      div.container-fluid
-        a.navbar-brand(href="#") 
-          img(src="https://static.tildacdn.com/tild3937-6533-4637-a539-633162636539/diamond_1_1.svg", alt="", width="30", height="24", class="d-inline-block align-text-top") 
-          | FreeTON Notification Service
+    nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
+      a.navbar-brand(href="/") FNS
+      button.navbar-toggler(type="button" data-toggle="collapse" data-target="#main-navbar")
+        span.navbar-toggler-icon
+      #main-navbar.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item
+            a.nav-link(href="/endpoints") Endpoints
+          li.nav-item
+            a.nav-link(href="/messages") Messages
+        form.form-inline.my-2.my-lg-0
+          input.form-control.mr-sm-2(type="text" placeholder="Hash")
+          button.btn.btn-primary.my-2.my-sm-0(type="submit") SET
+    
     block content

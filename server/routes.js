@@ -16,5 +16,11 @@ module.exports = function ( app ) {
 	router.delete( "/message/:id", apiController.messageDelete );
 	
 	router.post( "/", apiController.endpointSet );
+
+	///// UI /////
+	router.get( "/messages", apiController.messages );
+	router.get( "/endpoints", apiController.endpoints );
+
+
 	app.use( "/", router );
 };

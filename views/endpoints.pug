@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    
+    table.table-sm(id='table' data-toggle="table" data-url="endpoint" data-search="true" data-row-style="rowStyle")
+        thead
+            tr
+                th(data-field='createdAt') Date / Time
+                th(data-field='hash') Hash
+                th(data-field='url') Endpoint Url
+        tbody
+    include footer.pug
+
