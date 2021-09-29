@@ -40,15 +40,19 @@ namespace Server.Controllers
                     .GetResponse<SubmitClientSuccess, SubmitClientValidateEndpointError>(
                         new { hash, endpoint }, cancellationToken);
 
-                if (submitResult.Is(out Response<SubmitClientSuccess> _))
+                if (submitResult.Is(out Response<SubmitClientSuccess> submitClientSuccess))
                     return Ok("👍 Looks good!\n" +
-                              $"Notifications will be sent to {endpoint}\n" +
+                              $"Notifications will be sent to {submitClientSuccess.Message.Endpoint}" +
+                              (submitClientSuccess.Message.IsTest ? "(can be open in web browser)\n" : "\n") +
                               "Now your can set rules for catching blockchain messages 🖐️");
 
                 if (submitResult.Is(out Response<SubmitClientValidateEndpointError> _))
                     return Ok($"🔍 Wrong endpoint format in {endpoint}\n" +
                               "Supported HTTP notifications starting with http:// or https://\n" +
                               "Contact us to get help https://t.me/ton_actions_chat\n");
+
+                if (submitResult.Is(out Response<SubmitClientAccessDeniedError> _))
+                    return Ok("Pass \"test\" keyword as callback url to test this provider");
             }
             catch
             {
@@ -57,7 +61,8 @@ namespace Server.Controllers
 
             return Ok("🚨 Oops Something went wrong 😱\n" +
                       $"Client hash: {hash}" +
-                      "Contact us to get help https://t.me/ton_actions_chat\n");
+                      "Contact us to get help https://t.me/ton_actions_chat\n" +
+                      "Also you can pass \"test\" keyword as callback url to test this provider");
         }
 
         public class EndpointParameters
