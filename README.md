@@ -8,9 +8,9 @@ Before start using FNS you need to have.
 
 1. Serf wallet.
 
-2. External web address for receiving messages. For example, https://myshop.com. For testing enough to use services like https://hookbin.com/. Open hookbin.com and press the button `CREATE NEW ENDPOINT`. You will receive an external https address which could be used for testing later.
+2. External web address for receiving messages. For testing enough to use services like https://webhook.site. Open https://webhook.site and press the link `https://webhook.site/0f0b0f73-11d8-4074-bd70-e03be5e19dee`. You will receive an external https address which could be used for testing later.
 
-![image](https://user-images.githubusercontent.com/54890287/134901676-482b8b7f-da22-4ba6-9f80-a71d8140e08a.png)
+![image](https://user-images.githubusercontent.com/54890287/135270162-3b96944e-3dcc-4ba8-94d3-e83c27e4ed9d.png)
 
 ## How to use
 
@@ -33,9 +33,9 @@ ID=TNS
 0:392300ae37bdccb044a8e2ba13f9f3a2f966f26c53a776bc10706f2ed591487d all
 ```
 
-6. Final step try to send some Rubi to addreess you set before. A few seconds later you will get a POST request to your endpoint.  
+6. Final step try to send some Rubi to addreess you set before. A few seconds later you will get POST requests to your endpoint.  
 
-![image](https://user-images.githubusercontent.com/54890287/134955180-2a92ef39-8d30-4f43-bdaa-285894807c46.png)
+![image](https://user-images.githubusercontent.com/54890287/135270524-f89214ce-360b-4113-8d7c-d9ab71682d6a.png)
 
 ## For Developers
 
