@@ -2,11 +2,7 @@ $(document).on('change','#customerId',function(){
 	
 });
 
-function rowStyle(row, index) {
-    if (row.isDelivered) {
-        return { css: { color: 'green' } }
-    }
-    else{
-        return { css: { color: 'red' } }
-    }
-  }
+function messageStyle(row, index) {
+    if (row.isDelivered) { return { css: { 'background-color': '#bcffa6' } } }
+    else { return { css: { 'background-color': '#fcbdbd' } } }
+}

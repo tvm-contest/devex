@@ -12,7 +12,7 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 
 	messagesForSending.forEach(async (message) => {
 			if(typeof message.endpoint !== "undefined" ){
-				const url = toolkit.Base64Decode(message.endpoint.url)
+				const url = message.endpoint.url
 				const body = { nonce: message.nonce, encodedMessage: message.message}
 				try{
 					console.log(`Post request to ${url} with body ${body}`)
