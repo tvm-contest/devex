@@ -1,4 +1,4 @@
-const configurationManager = require('./configurationManager')
+const configurationManager = require('./configuration')
 const callbackManager = require('../endpoint/endpoint.manager')
 const messsageManager = require('../message/message.manager')
 const { Kafka, logLevel } = require("kafkajs")

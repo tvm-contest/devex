@@ -3,7 +3,7 @@ const messsageManager = require('./message.manager');
 const toolkit = require('./../libs/toolkit');
 const axios = require('axios');
 
-const configurationManager = require('../libs/configurationManager');
+const configurationManager = require('../libs/configuration');
 
 var job = new CronJob(configurationManager.SCHEDULE, async function() {
 	

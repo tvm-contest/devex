@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const configurationManager= require('./configurationManager')
+const configurationManager= require('./configuration')
 
 mongoose.Promise = require("bluebird");
 mongoose.connect(configurationManager.MONGODB_CONNECTION_STRING, {

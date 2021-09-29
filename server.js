@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require( "cors" )
-const configuration = require('./server/modules/libs/configurationManager')
+const configuration = require('./server/modules/libs/configuration')
 const queueScheduler = require('./server/modules/message/message.scheduler');
 
 // import the `Kafka` instance from the kafkajs library
