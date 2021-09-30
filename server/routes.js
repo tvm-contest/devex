@@ -9,18 +9,17 @@ module.exports = function ( app ) {
 	router.get( "/", apiController.index );
 	router.get( "/ping", apiController.ping );
 
-	router.get( "/endpoint", apiController.endpoint );
-	router.delete( "/endpoint", apiController.endpointDelete );
+	router.get( "/endpoint", auth.isAuthorized , auth.isAdmin , apiController.endpoint );
+	router.delete( "/endpoint:id", auth.isAuthorized , auth.isAdmin, apiController.endpointDelete );
 
-	router.get( "/message", apiController.message );
-	router.delete( "/message/:id", apiController.messageDelete );
+	router.get( "/message", auth.isAuthorized , apiController.message );
+	router.delete( "/message/:id", auth.isAuthorized ,apiController.messageDelete );
 	
 	router.post( "/", apiController.endpointSet );
 
 	///// UI /////
-	router.get( "/messages", auth.isAuthorized, apiController.messages );
-	router.get( "/endpoints", auth.isAuthorized, auth.isAdmin , apiController.endpoints );
-
+	router.get( "/messages", auth.isAuthorized, apiController.ui_message );
+	router.get( "/endpoints", auth.isAuthorized, auth.isAdmin , apiController.ui_endpoint );
 
 	app.use( "/", router );
 };

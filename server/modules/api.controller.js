@@ -29,18 +29,22 @@ const coreController = {
 	},
 
 	async message(req, res) {
-		res.json( await messsageManager.get() );
+		const secret = req.cookies.secret;
+		const secretRaw = secret.split('_');
+		const hashRequest = (await endpointManager.isAdmin(secret) ? {}:{hash: secretRaw[0]} )
+		res.json( await messsageManager.get(hashRequest) );
+		
 	},
 
 	async messageDelete(req, res) {
 		res.json( await messsageManager.delete(req.params.id) );
 	},
 
-	async messages(req, res) {
+	async ui_message(req, res) {
 		res.render("messages");
 	},
 
-	async endpoints(req, res) {
+	async ui_endpoint(req, res) {
 		res.render("endpoints");
 	},
 };
