@@ -1,23 +1,14 @@
 ﻿@page "/server-status"
 @inject IApiClient _apiClient;
 
-<h1>Server status</h1>
-
 @if (ServerStatus == null)
 {
-    <div class="d-flex align-items-center">
-        <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
-    </div>
+    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Loading...</MudText>
+    return;
 }
-else
-{
-    <table class="table table-striped table-hover">
-        <tr>
-            <td>Registred users:</td>
-            <td>@ServerStatus.UserCount</td>
-        </tr>
-    </table>
-}
+
+<MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Server status</MudText>
+<MudText Align="Align.Left">Registred users: @ServerStatus.UserCount</MudText>
 
 @code{
 

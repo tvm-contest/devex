@@ -3,8 +3,7 @@
 @inject IMessageInfoStorage _storage
 @implements IAsyncDisposable
 
-<HostConnectionStatus IsConnected="@IsConnected"/>
-<hr>
+<ConsumerConnectionStatus IsConnected="@IsConnected"/>
 <MessageInfoTable MessageInfos="@_messages" OnClearClickCallback="@OnClear"/>
 
 @code {

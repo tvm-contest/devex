@@ -1,0 +1,12 @@
+﻿<MudPaper MaxWidth="300px" Class=@($"ma-4 pa-2 rounded-xl {Color}")>
+    <MudText Align="Align.Center">@Text</MudText>
+</MudPaper>
+
+@code
+{
+    [Parameter]
+    public bool IsConnected { get; set; }
+
+    private string Text => IsConnected ? "Consumer is connected" : "Connecting to host...";
+    private string Color => IsConnected ? "mud-theme-tertiary" : "mud-theme-error";
+}
