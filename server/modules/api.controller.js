@@ -47,6 +47,10 @@ const coreController = {
 	async ui_endpoint(req, res) {
 		res.render("endpoints");
 	},
+
+	async ui_auth(req, res) {
+		res.render("auth");
+	},
 };
 
 module.exports = coreController;

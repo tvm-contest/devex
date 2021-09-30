@@ -20,6 +20,7 @@ module.exports = function ( app ) {
 	///// UI /////
 	router.get( "/messages", auth.isAuthorized, apiController.ui_message );
 	router.get( "/endpoints", auth.isAuthorized, auth.isAdmin , apiController.ui_endpoint );
+	router.get( "/auth", apiController.ui_auth );
 
 	app.use( "/", router );
 };
