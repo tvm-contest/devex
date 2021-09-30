@@ -1,6 +1,8 @@
 const endpointManager = require('../modules/endpoint/endpoint.manager')
 const messsageManager = require('../modules/message/message.manager')
 const toolkit = require('../modules/libs/toolkit')
+const { v4: uuidv4 } = require('uuid');
+const md5 = require('md5');
 
 const coreController = {
 	async ping(req, res) {
@@ -15,8 +17,12 @@ const coreController = {
 		res.json(await endpointManager.get() );
 	},
 	async endpointSet(req, res) {
-		await endpointManager.set(req.body.hash, toolkit.Base64Decode(req.body.data))
-		res.send("Your endpoint was successfully set. Please set notification rules and follow the instructions https://github.com/nrukavkov/freeton-notification-service/blob/master/README.md")
+		const secret = `${req.body.hash}_${md5(uuidv4())}`;
+		await endpointManager.set(req.body.hash, {
+			hash: req.body.hash, 
+			secret: secret, 
+			url: toolkit.Base64Decode(req.body.data)})
+		res.send(`Your endpoint was successfully set. Your SECRET for https://freeton-notification-service.voip-lab.ru/ is ${secret}. Please set notification rules and follow the instructions https://github.com/nrukavkov/freeton-notification-service/blob/master/README.md`)
 	},
 	async endpointDelete(req, res) {
 		res.json( await endpointManager.delete(req.params.id) );

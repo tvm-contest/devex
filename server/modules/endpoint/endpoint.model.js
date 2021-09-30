@@ -5,9 +5,16 @@ const endpoint = new mongoose.Schema(
 		"hash": {
 			type: String,
 		},
+		"secret":{
+			type: String,
+		},
 		"url": {
 			type: String,
-		}
+		},
+		"admin": {
+			type: Boolean,
+			default: false
+		},
 	},
 	{
 		timestamps: true,
