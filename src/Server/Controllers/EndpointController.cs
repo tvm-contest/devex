@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Server.Business.Requests;
-using Utils;
+using Server.Utils;
 
 namespace Server.Controllers
 {
@@ -36,7 +36,7 @@ namespace Server.Controllers
             try
             {
                 var submitResult = await _mediator
-                    .CreateRequestClient<SubmitClientInfo>()
+                    .CreateRequestClient<SubmitClient>()
                     .GetResponse<SubmitClientSuccess, SubmitClientValidateEndpointError>(
                         new { hash, endpoint }, cancellationToken);
 

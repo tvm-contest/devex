@@ -23,6 +23,9 @@ namespace Server.Controllers
         [Consumes("text/plain")]
         public async Task<IActionResult> Receive(string consumer, [FromBody] string message)
         {
+            //take Nonce only for client message
+            message = message.Split(' ')[0];
+
             _logger.LogTrace("Received message: {Consumer} {Message}", consumer, message);
             await _testConsumerHub.Clients.User(consumer).SendAsync("ReceiveMessage", message);
             return Ok(message);

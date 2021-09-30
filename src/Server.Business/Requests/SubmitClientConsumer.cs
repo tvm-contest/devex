@@ -5,28 +5,29 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Server.Database;
+using Shared;
 
 namespace Server.Business.Requests
 {
-    public class SubmitClientInfoConsumer : IConsumer<SubmitClientInfo>
+    public class SubmitClientConsumer : IConsumer<SubmitClient>
     {
         private readonly IConfiguration _configuration;
-        private readonly ILogger<SubmitClientInfoConsumer> _logger;
+        private readonly ILogger<SubmitClientConsumer> _logger;
         private readonly ServerDbContext _serverDbContext;
 
-        public SubmitClientInfoConsumer(ServerDbContext serverDbContext, ILogger<SubmitClientInfoConsumer> logger, IConfiguration configuration)
+        public SubmitClientConsumer(ServerDbContext serverDbContext, ILogger<SubmitClientConsumer> logger, IConfiguration configuration)
         {
             _serverDbContext = serverDbContext;
             _logger = logger;
             _configuration = configuration;
         }
 
-        public async Task Consume(ConsumeContext<SubmitClientInfo> context)
+        public async Task Consume(ConsumeContext<SubmitClient> context)
         {
             var cancellationToken = context.CancellationToken;
             var hash = context.Message.Hash;
             var endpoint = context.Message.Endpoint;
-            var serviceUrl = _configuration["ServiceUrl"];
+            const string serviceUrl = ProjectConstants.ServerUrl;
             var testConsumerUrl = Url.Combine(serviceUrl, "test-consumer");
 
             //don't allow custom test url

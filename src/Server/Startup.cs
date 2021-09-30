@@ -16,12 +16,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using NSwag;
 using Prometheus;
 using Serilog;
 using Server.Business.Requests;
 using Server.Database;
 using Server.Kafka;
 using Server.SignalR;
+using Shared;
 
 namespace Server
 {
@@ -40,7 +42,7 @@ namespace Server
         {
             services.AddControllersWithViews(options => { options.InputFormatters.Insert(options.InputFormatters.Count, new TextPlainInputFormatter()); });
             services.AddRazorPages();
-            services.AddSwaggerDocument();
+            services.AddSwaggerDocument(settings => { settings.Title = ProjectConstants.AppName; });
 
             services.AddCors(o => o.AddPolicy("SubmitEndpoint", builder => builder.AllowAnyOrigin()));
 
@@ -49,7 +51,7 @@ namespace Server
                 .Configure<KafkaOptions>(Configuration.GetSection(nameof(KafkaOptions)));
 
             services
-                .AddMediator(k => k.AddConsumers(typeof(SubmitClientInfoConsumer).Assembly))
+                .AddMediator(k => k.AddConsumers(typeof(SubmitClientConsumer).Assembly))
                 .AddMassTransit(k =>
                 {
                     k.SetKebabCaseEndpointNameFormatter();
@@ -104,7 +106,15 @@ namespace Server
 
             app.UseSerilogRequestLogging();
 
-            app.UseOpenApi();
+            app.UseOpenApi(settings =>
+            {
+                settings.PostProcess = (document, request) =>
+                {
+                    if (!request.Headers.TryGetValue("X-Scheme", out var scheme) || !Enum.TryParse(scheme, true, out OpenApiSchema openApiSchema)) return;
+                    document.Schemes.Clear();
+                    document.Schemes.Add(openApiSchema);
+                };
+            });
             app.UseSwaggerUi3();
 
             app.UseBlazorFrameworkFiles();
