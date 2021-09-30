@@ -51,6 +51,10 @@ const coreController = {
 	async ui_auth(req, res) {
 		res.render("auth");
 	},
+
+	async ui_profile(req, res) {
+		res.render("profile");
+	},
 };
 
 module.exports = coreController;
