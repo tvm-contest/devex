@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Flurl;
 using MassTransit;
@@ -30,25 +31,19 @@ namespace Server.Business.Requests
             const string serviceUrl = ProjectConstants.ServerUrl;
             var testConsumerUrl = Url.Combine(serviceUrl, "test-consumer");
 
-            //don't allow custom test url
-            if (endpoint.StartsWith(serviceUrl, StringComparison.OrdinalIgnoreCase))
-            {
-                await context.RespondAsync<SubmitClientAccessDeniedError>(new { });
-                return;
-            }
+            if (await DontAllowUseServerUrl(context, endpoint, serviceUrl)) return; //SubmitClientAccessDeniedError
 
-            //generate test url by user hash
-            if (endpoint.Equals("test", StringComparison.OrdinalIgnoreCase))
-            {
-                endpoint = Url.Combine(testConsumerUrl, hash[..12]);
-            }
+            endpoint = GenerateEndpointIfTestCommand(endpoint, testConsumerUrl, hash);
 
-            if (!EndpointValidationHelper.Validate(endpoint))
-            {
-                await context.RespondAsync<SubmitClientValidateEndpointError>(new { });
-                return;
-            }
+            if (await EndpointValidationError(context, endpoint)) return; //SubmitClientValidateEndpointError
 
+            await AddOrUpdateClientInfoToDb(hash, endpoint, cancellationToken);
+
+            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = true });
+        }
+
+        private async Task AddOrUpdateClientInfoToDb(string hash, string endpoint, CancellationToken cancellationToken)
+        {
             var clientInfo = await _serverDbContext.ClientInfos.FindAsync(new object[] { hash }, cancellationToken);
             if (clientInfo == null)
             {
@@ -64,8 +59,27 @@ namespace Server.Business.Requests
             }
 
             await _serverDbContext.SaveChangesAsync(cancellationToken);
+        }
 
-            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = true });
+        private static async Task<bool> EndpointValidationError(ConsumeContext<SubmitClient> context, string endpoint)
+        {
+            if (EndpointValidationHelper.Validate(endpoint)) return false;
+            await context.RespondAsync<SubmitClientValidateEndpointError>(new { });
+            return true;
+        }
+
+        private static string GenerateEndpointIfTestCommand(string endpoint, string testConsumerUrl, string hash)
+        {
+            return endpoint.Equals("test", StringComparison.OrdinalIgnoreCase)
+                ? Url.Combine(testConsumerUrl, hash[..12])
+                : endpoint;
+        }
+
+        private static async Task<bool> DontAllowUseServerUrl(ConsumeContext context, string endpoint, string serviceUrl)
+        {
+            if (!endpoint.StartsWith(serviceUrl, StringComparison.OrdinalIgnoreCase)) return false;
+            await context.RespondAsync<SubmitClientAccessDeniedError>(new { });
+            return true;
         }
     }
 }
