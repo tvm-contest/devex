@@ -1,8 +1,6 @@
 ﻿@page "/test-consumer/{Consumer}"
 @inject NavigationManager _navigationManager
 @inject IMessageInfoStorage _storage
-@using Microsoft.AspNetCore.SignalR.Client
-@using Client.Storage
 @implements IAsyncDisposable
 
 <HostConnectionStatus IsConnected="@IsConnected"/>

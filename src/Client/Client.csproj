@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Client.Storage\Client.Storage.csproj"/>
+        <ProjectReference Include="..\Client.Storage\Client.Storage.csproj"/>
     </ItemGroup>
 
     <Target Name="NSwag" BeforeTargets="Build">

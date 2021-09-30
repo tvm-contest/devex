@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleMessageSender", "Samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "src\Utils\Utils.csproj", "{4953764E-7D16-4341-896F-B11E8368A634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Storage", "Client.Storage\Client.Storage.csproj", "{D56DDD46-7341-4EDA-8228-A5AB494D28D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Storage", "src\Client.Storage\Client.Storage.csproj", "{31F7ADF2-48EB-42D3-9359-4DE812A4CE26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,11 +66,12 @@ Global
 		{4953764E-7D16-4341-896F-B11E8368A634}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4953764E-7D16-4341-896F-B11E8368A634}.NoClient|Any CPU.ActiveCfg = Debug|Any CPU
 		{4953764E-7D16-4341-896F-B11E8368A634}.NoClient|Any CPU.Build.0 = Debug|Any CPU
-		{D56DDD46-7341-4EDA-8228-A5AB494D28D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D56DDD46-7341-4EDA-8228-A5AB494D28D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D56DDD46-7341-4EDA-8228-A5AB494D28D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D56DDD46-7341-4EDA-8228-A5AB494D28D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D56DDD46-7341-4EDA-8228-A5AB494D28D2}.NoClient|Any CPU.ActiveCfg = Debug|Any CPU
+		{31F7ADF2-48EB-42D3-9359-4DE812A4CE26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31F7ADF2-48EB-42D3-9359-4DE812A4CE26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31F7ADF2-48EB-42D3-9359-4DE812A4CE26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31F7ADF2-48EB-42D3-9359-4DE812A4CE26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31F7ADF2-48EB-42D3-9359-4DE812A4CE26}.NoClient|Any CPU.ActiveCfg = Debug|Any CPU
+		{31F7ADF2-48EB-42D3-9359-4DE812A4CE26}.NoClient|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
