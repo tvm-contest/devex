@@ -66,16 +66,26 @@ namespace Server
             services.AddSingleton<IUserIdProvider, ByHashUserIdProvider>();
 
             //setup database
-            services.AddDbContextFactory<ServerDbContext>(UseSqlLite)
+            services.AddDbContextFactory<ServerDbContext>(builder =>
+                {
+                    var postgreSqlConnectionString = Configuration.GetConnectionString("PostgreSql");
+                    if (postgreSqlConnectionString != null)
+                    {
+                        builder.UseNpgsql(postgreSqlConnectionString);
+                        return;
+                    }
+
+                    UseSqlLite(builder);
+                })
                 .AddDbContext<ServerDbContext>();
             services.AddHealthChecks()
                 .AddDbContextCheck<ServerDbContext>();
 
             //setup lock and cache
             services.AddSingleton<IDistributedCache, RedisCache>()
-                .Configure<RedisCacheOptions>(options => options.Configuration = "localhost");
+                .Configure<RedisCacheOptions>(Configuration.GetSection("RedisOptions"));
             services.AddSingleton<IDistributedLock, RedisLock>()
-                .Configure<RedisLockOptions>(options => options.Configuration = "localhost");
+                .Configure<RedisLockOptions>(Configuration.GetSection("RedisOptions"));
             services.AddHealthChecks()
                 .Add(new HealthCheckRegistration("redis", (Func<IServiceProvider, IHealthCheck>)(sp =>
                 {
@@ -87,7 +97,13 @@ namespace Server
         private static void UseSqlLite(DbContextOptionsBuilder options)
         {
             var path = Directory.GetCurrentDirectory();
-            var dbPath = Path.Join(path, "Data", "server.db");
+            var appData = Path.Join(path, "App_Data");
+            if (!Directory.Exists(appData))
+            {
+                Directory.CreateDirectory(appData);
+            }
+
+            var dbPath = Path.Join(appData, "app.db");
             options.UseSqlite($"Data Source={dbPath}");
         }
 

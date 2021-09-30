@@ -3,7 +3,6 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <UserSecretsId>f23c0d3d-d0c4-4fd7-9dc4-aa5e56cc1232</UserSecretsId>
-        <Configurations>Debug;Release;NoClient</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,7 +13,6 @@
         <PackageReference Include="MassTransit.Prometheus" Version="7.2.2"/>
         <PackageReference Include="MassTransit.Redis" Version="7.2.2"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.10"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -31,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Condition="'$(Configuration)'!='NoClient'" Include="..\Client\Client.csproj"/>
+        <ProjectReference Condition="'$(Configuration)'=='Debug'" Include="..\Client\Client.csproj"/>
         <ProjectReference Include="..\Server.Database\Server.Database.csproj"/>
         <ProjectReference Include="..\Server.Kafka\Server.Kafka.csproj"/>
         <ProjectReference Include="..\Server.SignalR\Server.SignalR.csproj"/>
@@ -42,6 +40,13 @@
         <Content Update="appsettings.Development.json">
             <DependentUpon>appsettings.json</DependentUpon>
         </Content>
+        <Content Update="appsettings.Production.json">
+            <DependentUpon>appsettings.json</DependentUpon>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="App_Data"/>
     </ItemGroup>
 
 </Project>
