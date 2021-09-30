@@ -1,6 +1,6 @@
-const endpointManager = require('../modules/endpoint/endpoint.manager')
-const messsageManager = require('../modules/message/message.manager')
-const toolkit = require('../modules/libs/toolkit')
+const endpointManager = require('./endpoint/endpoint.manager')
+const messsageManager = require('./message/message.manager')
+const toolkit = require('./libs/toolkit')
 const { v4: uuidv4 } = require('uuid');
 const md5 = require('md5');
 
