@@ -4,4 +4,4 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 
-src/Server/Data/
+src/Server/App_Data/

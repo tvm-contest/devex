@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  nginx:
+    volumes:
+      - ./nginx/conf-debug/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
+      - ./nginx/ssl:/opt/bitnami/nginx/ssl
+  redis:
+    ports:
+      - '6379:6379'
+  postgresql:
+    ports:
+      - '5432:5432'

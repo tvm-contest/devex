@@ -1,13 +1,14 @@
 <Project DefaultTargets="Build">
     <Target Name="Build">
-        <Exec Command="docker build . -f .\Server\Dockerfile -t ghcr.io/ch1sel/app:latest" WorkingDirectory="src"/>        
+        <Exec Command="docker build . -f Dockerfile -t ghcr.io/ch1sel/free-ton-notify:latest"/>
     </Target>
-    
+
     <Target Name="Push" AfterTargets="Build">
-        <Exec Command="docker push ghcr.io/ch1sel/app:latest"/>
+        <Exec Command="docker push ghcr.io/ch1sel/free-ton-notify:latest"/>
     </Target>
-    
+
     <Target Name="Deploy" AfterTargets="Push">
-        <Exec Command="ssh ch1sel@notify-contest.ddns.net &quot;cd ~/server/app; docker-compose pull; docker-compose up -d&quot;"/>
+        <Exec Command="scp -C -r .\.docker-compose\* ch1sel@notify-contest.ddns.net:~/server/free-ton-notify/"/>
+        <Exec Command="ssh ch1sel@notify-contest.ddns.net &quot;cd ~/server/free-ton-notify; docker-compose -f docker-compose.yaml -f docker-compose.server.yaml pull; docker-compose -f docker-compose.yaml -f docker-compose.server.yaml up -d&quot;"/>
     </Target>
 </Project>

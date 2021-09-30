@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  nginx:
+    image: docker.io/bitnami/nginx:1.21
+    ports:
+      - '80:8080'
+      - '443:8443'
+    volumes:
+      - ./nginx/conf/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
+      - ./nginx/ssl:/opt/bitnami/nginx/ssl
+  redis:
+    image: docker.io/bitnami/redis:6.2
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - 'redis_data:/bitnami/redis/data'
+    restart: always
+  rabbitmq:
+    image: bitnami/rabbitmq:3.9.7-debian-10-r5
+    volumes:
+      - rabbitmq_data:/bitnami
+    restart: always
+  postgresql:
+    image: docker.io/bitnami/postgresql:13.4.0-debian-10-r48
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_DATABASE=app
+      - ALLOW_EMPTY_PASSWORD=yes
+volumes:
+  redis_data:
+  rabbitmq_data:
+  postgresql_data:
+    

@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+  app:
+    image: ghcr.io/ch1sel/free-ton-notify:latest
+    env_file: secret.env
+  
