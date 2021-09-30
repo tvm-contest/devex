@@ -21,11 +21,11 @@
         <ProjectReference Include="..\Shared\Shared.csproj"/>
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(Configuration)'!='Debug'">
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
         <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
     </PropertyGroup>
 
-    <Target Name="NSwag" BeforeTargets="BeforeBuild;BeforeRebuild" Condition="'$(Configuration)'!='Debug'">
+    <Target Name="NSwag" BeforeTargets="BeforeBuild;BeforeRebuild" Condition="'$(Configuration)'=='Debug'">
         <PropertyGroup>
             <NSwagCommand>$(NSwagExe_Net50) run</NSwagCommand>
         </PropertyGroup>
