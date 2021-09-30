@@ -4,6 +4,7 @@ services:
   app:
     image: ghcr.io/ch1sel/free-ton-notify:latest
     environment:
-      - ASPNETCORE_ENVIRONMENT:Production
+      - ASPNETCORE_ENVIRONMENT=Production
+      - COMING_SOON=true
     env_file: secret.env
   

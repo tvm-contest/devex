@@ -31,14 +31,11 @@ namespace Server.Business.Requests
             const string serviceUrl = ProjectConstants.ServerUrl;
             var testConsumerUrl = Url.Combine(serviceUrl, "test-consumer");
 
-            if (await DontAllowUseServerUrl(context, endpoint, serviceUrl)) return; //SubmitClientAccessDeniedError
-
+            if (await ComingSoon(context)) return;
+            if (await DontAllowUseServerUrl(context, endpoint, serviceUrl)) return;
             endpoint = GenerateEndpointIfTestCommand(endpoint, testConsumerUrl, hash);
-
-            if (await EndpointValidationError(context, endpoint)) return; //SubmitClientValidateEndpointError
-
+            if (await EndpointValidationError(context, endpoint)) return;
             await AddOrUpdateClientInfoToDb(hash, endpoint, cancellationToken);
-
             await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = true });
         }
 
@@ -61,13 +58,6 @@ namespace Server.Business.Requests
             await _serverDbContext.SaveChangesAsync(cancellationToken);
         }
 
-        private static async Task<bool> EndpointValidationError(ConsumeContext<SubmitClient> context, string endpoint)
-        {
-            if (EndpointValidationHelper.Validate(endpoint)) return false;
-            await context.RespondAsync<SubmitClientValidateEndpointError>(new { });
-            return true;
-        }
-
         private static string GenerateEndpointIfTestCommand(string endpoint, string testConsumerUrl, string hash)
         {
             return endpoint.Equals("test", StringComparison.OrdinalIgnoreCase)
@@ -75,10 +65,24 @@ namespace Server.Business.Requests
                 : endpoint;
         }
 
+        private static async Task<bool> EndpointValidationError(ConsumeContext context, string endpoint)
+        {
+            if (EndpointValidationHelper.Validate(endpoint)) return false;
+            await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.EndpointValidation });
+            return true;
+        }
+
         private static async Task<bool> DontAllowUseServerUrl(ConsumeContext context, string endpoint, string serviceUrl)
         {
             if (!endpoint.StartsWith(serviceUrl, StringComparison.OrdinalIgnoreCase)) return false;
-            await context.RespondAsync<SubmitClientAccessDeniedError>(new { });
+            await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.AccessDenied });
+            return true;
+        }
+
+        private async Task<bool> ComingSoon(ConsumeContext context)
+        {
+            if (!bool.TryParse(_configuration["COMING_SOON"], out var comingSoon) || !comingSoon) return false;
+            await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.ComingSoon });
             return true;
         }
     }

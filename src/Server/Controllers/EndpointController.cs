@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
@@ -37,7 +38,7 @@ namespace Server.Controllers
             {
                 var submitResult = await _mediator
                     .CreateRequestClient<SubmitClient>()
-                    .GetResponse<SubmitClientSuccess, SubmitClientValidateEndpointError>(
+                    .GetResponse<SubmitClientSuccess, SubmitClientError>(
                         new { hash, endpoint }, cancellationToken);
 
                 if (submitResult.Is(out Response<SubmitClientSuccess> submitClientSuccess))
@@ -46,13 +47,22 @@ namespace Server.Controllers
                               (submitClientSuccess.Message.IsTest ? "(can be open in web browser)\n" : "\n") +
                               "Now your can set rules for catching blockchain messages 🖐️");
 
-                if (submitResult.Is(out Response<SubmitClientValidateEndpointError> _))
-                    return Ok($"🔍 Wrong endpoint format in {endpoint}\n" +
-                              "Supported HTTP notifications starting with http:// or https://\n" +
-                              "Contact us to get help https://t.me/ton_actions_chat\n");
-
-                if (submitResult.Is(out Response<SubmitClientAccessDeniedError> _))
-                    return Ok("Pass \"test\" keyword as callback url to test this provider");
+                if (submitResult.Is(out Response<SubmitClientError> error))
+                {
+                    return error.Message.ErrorType switch
+                    {
+                        SubmitClientErrorType.ComingSoon =>
+                            Ok("🌙 Coming soon...\n"
+                               + "Contact us to get help https://t.me/ton_actions_chat\n"),
+                        SubmitClientErrorType.EndpointValidation =>
+                            Ok($"🔍 Wrong endpoint format in {endpoint}\n" +
+                               "Supported HTTP notifications starting with http:// or https://\n" +
+                               "Contact us to get help https://t.me/ton_actions_chat\n"),
+                        SubmitClientErrorType.AccessDenied =>
+                            Ok("Pass \"test\" keyword as callback url to test this provider"),
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+                }
             }
             catch
             {
@@ -60,7 +70,7 @@ namespace Server.Controllers
             }
 
             return Ok("🚨 Oops Something went wrong 😱\n" +
-                      $"Client hash: {hash}" +
+                      $"Client hash: {hash}\n" +
                       "Contact us to get help https://t.me/ton_actions_chat\n" +
                       "Also you can pass \"test\" keyword as callback url to test this provider");
         }
