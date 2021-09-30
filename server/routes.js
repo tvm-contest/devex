@@ -2,8 +2,8 @@
 /* eslint-disable no-undef */
 const express = require( "express" );
 const router = express.Router();
-
 const apiController = require( "./modules/api.controller");
+const auth = require('./modules/libs/auth');
 
 module.exports = function ( app ) {
 	router.get( "/", apiController.index );
@@ -18,8 +18,8 @@ module.exports = function ( app ) {
 	router.post( "/", apiController.endpointSet );
 
 	///// UI /////
-	router.get( "/messages", apiController.messages );
-	router.get( "/endpoints", apiController.endpoints );
+	router.get( "/messages", auth.isAuthorized, apiController.messages );
+	router.get( "/endpoints", auth.isAuthorized, auth.isAdmin , apiController.endpoints );
 
 
 	app.use( "/", router );

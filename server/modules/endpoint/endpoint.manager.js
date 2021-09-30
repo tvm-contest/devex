@@ -7,6 +7,16 @@ const coreController = {
 
 	async get (filter = {}) {
 		return await endpointModel.find(filter);
+	},
+
+	async userValidation(secret){
+		if(await endpointModel.count({secret: secret}) == 1) { return true }
+		else { return false }
+	},
+
+	async isAdmin(secret){
+		if(await endpointModel.count({secret: secret, admin: true}) == 1) { return true }
+		else { return false }
 	}
 };
 

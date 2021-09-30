@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookies = require("cookie-parser");
 const cors = require( "cors" )
 const configuration = require('./server/modules/libs/configuration')
 const queueScheduler = require('./server/modules/message/message.scheduler');
@@ -17,6 +18,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use( cors() );
 app.use( express.static( __dirname + "/public" ) );
+app.use(cookies());
+
 
 app.set( "view engine", "pug" );
 
