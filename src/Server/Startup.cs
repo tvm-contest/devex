@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using HealthChecks.Redis;
 using MassTransit;
 using MassTransit.PrometheusIntegration;
@@ -81,17 +82,25 @@ namespace Server
             services.AddHealthChecks()
                 .AddDbContextCheck<ServerDbContext>();
 
-            //setup lock and cache
-            services.AddSingleton<IDistributedCache, RedisCache>()
-                .Configure<RedisCacheOptions>(Configuration.GetSection("RedisOptions"));
-            services.AddSingleton<IDistributedLock, RedisLock>()
-                .Configure<RedisLockOptions>(Configuration.GetSection("RedisOptions"));
-            services.AddHealthChecks()
-                .Add(new HealthCheckRegistration("redis", (Func<IServiceProvider, IHealthCheck>)(sp =>
-                {
-                    var redisConfiguration = sp.GetRequiredService<IOptions<RedisCacheOptions>>().Value.Configuration;
-                    return new RedisHealthCheck(redisConfiguration);
-                }), null, null, null));
+            //setup distributed lock and cache
+            if (Configuration.GetChildren().FirstOrDefault(s => s.Key == "RedisOptions") != null)
+            {
+                services.AddSingleton<IDistributedCache, RedisCache>()
+                    .Configure<RedisCacheOptions>(Configuration.GetSection("RedisOptions"))
+                    .AddSingleton<IDistributedLock, RedisLock>()
+                    .Configure<RedisLockOptions>(Configuration.GetSection("RedisOptions"))
+                    .AddHealthChecks()
+                    .Add(new HealthCheckRegistration("redis", (Func<IServiceProvider, IHealthCheck>)(sp =>
+                    {
+                        var redisConfiguration = sp.GetRequiredService<IOptions<RedisCacheOptions>>().Value.Configuration;
+                        return new RedisHealthCheck(redisConfiguration);
+                    }), null, null, null));
+            }
+            else
+            {
+                services.AddSingleton<IDistributedCache, MemoryDistributedCache>();
+                services.AddSingleton<IDistributedLock, MemoryLock>();
+            }
         }
 
         private static void UseSqlLite(DbContextOptionsBuilder options)
