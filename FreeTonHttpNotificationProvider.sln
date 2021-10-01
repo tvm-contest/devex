@@ -22,16 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Utils", "src\Server.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src\Shared\Shared.csproj", "{FB551592-CCE5-4FA8-A52B-B3194A4FECB4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Docker", "_Docker", "{9C46295F-F9CF-4423-988A-0877FCC8ECEA}"
-ProjectSection(SolutionItems) = preProject
-	Dockerfile = Dockerfile
-	.docker-compose\docker-compose.debug.yaml = .docker-compose\docker-compose.debug.yaml
-	.docker-compose\docker-compose.server.yaml = .docker-compose\docker-compose.server.yaml
-	.docker-compose\docker-compose.yaml = .docker-compose\docker-compose.yaml
-	.docker-compose\nginx\conf\nginx.conf = .docker-compose\nginx\conf\nginx.conf
-	.docker-compose\nginx\conf-debug\nginx.conf = .docker-compose\nginx\conf-debug\nginx.conf
-	.docker-compose\docker-compose.build.yaml = .docker-compose\docker-compose.build.yaml
-EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deploy", "Deploy.proj", "{906A23E6-A61F-478A-B61A-CB7726AAF13E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
