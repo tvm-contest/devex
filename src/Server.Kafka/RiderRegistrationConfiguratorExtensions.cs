@@ -25,7 +25,14 @@ namespace Server.Kafka
                         saslConfigurator.Password = kafkaOptions.Password;
                     }));
 
-                factoryConfigurator.TopicEndpoint<string, KafkaMessage>(kafkaOptions.Topic, "group-1",
+
+#if DEBUG
+                var groupId = $"local-{System.Net.Dns.GetHostName()}";
+#else
+                const string groupId = "server-group-1";
+#endif
+
+                factoryConfigurator.TopicEndpoint<string, KafkaMessage>(kafkaOptions.Topic, groupId,
                     e =>
                     {
                         e.AutoOffsetReset = AutoOffsetReset.Earliest;
