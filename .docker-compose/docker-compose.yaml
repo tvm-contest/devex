@@ -9,18 +9,19 @@ services:
     volumes:
       - ./nginx/conf/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
       - ./nginx/ssl:/opt/bitnami/nginx/ssl
+    restart: unless-stopped 
   redis:
     image: docker.io/bitnami/redis:6.2
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:
       - 'redis_data:/bitnami/redis/data'
-    restart: always
+    restart: unless-stopped
   rabbitmq:
     image: bitnami/rabbitmq:3.9.7-debian-10-r5
     volumes:
       - rabbitmq_data:/bitnami
-    restart: always
+    restart: unless-stopped
   postgresql:
     image: docker.io/bitnami/postgresql:13.4.0-debian-10-r48
     volumes:
@@ -28,6 +29,7 @@ services:
     environment:
       - POSTGRESQL_DATABASE=app
       - ALLOW_EMPTY_PASSWORD=yes
+    restart: unless-stopped
 volumes:
   redis_data:
   rabbitmq_data:
