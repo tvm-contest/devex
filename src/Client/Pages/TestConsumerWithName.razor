@@ -1,4 +1,4 @@
-﻿@page "/test-consumer/{Consumer}"
+﻿@page "/test-consumer/{UserId}"
 @inject NavigationManager _navigationManager
 @inject IMessageInfoStorage _storage
 @implements IAsyncDisposable
@@ -9,7 +9,7 @@
 @code {
 
     [ParameterAttribute]
-    public string Consumer { get; set; }
+    public string UserId { get; set; }
 
     private HubConnection _hubConnection;
     private IReadOnlyCollection<MessageInfo> _messages = Array.Empty<MessageInfo>();
@@ -18,7 +18,7 @@
     protected override async Task OnInitializedAsync()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(_navigationManager.ToAbsoluteUri("/test-consumer-hub"), options => { options.Headers["Consumer"] = Consumer; })
+            .WithUrl(_navigationManager.ToAbsoluteUri($"/signalr?UserId={UserId}"))
             .WithAutomaticReconnect(Enumerable.Range(0, 20).Select(r => TimeSpan.FromSeconds(r * 2)).ToArray())
             .Build();
         _hubConnection.On<string>("ReceiveMessage", async message =>

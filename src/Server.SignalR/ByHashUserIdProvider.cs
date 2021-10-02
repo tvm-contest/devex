@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Server.SignalR
@@ -6,7 +7,12 @@ namespace Server.SignalR
     {
         public string GetUserId(HubConnectionContext connection)
         {
-            connection.UserIdentifier = connection.GetHttpContext()?.Request.Headers["Consumer"];
+            connection.UserIdentifier = connection
+                .GetHttpContext()?
+                .Request.Query.TryGetValue("UserId", out var userId) ?? false
+                ? userId.ToString()
+                : throw new UnauthorizedAccessException("UserId is not defined");
+
             return connection.UserIdentifier;
         }
     }
