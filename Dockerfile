@@ -44,7 +44,7 @@ RUN dotnet build -c Release Server
 RUN dotnet publish -c Release --no-build -o /publish Server
 
 FROM runtime AS final
-LABEL org.opencontainers.image.source="https://github.com/ch1seL/free-ton-http-notification-provider"
+LABEL org.opencontainers.image.source = "https://github.com/ch1seL/free-ton-http-notification-provider"
 WORKDIR /app
 COPY --from=build-client /publish .
 COPY --from=build-server /publish .
