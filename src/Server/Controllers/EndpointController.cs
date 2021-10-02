@@ -3,12 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
-using MassTransit.Mediator;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Server.Business.Requests;
-using Server.Utils;
+using Server.Requests;
 
 namespace Server.Controllers
 {
@@ -17,17 +15,17 @@ namespace Server.Controllers
     public class EndpointController : ControllerBase
     {
         private readonly ILogger<EndpointController> _logger;
-        private readonly IMediator _mediator;
+        private readonly IRequestClient<SubmitClient> _submitClientRequestClient;
 
-        public EndpointController(ILogger<EndpointController> logger, IMediator mediator)
+        public EndpointController(ILogger<EndpointController> logger, IRequestClient<SubmitClient> submitClientRequestClient)
         {
             _logger = logger;
-            _mediator = mediator;
+            _submitClientRequestClient = submitClientRequestClient;
         }
 
         [HttpPost]
-        [EnableCors(PolicyName = "SubmitEndpoint")]
-        public async Task<OkObjectResult> Submit([FromForm] EndpointParameters parameters, CancellationToken cancellationToken)
+        [EnableCors(PolicyName = "SubmitClient")]
+        public async Task<OkObjectResult> SubmitClient([FromForm] EndpointParameters parameters, CancellationToken cancellationToken)
         {
             var hash = parameters.Hash;
             var endpoint = parameters.Data.FromBase64();
@@ -36,8 +34,7 @@ namespace Server.Controllers
 
             try
             {
-                var submitResult = await _mediator
-                    .CreateRequestClient<SubmitClient>()
+                var submitResult = await _submitClientRequestClient
                     .GetResponse<SubmitClientSuccess, SubmitClientError>(
                         new { hash, endpoint }, cancellationToken);
 

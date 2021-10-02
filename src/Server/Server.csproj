@@ -6,21 +6,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="5.0.2"/>
-        <PackageReference Include="ch1seL.DistributedLock.RedisLock" Version="5.0.2"/>
-        <PackageReference Include="ch1seL.DistributedLock.MemoryLock" Version="5.0.2"/>
-        <PackageReference Include="MassTransit.AspNetCore" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.Kafka" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.Prometheus" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.Redis" Version="7.2.2"/>
+        <PackageReference Include="MassTransit" Version="7.2.2"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.10"/>
         <PackageReference Include="NSwag.AspNetCore" Version="13.13.2"/>
+        <PackageReference Include="NSwag.Core" Version="13.13.2"/>
         <PackageReference Include="NSwag.MSBuild" Version="13.13.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -33,6 +26,8 @@
         <ProjectReference Condition="'$(Configuration)'=='Debug'" Include="..\Client\Client.csproj"/>
         <ProjectReference Include="..\Server.Database\Server.Database.csproj"/>
         <ProjectReference Include="..\Server.Kafka\Server.Kafka.csproj"/>
+        <ProjectReference Include="..\Server.MassTransit\Server.MassTransit.csproj"/>
+        <ProjectReference Include="..\Server.Redis\Server.Redis.csproj"/>
         <ProjectReference Include="..\Server.SignalR\Server.SignalR.csproj"/>
         <ProjectReference Include="..\Server.Utils\Server.Utils.csproj"/>
     </ItemGroup>

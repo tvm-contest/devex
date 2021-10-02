@@ -231,11 +231,11 @@ namespace Client
     public partial interface IEndpointClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<FileResponse> SubmitAsync(string hash, string data);
+        System.Threading.Tasks.Task<FileResponse> SubmitClientAsync(string hash, string data);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<FileResponse> SubmitAsync(string hash, string data, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<FileResponse> SubmitClientAsync(string hash, string data, System.Threading.CancellationToken cancellationToken);
     
     }
     
@@ -267,14 +267,14 @@ namespace Client
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> SubmitAsync(string hash, string data)
+        public System.Threading.Tasks.Task<FileResponse> SubmitClientAsync(string hash, string data)
         {
-            return SubmitAsync(hash, data, System.Threading.CancellationToken.None);
+            return SubmitClientAsync(hash, data, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> SubmitAsync(string hash, string data, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<FileResponse> SubmitClientAsync(string hash, string data, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("endpoint");
@@ -453,11 +453,11 @@ namespace Client
     public partial interface ITestConsumerClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<FileResponse> ReceiveAsync(string consumer, string message);
+        System.Threading.Tasks.Task<FileResponse> ReceiveAsync(string userId, string message);
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<FileResponse> ReceiveAsync(string consumer, string message, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<FileResponse> ReceiveAsync(string userId, string message, System.Threading.CancellationToken cancellationToken);
     
     }
     
@@ -489,21 +489,21 @@ namespace Client
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> ReceiveAsync(string consumer, string message)
+        public System.Threading.Tasks.Task<FileResponse> ReceiveAsync(string userId, string message)
         {
-            return ReceiveAsync(consumer, message, System.Threading.CancellationToken.None);
+            return ReceiveAsync(userId, message, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> ReceiveAsync(string consumer, string message, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<FileResponse> ReceiveAsync(string userId, string message, System.Threading.CancellationToken cancellationToken)
         {
             if (message == null)
                 throw new System.ArgumentNullException("message");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append("test-consumer/{consumer}");
-            urlBuilder_.Replace("{consumer}", System.Uri.EscapeDataString(ConvertToString(consumer, System.Globalization.CultureInfo.InvariantCulture)));
+            urlBuilder_.Append("test-consumer/{userId}");
+            urlBuilder_.Replace("{userId}", System.Uri.EscapeDataString(ConvertToString(userId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
             var disposeClient_ = false;

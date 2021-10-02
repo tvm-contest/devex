@@ -5,8 +5,10 @@ using MassTransit;
 using MassTransit.Registration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Server.KafksMessage;
+using Server.Options;
 
-namespace Server.Kafka
+namespace Server
 {
     public static class RiderRegistrationConfiguratorExtensions
     {

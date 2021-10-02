@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Server.Database
+namespace Server
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ClientInfo

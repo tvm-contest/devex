@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MassTransit;
-using MassTransit.Mediator;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Server.Business.Requests;
+using Server.Requests;
 
-namespace Server.Kafka
+namespace Server.KafksMessage
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class KafkaMessageConsumer : IConsumer<KafkaMessage>
@@ -14,14 +13,15 @@ namespace Server.Kafka
         private readonly IDistributedCache _distributedCache;
         private readonly IDistributedLock _lock;
         private readonly ILogger<KafkaMessageConsumer> _logger;
-        private readonly IMediator _mediator;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public KafkaMessageConsumer(ILogger<KafkaMessageConsumer> logger, IMediator mediator, IDistributedCache distributedCache, IDistributedLock @lock)
+        public KafkaMessageConsumer(ILogger<KafkaMessageConsumer> logger, IDistributedCache distributedCache, IDistributedLock @lock,
+            IPublishEndpoint publishEndpoint)
         {
             _logger = logger;
-            _mediator = mediator;
             _distributedCache = distributedCache;
             _lock = @lock;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task Consume(ConsumeContext<KafkaMessage> context)
@@ -44,7 +44,7 @@ namespace Server.Kafka
 
             _logger.LogTrace("Received message Key:{Key}", key, message);
             // send message to subscriber
-            await _mediator.Send<SendSubscription>(new { message.Hash, message.Nonce, message.EncodedMessage }, cancellationToken);
+            await _publishEndpoint.Publish<SendSubscription>(new { message.Hash, message.Nonce, message.EncodedMessage }, cancellationToken);
             // mark as consumed
             await _distributedCache.SetAsync(key, new byte[1], new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(25) },
                 cancellationToken);

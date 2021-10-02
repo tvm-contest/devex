@@ -2,7 +2,7 @@
 using System.IO;
 using Confluent.Kafka;
 
-namespace Server.Kafka
+namespace Server.KafksMessage
 {
     public class KafkaMessageDeserializer : IDeserializer<KafkaMessage>
     {

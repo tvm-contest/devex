@@ -1,4 +1,4 @@
-﻿namespace Server.Kafka
+﻿namespace Server.Options
 {
     public class KafkaOptions
     {

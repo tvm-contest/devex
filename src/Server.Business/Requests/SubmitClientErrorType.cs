@@ -1,4 +1,4 @@
-namespace Server.Business.Requests
+namespace Server.Requests
 {
     public enum SubmitClientErrorType
     {

@@ -5,10 +5,9 @@ using Flurl;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Server.Database;
 using Shared;
 
-namespace Server.Business.Requests
+namespace Server.Requests
 {
     public class SubmitClientConsumer : IConsumer<SubmitClient>
     {
@@ -67,7 +66,7 @@ namespace Server.Business.Requests
 
         private static async Task<bool> EndpointValidationError(ConsumeContext context, string endpoint)
         {
-            if (EndpointValidationHelper.Validate(endpoint)) return false;
+            if (EndpointValidationHelper.IsHttpEndpoint(endpoint)) return false;
             await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.EndpointValidation });
             return true;
         }

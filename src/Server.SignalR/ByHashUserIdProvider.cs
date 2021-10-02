@@ -1,19 +1,20 @@
 using System;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Server.SignalR
+namespace Server
 {
     public class ByHashUserIdProvider : IUserIdProvider
     {
         public string GetUserId(HubConnectionContext connection)
         {
-            connection.UserIdentifier = connection
-                .GetHttpContext()?
-                .Request.Query.TryGetValue("UserId", out var userId) ?? false
-                ? userId.ToString()
-                : throw new UnauthorizedAccessException("UserId is not defined");
+            var context = connection.GetHttpContext();
+            if (context == null)
+                return null;
 
-            return connection.UserIdentifier;
+            if (context.Request.Query.TryGetValue("UserId", out var userId))
+                return userId.ToString();
+
+            throw new UnauthorizedAccessException("UserId is not defined");
         }
     }
 }

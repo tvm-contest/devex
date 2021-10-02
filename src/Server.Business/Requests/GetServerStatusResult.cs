@@ -1,9 +1,7 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Server.Business.Requests
+﻿namespace Server.Requests
 {
     public class GetServerStatusResult
     {
-        [JsonPropertyName("userCount")] public int UserCount { get; init; }
+        public int UserCount { get; init; }
     }
 }

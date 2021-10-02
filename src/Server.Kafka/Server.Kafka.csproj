@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Server</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,7 +12,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Server.Business\Server.Business.csproj"/>
-        <ProjectReference Include="..\Server.Utils\Server.Utils.csproj"/>
+        <ProjectReference Include="..\Server.Configuration\Server.Configuration.csproj"/>
     </ItemGroup>
 
 </Project>

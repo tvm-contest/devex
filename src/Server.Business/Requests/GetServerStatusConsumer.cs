@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Server.Database;
 
-namespace Server.Business.Requests
+namespace Server.Requests
 {
     public class GetServerStatusConsumer : IConsumer<GetServerStatus>
     {

@@ -6,8 +6,11 @@
     </PropertyGroup>
 
     <Target Name="Build" BeforeTargets="Push">
+        <Exec Command="docker pull $(ImageName):build-client"/>
         <Exec Command="docker build . --cache-from $(ImageName):build-client --target build-client -t $(ImageName):build-client"/>
+        <Exec Command="docker pull $(ImageName):build-server"/>
         <Exec Command="docker build . --cache-from $(ImageName):build-server --target build-server -t $(ImageName):build-server"/>
+        <Exec Command="docker pull $(ImageName):latest"/>
         <Exec Command="docker build . --cache-from $(ImageName):latest -t $(ImageName):latest"/>
     </Target>
 
