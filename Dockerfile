@@ -39,7 +39,10 @@ RUN dotnet restore Server
 COPY src/Server Server
 COPY src/Server.Business Server.Business
 COPY src/Server.Database Server.Database
+COPY src/Server.Configuration Server.Configuration
 COPY src/Server.Kafka Server.Kafka
+COPY src/Server.MassTransit Server.MassTransit
+COPY src/Server.Redis Server.Redis
 COPY src/Server.SignalR Server.SignalR
 COPY src/Server.Utils Server.Utils
 COPY src/Shared Shared

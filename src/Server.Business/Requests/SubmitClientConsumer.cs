@@ -78,8 +78,9 @@ namespace Server.Requests
             return true;
         }
 
-        private async Task<bool> ComingSoon(ConsumeContext context)
+        private async Task<bool> ComingSoon(ConsumeContext<SubmitClient> context)
         {
+            if (context.Message.Endpoint.Equals("test")) return false;
             if (!bool.TryParse(_configuration["COMING_SOON"], out var comingSoon) || !comingSoon) return false;
             await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.ComingSoon });
             return true;
