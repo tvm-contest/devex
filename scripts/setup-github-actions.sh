@@ -1,9 +1,9 @@
 #!/bin/bash
 # You can safely delete this file after you've setup your docker repo in .github/workflows/latest.yml
 
-project_name="docker-express-typescript-boilerplate"
+project_name="free-ton-notifications-service"
 filename=".github/workflows/latest.yml"
-default_repo="sidhantpanda/docker-express-typescript-boilerplate/docker-express-typescript-boilerplate"
+default_repo="Strafi/free-ton-notifications-service/free-ton-notifications-service"
 
 configure_github_actions() {
   read -p "Enter your Github username: "  github_user

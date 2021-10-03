@@ -80,12 +80,15 @@ $ npm run build && npm run start
 #### 2. Run with docker
 
 ```
-$ docker build -t api-server .
+$ docker build -t i4ins .
 $ docker run -t -i \
       --env NODE_ENV=production \
-      --env MONGO_URL=mongodb://host.docker.internal:27017/books \
+      --env MONGO_URL=mongodb://host.docker.internal:27017/ftns \
+      --env KAFKA_USERNAME=i4ins \
+      --env KAFKA_PASSWORD=catch-radar-light-spot \
+      --env KAFKA_BROKER=notification.services.tonlabs.io:29092 \
       -p 3000:3000 \
-      api-server
+      i4ins
 ```
 
 #### 3. Run with docker-compose

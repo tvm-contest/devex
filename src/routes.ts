@@ -1,24 +1,19 @@
 import { Router } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import apiSpec from '../openapi.json';
-
-import * as BookController from './controllers/book';
-
-const swaggerUiOptions = {
-	customCss: '.swagger-ui .topbar { display: none }'
-};
+import * as WebhookController from './controllers/webhook';
 
 const router = Router();
 
-// Book routes
-router.post('/book/add', BookController.add);
-router.get('/book/all', BookController.all);
-router.get('/book/:bookId', BookController.get);
-router.delete('/book/:bookId', BookController.remove);
-router.get('/book/search', BookController.search);
+// Webhook routes
+router.post('/webhook/subscribe', WebhookController.subscribe);
 
 // Dev routes
 if (process.env.NODE_ENV === 'development') {
+	const swaggerUiOptions = {
+		customCss: '.swagger-ui .topbar { display: none }'
+	};
+
 	router.use('/dev/api-docs', swaggerUi.serve);
 	router.get('/dev/api-docs', swaggerUi.setup(apiSpec, swaggerUiOptions));
 }

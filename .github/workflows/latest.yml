@@ -28,6 +28,6 @@ jobs:
           username: $GITHUB_ACTOR
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          repository: sidhantpanda/docker-express-typescript-boilerplate/docker-express-typescript-boilerplate
+          repository: Strafi/free-ton-notifications-service/free-ton-notifications-service
           tag_with_sha: true
           tag_with_ref: true

@@ -5,6 +5,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import ApplicationError from './errors/application-error';
 import routes from './routes';
 import logger from './logger';
+import './lib/kafka-client';
 
 const app = express();
 
