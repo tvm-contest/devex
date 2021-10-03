@@ -1,5 +1,5 @@
 ﻿@page "/test-consumer/{UserId}"
-@inject NavigationManager _navigationManager
+@inject NavigationManager _navigation
 @inject IMessageInfoStorage _storage
 @implements IAsyncDisposable
 
@@ -18,7 +18,7 @@
     protected override async Task OnInitializedAsync()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(_navigationManager.ToAbsoluteUri($"/signalr?UserId={UserId}"))
+            .WithUrl(_navigation.ToAbsoluteUri($"/signalr?UserId={UserId}"))
             .WithAutomaticReconnect(Enumerable.Range(0, 20).Select(r => TimeSpan.FromSeconds(r * 2)).ToArray())
             .Build();
         _hubConnection.On<string>("ReceiveMessage", async message =>
@@ -26,17 +26,12 @@
             _messages = await _storage.Push(new MessageInfo { DateTime = DateTime.Now, Message = message });
             StateHasChanged();
         });
-        _hubConnection.Reconnecting += _ => StateHasChangedAsync();
-        _hubConnection.Closed += _ => StateHasChangedAsync();
-        _hubConnection.Reconnected += _ => StateHasChangedAsync();
+        _hubConnection.Reconnecting += _ => InvokeAsync(StateHasChanged);
+        _hubConnection.Closed += _ => InvokeAsync(StateHasChanged);
+        _hubConnection.Reconnected += _ => InvokeAsync(StateHasChanged);
+        await _storage.Init();
         _messages = await _storage.GetAll();
         await _hubConnection.StartAsync();
-    }
-
-    private Task StateHasChangedAsync()
-    {
-        StateHasChanged();
-        return Task.CompletedTask;
     }
 
     public async ValueTask DisposeAsync()
@@ -49,9 +44,8 @@
 
     private async Task OnClear()
     {
-        await _storage.ClearAll();
+        await _storage.Clear();
         _messages = await _storage.GetAll();
-    // StateHasChanged();
     }
 
 }

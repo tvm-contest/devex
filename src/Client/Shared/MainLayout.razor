@@ -5,9 +5,9 @@
 <MudThemeProvider Theme="@_currentTheme"/>
 
 <MudLayout>
-    <MudAppBar Dense="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudText Typo="Typo.h5" Class="ml-3">@ProjectConstants.ServiceName</MudText>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(_ => DrawerToggle())"/>
+        <MudText Typo="Typo.h5" Class="ml-1" Style="white-space: nowrap">@ProjectConstants.ServiceName</MudText>
         <MudSpacer/>
         <MudIconButton Icon="@Icons.Rounded.DarkMode" OnClick="@(_ => DarkMode())" Title="Toggle Dark/Light Mode"/>
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="@ProjectConstants.GitHubLink" Target="_blank"/>
@@ -16,7 +16,7 @@
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu/>
     </MudDrawer>
-    <MudMainContent Class="mt-8">
+    <MudMainContent Class="px-8" MaxWidth="@MaxWidth.False">
         @Body
     </MudMainContent>
 </MudLayout>
