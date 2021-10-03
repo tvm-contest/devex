@@ -10,7 +10,7 @@ namespace Client.Storage
     public class MessageInfoStorage : ConcurrentEntityStorageBase<List<MessageInfo>>, IMessageInfoStorage
     {
         public MessageInfoStorage(ILocalStorageService localStorage, NavigationManager navigationManager) : base(localStorage,
-            $"MessageInfos_{GetClientHash(navigationManager)}")
+            $"MessageInfos:{GetClientHash(navigationManager)}")
         {
         }
 
