@@ -1,4 +1,4 @@
-﻿namespace Shared
+﻿namespace Common
 {
     public static class ProjectConstants
     {
@@ -9,5 +9,7 @@
 
         public const string ServiceDescription =
             "This is a notification provider. It can catch messages from the blockchain and send them to various endpoints.";
+
+        public const string DeBotLink = "https://web.ton.surf/debot?address=0%3A433f7b97e4e613397175a2d9d1094643b5b90d1f095c423997f95fbf905a3ae3&net=devnet";
     }
 }

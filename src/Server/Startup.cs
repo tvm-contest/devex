@@ -1,4 +1,5 @@
 using System;
+using Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +11,6 @@ using Microsoft.Extensions.Hosting;
 using NSwag;
 using Prometheus;
 using Serilog;
-using Shared;
 
 namespace Server
 {

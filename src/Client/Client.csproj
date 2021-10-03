@@ -18,7 +18,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Client.Storage\Client.Storage.csproj"/>
-        <ProjectReference Include="..\Shared\Shared.csproj"/>
+        <ProjectReference Include="..\Common\Common.csproj"/>
     </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">

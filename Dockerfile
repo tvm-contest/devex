@@ -8,7 +8,7 @@ EXPOSE 80
 FROM scratch AS csproj-client
 COPY ["src/Client/Client.csproj", "/src/Client/Client.csproj"]
 COPY ["src/Client.Storage/Client.Storage.csproj", "/src/Client.Storage/Client.Storage.csproj"]
-COPY ["src/Shared/Shared.csproj", "/src/Shared/Shared.csproj"]
+COPY ["src/Common/Common.csproj", "/src/Common/Common.csproj"]
 
 FROM scratch AS csproj-server
 COPY ["src/Server/Server.csproj", "/src/Server/Server.csproj"]
@@ -20,7 +20,7 @@ COPY ["src/Server.MassTransit/Server.MassTransit.csproj", "/src/Server.MassTrans
 COPY ["src/Server.Redis/Server.Redis.csproj", "/src/Server.Redis/Server.Redis.csproj"]
 COPY ["src/Server.SignalR/Server.SignalR.csproj", "/src/Server.SignalR/Server.SignalR.csproj"]
 COPY ["src/Server.Utils/Server.Utils.csproj", "/src/Server.Utils/Server.Utils.csproj"]
-COPY ["src/Shared/Shared.csproj", "/src/Shared/Shared.csproj"]
+COPY ["src/Common/Common.csproj", "/src/Common/Common.csproj"]
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-client
 WORKDIR /src
@@ -28,7 +28,7 @@ COPY --from=csproj-client / /
 RUN dotnet restore Client
 COPY src/Client Client
 COPY src/Client.Storage Client.Storage
-COPY src/Shared Shared
+COPY src/Common Common
 RUN dotnet build -c Release Client
 RUN dotnet publish -c Release --no-build -o /publish Client
 
@@ -45,7 +45,7 @@ COPY src/Server.MassTransit Server.MassTransit
 COPY src/Server.Redis Server.Redis
 COPY src/Server.SignalR Server.SignalR
 COPY src/Server.Utils Server.Utils
-COPY src/Shared Shared
+COPY src/Common Common
 RUN dotnet build -c Release Server
 RUN dotnet publish -c Release --no-build -o /publish Server
 
