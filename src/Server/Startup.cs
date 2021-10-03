@@ -30,14 +30,14 @@ namespace Server
             // configure asp net
             services.AddControllersWithViews(options => { options.InputFormatters.Insert(options.InputFormatters.Count, new TextPlainInputFormatter()); });
             services.AddRazorPages();
-            services.AddSwaggerDocument(settings => { settings.Title = ProjectConstants.AppName; });
+            services.AddSwaggerDocument(settings => { settings.Title = ProjectConstants.ServiceName; });
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             services.AddCors(o => o.AddPolicy("SubmitClient", builder => builder.AllowAnyOrigin()));
 
             // add configuration options
             services.ConfigureOptions(Configuration);
 
-            // http client to sent http hooks
+            // http client for sending http hooks
             services.AddHttpClient();
 
             // add masstransit with rabbit if configured else use in-memory bus

@@ -1,18 +1,15 @@
 ﻿@page "/"
+@using global::Shared
+@inject NavigationManager _navigationManager;
 
-<MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Free TON Notify</MudText>
-<MudText Align="Align.Center">This is a notification provider. It can catch messages from the blockchain and send them to various endpoints.</MudText>
+<MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">@ProjectConstants.ServiceName</MudText>
+<MudText Align="Align.Center">@ProjectConstants.ServiceDescription</MudText>
 <MudText Align="Align.Left">Swagger: <MudLink Target="_blank" Href="@SwaggerUrl">@SwaggerUrl</MudLink></MudText>
-<MudText Align="Align.Left">GitHub: <MudLink Target="_blank" Href="@GitHubLink">@GitHubLink</MudLink></MudText>
-<MudText Align="Align.Left">Telegram: <MudLink Target="_blank" Href="@TelegramLink">@TelegramLink</MudLink></MudText>
+<MudText Align="Align.Left">GitHub: <MudLink Target="_blank" Href="@ProjectConstants.GitHubLink">@ProjectConstants.GitHubLink</MudLink></MudText>
+<MudText Align="Align.Left">Telegram: <MudLink Target="_blank" Href="@ProjectConstants.TelegramLink">@ProjectConstants.TelegramLink</MudLink></MudText>
 
 @code{
 
-    private string SwaggerUrl => MyNavigationManager.ToAbsoluteUri("swagger").ToString();
-    private static string GitHubLink => "https://github.com/ton-actions/free-ton-http-notification-provider";
-    private static string TelegramLink => "https://t.me/ton_actions_chat";
-
-    [Inject]
-    public NavigationManager MyNavigationManager { get; set; }
+    private string SwaggerUrl => _navigationManager.ToAbsoluteUri("swagger").ToString();
 
 }
