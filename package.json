@@ -7,17 +7,16 @@
     "url": "git+https://github.com/Strafi/free-ton-notifications-service.git"
   },
   "keywords": [
-    "Free Ton",
+    "Free TON",
     "Blockchain",
     "Notifications",
     "Service"
   ],
   "author": "Anton Solodkov <anton.solodkof@gmail.com>",
-  "main": "dist/index.js",
+  "main": "dist/src/server.js",
   "scripts": {
     "eslint": "eslint src/server.ts",
     "postinstall": "chmod +x ./scripts/dev.sh",
-    "setup-actions": "chmod +x ./scripts/setup-github-actions.sh; ./scripts/setup-github-actions.sh",
     "build": "tsc",
     "lint": "./node_modules/eslint/bin/eslint.js  src --ext .ts",
     "dev": "./scripts/dev.sh",

@@ -10,13 +10,30 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - MONGO_URL=mongodb://host.docker.internal:27017/ftns
+      - MONGO_URL=mongodb://mongo:27017/ftns
+      - KAFKA_USERNAME=<USERNAME>
+      - KAFKA_PASSWORD=<PASSWORD>
+      - KAFKA_BROKER=notification.services.tonlabs.io:29092
     volumes:
       - ./logs:/logs
     networks:
       - app-network
     ports:
       - "3000:3000"
+    depends_on:
+      - mongo
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo:5.0
+    volumes:
+      - ./data:/data/db
+    networks:
+      - app-network
+    hostname: mongo
+    ports:
+      - '27017:27017'
 
 networks:
   app-network:
