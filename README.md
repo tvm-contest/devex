@@ -15,12 +15,14 @@ This extension use extended Solidity language and provides:
 
 * Syntax highlighting
 * Own extension `.tsol` that allows working with Solidity code and TON Solidity language extension
-* Snippets
+* The extension can be associated with `.sol` files. Also exist "toggle file extension" command to migrate between `.sol` to `.tsol` and vice versa
+* Snippets 
+* Additional information by hover event
 * Code completion for all contracts / libraries in the current file and all referenced imports
 * Code completion for all variables, functions, global parameters and unique types for TVM
 * Linting using Solhint or Solium
 * Covered all extension for TON compiler accordance with https://github.com/tonlabs/TON-Solidity-Compiler/blob/master/API.md
-* Built in compiler with auto compilation tvc + abi.json files
+* Built-in compiler with auto compilation tvc + abi.json files
 
 # Instructions
 
@@ -104,8 +106,8 @@ For ideas, issues, additions, modifications please raise an issue or a pull requ
 # Requested features
 
 - [ ] Formatter
-- [x] Show Hovers
-- [ ] Help With Function and Method Signatures
-- [ ] Possible Actions on Errors or Warnings
-- [ ] Incrementally Format Code as the User Types
+- [x] Show hovers
+- [ ] Help with function and method signatures
+- [ ] Possible actions on errors or warnings
+- [ ] Incrementally format code as the user types
 - [ ] Cut out parser, linter and other packages and create new separated
