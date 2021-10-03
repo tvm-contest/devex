@@ -9,9 +9,16 @@ namespace Client.Storage
 {
     public class MessageInfoStorage : ConcurrentEntityStorageBase<List<MessageInfo>>, IMessageInfoStorage
     {
+        public const string StoragePrefix = "MessageInfos";
+
         public MessageInfoStorage(ILocalStorageService localStorage, NavigationManager navigationManager) : base(localStorage,
-            $"MessageInfos:{GetClientHash(navigationManager)}")
+            $"{StoragePrefix}:{GetClientHash(navigationManager)}")
         {
+        }
+
+        public async Task Init()
+        {
+            await Update(_ => { });
         }
 
         public async Task<IReadOnlyCollection<MessageInfo>> GetAll()
@@ -23,12 +30,13 @@ namespace Client.Storage
         {
             return await Update(list =>
             {
-                list.Insert(0, messageInfo);
+                if (!list.Exists(info => info.Message == messageInfo.Message))
+                    list.Insert(0, messageInfo);
                 return list;
             });
         }
 
-        public async Task ClearAll()
+        public async Task Clear()
         {
             await Update(list => { list.Clear(); });
         }
