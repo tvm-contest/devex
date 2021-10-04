@@ -76,7 +76,7 @@ namespace Server.Controllers
         {
             [Required(AllowEmptyStrings = false)] public string Hash { get; init; }
 
-            [Required(AllowEmptyStrings = false)] public string Data { get; init; }
+            [Required(AllowEmptyStrings = true)] public string Data { get; init; }
         }
     }
 }
