@@ -27,15 +27,13 @@ namespace Server.Requests
             var cancellationToken = context.CancellationToken;
             var hash = context.Message.Hash;
             var endpoint = context.Message.Endpoint;
-            const string serviceUrl = ProjectConstants.ServerUrl;
-            var testConsumerUrl = Url.Combine(serviceUrl, "test-consumer");
 
-            if (await ComingSoon(context)) return;
-            if (await DontAllowUseServerUrl(context, endpoint, serviceUrl)) return;
-            endpoint = GenerateEndpointIfTestCommand(endpoint, testConsumerUrl, hash);
-            if (await EndpointValidationError(context, endpoint)) return;
+            if (!endpoint.Equals("test") && await ComingSoon(context)) return;
+            if (await DontAllowUseServerUrl(context)) return;
+            GenerateEndpointIfTestCommand(hash, ref endpoint);
+            if (await EndpointValidationError(context)) return;
             await AddOrUpdateClientInfoToDb(hash, endpoint, cancellationToken);
-            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = true });
+            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint });
         }
 
         private async Task AddOrUpdateClientInfoToDb(string hash, string endpoint, CancellationToken cancellationToken)
@@ -57,30 +55,28 @@ namespace Server.Requests
             await _serverDbContext.SaveChangesAsync(cancellationToken);
         }
 
-        private static string GenerateEndpointIfTestCommand(string endpoint, string testConsumerUrl, string hash)
+        private static void GenerateEndpointIfTestCommand(string hash, ref string endpoint)
         {
-            return endpoint.Equals("test", StringComparison.OrdinalIgnoreCase)
-                ? Url.Combine(testConsumerUrl, hash[..12])
-                : endpoint;
+            if (endpoint.Equals("test", StringComparison.OrdinalIgnoreCase))
+                endpoint = Url.Combine(ProjectConstants.ServerUrl, "test-consumer", hash[..12]);
         }
 
-        private static async Task<bool> EndpointValidationError(ConsumeContext context, string endpoint)
+        private static async Task<bool> EndpointValidationError(ConsumeContext<SubmitClient> context)
         {
-            if (EndpointValidationHelper.IsHttpEndpoint(endpoint)) return false;
+            if (EndpointValidationHelper.IsHttpEndpoint(context.Message.Endpoint)) return false;
             await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.EndpointValidation });
             return true;
         }
 
-        private static async Task<bool> DontAllowUseServerUrl(ConsumeContext context, string endpoint, string serviceUrl)
+        private static async Task<bool> DontAllowUseServerUrl(ConsumeContext<SubmitClient> context)
         {
-            if (!endpoint.StartsWith(serviceUrl, StringComparison.OrdinalIgnoreCase)) return false;
+            if (!context.Message.Endpoint.StartsWith(ProjectConstants.ServerUrl, StringComparison.OrdinalIgnoreCase)) return false;
             await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.AccessDenied });
             return true;
         }
 
-        private async Task<bool> ComingSoon(ConsumeContext<SubmitClient> context)
+        private async Task<bool> ComingSoon(ConsumeContext context)
         {
-            if (context.Message.Endpoint.Equals("test")) return false;
             if (!bool.TryParse(_configuration["COMING_SOON"], out var comingSoon) || !comingSoon) return false;
             await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.ComingSoon });
             return true;
