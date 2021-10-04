@@ -28,7 +28,7 @@ namespace Server.Controllers
         public async Task<OkObjectResult> SubmitClient([FromForm] EndpointParameters parameters, CancellationToken cancellationToken)
         {
             var hash = parameters.Hash;
-            var endpoint = parameters.Data.FromBase64();
+            var endpoint = parameters.Data?.FromBase64() ?? string.Empty;
 
             _logger.LogTrace("Received hash: {Hash} endpoint: {Endpoint}", hash, endpoint);
 
@@ -76,7 +76,7 @@ namespace Server.Controllers
         {
             [Required(AllowEmptyStrings = false)] public string Hash { get; init; }
 
-            [Required(AllowEmptyStrings = true)] public string Data { get; init; }
+            public string Data { get; init; }
         }
     }
 }

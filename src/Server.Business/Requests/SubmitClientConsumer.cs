@@ -29,9 +29,9 @@ namespace Server.Requests
             var endpoint = context.Message.Endpoint;
 
             if (!endpoint.Equals("test") && await ComingSoon(context)) return;
-            if (await DontAllowUseServerUrl(context)) return;
+            if (await DontAllowUseServerUrl(context, endpoint)) return;
             GenerateEndpointIfTestCommand(hash, ref endpoint);
-            if (await EndpointValidationError(context)) return;
+            if (await EndpointValidationError(context, endpoint)) return;
             await AddOrUpdateClientInfoToDb(hash, endpoint, cancellationToken);
             await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint });
         }
@@ -61,16 +61,16 @@ namespace Server.Requests
                 endpoint = Url.Combine(ProjectConstants.ServerUrl, "test-consumer", hash[..12]);
         }
 
-        private static async Task<bool> EndpointValidationError(ConsumeContext<SubmitClient> context)
+        private static async Task<bool> EndpointValidationError(ConsumeContext context, string endpoint)
         {
-            if (EndpointValidationHelper.IsHttpEndpoint(context.Message.Endpoint)) return false;
+            if (EndpointValidationHelper.IsHttpEndpoint(endpoint)) return false;
             await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.EndpointValidation });
             return true;
         }
 
-        private static async Task<bool> DontAllowUseServerUrl(ConsumeContext<SubmitClient> context)
+        private static async Task<bool> DontAllowUseServerUrl(ConsumeContext context, string endpoint)
         {
-            if (!context.Message.Endpoint.StartsWith(ProjectConstants.ServerUrl, StringComparison.OrdinalIgnoreCase)) return false;
+            if (!endpoint.StartsWith(ProjectConstants.ServerUrl, StringComparison.OrdinalIgnoreCase)) return false;
             await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.AccessDenied });
             return true;
         }
