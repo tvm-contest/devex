@@ -24,7 +24,8 @@ namespace Server
                 })
                 .AddMassTransit(x =>
                 {
-                    x.AddConsumer<SendSubscriptionHttpConsumer>();
+                    x.AddDelayedMessageScheduler();
+                    x.AddConsumer<SendSubscriptionHttpConsumer, SendSubscriptionHttpConsumerDefinition>();
                     x.AddRider(RiderRegistrationConfiguratorExtensions.UsingKafka);
                     x.AddSignalRHub<SignalRHub>();
                     x.SetKebabCaseEndpointNameFormatter();
@@ -50,6 +51,7 @@ namespace Server
 
         private static void ConfigureContext(IBusFactoryConfigurator cfg, IConfigurationServiceProvider context)
         {
+            cfg.UseDelayedMessageScheduler();
             cfg.UsePublishFilter(typeof(SendSubscriptionAddClientInfoFilter<>), context);
             cfg.UsePrometheusMetrics();
         }
