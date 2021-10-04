@@ -10,17 +10,16 @@ import {SolidityDefinitionProvider} from './definitionProvider';
 import {
     createConnection, Connection,
     IPCMessageReader, IPCMessageWriter,
-    TextDocuments, InitializeResult,
-    Files, Diagnostic,
-    TextDocumentPositionParams,
-    CompletionItem, Location, SignatureHelp, TextDocumentSyncKind,
+    TextDocuments, InitializeResult, Hover,
+    Files, Diagnostic, TextDocumentPositionParams,
+    CompletionItem, Location, SignatureHelp,
+    TextDocumentSyncKind, HoverParams, MarkedString
 } from 'vscode-languageserver';
+import { HoverService } from './hoverService';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
-import {URI} from 'vscode-uri';
 import {SolcCompiler} from './solcCompiler';
-import { fstat } from 'fs';
 
 interface Settings {
     tonsolidity: SoliditySettings;
@@ -89,11 +88,10 @@ async function validate(document) {
                                                 packageDefaultDependenciesDirectory,
                                                 packageDefaultDependenciesContractsDirectory);
                 errors.forEach(errorItem => {
-                    //compileErrorDiagnostics.push(errorItem.diagnostic);
-                    const uriCompileError = URI.file(errorItem.fileName);
-                    //if (uri.indexOf(uriCompileError.toString().replace("file://", "")) !== -1) {
+                    const currentFileName = path.basename(filePath);
+                    if (errorItem.fileName === currentFileName) {
                         compileErrorDiagnostics.push(errorItem.diagnostic);
-                    //}
+                    }
                 });
             }
         } catch (e) {
@@ -118,12 +116,26 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
     const service = new CompletionService(rootPath);
 
     completionItems = completionItems.concat(
-    service.getAllCompletionItems2( packageDefaultDependenciesDirectory,
-                                    packageDefaultDependenciesContractsDirectory,
-                                    document,
-                                    textDocumentPosition.position,
-                                    ));
+        service.getAllCompletionItems2( packageDefaultDependenciesDirectory,
+                                        packageDefaultDependenciesContractsDirectory,
+                                        document,
+                                        textDocumentPosition.position,
+                                        )
+    );
     return completionItems;
+});
+
+connection.onHover((textPosition: HoverParams): Hover => {
+    const hoverService = new HoverService(rootPath);
+    const suggestion = hoverService.getHoverItems(
+        packageDefaultDependenciesDirectory,
+        packageDefaultDependenciesContractsDirectory,
+        documents.get(textPosition.textDocument.uri),
+        textPosition.position);
+    let doc : MarkedString[] = suggestion
+    return {
+      contents: doc
+    }
 });
 
 connection.onDefinition((handler: TextDocumentPositionParams): Thenable<Location | Location[]> => {
@@ -155,7 +167,7 @@ function startValidation() {
     if (enabledAsYouTypeErrorCheck) {
         validateAllDocuments();
     } else {
-        console.log('error check on typing is disabled');
+        //console.log('error check on typing is disabled');
     }
 }
 
@@ -219,8 +231,9 @@ connection.onInitialize((result): InitializeResult => {
                 resolveProvider: false,
                 triggerCharacters: [ '.' ],
             },
-           definitionProvider: true,
-           textDocumentSync: TextDocumentSyncKind.Full,
+            hoverProvider: true,
+            definitionProvider: true,
+            textDocumentSync: TextDocumentSyncKind.Full,
         },
     };
 });

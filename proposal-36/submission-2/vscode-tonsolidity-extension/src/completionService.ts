@@ -1,8 +1,5 @@
 'use strict';
-import { Parser } from './parser/tonsolidity';
-import {ContractCollection} from './model/contractsCollection';
 import { CompletionItem, CompletionItemKind } from 'vscode-languageserver';
-import { initialiseProject } from './projectService';
 import * as vscode from 'vscode-languageserver';
 import {Contract2, DeclarationType, DocumentContract, Function, SolidityCodeWalker, Variable, Struct} from './codeWalkerService';
 import * as glob from 'glob';
@@ -10,11 +7,9 @@ import { relative } from 'path';
 import { fileURLToPath } from 'url';
 import * as path from 'path';
 
-
 export class CompletionService {
 
     public rootPath: string;
-    public solparser = new Parser();
 
     constructor(rootPath: string) {
         this.rootPath = rootPath;
@@ -181,59 +176,6 @@ export class CompletionService {
         return completionItem;
     }
   
-
-    public getDocumentCompletionItems(documentText: string): CompletionItem[] {
-        const completionItems = [];
-        try {
-            const result = this.solparser.parse(documentText);
-            // console.log(JSON.stringify(result));
-            // TODO struct, modifier
-            result.body.forEach(element => {
-                if (element.type === 'ContractStatement' ||  element.type === 'LibraryStatement' || element.type == 'InterfaceStatement') {
-                    const contractName = element.name;
-                    if (typeof element.body !== 'undefined' && element.body !== null) {
-                        element.body.forEach(contractElement => {
-                            if (contractElement.type === 'FunctionDeclaration') {
-                                // ignore the constructor TODO add to contract initialiasation
-                                if (contractElement.name !== contractName) {
-                                    completionItems.push(
-                                            this.createFunctionEventCompletionItem(contractElement, 'function', contractName ));
-                                }
-                            }
-
-                            if (contractElement.type === 'EventDeclaration') {
-                                completionItems.push(this.createFunctionEventCompletionItem(contractElement, 'event', contractName ));
-                            }
-
-                            if (contractElement.type === 'StateVariableDeclaration') {
-                                completionItems.push(this.createVariableCompletionItem(contractElement, 'state variable', contractName));
-                            }
-
-                            if (contractElement.type === 'EnumDeclaration') {
-                                completionItems.push(this.createEnumCompletionItem(contractElement, contractName));
-                            }
-
-                            if (contractElement.type === 'StructDeclaration') {
-                                completionItems.push(this.createStructCompletionItem(contractElement, contractName));
-                            }
-
-                            if (contractElement.type === 'TvmBuilderDeclaration') {
-                                completionItems.push(this.createTvmBuilderCompletionItem(contractElement, contractName));
-                            }
-                            
-                        });
-                    }
-                }
-            });
-        } catch (error) {
-          // gracefule catch
-          // console.log(error.message);
-        }
-        console.log('file completion items' + completionItems.length);
-        return completionItems;
-    }
-
-
     public getAllCompletionItems2(packageDefaultDependenciesDirectory: string,
         packageDefaultDependenciesContractsDirectory: string,
         document: vscode.TextDocument,
@@ -268,7 +210,7 @@ export class CompletionService {
                     // if triggered by variable //done
                     // todo triggered by method (get return type) // done
                     // todo triggered by property // done
-                    // todo variable // method return is an array (push, length etc)
+                    // todo variable // done
                     // variable / method / property is an address or other specific type functionality (balance, etc)
                     // variable / method / property type is extended by a library
                     if (autocompleteByDot.name !== '') {
@@ -298,6 +240,7 @@ export class CompletionService {
 
             if (triggeredByImport) {
                 let files = glob.sync(this.rootPath + '/**/*.tsol');
+                    files.concat(glob.sync(this.rootPath + '/**/*.sol'));
                 files.forEach(item => {
                     let dependenciesDir = path.join(this.rootPath, packageDefaultDependenciesDirectory);
                     item = path.join(item);
@@ -350,7 +293,7 @@ export class CompletionService {
 
         } catch (error) {
             // graceful catch
-            console.log(error);
+            //console.log(error);
         } finally {
             completionItems = completionItems.concat(GetCompletionTypes());
             completionItems = completionItems.concat(GetCompletionKeywords());
@@ -688,42 +631,17 @@ export class CompletionService {
 
     public getTriggeredByDotStart(lines:string[], position: vscode.Position):number {
         let start = 0;
-        let triggeredByDot = false;
         for (let i = position.character; i >= 0; i--) {
             if (lines[position.line[i]] === ' ') {
-                triggeredByDot = false;
                 i = 0;
                 start = 0;
             }
             if (lines[position.line][i] === '.') {
                 start = i;
                 i = 0;
-                triggeredByDot = true;
             }
         }
         return start;
-    }
-
-    public getAllCompletionItems(documentText: string,
-                                documentPath: string,
-                                packageDefaultDependenciesDirectory: string,
-                                packageDefaultDependenciesContractsDirectory: string): CompletionItem[] {
-
-        if (this.rootPath !== 'undefined' && this.rootPath !== null) {
-            const contracts = new ContractCollection();
-            contracts.addContractAndResolveImports(
-                documentPath,
-                documentText,
-                initialiseProject(this.rootPath, packageDefaultDependenciesDirectory, packageDefaultDependenciesContractsDirectory));
-            let completionItems = [];
-            contracts.contracts.forEach(contract => {
-                completionItems = completionItems.concat(this.getDocumentCompletionItems(contract.code));
-            });
-            // console.log('total completion items' + completionItems.length);
-            return completionItems;
-        } else {
-            return this.getDocumentCompletionItems(documentText);
-        }
     }
 }
 

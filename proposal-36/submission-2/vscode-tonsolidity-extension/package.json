@@ -13,7 +13,7 @@
     "compiler",
     "solium"
   ],
-  "version": "1.0.5",
+  "version": "1.0.9",
   "publisher": "mytonwallet",
   "license": "Apache-2.0",
   "engines": {
@@ -72,7 +72,7 @@
     "solium-plugin-security": "^0.1.1",
     "string-width": "^4.2.2",
     "tondev": "^0.9.0",
-    "vsce": "^1.99.0",
+    "vsce": "^1.100.1",
     "vscode-languageclient": "^6.1.4",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-textdocument": "^1.0.1",
@@ -174,7 +174,8 @@
           "TON solidity"
         ],
         "extensions": [
-          ".tsol"
+          ".tsol",
+          ".sol"
         ],
         "configuration": "./tonsolidity.configuration.json"
       }
@@ -190,9 +191,9 @@
       }
     ],
     "menus": {
-      "explorer/context": [
+      "editor/context": [
         {
-          "when": "explorerResourceIsFolder",
+          "when": "editorLangId == 'tonsolidity'",
           "command": "tonsolidity.toggleFileExtension"
         }
       ]

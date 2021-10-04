@@ -14,7 +14,6 @@ export function lintAndfixCurrentDocument() {
     );
 
     const result = linter.lintAndFix(sourceCode);
-    console.log(result);
     const edit = new WorkspaceEdit();
     edit.replace(editor.document.uri, fullRange, result.fixedSourceCode);
     return workspace.applyEdit(edit);

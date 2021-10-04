@@ -80,6 +80,46 @@
 		"unchecked" : {
 			"prefix": "unchecked",
 			"body": "unchecked {\n\t$0\n}"
+		},
+		"receive declaration": {
+			"prefix": "receive",
+			"body": "receive() external {\n\t$0\n}"
+		},
+		"fallback declaration": {
+			"prefix": "fallback",
+			"body": "fallback() external {\n\t$0\n}"
+		},
+		"onBounce declaration": {
+			"prefix": "onBounce",
+			"body": "onBounce(TvmSlice ${1:body}) external {\n\t$0\n}"
+		},
+		"onTickTock declaration": {
+			"prefix": "onTickTock",
+			"body": "onTickTock(bool ${1:name}) external {\n\t$0\n}"
+		},
+		"onCodeUpgrade declaration": {
+			"prefix": "onCodeUpgrade",
+			"body": "onCodeUpgrade() private {\n\t$0\n}"
+		},
+		"afterSignatureCheck declaration": {
+			"prefix": "afterSignatureCheck",
+			"body": "afterSignatureCheck(TvmSlice ${1:body}, TvmCell ${2:message}) private inline returns (TvmSlice) {\n\t$0\n}"
+		},
+		"selfdestruct declaration": {
+			"prefix": "selfdestruct",
+			"body": "selfdestruct(${1:type} ${2:name});"
+		},
+		"sha256 declaration": {
+			"prefix": "sha256",
+			"body": "sha256(${1:type} ${2:name}) returns (${3:type});"
+		},
+		"gasToValue declaration": {
+			"prefix": "gasToValue",
+			"body": "gasToValue(${1:type} ${2:name}, ${3:type} ${4:name}) returns (${5:type} ${6:name});"
+		},
+		"valueToGas declaration": {
+			"prefix": "valueToGas",
+			"body": "valueToGas(${1:type} ${2:name}, ${3:type} ${4:name}) returns (${5:type} ${6:name});"
 		}
     }
 }
