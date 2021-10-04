@@ -18,7 +18,10 @@ services:
       - 'redis_data:/bitnami/redis/data'
     restart: unless-stopped
   rabbitmq:
-    image: bitnami/rabbitmq:3.9.7-debian-10-r5
+    image: bitnami/rabbitmq:3.9
+    environment:
+      - 'RABBITMQ_COMMUNITY_PLUGINS=https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.9.0/rabbitmq_delayed_message_exchange-3.9.0.ez'
+      - 'RABBITMQ_PLUGINS=rabbitmq_management rabbitmq_web_dispatch rabbitmq_management_agent rabbitmq_delayed_message_exchange'
     volumes:
       - rabbitmq_data:/bitnami
     restart: unless-stopped
