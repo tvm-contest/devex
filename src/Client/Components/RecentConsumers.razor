@@ -1,0 +1,79 @@
+﻿@inject ILocalStorageService _localStorage
+@inject NavigationManager _navigationManager
+
+<MudText Typo="@Typo.h6" GutterBottom="@true" Style="white-space: nowrap">Recent consumers</MudText>
+<MudPaper Class="d-flex flex-column" Style="height:100%;" Outlined="true">
+    <MudList Dense="true" Clickable="@(MessageInfoKeys.Count > 0)">
+        @if (MessageInfoKeys.Count > 0)
+        {
+            @foreach (var key in MessageInfoKeys)
+            {
+                <MudListItem Href="@($"{_navigationManager.Uri}/{key}")">
+                    <div class="d-flex justify-space-between">
+                        <MudText>@key</MudText>
+                        <MudIconButton Icon="@Icons.Rounded.RemoveCircleOutline" Size="@Size.Small" @OnClick="() => DeleteConsumer(key)"/>
+                    </div>
+                </MudListItem>
+            }
+        }
+        else
+        {
+            <MudListItem>
+                <div class="d-flex justify-space-between">
+                    <MudSkeleton Width="70%" Height="30px"/>
+                    <MudSkeleton Width="20px" Height="30px"/>
+                </div>
+            </MudListItem>
+            <MudListItem>
+                <div class="d-flex flex-row">
+                    <MudSkeleton Width="70%" Height="30px"/>
+                    <MudSpacer/>
+                    <MudSkeleton Width="20px" Height="30px"/>
+                </div>
+            </MudListItem>
+        }
+    </MudList>
+</MudPaper>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FillMessages();
+
+        _localStorage.Changed += AddRemoveKeys;
+    }
+
+    private void AddRemoveKeys(object sender, ChangedEventArgs args)
+    {
+        if (!args.Key.Split(':', 2)[0].Equals(MessageInfoStorage.StoragePrefix))
+            return;
+        if (args.NewValue == null)
+            MessageInfoKeys.Remove(args.Key);
+        else
+            MessageInfoKeys.Add(args.Key);
+        StateHasChanged();
+    }
+
+    private async Task FillMessages()
+    {
+        var storageLength = await _localStorage.LengthAsync();
+        var getKeyTasks = Enumerable.Range(0, storageLength - 1).Select(async i => await _localStorage.KeyAsync(i));
+        var keys = await Task.WhenAll(getKeyTasks);
+        MessageInfoKeys = keys
+            .Select(key => key.Split(':', 2))
+            .Where(key => key.Length == 2 && key[0] == MessageInfoStorage.StoragePrefix)
+            .Select(key => key[1])
+            .ToList();
+    }
+
+    private List<string> MessageInfoKeys { get; set; } = new();
+
+    private async Task DeleteConsumer(string key)
+    {
+        await _localStorage.RemoveItemAsync($"{MessageInfoStorage.StoragePrefix}:{key}");
+        await FillMessages();
+        await InvokeAsync(StateHasChanged);
+    }
+
+}

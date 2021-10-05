@@ -1,7 +1,6 @@
-﻿@using Client.Storage
-<MudTable Items="@MessageInfos" Dense="true" Hover="true" Bordered="false" Striped="true">
+﻿<MudTable Items="@(MessageInfos ?? Array.Empty<MessageInfo>())" Dense="true" Hover="true" Bordered="false" Striped="true" Loading="@(MessageInfos == null)">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Recived messages: @MessageInfos.Count</MudText>
+        <MudText Typo="Typo.h6">Recived messages: @(MessageInfos?.Count ?? 0)</MudText>
         <MudSpacer/>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@OnClearClickCallback">Clear</MudButton>
     </ToolBarContent>
@@ -10,9 +9,14 @@
         <MudTh>Message</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Time">@context.DateTime</MudTd>
-        <MudTd DataLabel="Message">@context.Message</MudTd>
+        <MudTd>@context.DateTime</MudTd>
+        <MudTd>
+            <pre style="border-width: 1px"><code>@context.Message</code></pre>
+        </MudTd>
     </RowTemplate>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
     <PagerContent>
         <MudTablePager/>
     </PagerContent>

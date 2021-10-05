@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace Server.Controllers
 {
     [ApiController]
-    [Route("test-consumer")]
+    [Route("test-consumer/{userId}")]
     public class TestConsumerController : ControllerBase
     {
         private readonly ILogger<TestConsumerController> _logger;
@@ -19,13 +19,10 @@ namespace Server.Controllers
             _signalRHub = signalRHub;
         }
 
-        [HttpPost("{userId}")]
+        [HttpPost]
         [Consumes("text/plain")]
         public async Task<IActionResult> Receive(string userId, [FromBody] string message, CancellationToken cancellationToken)
         {
-            //take Nonce only for client message
-            message = message.Split(' ')[0];
-
             _logger.LogTrace("Received message: {Consumer} {Message}", userId, message);
             // await _publishEndpoint.Publish<User<SignalRHub>>(new
             // {

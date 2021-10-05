@@ -1,10 +1,11 @@
 ﻿@page "/test-consumer/{UserId}"
 @inject NavigationManager _navigation
 @inject IMessageInfoStorage _storage
+@using System.Text.Json
 @implements IAsyncDisposable
 
 <ConsumerConnectionStatus IsConnected="@IsConnected"/>
-<MessageInfoTable MessageInfos="@_messages" OnClearClickCallback="@OnClear"/>
+<MessageInfoTable MessageInfos="@Messages" OnClearClickCallback="@OnClear"/>
 
 @code {
 
@@ -12,8 +13,10 @@
     public string UserId { get; set; }
 
     private HubConnection _hubConnection;
-    private IReadOnlyCollection<MessageInfo> _messages = Array.Empty<MessageInfo>();
+    private IReadOnlyCollection<MessageInfo> Messages { get; set; }
     private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
+
+    private static readonly JsonSerializerOptions JsonIndentedSerializerOptions = new() { WriteIndented = true };
 
     protected override async Task OnInitializedAsync()
     {
@@ -23,15 +26,18 @@
             .Build();
         _hubConnection.On<string>("ReceiveMessage", async message =>
         {
-            _messages = await _storage.Push(new MessageInfo { DateTime = DateTime.Now, Message = message });
+    // format json document
+            message = JsonSerializer.Serialize(JsonDocument.Parse(message).RootElement, JsonIndentedSerializerOptions);
+
+            Messages = await _storage.Push(new MessageInfo { DateTime = DateTime.Now, Message = message });
             StateHasChanged();
         });
         _hubConnection.Reconnecting += _ => InvokeAsync(StateHasChanged);
         _hubConnection.Closed += _ => InvokeAsync(StateHasChanged);
         _hubConnection.Reconnected += _ => InvokeAsync(StateHasChanged);
-        await _storage.Init();
-        _messages = await _storage.GetAll();
         await _hubConnection.StartAsync();
+        await _storage.Init();
+        Messages = await _storage.GetAll();
     }
 
     public async ValueTask DisposeAsync()
@@ -44,8 +50,9 @@
 
     private async Task OnClear()
     {
+        Messages = null;
         await _storage.Clear();
-        _messages = await _storage.GetAll();
+        Messages = await _storage.GetAll();
     }
 
 }
