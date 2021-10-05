@@ -22,10 +22,10 @@ namespace Server.Notifications
             {
                 var cancellationToken = context.CancellationToken;
 
-                var clientInfo = await _serverContext.ClientInfos.FindAsync(new object[] { message.Hash }, cancellationToken);
+                var clientInfo = await _serverContext.ClientInfos.FindAsync(new object[] { message.ClientId }, cancellationToken);
                 if (clientInfo == null)
                 {
-                    _logger.LogWarning("Client {ClientHash} not found in the Database, skip publishing..", message.Hash);
+                    _logger.LogWarning("Client {ClientId} not found in the Database, skip publishing..", message.ClientId);
                     return;
                 }
 

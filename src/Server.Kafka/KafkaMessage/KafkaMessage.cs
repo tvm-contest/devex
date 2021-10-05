@@ -1,4 +1,4 @@
-﻿namespace Server.KafksMessage
+﻿namespace Server.KafkaMessage
 {
     public class KafkaMessage
     {

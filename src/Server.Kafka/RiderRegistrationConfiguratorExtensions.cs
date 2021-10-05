@@ -5,7 +5,7 @@ using MassTransit;
 using MassTransit.Registration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Server.KafksMessage;
+using Server.KafkaMessage;
 using Server.Options;
 
 namespace Server
@@ -34,7 +34,7 @@ namespace Server
                 const string groupId = "server-group-1";
 #endif
 
-                factoryConfigurator.TopicEndpoint<string, KafkaMessage>(kafkaOptions.Topic, groupId,
+                factoryConfigurator.TopicEndpoint<string, KafkaMessage.KafkaMessage>(kafkaOptions.Topic, groupId,
                     e =>
                     {
                         e.AutoOffsetReset = AutoOffsetReset.Earliest;
@@ -47,7 +47,7 @@ namespace Server
             });
         }
 
-        private static Action<IConsumer<string, KafkaMessage>, CommittedOffsets> OffsetsCommittedHandler(IConfigurationServiceProvider context)
+        private static Action<IConsumer<string, KafkaMessage.KafkaMessage>, CommittedOffsets> OffsetsCommittedHandler(IConfigurationServiceProvider context)
         {
             return (_, offsets) =>
             {

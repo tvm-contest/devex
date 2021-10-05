@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Server.Notifications;
 
-namespace Server.KafksMessage
+namespace Server.KafkaMessage
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class KafkaMessageConsumer : IConsumer<KafkaMessage>
@@ -42,7 +42,7 @@ namespace Server.KafksMessage
                 return;
             }
 
-            _logger.LogTrace("Received message Key:{Key}", key, message);
+            _logger.LogTrace("Received message with Key:{Key}", key);
             // send message to subscriber
             await _publishEndpoint.Publish<SendSubscription>(new { message.Hash, message.Nonce, message.EncodedMessage }, cancellationToken);
             // mark as consumed

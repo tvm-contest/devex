@@ -2,7 +2,7 @@
 {
     public interface SendSubscription
     {
-        string Hash { get; }
+        string ClientId { get; }
         string Nonce { get; }
         string EncodedMessage { get; }
     }
