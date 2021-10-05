@@ -15,7 +15,6 @@ namespace Server.Notifications
     public class SendSubscriptionTelegramConsumer : IConsumer<SendSubscription>
     {
         private static string _botToken;
-        private static readonly string SendMessageUrl = $"https://api.telegram.org/bot{_botToken}/sendMessage";
         private readonly HttpClient _httpClient;
         private readonly ILogger<SendSubscriptionTelegramConsumer> _logger;
 
@@ -23,8 +22,10 @@ namespace Server.Notifications
         {
             _httpClient = httpClient;
             _logger = logger;
-            _botToken = configuration.GetValue<string>("TelegramBotToken");
+            _botToken = configuration.GetValue<string>("TelegramOptions:BotToken");
         }
+
+        private static string SendMessageUrl => $"https://api.telegram.org/bot{_botToken}/sendMessage";
 
         public async Task Consume(ConsumeContext<SendSubscription> context)
         {
@@ -34,24 +35,30 @@ namespace Server.Notifications
 
             if (!EndpointValidationHelper.TryGetTelegramEndpoint(endpoint, out var channel)) return;
 
-            var telegramRequest = new { chat_id = $"@{channel}", text = message };
+            var request = new { chat_id = $"@{channel}", text = message };
 
             _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint, message);
-            var response = await _httpClient.PostAsJsonAsync(SendMessageUrl, telegramRequest, cancellationToken);
-            var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
-            var resultPrototype = new { ok = default(bool), description = default(string) };
-            var result = responseJson.ToAnonymous(resultPrototype);
-            if (!result.ok)
-                throw new HttpRequestException(result.description, null, HttpStatusCode.BadRequest)
+            var response = await _httpClient.PostAsJsonAsync(SendMessageUrl, request, cancellationToken);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e) when (e.StatusCode >= (HttpStatusCode?)400 && e.StatusCode <= (HttpStatusCode?)499)
+            {
+                var failedResponseJson = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
+                throw new HttpRequestException(failedResponseJson.Get<string>("description"), null, HttpStatusCode.BadRequest)
                 {
                     Data =
                     {
-                        { "url", SendMessageUrl },
-                        { "request", telegramRequest }
+                        { "endpoint", SendMessageUrl },
+                        { "request", request },
+                        { "response", failedResponseJson }
                     }
                 };
+            }
 
-            response.EnsureSuccessStatusCode();
+            var successResponseJson = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
+            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint, message, successResponseJson);
         }
     }
 

@@ -1,5 +1,9 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
+using ch1seL.TonNet.Serialization;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.Definition;
@@ -20,16 +24,36 @@ namespace Server.Notifications
 
         public async Task Consume(ConsumeContext<SendSubscription> context)
         {
-            var message = context.Message;
             var endpoint = context.Headers.Get<ClientInfo>(typeof(ClientInfo).FullName).Endpoint;
-            var messageText = message.Message.Text;
+            var messageText = context.Message.Message.Text;
             var cancellationToken = context.CancellationToken;
 
             if (!EndpointValidationHelper.IsHttpEndpoint(endpoint)) return;
 
+            var request = new StringContent(messageText);
+
             _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint, messageText);
-            var consumerResponse = await _httpClient.PostAsync(endpoint, new StringContent(messageText), cancellationToken);
-            consumerResponse.EnsureSuccessStatusCode();
+            var response = await _httpClient.PostAsync(endpoint, request, cancellationToken);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e) when (e.StatusCode >= (HttpStatusCode?)400 && e.StatusCode <= (HttpStatusCode?)499)
+            {
+                var failedResponseJson = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
+                throw new HttpRequestException(failedResponseJson.Get<string>("description"), null, HttpStatusCode.BadRequest)
+                {
+                    Data =
+                    {
+                        { "endpoint", endpoint },
+                        { "request", request },
+                        { "response", failedResponseJson }
+                    }
+                };
+            }
+
+            var successResponseJson = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
+            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint, messageText, successResponseJson);
         }
     }
 
