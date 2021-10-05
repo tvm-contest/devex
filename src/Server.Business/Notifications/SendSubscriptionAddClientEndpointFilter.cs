@@ -29,7 +29,7 @@ namespace Server.Notifications
                     return;
                 }
 
-                context.Headers.Set("clientInfo", clientInfo);
+                context.Headers.Set(typeof(ClientInfo).FullName, clientInfo);
                 await next.Send(context);
             }
             else

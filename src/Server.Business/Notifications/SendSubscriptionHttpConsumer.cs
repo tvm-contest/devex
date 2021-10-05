@@ -16,7 +16,7 @@ namespace Server.Notifications
         public async Task Consume(ConsumeContext<SendSubscription> context)
         {
             var message = context.Message;
-            var clientInfo = context.Headers.Get<ClientInfo>("clientInfo");
+            var clientInfo = context.Headers.Get<ClientInfo>(typeof(ClientInfo).FullName);
             var cancellationToken = context.CancellationToken;
 
             if (!EndpointValidationHelper.IsHttpEndpoint(clientInfo.Endpoint)) return;

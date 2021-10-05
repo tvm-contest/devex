@@ -17,11 +17,14 @@ namespace Server.Notifications
         {
             if (context.Message is SendSubscription sendSubscription)
             {
-                var encryptedMessage = new EncryptedMessage(sendSubscription.Message.Text);
-                var clientInfo = context.Headers.Get<ClientInfo>("clientInfo");
-                var decryptedMessage = await _decryptor.Decrypt(encryptedMessage, clientInfo.SecretKey);
-                sendSubscription.Message = decryptedMessage;
-                context.AddOrUpdatePayload(() => sendSubscription, _ => sendSubscription);
+                var secretKey = context.Headers.Get<ClientInfo>(typeof(ClientInfo).FullName).SecretKey;
+                if (secretKey != null)
+                {
+                    var encryptedMessage = EncryptedMessage.CreateFromMessage(sendSubscription.Message.Text);
+                    var decryptedMessage = await _decryptor.Decrypt(encryptedMessage, secretKey);
+                    sendSubscription.Message = decryptedMessage;
+                    context.AddOrUpdatePayload(() => sendSubscription, _ => sendSubscription);
+                }
             }
 
             await next.Send(context);
