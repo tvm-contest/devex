@@ -5,6 +5,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using ch1seL.TonNet.Serialization;
 using MassTransit;
+using MassTransit.ConsumeConfigurators;
+using MassTransit.Definition;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -48,7 +50,17 @@ namespace Server.Notifications
                         { "request", telegramRequest }
                     }
                 };
+
             response.EnsureSuccessStatusCode();
+        }
+    }
+
+    public class SendSubscriptionTelegramConsumerDefinition : ConsumerDefinition<SendSubscriptionTelegramConsumer>
+    {
+        protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
+            IConsumerConfigurator<SendSubscriptionTelegramConsumer> e)
+        {
+            e.UseDelayedRedelivery(HttpRetryPolicy.ConfigureHttpRetry);
         }
     }
 }

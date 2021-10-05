@@ -1,6 +1,8 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using MassTransit;
+using MassTransit.ConsumeConfigurators;
+using MassTransit.Definition;
 using Microsoft.Extensions.Logging;
 
 namespace Server.Notifications
@@ -28,6 +30,15 @@ namespace Server.Notifications
             _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint, messageText);
             var consumerResponse = await _httpClient.PostAsync(endpoint, new StringContent(messageText), cancellationToken);
             consumerResponse.EnsureSuccessStatusCode();
+        }
+    }
+
+    public class SendSubscriptionHttpConsumerDefinition : ConsumerDefinition<SendSubscriptionHttpConsumer>
+    {
+        protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
+            IConsumerConfigurator<SendSubscriptionHttpConsumer> e)
+        {
+            e.UseDelayedRedelivery(HttpRetryPolicy.ConfigureHttpRetry);
         }
     }
 }
