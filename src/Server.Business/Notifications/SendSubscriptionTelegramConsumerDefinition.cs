@@ -4,10 +4,10 @@ using MassTransit.Definition;
 
 namespace Server.Notifications
 {
-    public class SendSubscriptionHttpConsumerDefinition : ConsumerDefinition<SendSubscriptionHttpConsumer>
+    public class SendSubscriptionTelegramConsumerDefinition : ConsumerDefinition<SendSubscriptionTelegramConsumer>
     {
         protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
-            IConsumerConfigurator<SendSubscriptionHttpConsumer> e)
+            IConsumerConfigurator<SendSubscriptionTelegramConsumer> e)
         {
             e.UseDelayedRedelivery(HttpRetryPolicy.ConfigureHttpRetry);
         }

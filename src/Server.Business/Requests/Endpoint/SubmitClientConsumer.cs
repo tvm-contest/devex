@@ -69,6 +69,8 @@ namespace Server.Requests.Endpoint
         private static async Task<bool> EndpointValidationError(ConsumeContext context, string endpoint)
         {
             if (EndpointValidationHelper.IsHttpEndpoint(endpoint)) return false;
+            //todo: should validate that telegram token is defined
+            if (EndpointValidationHelper.TryGetTelegramEndpoint(endpoint, out _)) return false;
             await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.EndpointValidation });
             return true;
         }

@@ -7,8 +7,10 @@
 
     <ItemGroup>
         <PackageReference Include="ch1seL.TonNet.Abstract" Version="1.22.0.3"/>
+        <PackageReference Include="ch1seL.TonNet.Serialization" Version="1.22.0.3"/>
         <PackageReference Include="Flurl" Version="3.0.2"/>
         <PackageReference Include="MassTransit" Version="7.2.2"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0"/>
     </ItemGroup>
 
