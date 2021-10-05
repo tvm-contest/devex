@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace Server
 {
@@ -25,6 +27,19 @@ namespace Server
 
             channel = match.Groups["channel"].Value;
             return true;
+        }
+
+        public static bool IsEmailEndpoint(string endpoint)
+        {
+            try
+            {
+                var _ = new MailAddress(endpoint);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
         }
     }
 }

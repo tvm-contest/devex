@@ -32,6 +32,7 @@ namespace Server
                     x.AddDelayedMessageScheduler();
                     x.AddConsumer<SendSubscriptionHttpConsumer, SendSubscriptionHttpConsumerDefinition>();
                     x.AddConsumer<SendSubscriptionTelegramConsumer, SendSubscriptionTelegramConsumerDefinition>();
+                    x.AddConsumer<SendSubscriptionMailgunConsumer, SendSubscriptionMailgunConsumerDefinition>();
                     x.AddRider(RiderRegistrationConfiguratorExtensions.UsingKafka);
                     x.AddSignalRHub<SignalRHub>();
                     x.SetKebabCaseEndpointNameFormatter();

@@ -13,7 +13,8 @@ namespace Server
                 .Configure<KafkaOptions>(configuration.GetSection(Constants.KafkaOptions))
                 .Configure<RedisCacheOptions>(configuration.GetSection(Constants.RedisOptions))
                 .Configure<RedisLockOptions>(configuration.GetSection(Constants.RedisOptions))
-                .Configure<RabbitMqOptions>(configuration.GetSection(Constants.RabbitMqOptions));
+                .Configure<RabbitMqOptions>(configuration.GetSection(Constants.RabbitMqOptions))
+                .Configure<MailGunOptions>(configuration.GetSection(Constants.MailGunOptions));
             return services;
         }
     }
