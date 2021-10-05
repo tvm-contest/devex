@@ -9,6 +9,7 @@ using Server.Notifications;
 using Server.Options;
 using Server.Requests.Api;
 using Server.Requests.Endpoint;
+using Server.Requests.SendSubscription;
 
 namespace Server
 {
@@ -23,6 +24,8 @@ namespace Server
                     x.AddRequestClient<GetServerStatus>();
                     x.AddConsumer<SubmitClientConsumer>();
                     x.AddRequestClient<SubmitClient>();
+                    x.AddConsumer<DecryptEncryptedMessageConsumer>();
+                    x.AddRequestClient<DecryptEncryptedMessage>();
                 })
                 .AddMassTransit(x =>
                 {

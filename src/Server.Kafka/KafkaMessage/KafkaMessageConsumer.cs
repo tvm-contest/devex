@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Server.Models;
 using Server.Notifications;
 
 namespace Server.KafkaMessage

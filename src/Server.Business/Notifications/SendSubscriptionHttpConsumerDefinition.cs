@@ -11,7 +11,7 @@ namespace Server.Notifications
         protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
             IConsumerConfigurator<SendSubscriptionHttpConsumer> e)
         {
-            e.UseDelayedRedelivery(configurator => configurator.Interval(144, TimeSpan.FromSeconds(10)));
+            e.UseDelayedRedelivery(configurator => configurator.Interval(144, TimeSpan.FromMinutes(10)));
         }
     }
 }

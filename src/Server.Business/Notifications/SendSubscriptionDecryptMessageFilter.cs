@@ -1,16 +1,18 @@
 ﻿using System.Threading.Tasks;
 using GreenPipes;
 using MassTransit;
+using Server.Models;
+using Server.Requests.SendSubscription;
 
 namespace Server.Notifications
 {
     public class SendSubscriptionDecryptMessageFilter<T> : IFilter<PublishContext<T>> where T : class
     {
-        private readonly IMessageDecryptor _decryptor;
+        private readonly IRequestClient<DecryptEncryptedMessage> _decryptMessageClient;
 
-        public SendSubscriptionDecryptMessageFilter(IMessageDecryptor decryptor)
+        public SendSubscriptionDecryptMessageFilter(IRequestClient<DecryptEncryptedMessage> decryptMessageClient)
         {
-            _decryptor = decryptor;
+            _decryptMessageClient = decryptMessageClient;
         }
 
         public async Task Send(PublishContext<T> context, IPipe<PublishContext<T>> next)
@@ -21,8 +23,12 @@ namespace Server.Notifications
                 if (secretKey != null)
                 {
                     var encryptedMessage = EncryptedMessage.CreateFromMessage(sendSubscription.Message.Text);
-                    var decryptedMessage = await _decryptor.Decrypt(encryptedMessage, secretKey);
-                    sendSubscription.Message = decryptedMessage;
+                    var decryptedMessage = await _decryptMessageClient.GetResponse<DecryptedMessage>(new
+                    {
+                        EncryptedMessage = encryptedMessage,
+                        SecretKey = secretKey
+                    });
+                    sendSubscription.Message = decryptedMessage.Message;
                     context.AddOrUpdatePayload(() => sendSubscription, _ => sendSubscription);
                 }
             }
