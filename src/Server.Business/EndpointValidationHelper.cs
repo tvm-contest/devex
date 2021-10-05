@@ -9,7 +9,7 @@ namespace Server
         private static readonly Regex HttpEndpointRegex = new(@"^http(s)?:\/\/(?!t.me\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$",
             RegexOptions.Compiled);
 
-        private static readonly Regex TelegramEndpointRegex = new(@"^https:\/\/t.me\/(?'channel'[A-Za-zd_]{5,32})$");
+        private static readonly Regex TelegramEndpointRegex = new(@"^https:\/\/t.me\/(?'channel'[A-Za-zd_]{5,32})$", RegexOptions.Compiled);
 
         public static bool IsHttpEndpoint(string endpoint)
         {
