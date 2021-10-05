@@ -23,7 +23,7 @@ namespace Server.Controllers
         [Consumes("text/plain")]
         public async Task<IActionResult> Receive(string userId, [FromBody] string message, CancellationToken cancellationToken)
         {
-            _logger.LogTrace("Received message: {Consumer} {Message}", userId, message);
+            _logger.LogTrace("Sending to {Consumer} message {Message}", userId, message);
             // await _publishEndpoint.Publish<User<SignalRHub>>(new
             // {
             //     UserId = consumer,
