@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="ch1seL.TonNet.Abstract" Version="1.22.0.3"/>
         <PackageReference Include="Flurl" Version="3.0.2"/>
         <PackageReference Include="MassTransit" Version="7.2.2"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0"/>
@@ -14,6 +15,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Server.Database\Server.Database.csproj"/>
         <ProjectReference Include="..\Common\Common.csproj"/>
+        <ProjectReference Include="..\Server.Utils\Server.Utils.csproj"/>
     </ItemGroup>
 
 </Project>

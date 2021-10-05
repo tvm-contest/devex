@@ -5,9 +5,14 @@ namespace Server
 {
     public static class StringExtensions
     {
-        public static string FromBase64(this string base64String)
+        public static string ToHexString(this byte[] bytes)
         {
-            return Encoding.UTF8.GetString(Convert.FromBase64String(base64String));
+            return BitConverter.ToString(bytes).Replace("-", string.Empty);
+        }
+
+        public static string StringFromBase64(this string input)
+        {
+            return Encoding.UTF8.GetString(Convert.FromBase64String(input));
         }
     }
 }

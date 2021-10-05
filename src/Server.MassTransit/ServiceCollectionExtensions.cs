@@ -54,7 +54,8 @@ namespace Server
         private static void ConfigureContext(IBusFactoryConfigurator cfg, IConfigurationServiceProvider context)
         {
             cfg.UseDelayedMessageScheduler();
-            cfg.UsePublishFilter(typeof(SendSubscriptionAddClientInfoFilter<>), context);
+            cfg.UsePublishFilter(typeof(SendSubscriptionAddClientInfoHeaderFilter<>), context);
+            cfg.UsePublishFilter(typeof(SendSubscriptionDecryptMessageFilter<>), context);
             cfg.UsePrometheusMetrics();
         }
 

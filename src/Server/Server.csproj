@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="ch1seL.TonNet.Client" Version="1.22.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -29,7 +30,6 @@
         <ProjectReference Include="..\Server.MassTransit\Server.MassTransit.csproj"/>
         <ProjectReference Include="..\Server.Redis\Server.Redis.csproj"/>
         <ProjectReference Include="..\Server.SignalR\Server.SignalR.csproj"/>
-        <ProjectReference Include="..\Server.Utils\Server.Utils.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

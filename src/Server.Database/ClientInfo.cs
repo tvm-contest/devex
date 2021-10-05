@@ -5,8 +5,10 @@ namespace Server
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ClientInfo
     {
-        [Key] public string Hash { get; set; }
+        [Key] public string ClientId { get; set; }
 
-        public string Endpoint { get; set; }
+        [Required(AllowEmptyStrings = false)] public string Endpoint { get; set; }
+
+        public string SecretKey { get; set; }
     }
 }

@@ -5,12 +5,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Server.Notifications
 {
-    public class SendSubscriptionAddClientInfoFilter<T> : IFilter<PublishContext<T>> where T : class
+    public class SendSubscriptionAddClientInfoHeaderFilter<T> : IFilter<PublishContext<T>> where T : class
     {
-        private readonly ILogger<SendSubscriptionAddClientInfoFilter<T>> _logger;
+        private readonly ILogger<SendSubscriptionAddClientInfoHeaderFilter<T>> _logger;
         private readonly ServerDbContext _serverContext;
 
-        public SendSubscriptionAddClientInfoFilter(ServerDbContext serverContext, ILogger<SendSubscriptionAddClientInfoFilter<T>> logger)
+        public SendSubscriptionAddClientInfoHeaderFilter(ServerDbContext serverContext, ILogger<SendSubscriptionAddClientInfoHeaderFilter<T>> logger)
         {
             _serverContext = serverContext;
             _logger = logger;
@@ -29,7 +29,7 @@ namespace Server.Notifications
                     return;
                 }
 
-                context.Headers.Set("clientEndpoint", clientInfo.Endpoint);
+                context.Headers.Set("clientInfo", clientInfo);
                 await next.Send(context);
             }
             else

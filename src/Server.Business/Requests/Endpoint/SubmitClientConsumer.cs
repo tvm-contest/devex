@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Common;
@@ -25,40 +26,44 @@ namespace Server.Requests.Endpoint
         public async Task Consume(ConsumeContext<SubmitClient> context)
         {
             var cancellationToken = context.CancellationToken;
-            var hash = context.Message.Hash;
-            var endpoint = context.Message.Endpoint;
+            var clientId = context.Message.ClientId;
+            var data = context.Message.Data.Split('\n');
+            var endpoint = data[0];
+            var secretKey = data.Length == 2 ? data[1] : null;
+            var isTest = endpoint.Equals("test");
 
-            if (!endpoint.Equals("test") && await ComingSoon(context)) return;
+            if (!isTest && await ComingSoon(context)) return;
             if (await DontAllowUseServerUrl(context, endpoint)) return;
-            GenerateEndpointIfTestCommand(hash, ref endpoint);
+            GenerateEndpointIfTestCommand(clientId, ref endpoint);
             if (await EndpointValidationError(context, endpoint)) return;
-            await AddOrUpdateClientInfoToDb(hash, endpoint, cancellationToken);
-            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint });
+            await AddOrUpdateClientInfoToDb(clientId, endpoint, secretKey, cancellationToken);
+            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = isTest });
         }
 
-        private async Task AddOrUpdateClientInfoToDb(string hash, string endpoint, CancellationToken cancellationToken)
+        private async Task AddOrUpdateClientInfoToDb(string clientId, string endpoint, string? secretKey, CancellationToken cancellationToken)
         {
-            var clientInfo = await _serverDbContext.ClientInfos.FindAsync(new object[] { hash }, cancellationToken);
+            var clientInfo = await _serverDbContext.ClientInfos.FindAsync(new object[] { clientId }, cancellationToken);
             if (clientInfo == null)
             {
-                clientInfo = new ClientInfo { Hash = hash, Endpoint = endpoint };
+                clientInfo = new ClientInfo { ClientId = clientId, Endpoint = endpoint, SecretKey = secretKey };
                 _logger.LogTrace("Adding client info to DB {@ClientInfo}", clientInfo);
                 _serverDbContext.ClientInfos.Add(clientInfo);
             }
             else
             {
                 clientInfo.Endpoint = endpoint;
-                _logger.LogTrace("Updating client info to DB {@ClientInfo}", clientInfo);
+                clientInfo.SecretKey = secretKey;
+                _logger.LogTrace("Updating client info in DB {@ClientInfo}", clientInfo);
                 _serverDbContext.ClientInfos.Update(clientInfo);
             }
 
             await _serverDbContext.SaveChangesAsync(cancellationToken);
         }
 
-        private static void GenerateEndpointIfTestCommand(string hash, ref string endpoint)
+        private static void GenerateEndpointIfTestCommand(string clientId, ref string endpoint)
         {
             if (endpoint.Equals("test", StringComparison.OrdinalIgnoreCase))
-                endpoint = Url.Combine(ProjectConstants.ServerUrl, "test-consumer", hash[..12]);
+                endpoint = Url.Combine(ProjectConstants.ServerUrl, "test-consumer", clientId[..12]);
         }
 
         private static async Task<bool> EndpointValidationError(ConsumeContext context, string endpoint)

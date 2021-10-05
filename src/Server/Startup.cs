@@ -43,15 +43,19 @@ namespace Server
             // add masstransit with rabbit if configured else use in-memory bus
             services.AddMassTransit(Configuration.ContainsRabbitMqOptions());
 
-            //setup PostgreSql database if connections string is defined else SQLLite 
+            // setup PostgreSql database if connections string is defined else SQLLite 
             services.AddDatabase(Configuration.GetPostgreSqlConnectionString());
 
-            //setup redis distributed lock and cache if redis options defined else in-memory
+            // setup redis distributed lock and cache if redis options defined else in-memory
             services.AddDistributedLockAndCache(Configuration.ContainsRedisOptions());
 
-            //signalr hub
+            // signalr hub
             services.AddSignalR();
             services.AddSingleton<IUserIdProvider, ByHashUserIdProvider>();
+
+            // messages decrypting
+            services.AddTonClient();
+            services.AddTransient<IMessageDecryptor, MessageDecryptor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,7 +98,7 @@ namespace Server
                     endpoints.MapHealthChecks("/health");
                     endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
                     {
-                        Predicate = check => check.Tags.Contains("ready"),
+                        Predicate = check => check.Tags.Contains("ready")
                     });
                     endpoints.MapMetrics();
                 });

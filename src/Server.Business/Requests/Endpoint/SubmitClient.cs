@@ -2,7 +2,7 @@ namespace Server.Requests.Endpoint
 {
     public interface SubmitClient
     {
-        string Hash { get; }
-        string Endpoint { get; }
+        string ClientId { get; }
+        string Data { get; }
     }
 }

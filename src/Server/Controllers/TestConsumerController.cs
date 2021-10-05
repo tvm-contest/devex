@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -13,14 +11,11 @@ namespace Server.Controllers
     public class TestConsumerController : ControllerBase
     {
         private readonly ILogger<TestConsumerController> _logger;
-        private readonly IReadOnlyList<IHubProtocol> _protocols = new IHubProtocol[] { new JsonHubProtocol() };
-        private readonly IPublishEndpoint _publishEndpoint;
         private readonly IHubContext<SignalRHub> _signalRHub;
 
-        public TestConsumerController(ILogger<TestConsumerController> logger, IPublishEndpoint publishEndpoint, IHubContext<SignalRHub> signalRHub)
+        public TestConsumerController(ILogger<TestConsumerController> logger, IHubContext<SignalRHub> signalRHub)
         {
             _logger = logger;
-            _publishEndpoint = publishEndpoint;
             _signalRHub = signalRHub;
         }
 

@@ -28,15 +28,15 @@ namespace Server.Controllers
         public async Task<OkObjectResult> SubmitClient([FromForm] EndpointParameters parameters, CancellationToken cancellationToken)
         {
             var hash = parameters.Hash;
-            var endpoint = parameters.Data?.FromBase64() ?? string.Empty;
+            var data = parameters.Data?.StringFromBase64() ?? string.Empty;
 
-            _logger.LogTrace("Received hash: {Hash} endpoint: {Endpoint}", hash, endpoint);
+            _logger.LogTrace("Received hash: {Hash} endpoint: {Endpoint}", hash, data);
 
             try
             {
                 var submitResult = await _submitClientRequestClient
                     .GetResponse<SubmitClientSuccess, SubmitClientError>(
-                        new { hash, endpoint }, cancellationToken);
+                        new { ClientId = hash, Data = data }, cancellationToken);
 
                 if (submitResult.Is(out Response<SubmitClientSuccess> submitClientSuccess))
                     return Ok("👍 Looks good!\n" +
@@ -52,7 +52,7 @@ namespace Server.Controllers
                             Ok("🌙 Coming soon...\n"
                                + "Contact us to get help https://t.me/ton_actions_chat\n"),
                         SubmitClientErrorType.EndpointValidation =>
-                            Ok($"🔍 Wrong endpoint format in {endpoint}\n" +
+                            Ok($"🔍 Wrong endpoint format in {data}\n" +
                                "Supported HTTP notifications starting with http:// or https://\n" +
                                "Contact us to get help https://t.me/ton_actions_chat\n"),
                         SubmitClientErrorType.AccessDenied =>

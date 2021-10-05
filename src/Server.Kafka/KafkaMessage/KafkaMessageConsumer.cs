@@ -44,7 +44,13 @@ namespace Server.KafkaMessage
 
             _logger.LogTrace("Received message with Key:{Key}", key);
             // send message to subscriber
-            await _publishEndpoint.Publish<SendSubscription>(new { message.Hash, message.Nonce, message.EncodedMessage }, cancellationToken);
+            await _publishEndpoint.Publish<SendSubscription>(
+                new
+                {
+                    ClientId = message.Hash,
+                    Message = new EncryptedMessage(message.Nonce, message.EncodedMessage)
+                },
+                cancellationToken);
             // mark as consumed
             await _distributedCache.SetAsync(key, new byte[1], new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(25) },
                 cancellationToken);

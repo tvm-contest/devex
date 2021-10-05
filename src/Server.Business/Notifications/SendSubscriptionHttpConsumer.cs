@@ -16,12 +16,12 @@ namespace Server.Notifications
         public async Task Consume(ConsumeContext<SendSubscription> context)
         {
             var message = context.Message;
-            var clientEndpoint = context.Headers.Get<string>("clientEndpoint");
+            var clientInfo = context.Headers.Get<ClientInfo>("clientInfo");
             var cancellationToken = context.CancellationToken;
 
-            if (!EndpointValidationHelper.IsHttpEndpoint(clientEndpoint)) return;
+            if (!EndpointValidationHelper.IsHttpEndpoint(clientInfo.Endpoint)) return;
 
-            var consumerResponse = await _httpClient.PostAsync(clientEndpoint, new StringContent(message.ToClientString()), cancellationToken);
+            var consumerResponse = await _httpClient.PostAsync(clientInfo.Endpoint, new StringContent(message.Message.Text), cancellationToken);
             consumerResponse.EnsureSuccessStatusCode();
         }
     }
