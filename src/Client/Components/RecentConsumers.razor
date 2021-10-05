@@ -11,7 +11,7 @@
                 <MudListItem Href="@($"{_navigationManager.Uri}/{key}")">
                     <div class="d-flex justify-space-between">
                         <MudText>@key</MudText>
-                        <MudIconButton Icon="@Icons.Rounded.RemoveCircleOutline" Size="@Size.Small" @OnClick="() => DeleteConsumer(key)"/>
+                        <MudIconButton Icon="@Icons.Rounded.RemoveCircleOutline" Size="@Size.Small" OnClick="() => DeleteConsumer(key)"/>
                     </div>
                 </MudListItem>
             }
@@ -58,7 +58,7 @@
     private async Task FillMessages()
     {
         var storageLength = await _localStorage.LengthAsync();
-        var getKeyTasks = Enumerable.Range(0, storageLength - 1).Select(async i => await _localStorage.KeyAsync(i));
+        var getKeyTasks = Enumerable.Range(0, storageLength).Select(async i => await _localStorage.KeyAsync(i));
         var keys = await Task.WhenAll(getKeyTasks);
         MessageInfoKeys = keys
             .Select(key => key.Split(':', 2))

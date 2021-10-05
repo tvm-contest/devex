@@ -4,8 +4,15 @@
 @using System.Text.Json
 @implements IAsyncDisposable
 
-<ConsumerConnectionStatus IsConnected="@IsConnected"/>
-<MessageInfoTable MessageInfos="@Messages" OnClearClickCallback="@OnClear"/>
+
+<MudGrid>
+    <MudItem xs="12">
+        <ConsumerConnectionStatus IsConnected="@IsConnected"/>
+    </MudItem>
+    <MudItem xs="12">
+        <MessageInfoTable MessageInfos="@Messages" OnClearClickCallback="@OnClear"/>
+    </MudItem>
+</MudGrid>
 
 @code {
 

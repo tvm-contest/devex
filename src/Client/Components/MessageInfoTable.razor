@@ -1,4 +1,4 @@
-﻿<MudTable Items="@(MessageInfos ?? Array.Empty<MessageInfo>())" Dense="true" Hover="true" Bordered="false" Striped="true" Loading="@(MessageInfos == null)">
+﻿<MudTable Items="@(MessageInfos ?? Array.Empty<MessageInfo>())" Dense="false" Hover="true" Bordered="false" Striped="true" Loading="@(MessageInfos == null)">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Recived messages: @(MessageInfos?.Count ?? 0)</MudText>
         <MudSpacer/>
@@ -7,11 +7,19 @@
     <HeaderContent>
         <MudTh>Time</MudTh>
         <MudTh>Message</MudTh>
+        <MudTh/>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>@context.DateTime</MudTd>
-        <MudTd>
-            <pre style="border-width: 1px"><code>@context.Message</code></pre>
+        <MudTd Class="pa-1">@context.DateTime</MudTd>
+        <MudTd Class="pa-1">
+            <pre class="json"><code>@context.Message</code></pre>
+        </MudTd>
+        <MudTd Class="pa-1">
+            <MudChipSet @bind-SelectedChip="SelectedChip" Filter="true" Mandatory="false">
+                <MudTooltip Text="Copy">
+                    <MudChip OnClick="@(() => CopyToClipboard(context.Message))" Icon="@Icons.Filled.ContentCopy" Color="Color.Info"/>
+                </MudTooltip>
+            </MudChipSet>
         </MudTd>
     </RowTemplate>
     <LoadingContent>
@@ -24,6 +32,9 @@
 
 @code
 {
+    [Inject]
+    public IJsApiService JsApiService { get; set; }
+
     [Parameter]
     public IReadOnlyCollection<MessageInfo> MessageInfos { get; set; }
 
@@ -32,4 +43,15 @@
 
     [Parameter]
     public EventCallback<MouseEventArgs> OnClearClickCallback { get; set; }
+
+    private async Task CopyToClipboard(string message)
+    {
+        if (SelectedChip == null) return;
+        await JsApiService.CopyToClipboardAsync(message);
+        await Task.Delay(TimeSpan.FromSeconds(0.5));
+        SelectedChip = null;
+    }
+
+    private MudChip SelectedChip { get; set; }
+
 }
