@@ -3,7 +3,7 @@ using GreenPipes;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace Server.Requests
+namespace Server.Notifications
 {
     public class SendSubscriptionAddClientInfoFilter<T> : IFilter<PublishContext<T>> where T : class
     {
@@ -29,7 +29,7 @@ namespace Server.Requests
                     return;
                 }
 
-                context.Headers.Set("clientInfo", clientInfo);
+                context.Headers.Set("clientEndpoint", clientInfo.Endpoint);
                 await next.Send(context);
             }
             else

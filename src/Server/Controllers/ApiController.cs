@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using Server.Requests;
+using Server.Requests.Api;
 
 namespace Server.Controllers
 {

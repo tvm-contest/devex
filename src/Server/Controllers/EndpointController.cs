@@ -6,7 +6,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Server.Requests;
+using Server.Requests.Endpoint;
 
 namespace Server.Controllers
 {

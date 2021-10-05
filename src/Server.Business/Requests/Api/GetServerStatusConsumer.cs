@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
-namespace Server.Requests
+namespace Server.Requests.Api
 {
     public class GetServerStatusConsumer : IConsumer<GetServerStatus>
     {

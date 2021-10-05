@@ -5,8 +5,10 @@ using MassTransit.Registration;
 using MassTransit.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Server.Notifications;
 using Server.Options;
-using Server.Requests;
+using Server.Requests.Api;
+using Server.Requests.Endpoint;
 
 namespace Server
 {

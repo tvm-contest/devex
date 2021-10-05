@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using MassTransit;
 
-namespace Server.Requests
+namespace Server.Notifications
 {
     public class SendSubscriptionHttpConsumer : IConsumer<SendSubscription>
     {
@@ -16,12 +16,12 @@ namespace Server.Requests
         public async Task Consume(ConsumeContext<SendSubscription> context)
         {
             var message = context.Message;
-            var clientInfo = context.Headers.Get<ClientInfo>("clientInfo");
+            var clientEndpoint = context.Headers.Get<string>("clientEndpoint");
             var cancellationToken = context.CancellationToken;
 
-            if (!EndpointValidationHelper.IsHttpEndpoint(clientInfo.Endpoint)) return;
+            if (!EndpointValidationHelper.IsHttpEndpoint(clientEndpoint)) return;
 
-            var consumerResponse = await _httpClient.PostAsync(clientInfo.Endpoint, new StringContent(message.ToClientString()), cancellationToken);
+            var consumerResponse = await _httpClient.PostAsync(clientEndpoint, new StringContent(message.ToClientString()), cancellationToken);
             consumerResponse.EnsureSuccessStatusCode();
         }
     }

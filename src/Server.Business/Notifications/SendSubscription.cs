@@ -1,4 +1,4 @@
-﻿namespace Server.Requests
+﻿namespace Server.Notifications
 {
     public interface SendSubscription
     {

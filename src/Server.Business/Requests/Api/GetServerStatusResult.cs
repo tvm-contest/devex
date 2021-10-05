@@ -1,4 +1,4 @@
-﻿namespace Server.Requests
+﻿namespace Server.Requests.Api
 {
     public class GetServerStatusResult
     {

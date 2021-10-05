@@ -7,7 +7,7 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Server.Requests
+namespace Server.Requests.Endpoint
 {
     public class SubmitClientConsumer : IConsumer<SubmitClient>
     {
