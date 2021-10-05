@@ -2,7 +2,7 @@
 using GreenPipes;
 using MassTransit;
 using Server.Models;
-using Server.Requests.SendSubscription;
+using Server.Requests.TonClient;
 
 namespace Server.Notifications
 {

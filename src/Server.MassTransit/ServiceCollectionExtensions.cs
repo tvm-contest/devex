@@ -9,7 +9,7 @@ using Server.Notifications;
 using Server.Options;
 using Server.Requests.Api;
 using Server.Requests.Endpoint;
-using Server.Requests.SendSubscription;
+using Server.Requests.TonClient;
 
 namespace Server
 {

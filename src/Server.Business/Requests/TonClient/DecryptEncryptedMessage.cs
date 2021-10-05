@@ -1,6 +1,6 @@
 ﻿using Server.Models;
 
-namespace Server.Requests.SendSubscription
+namespace Server.Requests.TonClient
 {
     public interface DecryptEncryptedMessage
     {

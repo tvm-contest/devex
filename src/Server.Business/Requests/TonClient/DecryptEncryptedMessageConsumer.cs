@@ -5,7 +5,7 @@ using ch1seL.TonNet.Client.Models;
 using MassTransit;
 using Server.Models;
 
-namespace Server.Requests.SendSubscription
+namespace Server.Requests.TonClient
 {
     public class DecryptEncryptedMessageConsumer : IConsumer<DecryptEncryptedMessage>
     {
