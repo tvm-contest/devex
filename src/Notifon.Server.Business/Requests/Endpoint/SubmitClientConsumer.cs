@@ -28,9 +28,10 @@ namespace Notifon.Server.Business.Requests.Endpoint {
             var endpoint = data[0];
             var secretKey = data.Length == 2 ? data[1] : null;
 
+            if (await ComingSoon(context)) return;
             if (await TestCommand(endpoint, clientId, secretKey, context)) return;
             if (await ListCommand(endpoint, clientId, context)) return;
-            if (await ComingSoon(context)) return;
+            if (await HelpCommand(endpoint, context)) return;
             if (await DontAllowUseServerUrl(context, endpoint)) return;
             if (await EndpointValidationError(context, endpoint)) return;
             await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = false });
@@ -41,12 +42,24 @@ namespace Notifon.Server.Business.Requests.Endpoint {
                 !endpoint.Equals("list", StringComparison.OrdinalIgnoreCase)) return false;
 
             var cancellationToken = context.CancellationToken;
-
             var clientInfo = await _serverDbContext.ClientInfos.FindAsync(new object[] { clientId }, cancellationToken);
-            var text = $"{clientInfo.Endpoint}\n{clientInfo.SecretKey}";
 
+            if (clientInfo == null) {
+                await context.RespondAsync<SubmitClientResult>(new
+                    { ResultType = SubmitClientResultType.NoEndpointsRegistered });
+                return true;
+            }
+
+            string text = $"{clientInfo.Endpoint}\n{clientInfo.SecretKey}";
             await context.RespondAsync<SubmitClientResult>(new
                 { ResultType = SubmitClientResultType.ListCommand, Message = text });
+            return true;
+        }
+
+        private static async Task<bool> HelpCommand(string endpoint, ConsumeContext context) {
+            if (!endpoint.Equals("help", StringComparison.OrdinalIgnoreCase)) return false;
+
+            await context.RespondAsync<SubmitClientResult>(new { ResultType = SubmitClientResultType.HelpCommand });
             return true;
         }
 

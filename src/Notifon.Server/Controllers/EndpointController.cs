@@ -14,6 +14,7 @@ namespace Notifon.Server.Controllers {
     [ApiController]
     [Route("endpoint")]
     public class EndpointController : ControllerBase {
+        private readonly string _contactUsMessage = $"\n💬 Chat us if you have any questions {ProjectConstants.TelegramLink}";
         private readonly ILogger<EndpointController> _logger;
         private readonly IRequestClient<SubmitClient> _submitClientRequestClient;
 
@@ -47,17 +48,57 @@ namespace Notifon.Server.Controllers {
                     return result.Message.ResultType switch {
                         SubmitClientResultType.ComingSoon =>
                             Ok("🌙 Coming soon...\n" +
-                               $"💬 Contact us to get help {ProjectConstants.TelegramLink}\n"),
+                               _contactUsMessage),
                         SubmitClientResultType.EndpointValidationError =>
                             Ok("🔍 Wrong endpoint. Supported formats:\n" +
                                " - HTTP notifications starting with http:// or https://\n" +
                                " - Telegram notifications https://t.me/{channel_id}\n" +
                                " - Emails notification youname@youdomain.com\n" +
-                               $"💬 Contact us to get help {ProjectConstants.TelegramLink}\n"),
+                               _contactUsMessage),
                         SubmitClientResultType.AccessDenied =>
-                            Ok("🚫 Access denied! Pass \"test\" keyword as callback url to test this provider"),
+                            Ok("🚫 Access denied!\n" +
+                               "Pass 'test' as callback url to test this provider\n" +
+                               _contactUsMessage),
                         SubmitClientResultType.ListCommand =>
-                            Ok($"📋 Your endpoints:\n{result.Message.Message}"),
+                            Ok("📋 Your endpoints:\n" +
+                               result.Message.Message),
+                        SubmitClientResultType.NoEndpointsRegistered =>
+                            Ok("🪹 Your have no registered endpoints\n" +
+                               "Use 'help' to get available options\n" +
+                               _contactUsMessage),
+                        SubmitClientResultType.HelpCommand =>
+                            Ok("❓ Available commands:\n" +
+                               " - 'help' show this tip\n" +
+                               " - '[endpoint] [parameters]' register endpoint or update parameters\n" +
+                               " - 'list' get registered endpoints\n" +
+                               " - 'remove [endpoint]' unregister endpoint\n" +
+                               " - 'clear' unregister all endpoints\n" +
+                               $" - 'test [parameters]' add test HTTP endpoint(see {Flurl.Url.Combine(ProjectConstants.ServerUrl, "test-consumer")})\n" +
+                               "\n" +
+                               "❗ Supported endpoints and parameters:\n" +
+                               "HTTP endpoint:\n" +
+                               "http(s)://your-domain.com/you-endpoint [SECRET_KEY]\n" +
+                               "\n" +
+                               "Telegram endpoint:\n" +
+                               "https://t.me/you_chat [SECRET_KEY][;BOT_TOKEN]\n" +
+                               "\n" +
+                               "Mailgun endpoint:\n" +
+                               "your-name@your-domain.com [SECRET_KEY][;FROM_ADDRESS][;MAILGUN_DOMAIN;MAILGUN_APIKEY]\n" +
+                               "\n" +
+                               "Test endpoint:\n" +
+                               "test [SECRET_KEY]\n" +
+                               "\n" +
+                               "✨ Examples commands:\n" +
+                               "https://notifon.requestcatcher.com/test - just relay encrypted messages to HTTP endpoint\n" +
+                               "\n" +
+                               "https://notifon.requestcatcher.com/test SECRET_KEY - decrypt messages with SECRET_KEY and send it to HTTP endpoint\n" +
+                               "\n" +
+                               "https://t.me/free_ton_notification - relay encrypted messages to @free_ton_notification uses @free_ton_notify_bot as default bot\n" +
+                               "\n" +
+                               "https://t.me/you_chat ;BOT_TOKEN - send encrypted messages to you_chat uses custom bot(ensure that bot was added to the chat)\n" +
+                               "\n" +
+                               "your@email.com SECRET_KEY; notifon@notifon.com; notifon.com; MAILGUN_APIKEY - decrypt message with SECRET_KEY and send to meh11916@boofx.com from notifon@notifon.com uses notifon.com domain and MAILGUN_APIKEY\n" +
+                               _contactUsMessage),
                         _ => throw new ArgumentOutOfRangeException()
                     };
             }
