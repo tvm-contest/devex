@@ -14,7 +14,8 @@ namespace Server
                 .Configure<RedisCacheOptions>(configuration.GetSection(Constants.RedisOptions))
                 .Configure<RedisLockOptions>(configuration.GetSection(Constants.RedisOptions))
                 .Configure<RabbitMqOptions>(configuration.GetSection(Constants.RabbitMqOptions))
-                .Configure<MailGunOptions>(configuration.GetSection(Constants.MailGunOptions));
+                .Configure<MailGunOptions>(configuration.GetSection(Constants.MailGunOptions))
+                .Configure<RetryPolicyOptions>(configuration.GetSection(Constants.RetryPolicyOptions));
             return services;
         }
     }

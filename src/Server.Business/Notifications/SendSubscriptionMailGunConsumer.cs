@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using ch1seL.TonNet.Serialization;
 using Flurl;
 using MassTransit;
-using MassTransit.ConsumeConfigurators;
-using MassTransit.Definition;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Server.Options;
@@ -73,17 +71,15 @@ namespace Server.Notifications
                 };
             }
 
-            var successResponseJson = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
-            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint, message, successResponseJson);
+            var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint, message, successResponse);
         }
     }
 
-    public class SendSubscriptionMailgunConsumerDefinition : ConsumerDefinition<SendSubscriptionMailgunConsumer>
+    public class SendSubscriptionMailgunConsumerDefinition : SendSubscriptionConsumerDefinitionBase<SendSubscriptionMailgunConsumer>
     {
-        protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
-            IConsumerConfigurator<SendSubscriptionMailgunConsumer> e)
+        public SendSubscriptionMailgunConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) : base(retryPolicyOptionsAccessor)
         {
-            e.UseDelayedRedelivery(HttpRetryPolicy.ConfigureHttpRetry);
         }
     }
 }

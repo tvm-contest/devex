@@ -5,10 +5,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using ch1seL.TonNet.Serialization;
 using MassTransit;
-using MassTransit.ConsumeConfigurators;
-using MassTransit.Definition;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Server.Options;
 
 namespace Server.Notifications
 {
@@ -57,17 +57,15 @@ namespace Server.Notifications
                 };
             }
 
-            var successResponseJson = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
-            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint, message, successResponseJson);
+            var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint, message, successResponse);
         }
     }
 
-    public class SendSubscriptionTelegramConsumerDefinition : ConsumerDefinition<SendSubscriptionTelegramConsumer>
+    public class SendSubscriptionTelegramConsumerDefinition : SendSubscriptionConsumerDefinitionBase<SendSubscriptionTelegramConsumer>
     {
-        protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
-            IConsumerConfigurator<SendSubscriptionTelegramConsumer> e)
+        public SendSubscriptionTelegramConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) : base(retryPolicyOptionsAccessor)
         {
-            e.UseDelayedRedelivery(HttpRetryPolicy.ConfigureHttpRetry);
         }
     }
 }
