@@ -33,9 +33,6 @@
             .Build();
         _hubConnection.On<string>("ReceiveMessage", async message =>
         {
-    // format json document
-            message = JsonSerializer.Serialize(JsonDocument.Parse(message).RootElement, JsonIndentedSerializerOptions);
-
             Messages = await _storage.Push(new MessageInfo { DateTime = DateTime.Now, Message = message });
             StateHasChanged();
         });

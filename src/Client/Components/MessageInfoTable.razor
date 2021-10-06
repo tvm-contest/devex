@@ -1,24 +1,38 @@
-﻿<MudTable Items="@(MessageInfos ?? Array.Empty<MessageInfo>())" Dense="false" Hover="true" Bordered="false" Striped="true" Loading="@(MessageInfos == null)">
+﻿<style>
+    .message {
+        overflow-wrap: anywhere;
+        max-height: 100px;
+        overflow: auto;
+        font-size: 0.7rem;
+    }
+</style>
+
+<MudTable Items="@(MessageInfos ?? Array.Empty<MessageInfo>())" Dense="false" Hover="true" Bordered="false" Striped="true" Loading="@(MessageInfos == null)">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Recived messages: @(MessageInfos?.Count ?? 0)</MudText>
         <MudSpacer/>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@OnClearClickCallback">Clear</MudButton>
     </ToolBarContent>
+    <ColGroup>
+        <col style="min-width: 180px"/>
+        <col/>
+        <col style="min-width: 40px;"/>
+    </ColGroup>
     <HeaderContent>
-        <MudTh>Time</MudTh>
-        <MudTh>Message</MudTh>
+        <MudTh Style="text-align: center">Time</MudTh>
+        <MudTh Style="text-align: center">Message</MudTh>
         <MudTh/>
     </HeaderContent>
     <RowTemplate>
-        <MudTd Class="pa-1">@context.DateTime</MudTd>
+        <MudTd Class="pa-1" Style="text-align: right">
+            <MudText Typo="Typo.body2" Style="word-wrap: unset; overflow-wrap: unset">@context.DateTime</MudText>
+        </MudTd>
         <MudTd Class="pa-1">
-            <pre class="json"><code>@context.Message</code></pre>
+            <MudText Class="message">@context.Message</MudText>
         </MudTd>
         <MudTd Class="pa-1">
             <MudChipSet @bind-SelectedChip="SelectedChip" Filter="true" Mandatory="false">
-                <MudTooltip Text="Copy">
-                    <MudChip OnClick="@(() => CopyToClipboard(context.Message))" Icon="@Icons.Filled.ContentCopy" Color="Color.Info"/>
-                </MudTooltip>
+                <MudChip OnClick="@(() => CopyToClipboard(context.Message))" Icon="@Icons.Filled.ContentCopy" Color="Color.Info"/>
             </MudChipSet>
         </MudTd>
     </RowTemplate>
