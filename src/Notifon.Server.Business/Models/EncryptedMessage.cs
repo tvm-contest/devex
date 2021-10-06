@@ -3,12 +3,11 @@
         public EncryptedMessage(string nonce, string message) {
             Nonce = nonce;
             Message = message;
-            IsEncrypted = true;
         }
 
         public string Nonce { get; }
         public string Message { get; }
-        public bool IsEncrypted { get; }
+        public bool IsEncrypted => true;
         public string Text => $"{Nonce} {Message}";
 
         public static EncryptedMessage CreateFromMessage(string nonceAndMessage) {
