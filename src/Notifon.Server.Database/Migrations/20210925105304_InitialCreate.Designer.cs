@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notifon.Server.Database;
-using Server.Database;
 
-namespace Server.Database.Migrations
+namespace Notifon.Server.Database.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
     [Migration("20210925105304_InitialCreate")]
@@ -18,7 +17,7 @@ namespace Server.Database.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.10");
 
-            modelBuilder.Entity("Server.Database.ClientInfo", b =>
+            modelBuilder.Entity( "Notifon.Server.Database.ClientInfo", b =>
                 {
                     b.Property<string>("Hash")
                         .HasColumnType("TEXT");

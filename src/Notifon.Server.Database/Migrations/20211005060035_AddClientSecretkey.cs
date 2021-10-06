@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Server.Database.Migrations
+namespace Notifon.Server.Database.Migrations
 {
     public partial class AddClientSecretkey : Migration
     {

@@ -5,9 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Notifon.Server.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Server;
 
-namespace Server.Database.Migrations
+namespace Notifon.Server.Database.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
     [Migration("20211005072856_Rename HashToClientId")]
@@ -21,7 +20,7 @@ namespace Server.Database.Migrations
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("Server.ClientInfo", b =>
+            modelBuilder.Entity( "Notifon.Server.ClientInfo", b =>
                 {
                     b.Property<string>("ClientId")
                         .HasColumnType("text");
