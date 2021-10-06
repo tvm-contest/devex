@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 using Confluent.Kafka;
 using GreenPipes;
 using MassTransit;
 using MassTransit.Registration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notifon.Server.Configuration.Options;
@@ -23,12 +25,7 @@ namespace Notifon.Server.Kafka {
                         saslConfigurator.Password = kafkaOptions.Password;
                     }));
 
-
-#if DEBUG
-                var groupId = $"local-{Dns.GetHostName()}";
-#else
-                const string groupId = "server-group-1";
-#endif
+                var groupId = ComposeGroupId(context);
 
                 factoryConfigurator.TopicEndpoint<string, KafkaMessage.KafkaMessage>(kafkaOptions.Topic, groupId,
                     e => {
@@ -41,6 +38,14 @@ namespace Notifon.Server.Kafka {
                         e.UseMessageRetry(c => c.Immediate(3));
                     });
             });
+        }
+
+        private static string ComposeGroupId(IConfigurationServiceProvider context) {
+            var hostEnv = context.GetRequiredService<IHostEnvironment>();
+            var groupIdBuilder = new StringBuilder(hostEnv.EnvironmentName);
+            if (hostEnv.IsDevelopment()) //use different group-id for different developers
+                groupIdBuilder.AppendFormat("-{0}", Dns.GetHostName());
+            return groupIdBuilder.ToString();
         }
 
         private static Action<IConsumer<string, KafkaMessage.KafkaMessage>, CommittedOffsets> OffsetsCommittedHandler(
