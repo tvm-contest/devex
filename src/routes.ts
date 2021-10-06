@@ -8,10 +8,10 @@ import * as InfoController from './controllers/info';
 const router = Router();
 
 // Webhook routes
-router.post(ROUTES.WEBHOOK.SUBSCRIBE, WebhookController.subscribe);
+router.get(ROUTES.WEBHOOK.SUBSCRIBE, WebhookController.subscribe);
 
 // Info routes
-router.post(ROUTES.INFO.GET, InfoController.get);
+router.get(ROUTES.INFO.GET, InfoController.get);
 
 // Dev routes
 if (process.env.NODE_ENV === 'development') {
