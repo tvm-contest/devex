@@ -1,7 +1,5 @@
-﻿namespace Server.Models
-{
-    public interface SubscriptionMessage
-    {
+﻿namespace Server.Models {
+    public interface SubscriptionMessage {
         string Text { get; }
         bool IsEncrypted { get; }
     }

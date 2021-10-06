@@ -12,12 +12,9 @@ using NSwag;
 using Prometheus;
 using Serilog;
 
-namespace Server
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
+namespace Server {
+    public class Startup {
+        public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
 
@@ -25,10 +22,11 @@ namespace Server
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
             // configure asp net
-            services.AddControllersWithViews(options => { options.InputFormatters.Insert(options.InputFormatters.Count, new TextPlainInputFormatter()); });
+            services.AddControllersWithViews(options => {
+                options.InputFormatters.Insert(options.InputFormatters.Count, new TextPlainInputFormatter());
+            });
             services.AddRazorPages();
             services.AddSwaggerDocument(settings => { settings.Title = ProjectConstants.ServiceName; });
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
@@ -58,25 +56,21 @@ namespace Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+            if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
             }
-            else
-            {
+            else {
                 app.UseExceptionHandler("/Error");
             }
 
             app.UseSerilogRequestLogging();
 
-            app.UseOpenApi(settings =>
-            {
-                settings.PostProcess = (document, request) =>
-                {
-                    if (!request.Headers.TryGetValue("X-Scheme", out var scheme) || !Enum.TryParse(scheme, true, out OpenApiSchema openApiSchema)) return;
+            app.UseOpenApi(settings => {
+                settings.PostProcess = (document, request) => {
+                    if (!request.Headers.TryGetValue("X-Scheme", out var scheme) ||
+                        !Enum.TryParse(scheme, true, out OpenApiSchema openApiSchema)) return;
                     document.Schemes.Clear();
                     document.Schemes.Add(openApiSchema);
                 };
@@ -88,15 +82,13 @@ namespace Server
 
             app.UseRouting()
                 .UseCors()
-                .UseEndpoints(endpoints =>
-                {
+                .UseEndpoints(endpoints => {
                     endpoints.MapRazorPages();
                     endpoints.MapControllers();
                     endpoints.MapHub<SignalRHub>("/signalr");
                     endpoints.MapFallbackToFile("index.html");
                     endpoints.MapHealthChecks("/health");
-                    endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
-                    {
+                    endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions {
                         Predicate = check => check.Tags.Contains("ready")
                     });
                     endpoints.MapMetrics();

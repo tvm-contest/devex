@@ -1,8 +1,7 @@
 ﻿@page "/server-status"
 @inject IApiClient _apiClient;
 
-@if (ServerStatus == null)
-{
+@if (ServerStatus == null) {
     <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">Loading...</MudText>
     return;
 }
@@ -37,8 +36,7 @@
 
 @code{
 
-    protected override async Task OnInitializedAsync()
-    {
+    protected override async Task OnInitializedAsync() {
         ServerStatus = await _apiClient.GetServerStatusAsync();
     }
 

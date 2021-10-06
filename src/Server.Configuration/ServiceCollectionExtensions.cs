@@ -3,12 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Options;
 
-namespace Server
-{
-    public static class ServiceCollectionExtensions
-    {
-        public static IServiceCollection ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
-        {
+namespace Server {
+    public static class ServiceCollectionExtensions {
+        public static IServiceCollection ConfigureOptions(this IServiceCollection services,
+            IConfiguration configuration) {
             services
                 .Configure<KafkaOptions>(configuration.GetSection(Constants.KafkaOptions))
                 .Configure<RedisCacheOptions>(configuration.GetSection(Constants.RedisOptions))

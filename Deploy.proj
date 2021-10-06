@@ -6,16 +6,16 @@
     </PropertyGroup>
 
     <Target Name="Build" BeforeTargets="Push">
-        <Exec Command="docker build . -t $(ImageName):latest"/>
+        <Exec Command="docker build . -t $(ImageName):latest" />
     </Target>
 
     <Target Name="Push" BeforeTargets="Deploy">
-        <Exec Command="docker push $(ImageName):latest"/>
+        <Exec Command="docker push $(ImageName):latest" />
     </Target>
 
     <Target Name="Deploy">
-        <Exec Command="scp -C -r .docker-compose/* $(Server):~/server/free-ton-notify/"/>
-        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose -f docker-compose.yaml -f docker-compose.server.yaml pull; docker-compose -f docker-compose.yaml -f docker-compose.server.yaml up -d&quot;"/>
+        <Exec Command="scp -C -r .docker-compose/* $(Server):~/server/free-ton-notify/" />
+        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose -f docker-compose.yaml -f docker-compose.server.yaml pull; docker-compose -f docker-compose.yaml -f docker-compose.server.yaml up -d&quot;" />
     </Target>
 
     <ItemGroup>

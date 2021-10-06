@@ -6,21 +6,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MassTransit" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.AspNetCore" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.Kafka" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.Prometheus" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.Redis" Version="7.2.2"/>
-        <PackageReference Include="MassTransit.SignalR" Version="7.2.2"/>
+        <PackageReference Include="MassTransit" Version="7.2.2" />
+        <PackageReference Include="MassTransit.AspNetCore" Version="7.2.2" />
+        <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.2.2" />
+        <PackageReference Include="MassTransit.Kafka" Version="7.2.2" />
+        <PackageReference Include="MassTransit.Prometheus" Version="7.2.2" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.2" />
+        <PackageReference Include="MassTransit.Redis" Version="7.2.2" />
+        <PackageReference Include="MassTransit.SignalR" Version="7.2.2" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Server.Business\Server.Business.csproj"/>
-        <ProjectReference Include="..\Server.Configuration\Server.Configuration.csproj"/>
-        <ProjectReference Include="..\Server.Kafka\Server.Kafka.csproj"/>
-        <ProjectReference Include="..\Server.SignalR\Server.SignalR.csproj"/>
+        <ProjectReference Include="..\Server.Business\Server.Business.csproj" />
+        <ProjectReference Include="..\Server.Configuration\Server.Configuration.csproj" />
+        <ProjectReference Include="..\Server.Kafka\Server.Kafka.csproj" />
+        <ProjectReference Include="..\Server.SignalR\Server.SignalR.csproj" />
     </ItemGroup>
 
 </Project>

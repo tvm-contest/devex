@@ -11,15 +11,11 @@ using Server.Requests.Api;
 using Server.Requests.Endpoint;
 using Server.Requests.TonClient;
 
-namespace Server
-{
-    public static class ServiceCollectionExtensions
-    {
-        public static IServiceCollection AddMassTransit(this IServiceCollection services, bool useRabbitMq)
-        {
+namespace Server {
+    public static class ServiceCollectionExtensions {
+        public static IServiceCollection AddMassTransit(this IServiceCollection services, bool useRabbitMq) {
             services
-                .AddMediator(x =>
-                {
+                .AddMediator(x => {
                     x.AddConsumer<GetServerStatusConsumer>();
                     x.AddRequestClient<GetServerStatus>();
                     x.AddConsumer<SubmitClientConsumer>();
@@ -27,8 +23,7 @@ namespace Server
                     x.AddConsumer<DecryptEncryptedMessageConsumer>();
                     x.AddRequestClient<DecryptEncryptedMessage>();
                 })
-                .AddMassTransit(x =>
-                {
+                .AddMassTransit(x => {
                     x.AddDelayedMessageScheduler();
                     x.AddConsumer<SendSubscriptionHttpConsumer, SendSubscriptionHttpConsumerDefinition>();
                     x.AddConsumer<SendSubscriptionTelegramConsumer, SendSubscriptionTelegramConsumerDefinition>();
@@ -38,15 +33,13 @@ namespace Server
                     x.SetKebabCaseEndpointNameFormatter();
 
                     if (useRabbitMq)
-                        x.UsingRabbitMq((context, cfg) =>
-                        {
+                        x.UsingRabbitMq((context, cfg) => {
                             SetupRabbitMqHost(cfg, context);
                             ConfigureContext(cfg, context);
                             cfg.ConfigureEndpoints(context);
                         });
                     else
-                        x.UsingInMemory((context, cfg) =>
-                        {
+                        x.UsingInMemory((context, cfg) => {
                             ConfigureContext(cfg, context);
                             cfg.ConfigureEndpoints(context);
                         });
@@ -56,19 +49,17 @@ namespace Server
             return services;
         }
 
-        private static void ConfigureContext(IBusFactoryConfigurator cfg, IConfigurationServiceProvider context)
-        {
+        private static void ConfigureContext(IBusFactoryConfigurator cfg, IConfigurationServiceProvider context) {
             cfg.UseDelayedMessageScheduler();
             cfg.UsePublishFilter(typeof(SendSubscriptionAddClientInfoHeaderFilter<>), context);
             cfg.UsePublishFilter(typeof(SendSubscriptionDecryptMessageFilter<>), context);
             cfg.UsePrometheusMetrics();
         }
 
-        private static void SetupRabbitMqHost(IRabbitMqBusFactoryConfigurator cfg, IConfigurationServiceProvider context)
-        {
+        private static void SetupRabbitMqHost(IRabbitMqBusFactoryConfigurator cfg,
+            IConfigurationServiceProvider context) {
             var options = context.GetRequiredService<IOptions<RabbitMqOptions>>().Value;
-            cfg.Host(options.Host, r =>
-            {
+            cfg.Host(options.Host, r => {
                 r.Username(options.Username);
                 r.Password(options.Password);
             });

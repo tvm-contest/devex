@@ -1,9 +1,12 @@
 ---
+
 name: Feature request
+
 about: Suggest an idea for this project
+
 title: "[Feature Request]"
-labels: Feature Request, Triage
-assignees: ''
+
+labels: Feature Request, Triage assignees: ''
 
 ---
 

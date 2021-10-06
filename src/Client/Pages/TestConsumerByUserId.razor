@@ -25,14 +25,12 @@
 
     private static readonly JsonSerializerOptions JsonIndentedSerializerOptions = new() { WriteIndented = true };
 
-    protected override async Task OnInitializedAsync()
-    {
+    protected override async Task OnInitializedAsync() {
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(_navigation.ToAbsoluteUri($"/signalr?UserId={UserId}"))
             .WithAutomaticReconnect(Enumerable.Range(0, 20).Select(r => TimeSpan.FromSeconds(r * 2)).ToArray())
             .Build();
-        _hubConnection.On<string>("ReceiveMessage", async message =>
-        {
+        _hubConnection.On<string>("ReceiveMessage", async message => {
             Messages = await _storage.Push(new MessageInfo { DateTime = DateTime.Now, Message = message });
             StateHasChanged();
         });
@@ -44,16 +42,13 @@
         Messages = await _storage.GetAll();
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        if (_hubConnection is not null)
-        {
+    public async ValueTask DisposeAsync() {
+        if (_hubConnection is not null) {
             await _hubConnection.DisposeAsync();
         }
     }
 
-    private async Task OnClear()
-    {
+    private async Task OnClear() {
         Messages = null;
         await _storage.Clear();
         Messages = await _storage.GetAll();

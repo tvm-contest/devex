@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace Server
-{
-    public class SignalRHub : Hub
-    {
-    }
+namespace Server {
+    public class SignalRHub : Hub { }
 }

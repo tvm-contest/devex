@@ -1,9 +1,12 @@
 ---
+
 name: Bug report
+
 about: Create a report to help us improve
+
 title: "[Bug]"
-labels: Bug, Triage
-assignees: ''
+
+labels: Bug, Triage assignees: ''
 
 ---
 
@@ -12,6 +15,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -24,9 +28,10 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Hosting Model (is this issue happening with a certain hosting model?):**
- - Blazor Server
- - Blazor WebAssembly
- - etc...
+
+- Blazor Server
+- Blazor WebAssembly
+- etc...
 
 **Additional context**
 Add any other context about the problem here.

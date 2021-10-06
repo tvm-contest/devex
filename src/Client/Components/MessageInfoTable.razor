@@ -58,8 +58,7 @@
     [Parameter]
     public EventCallback<MouseEventArgs> OnClearClickCallback { get; set; }
 
-    private async Task CopyToClipboard(string message)
-    {
+    private async Task CopyToClipboard(string message) {
         if (SelectedChip == null) return;
         await JsApiService.CopyToClipboardAsync(message);
         await Task.Delay(TimeSpan.FromSeconds(0.5));

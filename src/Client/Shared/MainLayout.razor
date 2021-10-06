@@ -1,5 +1,4 @@
-﻿@using Blazored.LocalStorage
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 @inject ILocalStorageService _localStorageService
 
 <MudThemeProvider Theme="@_currentTheme"/>
@@ -25,36 +24,29 @@
     bool _drawerOpen = true;
     MudTheme _currentTheme = DefaultTheme;
 
-    protected override async Task OnInitializedAsync()
-    {
+    protected override async Task OnInitializedAsync() {
         var isDarkThemeSelected = await _localStorageService.GetItemAsync<bool>("IsDarkThemeSelected");
         _currentTheme = isDarkThemeSelected ? DarkTheme : DefaultTheme;
     }
 
-    void DrawerToggle()
-    {
+    void DrawerToggle() {
         _drawerOpen = !_drawerOpen;
     }
 
-    async Task DarkMode()
-    {
+    async Task DarkMode() {
         var isDefaultThemeNow = _currentTheme == DefaultTheme;
         await _localStorageService.SetItemAsync("IsDarkThemeSelected", isDefaultThemeNow);
         _currentTheme = isDefaultThemeNow ? DarkTheme : DefaultTheme;
     }
 
-    static readonly MudTheme DefaultTheme = new()
-    {
-        Palette = new Palette
-        {
+    static readonly MudTheme DefaultTheme = new() {
+        Palette = new Palette {
             Black = "#272c34"
         }
     };
 
-    static readonly MudTheme DarkTheme = new()
-    {
-        Palette = new Palette
-        {
+    static readonly MudTheme DarkTheme = new() {
+        Palette = new Palette {
             Black = "#27272f",
             Background = "#32333d",
             BackgroundGrey = "#27272f",

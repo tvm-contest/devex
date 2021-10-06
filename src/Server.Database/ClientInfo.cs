@@ -1,10 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Server
-{
+namespace Server {
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class ClientInfo
-    {
+    public class ClientInfo {
         [Key] public string ClientId { get; set; }
 
         [Required(AllowEmptyStrings = false)] public string Endpoint { get; set; }

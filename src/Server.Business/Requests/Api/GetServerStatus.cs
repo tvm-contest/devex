@@ -1,6 +1,3 @@
-﻿namespace Server.Requests.Api
-{
-    public interface GetServerStatus
-    {
-    }
+﻿namespace Server.Requests.Api {
+    public interface GetServerStatus { }
 }

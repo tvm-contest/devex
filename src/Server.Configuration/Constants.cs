@@ -1,7 +1,5 @@
-﻿namespace Server
-{
-    public static class Constants
-    {
+﻿namespace Server {
+    public static class Constants {
         internal const string RabbitMqOptions = "RabbitMqOptions";
         internal const string RedisOptions = "RedisOptions";
         internal const string PostgreSql = "PostgreSql";

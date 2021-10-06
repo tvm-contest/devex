@@ -9,32 +9,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Server.Requests.Endpoint;
 
-namespace Server.Controllers
-{
+namespace Server.Controllers {
     [ApiController]
     [Route("endpoint")]
-    public class EndpointController : ControllerBase
-    {
+    public class EndpointController : ControllerBase {
         private readonly ILogger<EndpointController> _logger;
         private readonly IRequestClient<SubmitClient> _submitClientRequestClient;
 
-        public EndpointController(ILogger<EndpointController> logger, IRequestClient<SubmitClient> submitClientRequestClient)
-        {
+        public EndpointController(ILogger<EndpointController> logger,
+            IRequestClient<SubmitClient> submitClientRequestClient) {
             _logger = logger;
             _submitClientRequestClient = submitClientRequestClient;
         }
 
         [HttpPost]
         [EnableCors(PolicyName = "SubmitClient")]
-        public async Task<OkObjectResult> SubmitClient([FromForm] EndpointParameters parameters, CancellationToken cancellationToken)
-        {
+        public async Task<OkObjectResult> SubmitClient([FromForm] EndpointParameters parameters,
+            CancellationToken cancellationToken) {
             var hash = parameters.Hash;
             var data = parameters.Data?.StringFromBase64() ?? string.Empty;
 
             _logger.LogTrace("Received hash: {Hash} endpoint: {Endpoint}", hash, data);
 
-            try
-            {
+            try {
                 var submitResult = await _submitClientRequestClient
                     .GetResponse<SubmitClientSuccess, SubmitClientResult>(
                         new { ClientId = hash, Data = data }, cancellationToken);
@@ -46,8 +43,7 @@ namespace Server.Controllers
                               "Now your can set rules for catching blockchain messages 🖐️");
 
                 if (submitResult.Is(out Response<SubmitClientResult> result))
-                    return result.Message.ResultType switch
-                    {
+                    return result.Message.ResultType switch {
                         SubmitClientResultType.ComingSoon =>
                             Ok("🌙 Coming soon...\n" +
                                $"💬 Contact us to get help {ProjectConstants.TelegramLink}\n"),
@@ -64,8 +60,7 @@ namespace Server.Controllers
                         _ => throw new ArgumentOutOfRangeException()
                     };
             }
-            catch
-            {
+            catch {
                 // ignored
             }
 
@@ -75,8 +70,7 @@ namespace Server.Controllers
                       "Also you can pass \"test\" keyword as callback url to test this provider");
         }
 
-        public class EndpointParameters
-        {
+        public class EndpointParameters {
             [Required(AllowEmptyStrings = false)] public string Hash { get; init; }
 
             public string Data { get; init; }

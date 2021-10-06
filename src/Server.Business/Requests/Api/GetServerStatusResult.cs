@@ -1,7 +1,5 @@
-﻿namespace Server.Requests.Api
-{
-    public class GetServerStatusResult
-    {
+﻿namespace Server.Requests.Api {
+    public class GetServerStatusResult {
         public int UserCount { get; init; }
     }
 }

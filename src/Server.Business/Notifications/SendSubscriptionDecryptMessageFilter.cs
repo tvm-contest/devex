@@ -4,27 +4,20 @@ using MassTransit;
 using Server.Models;
 using Server.Requests.TonClient;
 
-namespace Server.Notifications
-{
-    public class SendSubscriptionDecryptMessageFilter<T> : IFilter<PublishContext<T>> where T : class
-    {
+namespace Server.Notifications {
+    public class SendSubscriptionDecryptMessageFilter<T> : IFilter<PublishContext<T>> where T : class {
         private readonly IRequestClient<DecryptEncryptedMessage> _decryptMessageClient;
 
-        public SendSubscriptionDecryptMessageFilter(IRequestClient<DecryptEncryptedMessage> decryptMessageClient)
-        {
+        public SendSubscriptionDecryptMessageFilter(IRequestClient<DecryptEncryptedMessage> decryptMessageClient) {
             _decryptMessageClient = decryptMessageClient;
         }
 
-        public async Task Send(PublishContext<T> context, IPipe<PublishContext<T>> next)
-        {
-            if (context.Message is SendSubscription sendSubscription)
-            {
+        public async Task Send(PublishContext<T> context, IPipe<PublishContext<T>> next) {
+            if (context.Message is SendSubscription sendSubscription) {
                 var secretKey = context.Headers.Get<ClientInfo>(typeof(ClientInfo).FullName).SecretKey;
-                if (secretKey != null)
-                {
+                if (secretKey != null) {
                     var encryptedMessage = EncryptedMessage.CreateFromMessage(sendSubscription.Message.Text);
-                    var decryptedMessage = await _decryptMessageClient.GetResponse<DecryptedMessage>(new
-                    {
+                    var decryptedMessage = await _decryptMessageClient.GetResponse<DecryptedMessage>(new {
                         EncryptedMessage = encryptedMessage,
                         SecretKey = secretKey
                     });
@@ -36,8 +29,6 @@ namespace Server.Notifications
             await next.Send(context);
         }
 
-        public void Probe(ProbeContext context)
-        {
-        }
+        public void Probe(ProbeContext context) { }
     }
 }

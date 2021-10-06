@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ch1seL.Blazored.LocalStorage.Concurrent" Version="0.0.4"/>
+        <PackageReference Include="ch1seL.Blazored.LocalStorage.Concurrent" Version="0.0.4" />
     </ItemGroup>
 
 </Project>

@@ -2,12 +2,9 @@
 using System.IO;
 using Confluent.Kafka;
 
-namespace Server.KafkaMessage
-{
-    public class KafkaMessageDeserializer : IDeserializer<KafkaMessage>
-    {
-        public KafkaMessage Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
-        {
+namespace Server.KafkaMessage {
+    public class KafkaMessageDeserializer : IDeserializer<KafkaMessage> {
+        public KafkaMessage Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context) {
             using var stream = new MemoryStream(data.ToArray());
             using var reader = new StreamReader(stream);
 

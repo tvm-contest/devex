@@ -9,7 +9,7 @@ services:
     volumes:
       - ./nginx/conf/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
       - ./nginx/ssl:/opt/bitnami/nginx/ssl
-    restart: unless-stopped 
+    restart: unless-stopped
   redis:
     image: docker.io/bitnami/redis:6.2
     environment:
