@@ -43,4 +43,4 @@ jobs:
 
       - name: Build, Push, Deploy
         run: |
-          dotnet build ./Deploy.proj
+          dotnet build ./Notifon.Deploy.proj

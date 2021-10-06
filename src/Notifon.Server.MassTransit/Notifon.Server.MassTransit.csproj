@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit" Version="7.2.2" />
+        <PackageReference Include="MassTransit.AspNetCore" Version="7.2.2" />
+        <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.2.2" />
+        <PackageReference Include="MassTransit.Kafka" Version="7.2.2" />
+        <PackageReference Include="MassTransit.Prometheus" Version="7.2.2" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="7.2.2" />
+        <PackageReference Include="MassTransit.Redis" Version="7.2.2" />
+        <PackageReference Include="MassTransit.SignalR" Version="7.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Notifon.Server.Business\Notifon.Server.Business.csproj" />
+        <ProjectReference Include="..\Notifon.Server.Configuration\Notifon.Server.Configuration.csproj" />
+        <ProjectReference Include="..\Notifon.Server.Kafka\Notifon.Server.Kafka.csproj" />
+        <ProjectReference Include="..\Notifon.Server.SignalR\Notifon.Server.SignalR.csproj" />
+    </ItemGroup>
+
+</Project>

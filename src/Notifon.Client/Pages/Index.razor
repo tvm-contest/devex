@@ -1,0 +1,14 @@
+﻿@page "/"
+@inject NavigationManager _navigationManager;
+
+<MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">@ProjectConstants.ServicePurpose</MudText>
+<MudText Align="Align.Center" GutterBottom="@true">@ProjectConstants.ServiceDescription</MudText>
+<MudText Align="Align.Left">Swagger: <MudLink Target="_blank" Href="@SwaggerUrl">@SwaggerUrl</MudLink></MudText>
+<MudText Align="Align.Left">GitHub: <MudLink Target="_blank" Href="@ProjectConstants.GitHubLink">@ProjectConstants.GitHubLink</MudLink></MudText>
+<MudText Align="Align.Left">Telegram: <MudLink Target="_blank" Href="@ProjectConstants.TelegramLink">@ProjectConstants.TelegramLink</MudLink></MudText>
+
+@code{
+
+    private string SwaggerUrl => _navigationManager.ToAbsoluteUri("swagger").ToString();
+
+}
