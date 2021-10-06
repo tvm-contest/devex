@@ -11,7 +11,7 @@ const router = Router();
 router.post(ROUTES.WEBHOOK.SUBSCRIBE, WebhookController.subscribe);
 
 // Info routes
-router.post(ROUTES.INFO.GET, InfoController.get);
+router.get(ROUTES.INFO.GET, InfoController.get);
 
 // Dev routes
 if (process.env.NODE_ENV === 'development') {
