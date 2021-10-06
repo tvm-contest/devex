@@ -25,19 +25,41 @@ namespace Server.Requests.Endpoint
 
         public async Task Consume(ConsumeContext<SubmitClient> context)
         {
-            var cancellationToken = context.CancellationToken;
             var clientId = context.Message.ClientId;
             var data = context.Message.Data.Split('\n');
             var endpoint = data[0];
             var secretKey = data.Length == 2 ? data[1] : null;
-            var isTest = endpoint.Equals("test");
 
-            if (!isTest && await ComingSoon(context)) return;
+            if (await TestCommand(endpoint, clientId, secretKey, context)) return;
+            if (await ListCommand(endpoint, clientId, context)) return;
+            if (await ComingSoon(context)) return;
             if (await DontAllowUseServerUrl(context, endpoint)) return;
-            GenerateEndpointIfTestCommand(clientId, ref endpoint);
             if (await EndpointValidationError(context, endpoint)) return;
+            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = false });
+        }
+
+        private async Task<bool> ListCommand(string endpoint, string clientId, ConsumeContext context)
+        {
+            if (!string.IsNullOrWhiteSpace(endpoint) && !endpoint.Equals("list", StringComparison.OrdinalIgnoreCase)) return false;
+
+            var cancellationToken = context.CancellationToken;
+
+            var clientInfo = await _serverDbContext.ClientInfos.FindAsync(new object[] { clientId }, cancellationToken);
+            var text = $"{clientInfo.Endpoint}\n{clientInfo.SecretKey}";
+
+            await context.RespondAsync<SubmitClientResult>(new { ResultType = SubmitClientResultType.ListCommand, Message = text });
+            return true;
+        }
+
+        private async Task<bool> TestCommand(string endpoint, string clientId, string? secretKey, ConsumeContext context)
+        {
+            if (!endpoint.Equals("test", StringComparison.OrdinalIgnoreCase)) return false;
+
+            var cancellationToken = context.CancellationToken;
+            endpoint = Url.Combine(ProjectConstants.ServerUrl, "test-consumer", clientId[..12]);
             await AddOrUpdateClientInfoToDb(clientId, endpoint, secretKey, cancellationToken);
-            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = isTest });
+            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = true });
+            return true;
         }
 
         private async Task AddOrUpdateClientInfoToDb(string clientId, string endpoint, string? secretKey, CancellationToken cancellationToken)
@@ -60,12 +82,6 @@ namespace Server.Requests.Endpoint
             await _serverDbContext.SaveChangesAsync(cancellationToken);
         }
 
-        private static void GenerateEndpointIfTestCommand(string clientId, ref string endpoint)
-        {
-            if (endpoint.Equals("test", StringComparison.OrdinalIgnoreCase))
-                endpoint = Url.Combine(ProjectConstants.ServerUrl, "test-consumer", clientId[..12]);
-        }
-
         private static async Task<bool> EndpointValidationError(ConsumeContext context, string endpoint)
         {
             if (EndpointValidationHelper.IsHttpEndpoint(endpoint)) return false;
@@ -73,21 +89,22 @@ namespace Server.Requests.Endpoint
             if (EndpointValidationHelper.TryGetTelegramEndpoint(endpoint, out _)) return false;
             //todo: ensure that mailgun options is defined
             if (EndpointValidationHelper.IsEmailEndpoint(endpoint)) return false;
-            await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.EndpointValidation });
+
+            await context.RespondAsync<SubmitClientResult>(new { ResultType = SubmitClientResultType.EndpointValidationError });
             return true;
         }
 
         private static async Task<bool> DontAllowUseServerUrl(ConsumeContext context, string endpoint)
         {
             if (!endpoint.StartsWith(ProjectConstants.ServerUrl, StringComparison.OrdinalIgnoreCase)) return false;
-            await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.AccessDenied });
+            await context.RespondAsync<SubmitClientResult>(new { ResultType = SubmitClientResultType.AccessDenied });
             return true;
         }
 
         private async Task<bool> ComingSoon(ConsumeContext context)
         {
             if (!bool.TryParse(_configuration["COMING_SOON"], out var comingSoon) || !comingSoon) return false;
-            await context.RespondAsync<SubmitClientError>(new { ErrorType = SubmitClientErrorType.ComingSoon });
+            await context.RespondAsync<SubmitClientResult>(new { ResultType = SubmitClientResultType.ComingSoon });
             return true;
         }
     }

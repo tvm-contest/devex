@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
+using Common;
 using MassTransit;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +36,7 @@ namespace Server.Controllers
             try
             {
                 var submitResult = await _submitClientRequestClient
-                    .GetResponse<SubmitClientSuccess, SubmitClientError>(
+                    .GetResponse<SubmitClientSuccess, SubmitClientResult>(
                         new { ClientId = hash, Data = data }, cancellationToken);
 
                 if (submitResult.Is(out Response<SubmitClientSuccess> submitClientSuccess))
@@ -44,22 +45,24 @@ namespace Server.Controllers
                               (submitClientSuccess.Message.IsTest ? "(can be open in web browser)\n" : "\n") +
                               "Now your can set rules for catching blockchain messages 🖐️");
 
-                if (submitResult.Is(out Response<SubmitClientError> error))
-                {
-                    return error.Message.ErrorType switch
+                if (submitResult.Is(out Response<SubmitClientResult> result))
+                    return result.Message.ResultType switch
                     {
-                        SubmitClientErrorType.ComingSoon =>
-                            Ok("🌙 Coming soon...\n"
-                               + "Contact us to get help https://t.me/ton_actions_chat\n"),
-                        SubmitClientErrorType.EndpointValidation =>
-                            Ok($"🔍 Wrong endpoint format in {data}\n" +
-                               "Supported HTTP notifications starting with http:// or https://\n" +
-                               "Contact us to get help https://t.me/ton_actions_chat\n"),
-                        SubmitClientErrorType.AccessDenied =>
-                            Ok("Pass \"test\" keyword as callback url to test this provider"),
+                        SubmitClientResultType.ComingSoon =>
+                            Ok("🌙 Coming soon...\n" +
+                               $"💬 Contact us to get help {ProjectConstants.TelegramLink}\n"),
+                        SubmitClientResultType.EndpointValidationError =>
+                            Ok("🔍 Wrong endpoint. Supported formats:\n" +
+                               " - HTTP notifications starting with http:// or https://\n" +
+                               " - Telegram notifications https://t.me/{channel_id}\n" +
+                               " - Emails notification youname@youdomain.com\n" +
+                               $"💬 Contact us to get help {ProjectConstants.TelegramLink}\n"),
+                        SubmitClientResultType.AccessDenied =>
+                            Ok("🚫 Access denied! Pass \"test\" keyword as callback url to test this provider"),
+                        SubmitClientResultType.ListCommand =>
+                            Ok($"📋 Your endpoints:\n{result.Message.Message}"),
                         _ => throw new ArgumentOutOfRangeException()
                     };
-                }
             }
             catch
             {
