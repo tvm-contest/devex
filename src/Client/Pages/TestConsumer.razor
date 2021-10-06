@@ -1,22 +1,9 @@
 ﻿@page "/test-consumer"
 
-<MudText Typo="@Typo.h4" Align="@Align.Center" GutterBottom="@true">Test consumer</MudText>
+<MudText Typo="@Typo.h4" Align="@Align.Center" GutterBottom="@true">Real-time HTTP consumer</MudText>
 <MudGrid Spacing="6" Justify="@Justify.SpaceBetween">
     <MudItem xs="12" md="9">
-        <MudText Typo="@Typo.h6" GutterBottom="@true" Style="white-space: nowrap">
-            There is a simple real-time consumer HTTP provider testing
-        </MudText>
-        <MudPaper Class="d-flex flex-column" Style="height:100%;" Outlined="true">
-            <MudList Clickable="@true" Dense="@true">
-                <MudListItem Icon="@Icons.Sharp.Filter1" IconSize="@Size.Small">Run <MudLink Target="_blank" Href="@ProjectConstants.DeBotLink">Notification DeBot</MudLink></MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter2" IconSize="@Size.Small">Sign two transactions to deploy your notification contract if not done yet</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter3" IconSize="@Size.Small">Click <b>Send callbackUrl | deviceToken to provider</b></MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter4" IconSize="@Size.Small">Select <b>tonactions</b> provider(github.com/ton-actions/free-ton-http-notification-provider, ID = tonactions)</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter5" IconSize="@Size.Small">Type <b>test</b> and enter</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter6" IconSize="@Size.Small">You'll get a link to catch messages, open it in your browser and wait for the consumer will be connected to host</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter7" IconSize="@Size.Small">Come back to DeBot and <b>Set rules</b> to receive messages</MudListItem>
-            </MudList>
-        </MudPaper>
+        <Instruction/>
     </MudItem>
     <MudItem xs="12" md="3">
         <RecentConsumers/>
