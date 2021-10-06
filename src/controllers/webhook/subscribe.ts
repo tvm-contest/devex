@@ -5,7 +5,8 @@ import requestMiddleware from '../../middleware/request-middleware';
 import WebhookConsumer from '../../models/WebhookConsumer';
 
 export const subscribeSchema = Joi.object().keys({
-	data: Joi.string().required()
+	data: Joi.string().required(),
+	hash: Joi.string().required()
 });
 
 interface SubscribeReqBody {
