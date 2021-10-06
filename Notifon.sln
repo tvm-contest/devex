@@ -29,6 +29,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifon.Server.Redis", "src\Notifon.Server.Redis\Notifon.Server.Redis.csproj", "{3DEF8EE5-BA50-4982-8DBE-D8CD31F459A0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionItems", "_SolutionItems", "{C6E0ED82-678A-4B03-96A5-EB9BA25D3976}"
+ProjectSection(SolutionItems) = preProject
+	README.md = README.md
+EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifon.Server.Configuration", "src\Notifon.Server.Configuration\Notifon.Server.Configuration.csproj", "{A70DDB62-07E1-4D6E-A795-15B9F7203A2A}"
 EndProject
