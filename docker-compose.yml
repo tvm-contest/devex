@@ -17,9 +17,9 @@ services:
     volumes:
       - ./logs:/logs
     networks:
-      - app-network
+      - ftns-network
     ports:
-      - "3000:3000"
+      - 3000:3000
     depends_on:
       - mongo
     links:
@@ -30,11 +30,11 @@ services:
     volumes:
       - ./data:/data/db
     networks:
-      - app-network
+      - ftns-network
     hostname: mongo
     ports:
       - '27017:27017'
 
 networks:
-  app-network:
+  ftns-network:
     driver: bridge

@@ -17,14 +17,15 @@ const subscribe: RequestHandler = async (req: Request<{}, {}, SubscribeReqBody>,
 	const { data: endpoint, hash } = req.body;
 	const uuid = uuidv1();
 
-	const consumer = new WebhookConsumer({ uuid, endpoint, hash });
-	await consumer.save();
+	// eslint-disable-next-line no-console
+	console.log(`DATA: ${endpoint}`);
+	// eslint-disable-next-line no-console
+	console.log(`HASH: ${hash}`);
 
-	res.send({
-		message: 'Include the uuid in webhook response to verify that you have an access to the requested url',
-		url: consumer.endpoint,
-		uuid: consumer.uuid
-	});
+	// const consumer = new WebhookConsumer({ uuid, endpoint, hash });
+	// await consumer.save();
+
+	res.send(`Include the uuid: ${uuid} in the webhook response to verify that you have an access to the requested url`);
 };
 
 export default requestMiddleware(subscribe, { validation: { body: subscribeSchema } });

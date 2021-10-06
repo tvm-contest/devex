@@ -1,12 +1,12 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "API Service",
+    "title": "Free TON Notifications service (i4ins)",
     "version": "1.0.0",
-    "description": "API Service endpoints",
+    "description": "Free TON Notifications service endpoints",
     "contact": {
-      "email": "sidhant@panda.fyi",
-      "name": "Sidhant Panda"
+      "email": "anton.solodkof@gmail.com",
+      "name": "Anton Solodkov"
     }
   },
   "servers": [
@@ -16,8 +16,12 @@
   ],
   "tags": [
     {
-      "name": "book",
-      "description": "Books APIs"
+      "name": "webhook",
+      "description": "Webhook APIs"
+    },
+    {
+      "name": "info",
+      "description": "Info APIs"
     }
   ],
   "paths": {

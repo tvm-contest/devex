@@ -18,9 +18,7 @@ const schema = new Schema<IWebhookConsumer>({
 	},
 	endpoint: {
 		type: String,
-		index: true,
-		required: true,
-		unique: true
+		index: true
 	},
 	hash: {
 		type: String,
