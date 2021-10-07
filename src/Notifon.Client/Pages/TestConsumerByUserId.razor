@@ -1,7 +1,6 @@
 ﻿@page "/test-consumer/{UserId}"
 @inject NavigationManager _navigation
 @inject IMessageInfoStorage _storage
-@using System.Text.Json
 @implements IAsyncDisposable
 
 
@@ -22,8 +21,6 @@
     private HubConnection _hubConnection;
     private IReadOnlyCollection<MessageInfo> Messages { get; set; }
     private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
-
-    private static readonly JsonSerializerOptions JsonIndentedSerializerOptions = new() { WriteIndented = true };
 
     protected override async Task OnInitializedAsync() {
         _hubConnection = new HubConnectionBuilder()

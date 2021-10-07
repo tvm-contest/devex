@@ -17,7 +17,7 @@ namespace Notifon.Client {
                 .AddMudServices();
 
             builder.Services
-                .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+                .AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
                 .AddTransient<IApiClient, ApiClient>();
 
             builder.Services
