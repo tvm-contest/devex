@@ -30,7 +30,7 @@ namespace Notifon.Server.MassTransit {
                     x.AddConsumer<SendSubscriptionHttpConsumer, SendSubscriptionHttpConsumerDefinition>();
                     x.AddConsumer<SendSubscriptionTelegramConsumer, SendSubscriptionTelegramConsumerDefinition>();
                     x.AddConsumer<SendSubscriptionMailgunConsumer, SendSubscriptionMailgunConsumerDefinition>();
-                    x.AddRider(RiderRegistrationConfiguratorExtensions.UsingKafka);
+                    x.AddRider(RiderRegistrationConfiguratorExtensions.KafkaRegistrationConfigurator);
                     x.AddSignalRHub<SignalRHub>();
                     x.SetKebabCaseEndpointNameFormatter();
 

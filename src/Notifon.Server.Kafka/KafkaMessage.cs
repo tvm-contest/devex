@@ -1,4 +1,4 @@
-﻿namespace Notifon.Server.Kafka.KafkaMessage {
+﻿namespace Notifon.Server.Kafka {
     public class KafkaMessage {
         public string Key { get; set; }
         public string Hash { get; init; }

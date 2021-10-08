@@ -2,7 +2,7 @@
 using System.IO;
 using Confluent.Kafka;
 
-namespace Notifon.Server.Kafka.KafkaMessage {
+namespace Notifon.Server.Kafka {
     public class KafkaMessageDeserializer : IDeserializer<KafkaMessage> {
         public KafkaMessage Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context) {
             using var stream = new MemoryStream(data.ToArray());

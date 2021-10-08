@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Notifon.Server.Business.Models;
 using Notifon.Server.Business.Notifications;
 
-namespace Notifon.Server.Kafka.KafkaMessage {
+namespace Notifon.Server.Kafka {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class KafkaMessageConsumer : IConsumer<KafkaMessage> {
         private readonly IDistributedCache _distributedCache;
@@ -25,23 +25,23 @@ namespace Notifon.Server.Kafka.KafkaMessage {
 
         public async Task Consume(ConsumeContext<KafkaMessage> context) {
             var message = context.Message;
-
-            var key = $"KafkaMessageKey:{context.GetKey<string>()}";
+            var cacheKey = $"KafkaMessageKey:{context.GetKey<string>()}";
+            var lockKey = $"KafkaMessageLock:{context.GetKey<string>()}";
             var cancellationToken = context.CancellationToken;
 
-            // lock consuming for this key
-            using var @lock = await _lock.CreateLockAsync(key, cancellationToken: cancellationToken);
+            // avoid consuming similar message 
+            using var @lock = await _lock.CreateLockAsync(lockKey, cancellationToken: cancellationToken);
 
             // check that this key wasn't consumed before
-            var cache = await _distributedCache.GetAsync(key, cancellationToken);
+            var cache = await _distributedCache.GetAsync(cacheKey, cancellationToken);
 
             //skip if already consumed
             if (cache != null) {
-                _logger.LogTrace("Skipping already consumed message {Key}", key);
+                _logger.LogTrace("Skipping already consumed message {Key}", cacheKey);
                 return;
             }
 
-            _logger.LogTrace("Received message with Key:{Key}", key);
+            _logger.LogTrace("Received message with Key:{Key}", cacheKey);
 
             // send message to subscriber
             await _publishEndpoint.Publish<SendSubscription>(
@@ -52,7 +52,7 @@ namespace Notifon.Server.Kafka.KafkaMessage {
                 cancellationToken);
 
             // mark as consumed
-            await _distributedCache.SetAsync(key, new byte[1],
+            await _distributedCache.SetAsync(cacheKey, new byte[1],
                 new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(25) },
                 cancellationToken);
         }
