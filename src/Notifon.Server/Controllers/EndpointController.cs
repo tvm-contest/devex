@@ -73,31 +73,33 @@ namespace Notifon.Server.Controllers {
                                " - 'list' get registered endpoints\n" +
                                " - 'remove [endpoint]' unregister endpoint\n" +
                                " - 'clear' unregister all endpoints\n" +
+                               " - 'secret [SECRET_KEY]' setup decryption key(Optional)\n" +
+                               " - 'secret delete' remove your secret from server\n" +
                                $" - 'test [parameters]' add test HTTP endpoint(see {Flurl.Url.Combine(ProjectConstants.ServerUrl, "test-consumer")})\n" +
                                "\n" +
                                "❗ Supported endpoints and parameters:\n" +
                                "HTTP endpoint:\n" +
-                               "http(s)://your-domain.com/you-endpoint [SECRET_KEY]\n" +
+                               "http(s)://your-domain.com/you-endpoint [-d]\n" +
+                               "test [-d]\n" +
                                "\n" +
                                "Telegram endpoint:\n" +
-                               "https://t.me/you_chat [SECRET_KEY][;BOT_TOKEN]\n" +
+                               "https://t.me/you_chat [-d] [-t:BOT_TOKEN]\n" +
                                "\n" +
                                "Mailgun endpoint:\n" +
-                               "your-name@your-domain.com [SECRET_KEY][;FROM_ADDRESS][;MAILGUN_DOMAIN;MAILGUN_APIKEY]\n" +
-                               "\n" +
-                               "Test endpoint:\n" +
-                               "test [SECRET_KEY]\n" +
+                               "your-name@your-domain.com [-d] [-f:FROM_ADDRESS] [-md:MAILGUN_DOMAIN] [-mk:MAILGUN_APIKEY]\n" +
                                "\n" +
                                "✨ Examples commands:\n" +
-                               "https://notifon.requestcatcher.com/test - just relay encrypted messages to HTTP endpoint\n" +
+                               "'https://notifon.requestcatcher.com/test' just relay encrypted messages to HTTP endpoint\n" +
                                "\n" +
-                               "https://notifon.requestcatcher.com/test SECRET_KEY - decrypt messages with SECRET_KEY and send it to HTTP endpoint\n" +
+                               "'https://notifon.requestcatcher.com/test -d' decrypt messages with SECRET_KEY and send it to HTTP endpoint\n" +
                                "\n" +
-                               "https://t.me/free_ton_notification - relay encrypted messages to @free_ton_notification uses @free_ton_notify_bot as default bot\n" +
+                               "'https://t.me/free_ton_notification' relay encrypted messages to @free_ton_notification uses @free_ton_notify_bot as default bot\n" +
                                "\n" +
-                               "https://t.me/you_chat ;BOT_TOKEN - send encrypted messages to you_chat uses custom bot(ensure that bot was added to the chat)\n" +
+                               "'https://t.me/you_chat -t:BOT_TOKEN' send encrypted messages to you_chat uses custom bot(ensure that bot was added to the chat)\n" +
                                "\n" +
-                               "your@email.com SECRET_KEY; notifon@notifon.com; notifon.com; MAILGUN_APIKEY - decrypt message with SECRET_KEY and send to meh11916@boofx.com from notifon@notifon.com uses notifon.com domain and MAILGUN_APIKEY\n" +
+                               "'your@email.com -f:notifon@notifon.com; -md:notifon.com; -mk:MAILGUN_APIKEY' decrypt message with SECRET_KEY and send to your@email.com from notifon@notifon.com uses notifon.com domain and MAILGUN_APIKEY\n" +
+                               "\n" +
+                               "'test -d' send decrypted messages to test endpoint" +
                                _contactUsMessage),
                         _ => throw new ArgumentOutOfRangeException()
                     };
