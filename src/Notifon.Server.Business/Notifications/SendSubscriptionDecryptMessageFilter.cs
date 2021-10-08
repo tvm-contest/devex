@@ -17,7 +17,7 @@ namespace Notifon.Server.Business.Notifications {
             if (context.Message is SendSubscription sendSubscription) {
                 var secretKey = context.Headers.Get<ClientInfo>(typeof(ClientInfo).FullName).SecretKey;
                 if (secretKey != null) {
-                    var encryptedMessage = EncryptedMessage.CreateFromMessage(sendSubscription.Message.Text);
+                    var encryptedMessage = EncryptedMessage.CreateFromBase(sendSubscription.Message);
                     var decryptedMessage = await _decryptMessageClient.GetResponse<DecryptedMessage>(new {
                         EncryptedMessage = encryptedMessage,
                         SecretKey = secretKey

@@ -10,8 +10,8 @@
         public bool IsEncrypted => true;
         public string Text => $"{Nonce} {Message}";
 
-        public static EncryptedMessage CreateFromMessage(string nonceAndMessage) {
-            var split = nonceAndMessage.Split(' ', 2);
+        public static EncryptedMessage CreateFromBase(SubscriptionMessage subscriptionMessage) {
+            var split = subscriptionMessage.Text.Split(' ', 2);
             return new EncryptedMessage(split[0], split[1]);
         }
     }
