@@ -2,8 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-
-        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\Notifon.Server.Business\Notifon.Server.Business.csproj" />
+        <ProjectReference Include="..\..\src\Notifon.Server.Business\Notifon.Server.Business.csproj" />
     </ItemGroup>
 
 </Project>
