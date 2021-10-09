@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using MassTransit;
@@ -36,23 +35,7 @@ namespace Notifon.Server.Business.Events {
 
             _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint.ChannelId, message);
             var response = await _httpClient.PostAsJsonAsync(SendMessageUrl, request, cancellationToken);
-            try {
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException e) when (!e.Message.StartsWith("Too Many Requests")
-                                                 && e.StatusCode >= (HttpStatusCode?)400
-                                                 && e.StatusCode <= (HttpStatusCode?)499) {
-                var failedResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-                throw new HttpRequestException(failedResponse, null,
-                    HttpStatusCode.BadRequest) {
-                    Data = {
-                        { "endpoint", endpoint },
-                        { "request", request },
-                        { "response", failedResponse }
-                    }
-                };
-            }
-
+            response.EnsureSuccessStatusCode();
             var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
             _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint.ChannelId, message,
                 successResponse);

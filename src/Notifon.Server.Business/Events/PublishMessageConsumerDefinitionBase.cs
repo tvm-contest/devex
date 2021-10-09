@@ -1,5 +1,5 @@
 using System;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using GreenPipes;
 using MassTransit;
@@ -12,6 +12,7 @@ namespace Notifon.Server.Business.Events {
     public abstract class SendSubscriptionConsumerDefinitionBase<T> : ConsumerDefinition<T> where T : class, IConsumer {
         private readonly int _retryCount;
         private readonly TimeSpan _retryInterval;
+        private readonly int[] _retryStatusCodes = { 425, 429 };
 
         protected SendSubscriptionConsumerDefinitionBase(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) {
             _retryCount = retryPolicyOptionsAccessor.Value.Count;
@@ -22,8 +23,9 @@ namespace Notifon.Server.Business.Events {
             IConsumerConfigurator<T> e) {
             if (_retryCount > 0)
                 e.UseDelayedRedelivery(configurator => {
-                    configurator.Ignore<HttpRequestException>(exception =>
-                        exception.StatusCode >= (HttpStatusCode?)400 && exception.StatusCode <= (HttpStatusCode?)499);
+                    configurator.Ignore<HttpRequestException>(exception => exception.StatusCode != null
+                                                                           && !_retryStatusCodes.Contains((int)exception.StatusCode)
+                                                                           && (int)exception.StatusCode is >= 400 and <= 499);
                     configurator.Interval(_retryCount, _retryInterval);
                 });
 

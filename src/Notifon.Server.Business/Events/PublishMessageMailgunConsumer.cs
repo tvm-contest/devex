@@ -47,22 +47,7 @@ namespace Notifon.Server.Business.Events {
 
             _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint.To, message);
             var response = await _httpClient.PostAsync(url, request, cancellationToken);
-            try {
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException e) when (e.StatusCode >= (HttpStatusCode?)400 &&
-                                                 e.StatusCode <= (HttpStatusCode?)499) {
-                var failedResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-                throw new HttpRequestException(failedResponse, null,
-                    HttpStatusCode.BadRequest) {
-                    Data = {
-                        { "endpoint", endpoint },
-                        { "request", request },
-                        { "response", failedResponse }
-                    }
-                };
-            }
-
+            response.EnsureSuccessStatusCode();
             var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
             _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint.To, message,
                 successResponse);
