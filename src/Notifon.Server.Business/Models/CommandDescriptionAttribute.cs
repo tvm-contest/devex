@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Notifon.Server.Business {
+namespace Notifon.Server.Business.Models {
     public class CommandDescriptionAttribute : Attribute {
         public CommandDescriptionAttribute(string command, string description) {
             Command = command;

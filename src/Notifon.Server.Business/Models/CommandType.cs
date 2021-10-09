@@ -1,4 +1,4 @@
-﻿namespace Notifon.Server.Business {
+﻿namespace Notifon.Server.Business.Models {
     public enum CommandType {
         [CommandDescription(null, "[endpoint] [parameters]' register endpoint or update parameters")]
         AddEndpoint,

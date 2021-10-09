@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Notifon.Server.Utils;
 
-namespace Notifon.Server.Business {
+namespace Notifon.Server.Business.Models {
     public static class CommandHelpers {
         public static readonly IReadOnlyDictionary<CommandType, CommandDescriptionAttribute> DescriptionByCommandType =
             Enum.GetValues<CommandType>()

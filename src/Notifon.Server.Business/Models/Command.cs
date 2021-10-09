@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Notifon.Server.Business {
+namespace Notifon.Server.Business.Models {
     public class Command {
         private const CommandType DefaultCommand = CommandType.ListEndpoints;
 

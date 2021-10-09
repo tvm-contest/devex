@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using FluentAssertions;
+using Notifon.Server.Business.Models;
 using Xunit;
 
 namespace Notifon.Server.Business.Tests {

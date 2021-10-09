@@ -9,6 +9,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Notifon.Common;
+using Notifon.Server.Business.Models;
 using Notifon.Server.Database;
 using Notifon.Server.Database.Models;
 using Notifon.Server.Models;

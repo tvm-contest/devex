@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Notifon.Common;
-using Notifon.Server.Business;
+using Notifon.Server.Business.Models;
 using Notifon.Server.Business.Requests.Endpoint;
 using Notifon.Server.Utils;
 
