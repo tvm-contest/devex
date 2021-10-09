@@ -17,16 +17,16 @@
         <ProjectReference Include="..\Notifon.Common\Notifon.Common.csproj" />
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-        <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    </PropertyGroup>
+    <!--    <PropertyGroup Condition="'$(Configuration)'=='Debug'">-->
+    <!--        <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>-->
+    <!--    </PropertyGroup>-->
 
     <Target Name="NSwag" BeforeTargets="BeforeBuild;BeforeRebuild" Condition="'$(Configuration)'=='Debug'">
         <PropertyGroup>
             <NSwagCommand>$(NSwagExe_Net50) run</NSwagCommand>
         </PropertyGroup>
         <Message Importance="High" Text="Run $(NSwagCommand)" />
-<!--        <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagCommand)" />-->
+        <!--        <Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagCommand)" />-->
         <Delete Files="$(ProjectDir)\obj\$(MSBuildProjectFile).NSwag.targets" /> <!-- This thingy trigger project rebuild -->
     </Target>
 
