@@ -6,17 +6,20 @@ WORKDIR /app
 EXPOSE 80
 
 FROM scratch AS csproj-client
+COPY ["src/Directory.Build.props", "/src/Directory.Build.props"]
 COPY ["src/Notifon.Client/Notifon.Client.csproj", "/src/Notifon.Client/Notifon.Client.csproj"]
 COPY ["src/Notifon.Client.Storage/Notifon.Client.Storage.csproj", "/src/Notifon.Client.Storage/Notifon.Client.Storage.csproj"]
 COPY ["src/Notifon.Common/Notifon.Common.csproj", "/src/Notifon.Common/Notifon.Common.csproj"]
 
 FROM scratch AS csproj-server
+COPY ["src/Directory.Build.props", "/src/Directory.Build.props"]
 COPY ["src/Notifon.Server/Notifon.Server.csproj", "/src/Notifon.Server/Notifon.Server.csproj"]
 COPY ["src/Notifon.Server.Business/Notifon.Server.Business.csproj", "/src/Notifon.Server.Business/Notifon.Server.Business.csproj"]
 COPY ["src/Notifon.Server.Configuration/Notifon.Server.Configuration.csproj", "/src/Notifon.Server.Configuration/Notifon.Server.Configuration.csproj"]
 COPY ["src/Notifon.Server.Database/Notifon.Server.Database.csproj", "/src/Notifon.Server.Database/Notifon.Server.Database.csproj"]
 COPY ["src/Notifon.Server.Kafka/Notifon.Server.Kafka.csproj", "/src/Notifon.Server.Kafka/Notifon.Server.Kafka.csproj"]
 COPY ["src/Notifon.Server.MassTransit/Notifon.Server.MassTransit.csproj", "/src/Notifon.Server.MassTransit/Notifon.Server.MassTransit.csproj"]
+COPY ["src/Notifon.Server.Models/Notifon.Server.Models.csproj", "/src/Notifon.Server.Models/Notifon.Server.Models.csproj"]
 COPY ["src/Notifon.Server.Redis/Notifon.Server.Redis.csproj", "/src/Notifon.Server.Redis/Notifon.Server.Redis.csproj"]
 COPY ["src/Notifon.Server.SignalR/Notifon.Server.SignalR.csproj", "/src/Notifon.Server.SignalR/Notifon.Server.SignalR.csproj"]
 COPY ["src/Notifon.Server.Utils/Notifon.Server.Utils.csproj", "/src/Notifon.Server.Utils/Notifon.Server.Utils.csproj"]
@@ -42,6 +45,7 @@ COPY src/Notifon.Server.Database Notifon.Server.Database
 COPY src/Notifon.Server.Configuration Notifon.Server.Configuration
 COPY src/Notifon.Server.Kafka Notifon.Server.Kafka
 COPY src/Notifon.Server.MassTransit Notifon.Server.MassTransit
+COPY src/Notifon.Server.Models Notifon.Server.Models
 COPY src/Notifon.Server.Redis Notifon.Server.Redis
 COPY src/Notifon.Server.SignalR Notifon.Server.SignalR
 COPY src/Notifon.Server.Utils Notifon.Server.Utils
