@@ -671,6 +671,9 @@ namespace Notifon.Client
         [System.Text.Json.Serialization.JsonPropertyName("userCount")]
         public int UserCount { get; set; }
     
+        [System.Text.Json.Serialization.JsonPropertyName("endpointCount")]
+        public int EndpointCount { get; set; }
+    
     
     }
 

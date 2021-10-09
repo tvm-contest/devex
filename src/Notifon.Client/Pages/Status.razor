@@ -1,33 +1,37 @@
 ﻿@page "/server-status"
 @inject IApiClient _apiClient;
 
-@if (ServerStatus == null) {
-    <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">Loading...</MudText>
-    return;
-}
-
 <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">Server status</MudText>
 <MudGrid Spacing="6">
     <MudItem xs="10" sm="9" md="6">
         <MudPaper Class="d-flex flex-column" Outlined="true" Height="300px" Width="300px">
             <MudList Clickable="@false" Dense="@true">
-                <MudListItem Icon="@Icons.Rounded.People" IconSize="@Size.Small">
-                    <MudText>Registered endpoints: @ServerStatus.UserCount</MudText>
-                </MudListItem>
-                <MudListItem>
-                    <div class="d-flex flex-row">
-                        <MudSkeleton Width="20px" Height="30px"/>
-                        <MudSkeleton Width="200px" Height="30px" Class="mx-6"/>
-                        <MudSkeleton Width="20px" Height="30px"/>
-                    </div>
-                </MudListItem>
-                <MudListItem>
-                    <div class="d-flex flex-row">
-                        <MudSkeleton Width="20px" Height="30px"/>
-                        <MudSkeleton Width="180px" Height="30px" Class="mx-6"/>
-                        <MudSkeleton Width="40px" Height="30px"/>
-                    </div>
-                </MudListItem>
+                @if (ServerStatus == null) {
+                    for (var i = 0; i < 3; i++) {
+                        <MudListItem>
+                            <div class="d-flex flex-row">
+                                <MudSkeleton Width="20px" Height="30px"/>
+                                <MudSkeleton Width="200px" Height="30px" Class="mx-6"/>
+                                <MudSkeleton Width="20px" Height="30px"/>
+                            </div>
+                        </MudListItem>
+                    }
+                }
+                else {
+                    <MudListItem Icon="@Icons.Rounded.People" IconSize="@Size.Small">
+                        <MudText>Registered users: @ServerStatus.UserCount</MudText>
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Rounded.People" IconSize="@Size.Small">
+                        <MudText>Registered endpoints: @ServerStatus.EndpointCount</MudText>
+                    </MudListItem>
+                    <MudListItem>
+                        <div class="d-flex flex-row">
+                            <MudSkeleton Width="20px" Height="30px"/>
+                            <MudSkeleton Width="200px" Height="30px" Class="mx-6"/>
+                            <MudSkeleton Width="20px" Height="30px"/>
+                        </div>
+                    </MudListItem>
+                }
             </MudList>
         </MudPaper>
     </MudItem>
