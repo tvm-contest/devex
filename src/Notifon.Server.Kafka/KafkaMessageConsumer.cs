@@ -4,7 +4,7 @@ using MassTransit;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Notifon.Server.Business.Models;
-using Notifon.Server.Business.Notifications;
+using Notifon.Server.Business.Requests;
 
 namespace Notifon.Server.Kafka {
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -12,15 +12,11 @@ namespace Notifon.Server.Kafka {
         private readonly IDistributedCache _distributedCache;
         private readonly IDistributedLock _lock;
         private readonly ILogger<KafkaMessageConsumer> _logger;
-        private readonly IPublishEndpoint _publishEndpoint;
 
-        public KafkaMessageConsumer(ILogger<KafkaMessageConsumer> logger, IDistributedCache distributedCache,
-            IDistributedLock @lock,
-            IPublishEndpoint publishEndpoint) {
+        public KafkaMessageConsumer(ILogger<KafkaMessageConsumer> logger, IDistributedCache distributedCache, IDistributedLock @lock) {
             _logger = logger;
             _distributedCache = distributedCache;
             _lock = @lock;
-            _publishEndpoint = publishEndpoint;
         }
 
         public async Task Consume(ConsumeContext<KafkaMessage> context) {
@@ -43,17 +39,16 @@ namespace Notifon.Server.Kafka {
 
             _logger.LogTrace("Received message with Key:{Key}", cacheKey);
 
-            // send message to subscriber
-            await _publishEndpoint.Publish<SendSubscription>(
+            var sendEndpoint = await context.GetSendEndpoint(new Uri("queue:send-message-by-user-id"));
+            await sendEndpoint.Send<SendMessageByUserId>(
                 new {
-                    ClientId = message.Hash,
+                    UserId = message.Hash,
                     Message = new EncryptedMessage(message.Nonce, message.EncodedMessage)
-                },
-                cancellationToken);
+                }, cancellationToken);
 
             // mark as consumed
             await _distributedCache.SetAsync(cacheKey, new byte[1],
-                new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromHours(25) },
+                new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromDays(2) },
                 cancellationToken);
         }
     }

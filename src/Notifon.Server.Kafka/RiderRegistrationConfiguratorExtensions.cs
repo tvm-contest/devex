@@ -11,7 +11,6 @@ namespace Notifon.Server.Kafka {
     public static class RiderRegistrationConfiguratorExtensions {
         public static void KafkaRegistrationConfigurator(this IRiderRegistrationConfigurator x) {
             x.AddConsumer<KafkaMessageConsumer>();
-            x.AddDelayedMessageScheduler();
             x.UsingKafka((context, kafkaConfigurator) => {
                 var kafkaOptions = context.GetRequiredService<IOptions<KafkaOptions>>().Value;
                 kafkaConfigurator.SecurityProtocol = SecurityProtocol.SaslPlaintext;

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Notifon.Common;
+using Notifon.Server.Business;
 using Notifon.Server.Business.Requests.Endpoint;
 using Notifon.Server.Utils;
 
@@ -36,7 +37,7 @@ namespace Notifon.Server.Controllers {
             try {
                 var submitResult = await _submitClientRequestClient
                     .GetResponse<SubmitClientSuccess, SubmitClientResult>(
-                        new { ClientId = hash, Data = data }, cancellationToken);
+                        new { UserId = hash, Data = data }, cancellationToken);
 
                 if (submitResult.Is(out Response<SubmitClientSuccess> submitClientSuccess))
                     return Ok("👍 Looks good!\n" +
@@ -49,6 +50,8 @@ namespace Notifon.Server.Controllers {
                         SubmitClientResultType.ComingSoon =>
                             Ok("🌙 Coming soon...\n" +
                                _contactUsMessage),
+                        SubmitClientResultType.OkWithMessage =>
+                            Ok(result.Message.ResultValue),
                         SubmitClientResultType.EndpointValidationError =>
                             Ok("🔍 Wrong endpoint. Supported formats:\n" +
                                " - HTTP notifications starting with http:// or https://\n" +
@@ -59,23 +62,13 @@ namespace Notifon.Server.Controllers {
                             Ok("🚫 Access denied!\n" +
                                "Pass 'test' as callback url to test this provider\n" +
                                _contactUsMessage),
-                        SubmitClientResultType.ListCommand =>
-                            Ok("📋 Your endpoints:\n" +
-                               result.Message.Message),
                         SubmitClientResultType.NoEndpointsRegistered =>
                             Ok("🪹 Your have no registered endpoints\n" +
                                "Use 'help' to get available options\n" +
                                _contactUsMessage),
                         SubmitClientResultType.HelpCommand =>
                             Ok("❓ Available commands:\n" +
-                               " - 'help' show this tip\n" +
-                               " - '[endpoint] [parameters]' register endpoint or update parameters\n" +
-                               " - 'list' get registered endpoints\n" +
-                               " - 'remove [endpoint]' unregister endpoint\n" +
-                               " - 'clear' unregister all endpoints\n" +
-                               " - 'secret [SECRET_KEY]' setup decryption key(Optional)\n" +
-                               " - 'secret delete' remove your secret from server\n" +
-                               $" - 'test [parameters]' add test HTTP endpoint(see {Flurl.Url.Combine(ProjectConstants.ServerUrl, "test-consumer")})\n" +
+                               CommandHelpers.CommandDescription +
                                "\n" +
                                "❗ Supported endpoints and parameters:\n" +
                                "HTTP endpoint:\n" +
@@ -104,8 +97,8 @@ namespace Notifon.Server.Controllers {
                         _ => throw new ArgumentOutOfRangeException()
                     };
             }
-            catch {
-                // ignored
+            catch (Exception ex) {
+                _logger.LogError(ex, "Something went wrong {UserId}", hash);
             }
 
             return Ok("🚨 Oops Something went wrong 😱\n" +

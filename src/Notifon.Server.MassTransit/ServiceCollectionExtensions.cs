@@ -6,6 +6,7 @@ using MassTransit.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Notifon.Server.Business.Notifications;
+using Notifon.Server.Business.Requests;
 using Notifon.Server.Business.Requests.Api;
 using Notifon.Server.Business.Requests.Endpoint;
 using Notifon.Server.Business.Requests.TonClient;
@@ -27,9 +28,10 @@ namespace Notifon.Server.MassTransit {
                 })
                 .AddMassTransit(x => {
                     x.AddDelayedMessageScheduler();
-                    x.AddConsumer<SendSubscriptionHttpConsumer, SendSubscriptionHttpConsumerDefinition>();
-                    x.AddConsumer<SendSubscriptionTelegramConsumer, SendSubscriptionTelegramConsumerDefinition>();
-                    x.AddConsumer<SendSubscriptionMailgunConsumer, SendSubscriptionMailgunConsumerDefinition>();
+                    x.AddConsumer<PublishMessageHttpConsumer, SendSubscriptionHttpConsumerDefinition>();
+                    x.AddConsumer<PublishMessageTelegramConsumer, SendSubscriptionTelegramConsumerDefinition>();
+                    x.AddConsumer<PublishMessageMailgunConsumer, SendSubscriptionMailgunConsumerDefinition>();
+                    x.AddConsumer<SendMessageByUserIdConsumer, SendMessageByUserIdConsumerDefinition>();
                     x.AddRider(RiderRegistrationConfiguratorExtensions.KafkaRegistrationConfigurator);
                     x.AddSignalRHub<SignalRHub>();
                     x.SetKebabCaseEndpointNameFormatter();
@@ -53,8 +55,7 @@ namespace Notifon.Server.MassTransit {
 
         private static void ConfigureContext(IBusFactoryConfigurator cfg, IConfigurationServiceProvider context) {
             cfg.UseDelayedMessageScheduler();
-            cfg.UsePublishFilter(typeof(SendSubscriptionAddClientInfoHeaderFilter<>), context);
-            cfg.UsePublishFilter(typeof(SendSubscriptionDecryptMessageFilter<>), context);
+            cfg.UsePublishFilter(typeof(PublishMessageDecryptMessageFilter<>), context);
             cfg.UsePrometheusMetrics();
         }
 

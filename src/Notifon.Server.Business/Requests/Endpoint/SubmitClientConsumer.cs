@@ -1,109 +1,220 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Flurl;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Notifon.Common;
 using Notifon.Server.Database;
+using Notifon.Server.Database.Models;
+using Notifon.Server.Models;
 
 namespace Notifon.Server.Business.Requests.Endpoint {
     public class SubmitClientConsumer : IConsumer<SubmitClient> {
         private readonly IConfiguration _configuration;
-        private readonly ILogger<SubmitClientConsumer> _logger;
-        private readonly ServerDbContext _serverDbContext;
+        private readonly ServerDbContext _db;
 
-        public SubmitClientConsumer(ServerDbContext serverDbContext, ILogger<SubmitClientConsumer> logger,
-            IConfiguration configuration) {
-            _serverDbContext = serverDbContext;
-            _logger = logger;
+        public SubmitClientConsumer(ServerDbContext db, IConfiguration configuration) {
+            _db = db;
             _configuration = configuration;
         }
 
         public async Task Consume(ConsumeContext<SubmitClient> context) {
-            var clientId = context.Message.ClientId;
-            var data = context.Message.Data.Split('\n');
-            var endpoint = data[0];
-            var secretKey = data.Length == 2 ? data[1] : null;
+            var userId = context.Message.UserId;
+            var command = Command.FromData(context.Message.Data);
 
             if (await ComingSoon(context)) return;
-            if (await TestCommand(endpoint, clientId, secretKey, context)) return;
-            if (await ListCommand(endpoint, clientId, context)) return;
-            if (await HelpCommand(endpoint, context)) return;
-            if (await DontAllowUseServerUrl(context, endpoint)) return;
-            if (await EndpointValidationError(context, endpoint)) return;
-            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = false });
-        }
 
-        private async Task<bool> ListCommand(string endpoint, string clientId, ConsumeContext context) {
-            if (!string.IsNullOrWhiteSpace(endpoint) &&
-                !endpoint.Equals("list", StringComparison.OrdinalIgnoreCase)) return false;
+            Type? messageType;
+            object? message;
+            switch (command.CommandType) {
+                case CommandType.AddEndpoint:
+                    if (!TryGetEndpoint(command.Parameters, out var endpointId, out var endpointType, out message)) {
+                        messageType = typeof(SubmitClientResult);
+                        break;
+                    }
 
-            var cancellationToken = context.CancellationToken;
-            var clientInfo = await _serverDbContext.ClientInfos.FindAsync(new object[] { clientId }, cancellationToken);
-
-            if (clientInfo == null) {
-                await context.RespondAsync<SubmitClientResult>(new
-                    { ResultType = SubmitClientResultType.NoEndpointsRegistered });
-                return true;
+                    messageType = typeof(SubmitClientSuccess);
+                    await AddOrUpdateEndpoint(userId, endpointId, endpointType, command.Parameters, context.CancellationToken);
+                    message = new { Endpoint = endpointId, IsTest = false };
+                    break;
+                case CommandType.RemoveEndpoint:
+                    messageType = typeof(SubmitClientResult);
+                    message = await RemoveEndpoint(userId, command.Parameters, context.CancellationToken);
+                    break;
+                case CommandType.ClearEndpoints:
+                    messageType = typeof(SubmitClientResult);
+                    message = await ClearEndpoints(userId, context.CancellationToken);
+                    break;
+                case CommandType.Help:
+                    messageType = typeof(SubmitClientResult);
+                    message = new { ResultType = SubmitClientResultType.HelpCommand };
+                    break;
+                case CommandType.ListEndpoints:
+                    messageType = typeof(SubmitClientResult);
+                    message = await ListCommand(userId, context.CancellationToken);
+                    break;
+                case CommandType.Secret:
+                    messageType = typeof(SubmitClientResult);
+                    message = await SecretCommand(userId, command.Parameters, context.CancellationToken);
+                    break;
+                case CommandType.Test:
+                    messageType = typeof(SubmitClientSuccess);
+                    message = await TestCommand(userId, command.Parameters, context.CancellationToken);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            string text = $"{clientInfo.Endpoint}\n{clientInfo.SecretKey}";
-            await context.RespondAsync<SubmitClientResult>(new
-                { ResultType = SubmitClientResultType.ListCommand, Message = text });
-            return true;
+            if (message == null || messageType == null) throw new NullReferenceException();
+
+
+            // todo: find out why direct call doesn't work 
+            // await context.RespondAsync(message, messageType);
+            typeof(ConsumeContext)
+                .GetMethod(nameof(ConsumeContext.RespondAsync), 1, new[] { typeof(object) })
+                !.MakeGenericMethod(messageType)
+                .Invoke(context, new[] { message });
         }
 
-        private static async Task<bool> HelpCommand(string endpoint, ConsumeContext context) {
-            if (!endpoint.Equals("help", StringComparison.OrdinalIgnoreCase)) return false;
+        private static bool TryGetEndpoint(IReadOnlyDictionary<string, string?> parameters, out string endpointId,
+            out EndpointType endpointType, out object? message) {
+            endpointType = EndpointType.Http;
 
-            await context.RespondAsync<SubmitClientResult>(new { ResultType = SubmitClientResultType.HelpCommand });
-            return true;
-        }
+            if (!parameters.TryGetValue("mainParam", out endpointId!) || string.IsNullOrWhiteSpace(endpointId)) {
+                message = new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = "No endpoint provided" };
+                return false;
+            }
 
-        private async Task<bool> TestCommand(string endpoint, string clientId, string? secretKey,
-            ConsumeContext context) {
-            if (!endpoint.Equals("test", StringComparison.OrdinalIgnoreCase)) return false;
-
-            var cancellationToken = context.CancellationToken;
-            endpoint = Url.Combine(ProjectConstants.ServerUrl, "test-consumer", clientId[..12]);
-            await AddOrUpdateClientInfoToDb(clientId, endpoint, secretKey, cancellationToken);
-            await context.RespondAsync<SubmitClientSuccess>(new { Endpoint = endpoint, IsTest = true });
-            return true;
-        }
-
-        private async Task AddOrUpdateClientInfoToDb(string clientId, string endpoint, string? secretKey,
-            CancellationToken cancellationToken) {
-            var clientInfo = await _serverDbContext.ClientInfos.FindAsync(new object[] { clientId }, cancellationToken);
-            if (clientInfo == null) {
-                clientInfo = new ClientInfo { ClientId = clientId, Endpoint = endpoint, SecretKey = secretKey };
-                _logger.LogTrace("Adding client info to DB {@ClientInfo}", clientInfo);
-                _serverDbContext.ClientInfos.Add(clientInfo);
+            if (EndpointValidationHelper.IsHttpEndpoint(endpointId)) {
+                endpointType = EndpointType.Http;
+            }
+            else if (EndpointValidationHelper.TryGetTelegramEndpoint(endpointId, out _)) {
+                endpointType = EndpointType.Telegram;
+            }
+            else if (EndpointValidationHelper.IsMailgunEndpoint(endpointId)) {
+                endpointType = EndpointType.Mailgun;
             }
             else {
-                clientInfo.Endpoint = endpoint;
-                clientInfo.SecretKey = secretKey;
-                _logger.LogTrace("Updating client info in DB {@ClientInfo}", clientInfo);
-                _serverDbContext.ClientInfos.Update(clientInfo);
+                message = new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = "No endpoint provided" };
+                return false;
             }
 
-            await _serverDbContext.SaveChangesAsync(cancellationToken);
+            message = null;
+            return true;
         }
 
-        private static async Task<bool> EndpointValidationError(ConsumeContext context, string endpoint) {
-            if (EndpointValidationHelper.IsHttpEndpoint(endpoint)) return false;
+        private async Task<(bool, EndpointModel endpoint)> TryAddEndpoint(string endpointId, string userId, EndpointType endpointType,
+            Dictionary<string, string?> parameters, CancellationToken cancellationToken) {
+            var endpoint = await _db.Endpoints.FindAsync(new object[] { endpointId, userId }, cancellationToken);
+            if (endpoint == null)
+                return (true, _db.Endpoints.Add(new EndpointModel {
+                    Endpoint = endpointId,
+                    UserId = userId,
+                    Parameters = parameters,
+                    EndpointType = endpointType
+                }).Entity);
+            return (false, endpoint);
+        }
 
-            //todo: should validate that telegram token is defined
-            if (EndpointValidationHelper.TryGetTelegramEndpoint(endpoint, out _)) return false;
+        private async Task<(bool, User)> TryAddUser(string userId, CancellationToken cancellationToken) {
+            var user = await _db.Users.FindAsync(new object[] { userId }, cancellationToken);
+            return user == null
+                ? (true, _db.Users.Add(new User { Id = userId }).Entity)
+                : (false, user);
+        }
 
-            //todo: ensure that mailgun options is defined
-            if (EndpointValidationHelper.IsEmailEndpoint(endpoint)) return false;
+        private async Task<object?> RemoveEndpoint(string userId, IReadOnlyDictionary<string, string?> parameters,
+            CancellationToken cancellationToken) {
+            if (!parameters.TryGetValue("mainParam", out var endpointKey) || string.IsNullOrWhiteSpace(endpointKey))
+                return new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = "No endpoint to delete" };
 
-            await context.RespondAsync<SubmitClientResult>(new
-                { ResultType = SubmitClientResultType.EndpointValidationError });
-            return true;
+            var endpoint = await _db.Endpoints.FindAsync(new object[] { endpointKey, userId }, cancellationToken);
+            if (endpoint == null) return new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = "Endpoint not found" };
+
+            _db.Endpoints.Remove(endpoint);
+            await _db.SaveChangesAsync(cancellationToken);
+            return new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = $"Endpoint {endpoint.Endpoint} was removed" };
+        }
+
+        private async Task<object?> ClearEndpoints(string userId, CancellationToken cancellationToken) {
+            var endpoints = _db.Endpoints.Where(e => e.UserId == userId);
+            _db.Endpoints.RemoveRange(endpoints);
+            await _db.SaveChangesAsync(cancellationToken);
+            return new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = "All endpoints was removed" };
+        }
+
+        private async Task<object?> SecretCommand(string userId,
+            IReadOnlyDictionary<string, string?> parameters,
+            CancellationToken cancellationToken) {
+            var (_, user) = await TryAddUser(userId, cancellationToken);
+
+            var mainParam = parameters.GetValueOrDefault("mainParam");
+            string? secretKey;
+            switch (mainParam) {
+                case "remove" when user.SecretKey == null:
+                    return new {
+                        ResultType = SubmitClientResultType.OkWithMessage,
+                        ResultValue = "Nothing to remove"
+                    };
+                case "get":
+                case null:
+                    return new {
+                        ResultType = SubmitClientResultType.OkWithMessage,
+                        ResultValue = string.IsNullOrWhiteSpace(user.SecretKey)
+                            ? "No secret key"
+                            : $"Your secret key: {user.SecretKey}"
+                    };
+                case "remove":
+                    secretKey = null;
+                    break;
+                default:
+                    secretKey = mainParam;
+                    break;
+            }
+
+            user.SecretKey = secretKey;
+            _db.Users.Update(user);
+            await _db.SaveChangesAsync(cancellationToken);
+            return new {
+                ResultType = SubmitClientResultType.OkWithMessage,
+                ResultValue = secretKey == null ? "Secret key was removed" : "Secret key has been set"
+            };
+        }
+
+        private async Task<object> ListCommand(string userId, CancellationToken cancellationToken) {
+            var endpoints = await _db.Endpoints.Where(e => e.UserId == userId).ToListAsync(cancellationToken);
+
+            if (endpoints.Count == 0) return new { ResultType = SubmitClientResultType.NoEndpointsRegistered };
+
+            return new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = endpoints };
+        }
+
+        private async Task<object> TestCommand(string userId,
+            Dictionary<string, string?> parameters,
+            CancellationToken cancellationToken) {
+            var endpoint = Url.Combine(ProjectConstants.ServerUrl, "test-consumer", userId[..12]);
+            await AddOrUpdateEndpoint(userId, endpoint, EndpointType.Http, parameters, cancellationToken);
+            return new { Endpoint = endpoint, IsTest = true };
+        }
+
+        private async Task AddOrUpdateEndpoint(string userId, string endpointId, EndpointType endpointType,
+            Dictionary<string, string?> parameters, CancellationToken cancellationToken) {
+            await TryAddUser(userId, cancellationToken);
+
+            //exclude mainParam from db
+            parameters = parameters.Where(kv => kv.Key != "mainParam").ToDictionary(kv => kv.Key, kv => kv.Value);
+            var (added, endpoint) = await TryAddEndpoint(endpointId, userId, endpointType, parameters, cancellationToken);
+            if (!added) {
+                endpoint.Parameters = parameters;
+                _db.Endpoints.Update(endpoint);
+            }
+
+            await _db.SaveChangesAsync(cancellationToken);
         }
 
         private static async Task<bool> DontAllowUseServerUrl(ConsumeContext context, string endpoint) {

@@ -3,7 +3,7 @@ namespace Notifon.Server.Business.Requests.Endpoint {
         ComingSoon,
         EndpointValidationError,
         AccessDenied,
-        ListCommand,
+        OkWithMessage,
         NoEndpointsRegistered,
         HelpCommand
     }

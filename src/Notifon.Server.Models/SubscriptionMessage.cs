@@ -1,4 +1,4 @@
-﻿namespace Notifon.Server.Business.Models {
+﻿namespace Notifon.Server.Models {
     public interface SubscriptionMessage {
         string Text { get; }
         bool IsEncrypted { get; }

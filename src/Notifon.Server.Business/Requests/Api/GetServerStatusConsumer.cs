@@ -14,10 +14,12 @@ namespace Notifon.Server.Business.Requests.Api {
         public async Task Consume(ConsumeContext<GetServerStatus> context) {
             var cancellationToken = context.CancellationToken;
 
-            var userCount = await _serverDbContext.ClientInfos.CountAsync(cancellationToken);
+            var userCount = await _serverDbContext.Users.CountAsync(cancellationToken);
+            var endpointCount = await _serverDbContext.Endpoints.CountAsync(cancellationToken);
 
             await context.RespondAsync<GetServerStatusResult>(new {
-                UserCount = userCount
+                UserCount = userCount,
+                EndpointCount = endpointCount
             });
         }
     }

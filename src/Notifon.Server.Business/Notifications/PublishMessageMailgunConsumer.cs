@@ -12,17 +12,18 @@ using Flurl;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Notifon.Server.Business.Models;
 using Notifon.Server.Configuration.Options;
-using Notifon.Server.Database;
+using Notifon.Server.Models;
 
 namespace Notifon.Server.Business.Notifications {
-    public class SendSubscriptionMailgunConsumer : IConsumer<SendSubscription> {
+    public class PublishMessageMailgunConsumer : IConsumer<PublishMessage> {
         private const string ApiUrl = "https://api.mailgun.net/v3";
         private readonly HttpClient _httpClient;
-        private readonly ILogger<SendSubscriptionMailgunConsumer> _logger;
+        private readonly ILogger<PublishMessageMailgunConsumer> _logger;
         private readonly MailGunOptions _mailGunOptions;
 
-        public SendSubscriptionMailgunConsumer(HttpClient httpClient, ILogger<SendSubscriptionMailgunConsumer> logger,
+        public PublishMessageMailgunConsumer(HttpClient httpClient, ILogger<PublishMessageMailgunConsumer> logger,
             IOptions<MailGunOptions> mailGunOptionsAccessor) {
             _httpClient = httpClient;
             _logger = logger;
@@ -32,22 +33,22 @@ namespace Notifon.Server.Business.Notifications {
                     Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{_mailGunOptions.ApiKey}")));
         }
 
-        public async Task Consume(ConsumeContext<SendSubscription> context) {
-            var message = context.Message.Message.Text;
-            var endpoint = context.Headers.Get<ClientInfo>(typeof(ClientInfo).FullName).Endpoint;
-            var cancellationToken = context.CancellationToken;
+        public async Task Consume(ConsumeContext<PublishMessage> context) {
+            if (context.Message.EndpointType != EndpointType.Mailgun) return;
 
-            if (!EndpointValidationHelper.IsEmailEndpoint(endpoint)) return;
+            var message = context.Message.Message.Text;
+            var endpoint = MailgunEndpoint.FromPublishMessage(context.Message);
+            var cancellationToken = context.CancellationToken;
 
             var url = Url.Combine(ApiUrl, _mailGunOptions.Domain, "messages");
             var request = new FormUrlEncodedContent(new[] {
+                KeyValuePair.Create("to", endpoint.To),
                 KeyValuePair.Create("from", _mailGunOptions.From),
                 KeyValuePair.Create("subject", _mailGunOptions.Subject),
-                KeyValuePair.Create("to", endpoint),
                 KeyValuePair.Create("text", message)
             });
 
-            _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint, message);
+            _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint.To, message);
             var response = await _httpClient.PostAsync(url, request, cancellationToken);
             try {
                 response.EnsureSuccessStatusCode();
@@ -67,16 +68,13 @@ namespace Notifon.Server.Business.Notifications {
             }
 
             var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint, message,
+            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint.To, message,
                 successResponse);
         }
     }
 
-    public class
-        SendSubscriptionMailgunConsumerDefinition : SendSubscriptionConsumerDefinitionBase<
-            SendSubscriptionMailgunConsumer> {
+    public class SendSubscriptionMailgunConsumerDefinition : SendSubscriptionConsumerDefinitionBase<PublishMessageMailgunConsumer> {
         public SendSubscriptionMailgunConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) :
-            base(
-                retryPolicyOptionsAccessor) { }
+            base(retryPolicyOptionsAccessor) { }
     }
 }

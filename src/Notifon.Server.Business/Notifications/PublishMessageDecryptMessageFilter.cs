@@ -3,27 +3,27 @@ using GreenPipes;
 using MassTransit;
 using Notifon.Server.Business.Models;
 using Notifon.Server.Business.Requests.TonClient;
-using Notifon.Server.Database;
+using Notifon.Server.Models;
 
 namespace Notifon.Server.Business.Notifications {
-    public class SendSubscriptionDecryptMessageFilter<T> : IFilter<PublishContext<T>> where T : class {
+    public class PublishMessageDecryptMessageFilter<T> : IFilter<PublishContext<T>> where T : class {
         private readonly IRequestClient<DecryptEncryptedMessage> _decryptMessageClient;
 
-        public SendSubscriptionDecryptMessageFilter(IRequestClient<DecryptEncryptedMessage> decryptMessageClient) {
+        public PublishMessageDecryptMessageFilter(IRequestClient<DecryptEncryptedMessage> decryptMessageClient) {
             _decryptMessageClient = decryptMessageClient;
         }
 
         public async Task Send(PublishContext<T> context, IPipe<PublishContext<T>> next) {
-            if (context.Message is SendSubscription sendSubscription) {
-                var secretKey = context.Headers.Get<ClientInfo>(typeof(ClientInfo).FullName).SecretKey;
-                if (secretKey != null) {
-                    var encryptedMessage = EncryptedMessage.CreateFromBase(sendSubscription.Message);
+            if (context.Message is PublishMessage publishMessage) {
+                var secretKey = publishMessage.SecretKey;
+                if (secretKey != null && publishMessage.ContainsDecryptParameter()) {
+                    var encryptedMessage = EncryptedMessage.CreateFromBase(publishMessage.Message);
                     var decryptedMessage = await _decryptMessageClient.GetResponse<DecryptedMessage>(new {
                         EncryptedMessage = encryptedMessage,
                         SecretKey = secretKey
                     });
-                    sendSubscription.Message = decryptedMessage.Message;
-                    context.AddOrUpdatePayload(() => sendSubscription, _ => sendSubscription);
+                    publishMessage.Message = decryptedMessage.Message;
+                    context.AddOrUpdatePayload(() => publishMessage, _ => publishMessage);
                 }
             }
 

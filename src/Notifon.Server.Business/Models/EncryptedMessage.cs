@@ -1,4 +1,6 @@
-﻿namespace Notifon.Server.Business.Models {
+﻿using Notifon.Server.Models;
+
+namespace Notifon.Server.Business.Models {
     public class EncryptedMessage : SubscriptionMessage {
         public EncryptedMessage(string nonce, string message) {
             Nonce = nonce;

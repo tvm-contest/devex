@@ -8,16 +8,17 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Notifon.Server.Business.Models;
 using Notifon.Server.Configuration.Options;
-using Notifon.Server.Database;
+using Notifon.Server.Models;
 
 namespace Notifon.Server.Business.Notifications {
-    public class SendSubscriptionTelegramConsumer : IConsumer<SendSubscription> {
+    public class PublishMessageTelegramConsumer : IConsumer<PublishMessage> {
         private static string _botToken;
         private readonly HttpClient _httpClient;
-        private readonly ILogger<SendSubscriptionTelegramConsumer> _logger;
+        private readonly ILogger<PublishMessageTelegramConsumer> _logger;
 
-        public SendSubscriptionTelegramConsumer(HttpClient httpClient, ILogger<SendSubscriptionTelegramConsumer> logger,
+        public PublishMessageTelegramConsumer(HttpClient httpClient, ILogger<PublishMessageTelegramConsumer> logger,
             IConfiguration configuration) {
             _httpClient = httpClient;
             _logger = logger;
@@ -26,16 +27,16 @@ namespace Notifon.Server.Business.Notifications {
 
         private static string SendMessageUrl => $"https://api.telegram.org/bot{_botToken}/sendMessage";
 
-        public async Task Consume(ConsumeContext<SendSubscription> context) {
+        public async Task Consume(ConsumeContext<PublishMessage> context) {
+            if (context.Message.EndpointType != EndpointType.Telegram) return;
+
             var message = context.Message.Message.Text;
-            var endpoint = context.Headers.Get<ClientInfo>(typeof(ClientInfo).FullName).Endpoint;
             var cancellationToken = context.CancellationToken;
+            var endpoint = TelegramEndpoint.FromPublishMessage(context.Message);
 
-            if (!EndpointValidationHelper.TryGetTelegramEndpoint(endpoint, out var channel)) return;
+            var request = new { chat_id = $"@{endpoint.ChannelId}", text = message };
 
-            var request = new { chat_id = $"@{channel}", text = message };
-
-            _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint, message);
+            _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint.ChannelId, message);
             var response = await _httpClient.PostAsJsonAsync(SendMessageUrl, request, cancellationToken);
             try {
                 response.EnsureSuccessStatusCode();
@@ -55,14 +56,13 @@ namespace Notifon.Server.Business.Notifications {
             }
 
             var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint, message,
+            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint.ChannelId, message,
                 successResponse);
         }
     }
 
-    public class
-        SendSubscriptionTelegramConsumerDefinition : SendSubscriptionConsumerDefinitionBase<
-            SendSubscriptionTelegramConsumer> {
+    public class SendSubscriptionTelegramConsumerDefinition : SendSubscriptionConsumerDefinitionBase<
+        PublishMessageTelegramConsumer> {
         public SendSubscriptionTelegramConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) :
             base(
                 retryPolicyOptionsAccessor) { }

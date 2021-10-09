@@ -26,7 +26,7 @@ namespace Notifon.Server.Business {
             return true;
         }
 
-        public static bool IsEmailEndpoint(string endpoint) {
+        public static bool IsMailgunEndpoint(string endpoint) {
             try {
                 var _ = new MailAddress(endpoint);
                 return true;

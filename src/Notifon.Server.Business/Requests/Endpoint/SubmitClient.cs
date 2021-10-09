@@ -1,6 +1,6 @@
 namespace Notifon.Server.Business.Requests.Endpoint {
     public interface SubmitClient {
-        string ClientId { get; }
+        string UserId { get; }
         string Data { get; }
     }
 }
