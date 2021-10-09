@@ -19,7 +19,7 @@ const run = async () => {
 	await consumer.run({
 		eachMessage: async ({ topic, partition, message }) => {
 			console.log(topic);
-
+			console.log(message);
 			console.log({
 				partition,
 				offset: message.offset,
