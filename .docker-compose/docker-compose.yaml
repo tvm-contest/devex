@@ -25,6 +25,9 @@ services:
       - 'RABBITMQ_DISK_FREE_RELATIVE_LIMIT=0.1'
     volumes:
       - rabbitmq_data:/bitnami
+    # shared to debug
+    ports:
+      - '15672:15672'
     restart: unless-stopped
   postgresql:
     image: docker.io/bitnami/postgresql:13.4.0-debian-10-r48
