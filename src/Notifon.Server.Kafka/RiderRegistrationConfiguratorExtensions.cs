@@ -34,9 +34,9 @@ namespace Notifon.Server.Kafka {
 
         private static string ComposeGroupId(IConfigurationServiceProvider context) {
             var hostEnv = context.GetRequiredService<IHostEnvironment>();
-            var groupIdBuilder = new StringBuilder(hostEnv.EnvironmentName);
+            var groupIdBuilder = new StringBuilder(hostEnv.EnvironmentName.ToLower());
             if (hostEnv.IsDevelopment()) //use different group-id for different developers
-                groupIdBuilder.AppendFormat("-{0}", Dns.GetHostName());
+                groupIdBuilder.AppendFormat("-{0}", Dns.GetHostName().ToLower());
             return groupIdBuilder.ToString();
         }
     }
