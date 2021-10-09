@@ -10,12 +10,9 @@ namespace Notifon.Server.Business.Requests {
     public class SendMessageByUserIdConsumer : IConsumer<SendMessageByUserId> {
         private readonly ServerDbContext _db;
         private readonly ILogger<SendMessageByUserIdConsumer> _logger;
-        private readonly IPublishEndpoint _publishEndpoint;
 
-        public SendMessageByUserIdConsumer(ServerDbContext db, IPublishEndpoint publishEndpoint,
-            ILogger<SendMessageByUserIdConsumer> logger) {
+        public SendMessageByUserIdConsumer(ServerDbContext db, ILogger<SendMessageByUserIdConsumer> logger) {
             _db = db;
-            _publishEndpoint = publishEndpoint;
             _logger = logger;
         }
 
@@ -35,7 +32,7 @@ namespace Notifon.Server.Business.Requests {
             var tasks = user
                 .Endpoints
                 .Select(endpoint =>
-                    _publishEndpoint.Publish<PublishMessage>(new {
+                    context.Publish<PublishMessage>(new {
                         endpoint.Endpoint,
                         endpoint.EndpointType,
                         endpoint.Parameters,
