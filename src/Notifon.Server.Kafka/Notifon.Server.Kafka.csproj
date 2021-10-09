@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-    </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="ch1seL.DistributedLock.Abstraction" Version="5.0.2" />
         <PackageReference Include="MassTransit.Kafka" Version="7.2.2" />
