@@ -7,3 +7,4 @@ riderModule.iml
 src/Server/App_Data/
 
 *.user
+secret.env
