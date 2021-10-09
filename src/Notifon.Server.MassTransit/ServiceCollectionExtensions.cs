@@ -5,8 +5,7 @@ using MassTransit.Registration;
 using MassTransit.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Notifon.Server.Business.Notifications;
-using Notifon.Server.Business.Requests;
+using Notifon.Server.Business.Events;
 using Notifon.Server.Business.Requests.Api;
 using Notifon.Server.Business.Requests.Endpoint;
 using Notifon.Server.Business.Requests.TonClient;
@@ -31,7 +30,7 @@ namespace Notifon.Server.MassTransit {
                     x.AddConsumer<PublishMessageHttpConsumer, SendSubscriptionHttpConsumerDefinition>();
                     x.AddConsumer<PublishMessageTelegramConsumer, SendSubscriptionTelegramConsumerDefinition>();
                     x.AddConsumer<PublishMessageMailgunConsumer, SendSubscriptionMailgunConsumerDefinition>();
-                    x.AddConsumer<SendMessageByUserIdConsumer, SendMessageByUserIdConsumerDefinition>();
+                    x.AddConsumer<PublishMessageByUserIdConsumer, PublishMessageByUserIdConsumerDefinition>();
                     x.AddRider(RiderRegistrationConfiguratorExtensions.KafkaRegistrationConfigurator);
                     x.AddSignalRHub<SignalRHub>();
                     x.SetKebabCaseEndpointNameFormatter();

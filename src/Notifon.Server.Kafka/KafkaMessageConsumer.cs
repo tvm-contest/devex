@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Notifon.Server.Business.Events;
 using Notifon.Server.Business.Models;
-using Notifon.Server.Business.Requests;
 
 namespace Notifon.Server.Kafka {
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -39,8 +39,7 @@ namespace Notifon.Server.Kafka {
 
             _logger.LogTrace("Received message with Key:{Key}", cacheKey);
 
-            var sendEndpoint = await context.GetSendEndpoint(new Uri("queue:send-message-by-user-id"));
-            await sendEndpoint.Send<SendMessageByUserId>(
+            await context.Publish<PublishMessageByUserId>(
                 new {
                     UserId = message.Hash,
                     Message = new EncryptedMessage(message.Nonce, message.EncodedMessage)
