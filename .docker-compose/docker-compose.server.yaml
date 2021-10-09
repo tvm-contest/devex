@@ -1,10 +1,27 @@
-version: '2'
+version: '3.3'
 
 services:
-  app:
+  app1:
     image: ghcr.io/ch1sel/free-ton-notify:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - COMING_SOON=true
+      - Serilog__MinimumLevel__Override__Notifon=Verbose
+      - COMING_SOON=false
+    env_file: secret.env
+    restart: unless-stopped
+  app2:
+    image: ghcr.io/ch1sel/free-ton-notify:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Serilog__MinimumLevel__Override__Notifon=Verbose
+      - COMING_SOON=false
+    env_file: secret.env
+    restart: unless-stopped
+  app3:
+    image: ghcr.io/ch1sel/free-ton-notify:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Serilog__MinimumLevel__Override__Notifon=Verbose
+      - COMING_SOON=false
     env_file: secret.env
     restart: unless-stopped
