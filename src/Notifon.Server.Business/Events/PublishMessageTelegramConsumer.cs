@@ -1,9 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
-using ch1seL.TonNet.Serialization;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -12,7 +10,7 @@ using Notifon.Server.Business.Models;
 using Notifon.Server.Configuration.Options;
 using Notifon.Server.Models;
 
-namespace Notifon.Server.Business.Notifications {
+namespace Notifon.Server.Business.Events {
     public class PublishMessageTelegramConsumer : IConsumer<PublishMessage> {
         private static string _botToken;
         private readonly HttpClient _httpClient;
@@ -41,16 +39,16 @@ namespace Notifon.Server.Business.Notifications {
             try {
                 response.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException e) when (e.StatusCode >= (HttpStatusCode?)400 &&
-                                                 e.StatusCode <= (HttpStatusCode?)499) {
-                var failedResponseJson =
-                    await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
-                throw new HttpRequestException(failedResponseJson.Get<string>("description"), null,
+            catch (HttpRequestException e) when (!e.Message.StartsWith("Too Many Requests")
+                                                 && e.StatusCode >= (HttpStatusCode?)400
+                                                 && e.StatusCode <= (HttpStatusCode?)499) {
+                var failedResponse = await response.Content.ReadAsStringAsync(cancellationToken);
+                throw new HttpRequestException(failedResponse, null,
                     HttpStatusCode.BadRequest) {
                     Data = {
-                        { "endpoint", SendMessageUrl },
+                        { "endpoint", endpoint },
                         { "request", request },
-                        { "response", failedResponseJson }
+                        { "response", failedResponse }
                     }
                 };
             }

@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using ch1seL.TonNet.Serialization;
 using Flurl;
 using MassTransit;
 using Microsoft.Extensions.Logging;
@@ -16,7 +13,7 @@ using Notifon.Server.Business.Models;
 using Notifon.Server.Configuration.Options;
 using Notifon.Server.Models;
 
-namespace Notifon.Server.Business.Notifications {
+namespace Notifon.Server.Business.Events {
     public class PublishMessageMailgunConsumer : IConsumer<PublishMessage> {
         private const string ApiUrl = "https://api.mailgun.net/v3";
         private readonly HttpClient _httpClient;
@@ -55,14 +52,13 @@ namespace Notifon.Server.Business.Notifications {
             }
             catch (HttpRequestException e) when (e.StatusCode >= (HttpStatusCode?)400 &&
                                                  e.StatusCode <= (HttpStatusCode?)499) {
-                var failedResponseJson =
-                    await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
-                throw new HttpRequestException(failedResponseJson.Get<string>("description"), null,
+                var failedResponse = await response.Content.ReadAsStringAsync(cancellationToken);
+                throw new HttpRequestException(failedResponse, null,
                     HttpStatusCode.BadRequest) {
                     Data = {
-                        { "endpoint", url },
+                        { "endpoint", endpoint },
                         { "request", request },
-                        { "response", failedResponseJson }
+                        { "response", failedResponse }
                     }
                 };
             }

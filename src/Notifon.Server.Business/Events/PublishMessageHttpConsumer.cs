@@ -1,9 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
-using ch1seL.TonNet.Serialization;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,7 +8,7 @@ using Notifon.Server.Business.Models;
 using Notifon.Server.Configuration.Options;
 using Notifon.Server.Models;
 
-namespace Notifon.Server.Business.Notifications {
+namespace Notifon.Server.Business.Events {
     public class PublishMessageHttpConsumer : IConsumer<PublishMessage> {
         private readonly HttpClient _httpClient;
         private readonly ILogger<PublishMessageHttpConsumer> _logger;
@@ -37,14 +34,13 @@ namespace Notifon.Server.Business.Notifications {
             }
             catch (HttpRequestException e) when (e.StatusCode >= (HttpStatusCode?)400 &&
                                                  e.StatusCode <= (HttpStatusCode?)499) {
-                var failedResponseJson =
-                    await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
-                throw new HttpRequestException(failedResponseJson.Get<string>("description"), null,
+                var failedResponse = await response.Content.ReadAsStringAsync(cancellationToken);
+                throw new HttpRequestException(failedResponse, null,
                     HttpStatusCode.BadRequest) {
                     Data = {
                         { "endpoint", endpoint },
                         { "request", request },
-                        { "response", failedResponseJson }
+                        { "response", failedResponse }
                     }
                 };
             }

@@ -8,7 +8,7 @@ using MassTransit.Definition;
 using Microsoft.Extensions.Options;
 using Notifon.Server.Configuration.Options;
 
-namespace Notifon.Server.Business.Notifications {
+namespace Notifon.Server.Business.Events {
     public abstract class SendSubscriptionConsumerDefinitionBase<T> : ConsumerDefinition<T> where T : class, IConsumer {
         private readonly int _retryCount;
         private readonly TimeSpan _retryInterval;

@@ -5,7 +5,7 @@ using Notifon.Server.Business.Models;
 using Notifon.Server.Business.Requests.TonClient;
 using Notifon.Server.Models;
 
-namespace Notifon.Server.Business.Notifications {
+namespace Notifon.Server.Business.Events {
     public class PublishMessageDecryptMessageFilter<T> : IFilter<PublishContext<T>> where T : class {
         private readonly IRequestClient<DecryptEncryptedMessage> _decryptMessageClient;
 
