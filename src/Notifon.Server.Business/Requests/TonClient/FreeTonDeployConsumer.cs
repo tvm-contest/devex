@@ -58,6 +58,7 @@ namespace Notifon.Server.Business.Requests.TonClient {
                     Address = address,
                     KeyPair = keyPair
                 });
+                return;
             }
 
             var account = result.Result[0];
@@ -65,11 +66,18 @@ namespace Notifon.Server.Business.Requests.TonClient {
             var accType = account.Get<int>("acc_type");
             switch (accType) {
                 case 0 when balance < (decimal)0.5:
+                    await context.RespondAsync(new FreeTonDeployResult {
+                        Success = false,
+                        Error = $"You need to transfer at least 0.5 tokens for deploy to {address}",
+                        Balance = balance,
+                        Address = address,
+                        KeyPair = keyPair
+                    });
+                    return;
                 case 1:
                     await context.RespondAsync(new FreeTonDeployResult {
                         Success = true,
                         Balance = balance,
-                        Error = $"Balance of ${address} is too low for deploy",
                         Address = address,
                         KeyPair = keyPair
                     });
@@ -91,7 +99,6 @@ namespace Notifon.Server.Business.Requests.TonClient {
             await context.RespondAsync(new FreeTonDeployResult {
                 Success = true,
                 Balance = balance,
-                Error = $"Balance of ${address} is too low for deploy",
                 Address = address,
                 KeyPair = keyPair
             });

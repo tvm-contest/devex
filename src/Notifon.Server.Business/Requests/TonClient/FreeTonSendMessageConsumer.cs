@@ -45,8 +45,17 @@ namespace Notifon.Server.Business.Requests.TonClient {
                 });
             }
 
-            var keyPair = deployResultMessage.KeyPair;
             var address = deployResultMessage.Address;
+            var keyPair = deployResultMessage.KeyPair;
+
+            if (deployResultMessage.Balance <= (decimal)0.1)
+                await context.RespondAsync(new FreeTonSendMessageResult {
+                    Success = false,
+                    Error = $"Balance of ${address} is too low for send message",
+                    Balance = deployResultMessage.Balance,
+                    Address = deployResultMessage.Address
+                });
+
             var body = await _tonClient.Abi.EncodeMessageBody(new ParamsOfEncodeMessageBody {
                 Abi = transferAbi,
                 CallSet = new CallSet {
