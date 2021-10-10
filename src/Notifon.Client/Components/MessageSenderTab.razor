@@ -20,7 +20,7 @@
                                   Required="true" RequiredError="Message is required!"
                                   @ref="MessageField"/>
 
-                    <MudCheckBox T="bool" CheckedChanged="SaveDataCheckedChanged" Class="ml-n2" Label="Save form data"/>
+                    <MudCheckBox T="bool" CheckedChanged="SaveDataCheckedChanged" Checked="SaveDataChecked" Class="ml-n2" Label="Save form data"/>
                 </MudForm>
             </MudCardContent>
             <MudCardActions>
@@ -60,7 +60,7 @@
     private MudTextField<string> PhraseField { get; set; }
     private MudTextField<string> RecipientField { get; set; }
     private MudTextField<string> MessageField { get; set; }
-    private bool SaveData { get; set; }
+    private bool SaveDataChecked { get; set; }
 
     string SendMessageButton => SendingInProgress ? "Sending..." : "Send Message";
     string StorageDataKey => $"MessageSendFormData:{UserId}";
@@ -122,13 +122,13 @@
     }
 
     private async Task SaveDataMethod() {
-        if (SaveData) {
+        if (SaveDataChecked) {
             await Storage.SetItemAsync(StorageDataKey,
                 new FormData {
                     Phrase = PhraseField.Value,
                     Recipient = RecipientField.Value,
                     Message = MessageField.Value,
-                    SaveData = SaveData
+                    SaveData = SaveDataChecked
                 });
         }
         else {
@@ -137,7 +137,7 @@
     }
 
     private async Task SaveDataCheckedChanged(bool @checked) {
-        SaveData = @checked;
+        SaveDataChecked = @checked;
         if (!@checked) {
             await Storage.RemoveItemAsync(StorageDataKey);
         }
@@ -160,7 +160,7 @@
             await SetFieldValue(PhraseField, formData.Phrase);
             await SetFieldValue(RecipientField, formData.Recipient);
             await SetFieldValue(MessageField, formData.Message);
-            SaveData = formData.SaveData;
+            SaveDataChecked = formData.SaveData;
             await Form.Validate();
         }
     }
