@@ -37,7 +37,7 @@ Free TON Notification Provider
 
 Yor can ask https://t.me/hi_artem or https://t.me/EkaterinaPantaz to register your provider.
 
-> ℹ️ If you run application just for local development or testing you may ask register http://localhost/endpoint as endpoint to avoid port forwarding and ssl generation etc.
+> 💡 If you run application just for local development or testing you may ask register http://localhost/endpoint as endpoint to avoid port forwarding and ssl generation etc.
 
 #### `.env`:
 
@@ -50,7 +50,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 ### Run from sources
 
-> ℹ️ Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly
+> 💡 Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly
 
 - Make sure that .Net 5.0 is installed (https://dotnet.microsoft.com/download)
 - Download or clone repo https://github.com/ton-actions/free-ton-http-notification-provider
@@ -61,7 +61,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 ### Docker
 
-> ℹ️ Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly
+> 💡 Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly
 
 - Make sure that Docker Engine is installed and started (https://docs.docker.com/engine/install/)
 - Create [minimal .env](#env) file
@@ -69,13 +69,11 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 ### Docker compose (Production-ready solution)
 
-> ℹ️ Uses postgresql, redis, rabbitmq to store state and organize retry policy
+> 💡 Uses postgresql, redis, rabbitmq to store state and organize retry policy
 
 - Create some directory for project
--
-
-Download [docker-compose.yaml](https://raw.githubusercontent.com/ch1seL/free-ton-http-notification-provider/main/.docker-compose/docker-compose.yaml?token=ADTL6OODHXLXUW5WOMPPSH3BMK6GY)
-
+- Download
+  [docker-compose.yaml](https://raw.githubusercontent.com/ton-actions/free-ton-http-notification-provider/main/.docker-compose/docker-compose.yaml)
 - Create [minimal .env](#env) file
 - Exec `docker-compose up -d`
 
