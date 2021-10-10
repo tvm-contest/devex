@@ -20,7 +20,7 @@
                                   Required="true" RequiredError="Message is required!"
                                   @ref="MessageField"/>
 
-                    <MudCheckBox T="bool" @bind-Checked="@SaveData" Class="ml-n2" Label="Save data?"/>
+                    <MudCheckBox T="bool" CheckedChanged="SaveDataCheckedChanged" Class="ml-n2" Label="Save form data"/>
                 </MudForm>
             </MudCardContent>
             <MudCardActions>
@@ -63,7 +63,7 @@
     private bool SaveData { get; set; }
 
     string SendMessageButton => SendingInProgress ? "Sending..." : "Send Message";
-
+    string StorageDataKey => $"MessageSendFormData:{UserId}";
     static Regex _addressRegex = new("^(0|(-1)):[a-zA-Z0-9]{64}$", RegexOptions.Compiled);
 
     private IEnumerable<string> RecipientValidation(string address) {
@@ -136,7 +136,12 @@
         }
     }
 
-    private string StorageDataKey => $"MessageSendFormData:{UserId}";
+    private async Task SaveDataCheckedChanged(bool @checked) {
+        SaveData = @checked;
+        if (!@checked) {
+            await Storage.RemoveItemAsync(StorageDataKey);
+        }
+    }
 
     private class FormData {
         public string Phrase { get; set; }
