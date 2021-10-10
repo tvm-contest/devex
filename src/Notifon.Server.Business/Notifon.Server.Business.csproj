@@ -12,7 +12,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Notifon.Server.Configuration\Notifon.Server.Configuration.csproj" />
         <ProjectReference Include="..\Notifon.Server.Database\Notifon.Server.Database.csproj" />
-        <ProjectReference Include="..\Notifon.Common\Notifon.Common.csproj" />
         <ProjectReference Include="..\Notifon.Server.Utils\Notifon.Server.Utils.csproj" />
     </ItemGroup>
 

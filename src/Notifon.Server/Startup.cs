@@ -1,6 +1,4 @@
 using System;
-using ch1seL.TonNet.Client;
-using ch1seL.TonNet.Client.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -9,8 +7,8 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Notifon.Common;
 using Notifon.Server.Configuration;
+using Notifon.Server.Configuration.Options;
 using Notifon.Server.Database;
 using Notifon.Server.MassTransit;
 using Notifon.Server.Redis;
@@ -35,12 +33,15 @@ namespace Notifon.Server {
                 options.InputFormatters.Insert(options.InputFormatters.Count, new TextPlainInputFormatter());
             });
             services.AddRazorPages();
-            services.AddSwaggerDocument(settings => { settings.Title = ProjectConstants.ServiceName; });
+            services.AddSwaggerDocument(settings => { settings.Title = Configuration.GetSection("App").Get<AppOptions>().Name; });
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
             services.AddCors(o => o.AddPolicy("SubmitClient", builder => builder.AllowAnyOrigin()));
 
             // add configuration options
             services.ConfigureOptions(Configuration);
+
+            //Menu helper
+            services.AddSingleton<MenuHelper>();
 
             // http client for sending http hooks
             services.AddHttpClient();
@@ -59,9 +60,7 @@ namespace Notifon.Server {
             services.AddSingleton<IUserIdProvider, ByHashUserIdProvider>();
 
             // add free ton client 
-            services.AddTonClient()
-                .Configure<TonClientOptions>(options =>
-                    options.Network = Configuration.GetSection("TonClientNetwork").Get<NetworkConfig>());
+            services.AddTonClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -8,20 +8,23 @@ using Flurl;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Notifon.Common;
+using Microsoft.Extensions.Options;
 using Notifon.Server.Business.Models;
+using Notifon.Server.Configuration.Options;
 using Notifon.Server.Database;
 using Notifon.Server.Database.Models;
 using Notifon.Server.Models;
 
 namespace Notifon.Server.Business.Requests.Endpoint {
     public class SubmitClientConsumer : IConsumer<SubmitClient> {
+        private readonly IOptions<AppOptions> _appOptionsAccessor;
         private readonly IConfiguration _configuration;
         private readonly ServerDbContext _db;
 
-        public SubmitClientConsumer(ServerDbContext db, IConfiguration configuration) {
+        public SubmitClientConsumer(ServerDbContext db, IConfiguration configuration, IOptions<AppOptions> appOptionsAccessor) {
             _db = db;
             _configuration = configuration;
+            _appOptionsAccessor = appOptionsAccessor;
         }
 
         public async Task Consume(ConsumeContext<SubmitClient> context) {
@@ -74,7 +77,7 @@ namespace Notifon.Server.Business.Requests.Endpoint {
             if (message == null || messageType == null) throw new NullReferenceException();
 
 
-            // todo: find out why direct call doesn't work 
+            // todo: find out why explicit call doesn't work 
             // await context.RespondAsync(message, messageType);
             typeof(ConsumeContext)
                 .GetMethod(nameof(ConsumeContext.RespondAsync), 1, new[] { typeof(object) })
@@ -82,7 +85,7 @@ namespace Notifon.Server.Business.Requests.Endpoint {
                 .Invoke(context, new[] { message });
         }
 
-        private static bool TryGetEndpoint(IReadOnlyDictionary<string, string?> parameters, out string endpointId,
+        private bool TryGetEndpoint(IReadOnlyDictionary<string, string?> parameters, out string endpointId,
             out EndpointType endpointType, out object? message) {
             endpointType = EndpointType.Http;
             message = null;
@@ -212,8 +215,8 @@ namespace Notifon.Server.Business.Requests.Endpoint {
             return new { Endpoint = endpoint, IsTest = true };
         }
 
-        private static string ComposeTestEndpointKey(string userId) {
-            return Url.Combine(ProjectConstants.ServerUrl, "test-consumer", userId[..12]);
+        private string ComposeTestEndpointKey(string userId) {
+            return Url.Combine(_appOptionsAccessor.Value.Url, "test-consumer", userId[..12]);
         }
 
         private async Task AddOrUpdateEndpoint(string userId, string endpointId, EndpointType endpointType,
@@ -231,8 +234,8 @@ namespace Notifon.Server.Business.Requests.Endpoint {
             await _db.SaveChangesAsync(cancellationToken);
         }
 
-        private static bool CheckAccess(string endpoint) {
-            return endpoint.StartsWith(ProjectConstants.ServerUrl, StringComparison.OrdinalIgnoreCase);
+        private bool CheckAccess(string endpoint) {
+            return endpoint.StartsWith(_appOptionsAccessor.Value.Url, StringComparison.OrdinalIgnoreCase);
         }
 
         private async Task<bool> ComingSoon(ConsumeContext context) {

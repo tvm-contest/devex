@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Caching.StackExchangeRedis;
+﻿using ch1seL.TonNet.Client;
+using ch1seL.TonNet.Client.Models;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Notifon.Server.Configuration.Options;
@@ -8,12 +10,15 @@ namespace Notifon.Server.Configuration {
         public static IServiceCollection ConfigureOptions(this IServiceCollection services,
             IConfiguration configuration) {
             services
-                .Configure<KafkaOptions>(configuration.GetSection(Constants.KafkaOptions))
-                .Configure<RedisCacheOptions>(configuration.GetSection(Constants.RedisOptions))
-                .Configure<RabbitMqOptions>(configuration.GetSection(Constants.RabbitMqOptions))
-                .Configure<TelegramOptions>(configuration.GetSection(Constants.TelegramOptions))
-                .Configure<MailGunOptions>(configuration.GetSection(Constants.MailGunOptions))
-                .Configure<RetryPolicyOptions>(configuration.GetSection(Constants.RetryPolicyOptions));
+                .Configure<AppOptions>(configuration.GetSection(Sections.App))
+                .Configure<KafkaOptions>(configuration.GetSection(Sections.Kafka))
+                .Configure<RedisCacheOptions>(configuration.GetSection(Sections.Redis))
+                .Configure<RabbitMqOptions>(configuration.GetSection(Sections.RabbitMq))
+                .Configure<TelegramOptions>(configuration.GetSection(Sections.Telegram))
+                .Configure<MailGunOptions>(configuration.GetSection(Sections.MailGun))
+                .Configure<RetryPolicyOptions>(configuration.GetSection(Sections.RetryPolicy))
+                .Configure<TonClientOptions>(options =>
+                    options.Network = configuration.GetSection(Sections.TonClientNetwork).Get<NetworkConfig>());
             return services;
         }
     }

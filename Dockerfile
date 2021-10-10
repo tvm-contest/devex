@@ -12,7 +12,6 @@ FROM scratch AS csproj-client
 COPY ["src/Directory.Build.props", "/src/Directory.Build.props"]
 COPY ["src/Notifon.Client/Notifon.Client.csproj", "/src/Notifon.Client/Notifon.Client.csproj"]
 COPY ["src/Notifon.Client.Storage/Notifon.Client.Storage.csproj", "/src/Notifon.Client.Storage/Notifon.Client.Storage.csproj"]
-COPY ["src/Notifon.Common/Notifon.Common.csproj", "/src/Notifon.Common/Notifon.Common.csproj"]
 
 FROM scratch AS csproj-server
 COPY ["src/Directory.Build.props", "/src/Directory.Build.props"]
@@ -26,7 +25,6 @@ COPY ["src/Notifon.Server.Models/Notifon.Server.Models.csproj", "/src/Notifon.Se
 COPY ["src/Notifon.Server.Redis/Notifon.Server.Redis.csproj", "/src/Notifon.Server.Redis/Notifon.Server.Redis.csproj"]
 COPY ["src/Notifon.Server.SignalR/Notifon.Server.SignalR.csproj", "/src/Notifon.Server.SignalR/Notifon.Server.SignalR.csproj"]
 COPY ["src/Notifon.Server.Utils/Notifon.Server.Utils.csproj", "/src/Notifon.Server.Utils/Notifon.Server.Utils.csproj"]
-COPY ["src/Notifon.Common/Notifon.Common.csproj", "/src/Notifon.Common/Notifon.Common.csproj"]
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-client
 WORKDIR /src
@@ -34,7 +32,6 @@ COPY --from=csproj-client / /
 RUN dotnet restore Notifon.Client
 COPY src/Notifon.Client Notifon.Client
 COPY src/Notifon.Client.Storage Notifon.Client.Storage
-COPY src/Notifon.Common Notifon.Common
 RUN dotnet build -c Release Notifon.Client
 RUN dotnet publish -c Release --no-build -o /publish Notifon.Client
 
@@ -52,7 +49,6 @@ COPY src/Notifon.Server.Models Notifon.Server.Models
 COPY src/Notifon.Server.Redis Notifon.Server.Redis
 COPY src/Notifon.Server.SignalR Notifon.Server.SignalR
 COPY src/Notifon.Server.Utils Notifon.Server.Utils
-COPY src/Notifon.Common Notifon.Common
 RUN dotnet build -c Release Notifon.Server
 RUN dotnet publish -c Release --no-build -o /publish Notifon.Server
 

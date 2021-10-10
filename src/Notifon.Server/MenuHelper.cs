@@ -1,29 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Notifon.Common;
+using Microsoft.Extensions.Options;
 using Notifon.Server.Business.Models;
 using Notifon.Server.Business.Requests.Endpoint;
+using Notifon.Server.Configuration.Options;
 using Notifon.Server.Database.Models;
 
 namespace Notifon.Server {
-    public static class MenuHelper {
+    public class MenuHelper {
         public const string CommonParameters =
             "Common decrypt parameter(set secret key for decryption):\n" +
-            "-d decrypt message and send as json\n" +
-            "-d:comment decrypt comment for internal or send json body for external\n";
+            "-d decrypt message and send it as json\n" +
+            "-d:body decrypt message and send comment of internal or json body of external\n";
 
         public const string EndpointExamples =
             "❗ Supported endpoints and parameters:\n" +
             "HTTP endpoint:\n" +
-            "http(s)://your-domain.com/you-endpoint [-d[:comment]]\n" +
-            "test [-d[:comment]]\n" +
+            "http(s)://your-domain.com/you-endpoint [-d[:body]]\n" +
+            "test [-d[:body]]\n" +
             "\n" +
             "Telegram endpoint:\n" +
-            "https://t.me/you_chat [-d[:comment]] [-t:BOT_TOKEN]\n" +
-            "TelegramChatId:CHAT_NUMBER [-d[:comment]] [-t:BOT_TOKEN]\n" +
+            "https://t.me/you_chat [-d[:body]] [-t:BOT_TOKEN]\n" +
+            "TelegramChatId:CHAT_NUMBER [-d[:body]] [-t:BOT_TOKEN]\n" +
             "\n" +
             "Mailgun endpoint:\n" +
-            "your-name@your-domain.com [-d[:comment]] [-mf:FROM_ADDRESS] [-md:MAILGUN_DOMAIN] [-mk:MAILGUN_APIKEY] [-ms:MAILGUN_SUBJECT]\n" +
+            "your-name@your-domain.com [-d[:body]] [-mf:FROM_ADDRESS] [-md:MAILGUN_DOMAIN] [-mk:MAILGUN_APIKEY] [-ms:MAILGUN_SUBJECT]\n" +
             "\n" +
             "✨ Examples commands:\n" +
             "'https://notifon.requestcatcher.com/test' just relay encrypted messages to HTTP endpoint\n" +
@@ -34,37 +35,44 @@ namespace Notifon.Server {
             "\n" +
             "'https://t.me/you_chat -t:BOT_TOKEN' send encrypted messages to you_chat uses custom bot(ensure that bot was added to the chat)\n" +
             "\n" +
-            "'TelegramChatId:-123456789 -d:comment -t:BOT_TOKEN' send decrypted comment to chat -123456789(usefull for private group)\n" +
+            "'TelegramChatId:-123456789 -d:body -t:BOT_TOKEN' send decrypted body to chat -123456789(usefull for private group)\n" +
             "\n" +
             "'your@email.com -f:notifon@notifon.com; -md:notifon.com; -mk:MAILGUN_APIKEY' decrypt message with SECRET_KEY and send to your@email.com from notifon@notifon.com uses notifon.com domain and MAILGUN_APIKEY\n" +
             "\n" +
-            "'test -d:comment' send decrypted comment of internal message or json of ext";
+            "'test -d:body' send decrypted body of internal message or json of ext";
 
         public const string SomethingWentWrong =
             "🚨 Oops Something went wrong 😱\n" +
             "Client hash: {0}\n" +
             "Contact us to get help https://t.me/ton_actions_chat\n";
 
-        public static readonly string ContactUs = $"\n💬 Chat us if you have any questions {ProjectConstants.TelegramLink}";
+        private readonly AppOptions _appOptions;
 
-        public static readonly string HelpCommand =
+        public MenuHelper(IOptions<AppOptions> appOptionsAccessor) {
+            _appOptions = appOptionsAccessor.Value;
+        }
+
+        public string ContactUs =>
+            $"\n💬 Chat us if you have any questions {_appOptions.Telegram}";
+
+        public string HelpCommand =>
             "❓ Available commands:\n" +
             CommandHelpers.CommandDescriptions + "\n\n" +
             CommonParameters + "\n" +
             EndpointExamples + "\n" +
             ContactUs;
 
-        public static readonly string NoEndpointsRegistered =
+        public string NoEndpointsRegistered =>
             "🪹 Your have no registered endpoints\n" +
             "Use 'help' to get available options\n" +
             ContactUs;
 
-        public static readonly string AccessDenied =
+        public string AccessDenied =>
             "🚫 Access denied!\n" +
             "Pass 'test' as callback url to test this provider\n" +
             ContactUs;
 
-        public static readonly string NotSupportedEndpointFormat =
+        public string NotSupportedEndpointFormat =>
             "🔍 Wrong endpoint. Supported formats:\n" +
             " - HTTP notifications starting with http:// or https://\n" +
             " - Telegram notifications https://t.me/{chat_key} or TelegramChatId:{chat_id}(useful for private group)\n" +
@@ -72,7 +80,7 @@ namespace Notifon.Server {
             "pass 'help' as callback to get full description" + "\n" +
             ContactUs;
 
-        public static readonly string ComingSoon =
+        public string ComingSoon =>
             "🌙 Coming soon..." +
             ContactUs;
 

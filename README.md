@@ -9,11 +9,11 @@ Free TON Notification Provider
 
 ## Features
 
-- Supported endpoints **HTTP**, **Telegram**, **Email**.
+- Supported endpoint types: **HTTP**, **Telegram**, **Email**.
 - Horizontally scalable
 - Customizable retry policy for failed requests
 - Multiple endpoints per user support
-- Optional message decryption separately by endpoints
+- Optional message decryption for specified endpoints~~~~
 - DeBot parameters
     - add/remove/clear/list endpoints
     - get/set/remove secret key
@@ -24,6 +24,7 @@ Free TON Notification Provider
     - Application resources
     - Message Queues
 - Docker supported
+- Sentry integration
 
 ---
 
@@ -95,33 +96,34 @@ instance `docker-compose -f docker-compose.yaml -f docker-compose.cluster.yaml u
 
 ### Endpoint configuration
 
-As a general rule services require token and another props to accept message. The Notifon app is able to deliver messages to various
-endpoints with two main approaches. First one is using user tokens which provided as endpoint parameters during registration in the
-Notification DeBot. And second, if user tokens weren't provided used application tokens, can be set
-via [environment variables](#Environment-variables). If no tokens were provided at all, then messages will not be delivered.
+In general services require token and another props to accept payloads. The Notifon app is able to deliver messages to various endpoints
+with two main approaches. First one is using user tokens which provided as endpoint parameters during registration in the Notification
+DeBot. And second, if user tokens weren't provided used application tokens, can be set via [environment variables](#Environment-variables).
+If no tokens were provided at all, then messages will not be delivered.
 
 ### Environment variables
 
-|           **Variable**                 |                       **Description**                         |
-|----------------------------------------|---------------------------------------------------------------|
-| ASPNETCORE_ENVIRONMENT                 | Development, Staging, Production. Set logging levels and etc. |
-| COMING_SOON                            | Disable accepting DeBot command Default: false                |
-| TelegramOptions__BotToken              | Default token for telegram provider Default: not set          |
-| MailGunOptions__ApiKey                 | Default Mailgun Api Key Default: not set                      |
-| MailGunOptions__Domain                 | Default Mailgun Domain Default: not set                       |
-| MailGunOptions__From                   | Default From address Default: not set                         |
-| MailGunOptions__Subject                | Default Email subject Default: not set                        |
-| RedisOptions__Configuration            | Redis configuration Default: not set                          |
-| RabbitMqOptions__Host                  | RabbitMq host address Default: not set                        |
-| RabbitMqOptions__Username              | RabbitMq user name Default: not set                           |
-| RabbitMqOptions__Password              | RabbitMq password Default: not set                            |
-| ConnectionStrings__PostgreSql          | PostgreSql connection string Default: not set                 |
-| RetryPolicyOptions__Count              | Retry count (0-no retries) Default: 144                       |
-| RetryPolicyOptions__Interval           | Retry interval (TimeSpan format) Default: 00:10:00            |
-| Sentry__Dsn                            | Sentry Dsn (see: [sentry.io](http://sentry.io))               |
-| TonClientNetwork__Endpoints__0         | net1.ton.dev Set free ton network endpoints                   |
-| TonClientNetwork__Endpoints__1         |   - Incriminate number to add another endpoints               |
-| TonClientNetwork__MessageRetriesCount  | The number of automatic message processing retries            |
+| **Variable**                          | **Description**                                    | **
+Default**
+|
+|---------------------------------------|----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ASPNETCORE_ENVIRONMENT | Set logging levels and etc.(Staging, Production)   | Development | | App_Name | App Name | Notifon | | App_Url |
+App Url | https://notify-contest.ddns.net/
+| | App_Github | Github repository link | https://github.com/ton-actions/free-ton-http-notification-provider
+| | App_Telegram | Telegram support link | https://t.me/ton_actions_chat
+| | App_ServicePurpose | Main page title | Free TON Notification Provider | | App_ServiceDescription | More service description for main
+page | Catching messages from the blockchain and send them to various endpoints | | App_NotificationDeBot | Surf Notification DeBot address
+| [https://web.ton.surf/debot?address=0%3A43..3ae3&net=devnet](https://web.ton.surf/debot?address=0%3A433f7b97e4e613397175a2d9d1094643b5b90d1f095c423997f95fbf905a3ae3&net=devnet)
+| | COMING_SOON | Disable accepting DeBot command | false | | Telegram__BotToken | Default token for telegram provider | not set | |
+MailGun__ApiKey | Default Mailgun Api Key | not set | | MailGun__Domain | Default Mailgun Domain | not set | | MailGun__From | Default From
+address | not set | | MailGun__Subject | Default Email subject | not set | | Redis__Configuration | Redis configuration | not set | |
+RabbitMq__Host | RabbitMq host address | not set | | RabbitMq__Username | RabbitMq user name | not set | | RabbitMq__Password | RabbitMq
+password | not set | | ConnectionStrings__PostgreSql | PostgreSql connection string | not set | | RetryPolicy__Count | Retry count (0-no
+retries)                         | 144 | | RetryPolicy__Interval | Retry interval (TimeSpan format)                   | 00:10:00 | |
+Sentry__Dsn | Sentry Dsn (see: [sentry.io](http://sentry.io))    | not set | | TonClientNetwork__Endpoints__0 | Use for message decription
+and sending | not set (main network entripoints)
+| | TonClientNetwork__Endpoints__1 | Set free ton network endpoints | not set | | TonClientNetwork__Endpoints__N | Incriminate number to add
+another endpoints | not set | | TonClientNetwork__MessageRetriesCount | The number of automatic message processing retries | not set |
 
 ## Deployment
 

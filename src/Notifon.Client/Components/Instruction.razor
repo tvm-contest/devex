@@ -3,7 +3,7 @@
 </MudText>
 <MudPaper Class="d-flex flex-column" Style="height:100%;" Outlined="true">
     <MudList Clickable="@true" Dense="@true">
-        <MudListItem Icon="@Icons.Sharp.Filter1" IconSize="@Size.Small">Run <MudLink Target="_blank" Href="@ProjectConstants.DeBotLink">Notification DeBot</MudLink></MudListItem>
+        <MudListItem Icon="@Icons.Sharp.Filter1" IconSize="@Size.Small">Run <MudLink Target="_blank" Href="@App.NotificationDeBot">Notification DeBot</MudLink></MudListItem>
         <MudListItem Icon="@Icons.Sharp.Filter2" IconSize="@Size.Small">Sign two transactions to deploy your notification contract if not done yet</MudListItem>
         <MudListItem Icon="@Icons.Sharp.Filter3" IconSize="@Size.Small">Click <b>Send callbackUrl | deviceToken to provider</b></MudListItem>
         <MudListItem Icon="@Icons.Sharp.Filter4" IconSize="@Size.Small">Select <b>tonactions</b> provider(github.com/ton-actions/free-ton-http-notification-provider, ID = tonactions)</MudListItem>
@@ -12,3 +12,16 @@
         <MudListItem Icon="@Icons.Sharp.Filter7" IconSize="@Size.Small">Come back to DeBot and <b>Set rules</b> to receive messages</MudListItem>
     </MudList>
 </MudPaper>
+
+@code {
+
+    [Inject]
+    AppInfoProvider AppInfoProvider { get; set; }
+
+    AppOptions App { get; set; } = new();
+
+    protected override async Task OnInitializedAsync() {
+        App = await AppInfoProvider.GetAppOptions();
+    }
+
+}

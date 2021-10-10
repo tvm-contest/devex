@@ -30,7 +30,7 @@ namespace Notifon.Server.Business.Requests.TonClient {
             var format = context.Message.Format;
             var cancellationToken = context.CancellationToken;
 
-            if (format.Equals("comment", StringComparison.OrdinalIgnoreCase)) {
+            if (format.Equals("body", StringComparison.OrdinalIgnoreCase)) {
                 var msg = JsonDocument.Parse(message.Text).RootElement;
                 var isInternal = msg.Get<int>("msg_type") == 0;
 
@@ -49,7 +49,7 @@ namespace Notifon.Server.Business.Requests.TonClient {
                     }, cancellationToken);
 
                     text = isInternal
-                        ? messageBody.Value.Get<string>("comment").HexToString()
+                        ? messageBody.Value.Get<string>("body").HexToString()
                         : messageBody.Value.ToString();
                 }
 

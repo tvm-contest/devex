@@ -14,7 +14,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Notifon.Client.Storage\Notifon.Client.Storage.csproj" />
-        <ProjectReference Include="..\Notifon.Common\Notifon.Common.csproj" />
     </ItemGroup>
 
     <!--    <PropertyGroup Condition="'$(Configuration)'=='Debug'">-->

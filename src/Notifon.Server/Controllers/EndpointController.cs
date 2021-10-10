@@ -16,12 +16,14 @@ namespace Notifon.Server.Controllers {
     [Route("endpoint")]
     public class EndpointController : ControllerBase {
         private readonly ILogger<EndpointController> _logger;
+        private readonly MenuHelper _menuHelper;
         private readonly IRequestClient<SubmitClient> _submitClientRequestClient;
 
         public EndpointController(ILogger<EndpointController> logger,
-            IRequestClient<SubmitClient> submitClientRequestClient) {
+            IRequestClient<SubmitClient> submitClientRequestClient, MenuHelper menuHelper) {
             _logger = logger;
             _submitClientRequestClient = submitClientRequestClient;
+            _menuHelper = menuHelper;
         }
 
         [HttpPost]
@@ -43,11 +45,11 @@ namespace Notifon.Server.Controllers {
                 if (submitResult.Is(out Response<SubmitClientResult> result))
                     return result.Message.ResultType switch {
                         SubmitClientResultType.OkWithMessage => Ok(result.Message.ResultValue),
-                        SubmitClientResultType.ComingSoon => Ok(MenuHelper.ComingSoon),
-                        SubmitClientResultType.NotSupportedEndpointFormat => Ok(MenuHelper.NotSupportedEndpointFormat),
-                        SubmitClientResultType.AccessDenied => Ok(MenuHelper.AccessDenied),
-                        SubmitClientResultType.NoEndpointsRegistered => Ok(MenuHelper.NoEndpointsRegistered),
-                        SubmitClientResultType.HelpCommand => Ok(MenuHelper.HelpCommand),
+                        SubmitClientResultType.ComingSoon => Ok(_menuHelper.ComingSoon),
+                        SubmitClientResultType.NotSupportedEndpointFormat => Ok(_menuHelper.NotSupportedEndpointFormat),
+                        SubmitClientResultType.AccessDenied => Ok(_menuHelper.AccessDenied),
+                        SubmitClientResultType.NoEndpointsRegistered => Ok(_menuHelper.NoEndpointsRegistered),
+                        SubmitClientResultType.HelpCommand => Ok(_menuHelper.HelpCommand),
                         SubmitClientResultType.ListEndpoints => Ok(
                             MenuHelper.ListEndpoints((List<EndpointModel>)result.Message.ResultValue)),
                         _ => throw new ArgumentOutOfRangeException()
