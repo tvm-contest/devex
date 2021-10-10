@@ -131,7 +131,7 @@ instance `docker-compose -f docker-compose.yaml -f docker-compose.cluster.yaml u
 
 There is an application architectural diagram:
 
-TBD
+![alt text](https://github.com/ch1seL/free-ton-http-notification-provider/blob/main/Notifon%20Application%20Architectural%20Diagram.drawio.png?raw=true)
 
 ### EF Core Migrations
 
