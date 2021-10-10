@@ -7,45 +7,50 @@ using Notifon.Server.Database.Models;
 
 namespace Notifon.Server {
     public static class MenuHelper {
+        public const string CommonParameters =
+            "Decrypt parameter(set secret key to use decryption):\n" +
+            "-d decrypt message and send as json\n" +
+            "-d:comment decrypt comment for internal or send json body for external\n";
+
         public const string EndpointExamples =
             "❗ Supported endpoints and parameters:\n" +
             "HTTP endpoint:\n" +
-            "http(s)://your-domain.com/you-endpoint [-d]\n" +
-            "test [-d]\n" +
+            "http(s)://your-domain.com/you-endpoint [-d[:comment]]\n" +
+            "test [-d[:comment]]\n" +
             "\n" +
             "Telegram endpoint:\n" +
-            "https://t.me/you_chat [-d] [-t:BOT_TOKEN]\n" +
-            "TelegramChatId:CHAT_NUMBER [-d] [-t:BOT_TOKEN]\n" +
+            "https://t.me/you_chat [-d[:comment]] [-t:BOT_TOKEN]\n" +
+            "TelegramChatId:CHAT_NUMBER [-d[:comment]] [-t:BOT_TOKEN]\n" +
             "\n" +
             "Mailgun endpoint:\n" +
-            "your-name@your-domain.com [-d] [-mf:FROM_ADDRESS] [-md:MAILGUN_DOMAIN] [-mk:MAILGUN_APIKEY] [-ms:MAILGUN_SUBJECT]\n" +
+            "your-name@your-domain.com [-d[:comment]] [-mf:FROM_ADDRESS] [-md:MAILGUN_DOMAIN] [-mk:MAILGUN_APIKEY] [-ms:MAILGUN_SUBJECT]\n" +
             "\n" +
             "✨ Examples commands:\n" +
             "'https://notifon.requestcatcher.com/test' just relay encrypted messages to HTTP endpoint\n" +
             "\n" +
-            "'https://notifon.requestcatcher.com/test -d' decrypt messages with SECRET_KEY and send it to HTTP endpoint\n" +
+            "'https://notifon.requestcatcher.com/test -d' decrypt messages with SECRET_KEY and post it to HTTP endpoint\n" +
             "\n" +
             "'https://t.me/free_ton_notification' relay encrypted messages to @free_ton_notification uses @free_ton_notify_bot as default bot\n" +
             "\n" +
             "'https://t.me/you_chat -t:BOT_TOKEN' send encrypted messages to you_chat uses custom bot(ensure that bot was added to the chat)\n" +
             "\n" +
-            "'TelegramChatId:-123456789 -d -t:BOT_TOKEN' send decrypt messages to chat -123456789(usefull for private group)\n" +
+            "'TelegramChatId:-123456789 -d:comment -t:BOT_TOKEN' send decrypted comment to chat -123456789(usefull for private group)\n" +
             "\n" +
             "'your@email.com -f:notifon@notifon.com; -md:notifon.com; -mk:MAILGUN_APIKEY' decrypt message with SECRET_KEY and send to your@email.com from notifon@notifon.com uses notifon.com domain and MAILGUN_APIKEY\n" +
             "\n" +
-            "'test -d' send decrypted messages to test endpoint";
+            "'test -d:comment' send decrypted comment of internal message or json of ext";
 
-        public static readonly string ContactUs = $"\n💬 Chat us if you have any questions {ProjectConstants.TelegramLink}";
-
-        public static readonly string SomethingWentWrong =
+        public const string SomethingWentWrong =
             "🚨 Oops Something went wrong 😱\n" +
             "Client hash: {0}\n" +
-            "Contact us to get help https://t.me/ton_actions_chat\n" +
-            "Also you can pass \"test\" keyword as callback url to test this provider";
+            "Contact us to get help https://t.me/ton_actions_chat\n";
+
+        public static readonly string ContactUs = $"\n💬 Chat us if you have any questions {ProjectConstants.TelegramLink}";
 
         public static readonly string HelpCommand =
             "❓ Available commands:\n" +
             CommandHelpers.CommandDescriptions + "\n" +
+            CommonParameters + "\n" +
             EndpointExamples + "\n" +
             ContactUs;
 
@@ -62,8 +67,9 @@ namespace Notifon.Server {
         public static readonly string NotSupportedEndpointFormat =
             "🔍 Wrong endpoint. Supported formats:\n" +
             " - HTTP notifications starting with http:// or https://\n" +
-            " - Telegram notifications https://t.me/{channel_id}\n" +
+            " - Telegram notifications https://t.me/{chat_key} or TelegramChatId:{chat_id}(useful for private group)\n" +
             " - Emails notification youname@youdomain.com" + "\n" +
+            "pass 'help' as callback to get full description" + "\n" +
             ContactUs;
 
         public static readonly string ComingSoon =
