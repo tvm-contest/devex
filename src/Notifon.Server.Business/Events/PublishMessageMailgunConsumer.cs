@@ -54,8 +54,8 @@ namespace Notifon.Server.Business.Events {
         }
     }
 
-    public class SendSubscriptionMailgunConsumerDefinition : SendSubscriptionConsumerDefinitionBase<PublishMessageMailgunConsumer> {
-        public SendSubscriptionMailgunConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) :
+    public class PublishMessageMailgunConsumerDefinition : PublishMessageConsumerDefinitionBase<PublishMessageMailgunConsumer> {
+        public PublishMessageMailgunConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) :
             base(retryPolicyOptionsAccessor) { }
     }
 }

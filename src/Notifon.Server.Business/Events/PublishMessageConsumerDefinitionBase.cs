@@ -6,15 +6,16 @@ using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.Definition;
 using Microsoft.Extensions.Options;
+using Notifon.Server.Business.Exceptions;
 using Notifon.Server.Configuration.Options;
 
 namespace Notifon.Server.Business.Events {
-    public abstract class SendSubscriptionConsumerDefinitionBase<T> : ConsumerDefinition<T> where T : class, IConsumer {
+    public abstract class PublishMessageConsumerDefinitionBase<T> : ConsumerDefinition<T> where T : class, IConsumer {
         private readonly int _retryCount;
         private readonly TimeSpan _retryInterval;
         private readonly int[] _retryStatusCodes = { 425, 429 };
 
-        protected SendSubscriptionConsumerDefinitionBase(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) {
+        protected PublishMessageConsumerDefinitionBase(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) {
             _retryCount = retryPolicyOptionsAccessor.Value.Count;
             _retryInterval = retryPolicyOptionsAccessor.Value.Interval;
         }
@@ -23,6 +24,8 @@ namespace Notifon.Server.Business.Events {
             IConsumerConfigurator<T> e) {
             if (_retryCount > 0)
                 e.UseDelayedRedelivery(configurator => {
+                    configurator.Ignore<WrongEndpointFormatException>();
+                    configurator.Ignore<NoRequiredParametersException>();
                     configurator.Ignore<HttpRequestException>(exception => exception.StatusCode != null
                                                                            && !_retryStatusCodes.Contains((int)exception.StatusCode)
                                                                            && (int)exception.StatusCode is >= 400 and <= 499);

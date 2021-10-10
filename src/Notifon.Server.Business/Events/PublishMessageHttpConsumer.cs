@@ -35,8 +35,8 @@ namespace Notifon.Server.Business.Events {
     }
 
     public class
-        SendSubscriptionHttpConsumerDefinition : SendSubscriptionConsumerDefinitionBase<PublishMessageHttpConsumer> {
-        public SendSubscriptionHttpConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) : base(
+        PublishMessageHttpConsumerDefinition : PublishMessageConsumerDefinitionBase<PublishMessageHttpConsumer> {
+        public PublishMessageHttpConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) : base(
             retryPolicyOptionsAccessor) { }
     }
 }

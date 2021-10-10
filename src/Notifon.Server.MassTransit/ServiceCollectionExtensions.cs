@@ -27,9 +27,9 @@ namespace Notifon.Server.MassTransit {
                 })
                 .AddMassTransit(x => {
                     x.AddDelayedMessageScheduler();
-                    x.AddConsumer<PublishMessageHttpConsumer, SendSubscriptionHttpConsumerDefinition>();
-                    x.AddConsumer<PublishMessageTelegramConsumer, SendSubscriptionTelegramConsumerDefinition>();
-                    x.AddConsumer<PublishMessageMailgunConsumer, SendSubscriptionMailgunConsumerDefinition>();
+                    x.AddConsumer<PublishMessageHttpConsumer, PublishMessageHttpConsumerDefinition>();
+                    x.AddConsumer<PublishMessageTelegramConsumer, PublishMessageTelegramConsumerDefinition>();
+                    x.AddConsumer<PublishMessageMailgunConsumer, PublishMessageMailgunConsumerDefinition>();
                     x.AddConsumer<PublishMessageByUserIdConsumer, PublishMessageByUserIdConsumerDefinition>();
                     x.AddRider(RiderRegistrationConfiguratorExtensions.KafkaRegistrationConfigurator);
                     x.AddSignalRHub<SignalRHub>();

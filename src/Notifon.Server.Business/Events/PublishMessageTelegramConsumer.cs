@@ -42,10 +42,9 @@ namespace Notifon.Server.Business.Events {
         }
     }
 
-    public class SendSubscriptionTelegramConsumerDefinition : SendSubscriptionConsumerDefinitionBase<
+    public class PublishMessageTelegramConsumerDefinition : PublishMessageConsumerDefinitionBase<
         PublishMessageTelegramConsumer> {
-        public SendSubscriptionTelegramConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) :
-            base(
-                retryPolicyOptionsAccessor) { }
+        public PublishMessageTelegramConsumerDefinition(IOptions<RetryPolicyOptions> retryPolicyOptionsAccessor) :
+            base(retryPolicyOptionsAccessor) { }
     }
 }
