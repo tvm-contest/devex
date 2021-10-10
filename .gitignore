@@ -6,5 +6,5 @@ riderModule.iml
 
 App_Data
 *.user
-secret.env
 .env
+**/nginx/ssl
