@@ -8,3 +8,5 @@ App_Data
 *.user
 .env
 **/nginx/ssl
+
+/publish
