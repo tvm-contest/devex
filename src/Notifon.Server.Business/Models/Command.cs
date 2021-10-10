@@ -45,18 +45,23 @@ namespace Notifon.Server.Business.Models {
         private static Dictionary<string, string?> GetParameters(string data) {
             Dictionary<string, string?> parameters = new();
 
-            foreach (var p in data.Split(' ', StringSplitOptions.RemoveEmptyEntries)) {
-                string key;
-                string? value;
-                if (!p.StartsWith('-')) {
-                    key = "mainParam";
-                    value = p;
-                }
-                else {
-                    string[] pSplit = p.Split(':', 2);
-                    key = pSplit[0].TrimStart('-');
-                    value = pSplit.Length == 2 ? pSplit[1] : null;
-                }
+            var split = data.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
+            string paramString;
+            if (split.Length > 0 && !split[0].Trim().StartsWith('-')) {
+                parameters.Add("mainParam", split[0]);
+                paramString = split.Length == 2 ? split[1] : string.Empty;
+            }
+            else {
+                paramString = data;
+            }
+
+            foreach (var p in paramString.Split("-", StringSplitOptions.RemoveEmptyEntries)) {
+                string[] pSplit = p.Split(':', 2);
+                if (pSplit.Length == 0) continue;
+
+                string key = pSplit[0].Trim();
+                var value = pSplit.Length == 2 ? pSplit[1].Trim() : null;
 
                 parameters.TryAdd(key, value);
             }
@@ -65,15 +70,15 @@ namespace Notifon.Server.Business.Models {
         }
 
         private static CommandType GetCommandType(string data) {
-            var split = data.Split(' ', 2)[0];
+            var split = data.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
 
-            if (string.IsNullOrWhiteSpace(split)) return DefaultCommand;
+            if (split.Length == 0 || string.IsNullOrWhiteSpace(split[0])) return DefaultCommand;
 
             return CommandHelpers
                 .DescriptionByCommandType
                 .SingleOrDefault(description => {
                     var command = description.Value.Command;
-                    return command != null && split.Equals(command, StringComparison.OrdinalIgnoreCase);
+                    return command != null && split[0].Equals(command, StringComparison.OrdinalIgnoreCase);
                 })
                 .Key;
         }
