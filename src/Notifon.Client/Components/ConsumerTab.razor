@@ -25,13 +25,13 @@
         <MudTh/>
     </HeaderContent>
     <RowTemplate>
-        <MudTd Class="pa-1" Style="text-align: left">
+        <MudTd Class="pa-1 mx-3" Style="text-align: left">
             <MudText Typo="Typo.body2" Style="word-wrap: unset; overflow-wrap: unset">@context.DateTime</MudText>
         </MudTd>
-        <MudTd Class="pa-1">
+        <MudTd Class="pa-1 mx-3">
             <MudText Class="message" Style="@(context.Message.Length > 200 ? "font-size: 0.7rem;" : string.Empty)">@context.Message</MudText>
         </MudTd>
-        <MudTd Class="pa-1" Style="text-align: right">
+        <MudTd Class="pa-1 mx-3" Style="text-align: right">
             <MudChipSet @bind-SelectedChip="SelectedChip" Filter="true" Mandatory="false">
                 <MudChip OnClick="@(() => CopyToClipboard(context.Message))" Icon="@Icons.Filled.ContentCopy" Color="Color.Info"/>
             </MudChipSet>
