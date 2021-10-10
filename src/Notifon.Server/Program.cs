@@ -12,6 +12,9 @@ namespace Notifon.Server {
                 .WriteTo.Console()
                 .CreateBootstrapLogger();
 
+            // load .env file 
+            DotEnv.Load();
+
             CreateHostBuilder(args)
                 .UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration))
                 .Build()

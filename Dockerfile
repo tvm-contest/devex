@@ -3,6 +3,7 @@ WORKDIR /src
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
 WORKDIR /app
+ENV ASPNETCORE_ENVIRONMENT=Development
 EXPOSE 80
 
 FROM scratch AS csproj-client
