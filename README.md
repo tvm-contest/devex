@@ -14,12 +14,12 @@ Free TON Notification Provider
 - Customizable retry policy for failed requests
 - Multiple endpoints per user support
 - Optional message decryption separately by endpoints
-- DeBot commands
+- DeBot parameters
     - add/remove/clear/list endpoints
     - get/set/remove secret key
-- Web application
+- Web client-side application
     - Server Status
-    - Test HTTP endpoints
+    - Test HTTP endpoints and message sender
 - Prometheus Metrics easy to integrate with Grafana(/metrics endpoint)
     - Application resources
     - Message Queues
@@ -136,6 +136,14 @@ via [environment variables](#Environment-variables). If no tokens were provided 
 
 ---
 
+## Application Architectural Diagram
+
+There is an application architectural diagram:
+
+![alt text](https://github.com/ch1seL/free-ton-http-notification-provider/blob/main/docs/Notifon%20Application%20Architectural%20Diagram.drawio.png?raw=true)
+
+---
+
 ## TODO
 
 - Sentry integration
@@ -143,25 +151,3 @@ via [environment variables](#Environment-variables). If no tokens were provided 
 - Helm chart for easy Kubernetes deployment
 - Plugin architecture for providers
 - DeBot interaction from app
-
----
-
-## Development
-
-There is an application architectural diagram:
-
-![alt text](https://github.com/ch1seL/free-ton-http-notification-provider/blob/main/docs/Notifon%20Application%20Architectural%20Diagram.drawio.png?raw=true)
-
-### EF Core Migrations
-
-#### Add migration:
-
-```shell
-dotnet ef -p .\src\Notifon.Server.Database\ -s .\src\Notifon.Server\ migrations add MIGRATION_NAME
-```
-
-#### Remove last migration:
-
-```shell
-dotnet ef -p .\src\Notifon.Server.Database\ -s .\src\Notifon.Server\ migrations remove
-```
