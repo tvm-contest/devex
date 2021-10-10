@@ -6,5 +6,6 @@
         internal const string KafkaOptions = "KafkaOptions";
         internal const string MailGunOptions = "MailGunOptions";
         internal const string RetryPolicyOptions = "RetryPolicyOptions";
+        internal const string TelegramOptions = "TelegramOptions";
     }
 }

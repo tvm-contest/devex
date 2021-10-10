@@ -18,38 +18,37 @@ namespace Notifon.Server.Business.Events {
         private const string ApiUrl = "https://api.mailgun.net/v3";
         private readonly HttpClient _httpClient;
         private readonly ILogger<PublishMessageMailgunConsumer> _logger;
-        private readonly MailGunOptions _mailGunOptions;
+        private readonly IOptions<MailGunOptions> _mailGunOptionsAccessor;
 
         public PublishMessageMailgunConsumer(HttpClient httpClient, ILogger<PublishMessageMailgunConsumer> logger,
             IOptions<MailGunOptions> mailGunOptionsAccessor) {
             _httpClient = httpClient;
             _logger = logger;
-            _mailGunOptions = mailGunOptionsAccessor.Value;
-            _httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue(AuthenticationSchemes.Basic.ToString(),
-                    Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{_mailGunOptions.ApiKey}")));
+            _mailGunOptionsAccessor = mailGunOptionsAccessor;
         }
 
         public async Task Consume(ConsumeContext<PublishMessage> context) {
             if (context.Message.EndpointType != EndpointType.Mailgun) return;
 
-            var message = context.Message.Message.Text;
-            var endpoint = MailgunEndpoint.FromPublishMessage(context.Message);
             var cancellationToken = context.CancellationToken;
+            var parameters = MailgunParameters.Create(context.Message, () => _mailGunOptionsAccessor.Value);
 
-            var url = Url.Combine(ApiUrl, _mailGunOptions.Domain, "messages");
+            var url = Url.Combine(ApiUrl, parameters.Domain, "messages");
+
             var request = new FormUrlEncodedContent(new[] {
-                KeyValuePair.Create("to", endpoint.To),
-                KeyValuePair.Create("from", _mailGunOptions.From),
-                KeyValuePair.Create("subject", _mailGunOptions.Subject),
-                KeyValuePair.Create("text", message)
+                KeyValuePair.Create("to", parameters.To),
+                KeyValuePair.Create("from", parameters.From),
+                KeyValuePair.Create("subject", parameters.Subject),
+                KeyValuePair.Create("text", parameters.Text)
             });
 
-            _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint.To, message);
+            _logger.LogTrace("Sending to {Endpoint} message {Message}", parameters.To, parameters.Text);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(AuthenticationSchemes.Basic.ToString(),
+                Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{parameters.ApiKey}")));
             var response = await _httpClient.PostAsync(url, request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint.To, message,
+            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", parameters.To, parameters.Text,
                 successResponse);
         }
     }

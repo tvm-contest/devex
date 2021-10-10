@@ -2,7 +2,6 @@
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using MassTransit;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notifon.Server.Business.Models;
@@ -11,33 +10,33 @@ using Notifon.Server.Models;
 
 namespace Notifon.Server.Business.Events {
     public class PublishMessageTelegramConsumer : IConsumer<PublishMessage> {
-        private static string _botToken;
+        private const string SendMessageUrlFormat = "https://api.telegram.org/bot{0}/sendMessage";
+
         private readonly HttpClient _httpClient;
         private readonly ILogger<PublishMessageTelegramConsumer> _logger;
+        private readonly IOptions<TelegramOptions> _telegramOptionsAccessor;
 
-        public PublishMessageTelegramConsumer(HttpClient httpClient, ILogger<PublishMessageTelegramConsumer> logger,
-            IConfiguration configuration) {
+        public PublishMessageTelegramConsumer(HttpClient httpClient, IOptions<TelegramOptions> telegramOptionsAccessor,
+            ILogger<PublishMessageTelegramConsumer> logger) {
             _httpClient = httpClient;
+            _telegramOptionsAccessor = telegramOptionsAccessor;
             _logger = logger;
-            _botToken = configuration.GetValue<string>("TelegramOptions:BotToken");
         }
-
-        private static string SendMessageUrl => $"https://api.telegram.org/bot{_botToken}/sendMessage";
 
         public async Task Consume(ConsumeContext<PublishMessage> context) {
             if (context.Message.EndpointType != EndpointType.Telegram) return;
 
-            var message = context.Message.Message.Text;
             var cancellationToken = context.CancellationToken;
-            var endpoint = TelegramEndpoint.FromPublishMessage(context.Message);
+            var parameters = TelegramParameters.Create(context.Message, () => _telegramOptionsAccessor.Value);
 
-            var request = new { chat_id = $"@{endpoint.ChannelId}", text = message };
+            var url = string.Format(SendMessageUrlFormat, parameters.BotToken);
+            var request = new { chat_id = $"{parameters.ChatId}", text = parameters.Text };
 
-            _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint.ChannelId, message);
-            var response = await _httpClient.PostAsJsonAsync(SendMessageUrl, request, cancellationToken);
+            _logger.LogTrace("Sending to {Endpoint} message {Message}", parameters.ChatId, parameters.Text);
+            var response = await _httpClient.PostAsJsonAsync(url, request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint.ChannelId, message,
+            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", parameters.ChatId, parameters.Text,
                 successResponse);
         }
     }
