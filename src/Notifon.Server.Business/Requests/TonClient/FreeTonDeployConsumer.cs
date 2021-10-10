@@ -58,7 +58,6 @@ namespace Notifon.Server.Business.Requests.TonClient {
                     Address = address,
                     KeyPair = keyPair
                 });
-                return;
             }
 
             var account = result.Result[0];

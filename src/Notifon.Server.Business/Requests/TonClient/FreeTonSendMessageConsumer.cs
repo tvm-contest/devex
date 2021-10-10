@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
 using ch1seL.TonNet.Abstract;
 using ch1seL.TonNet.Client.Models;
@@ -44,7 +43,6 @@ namespace Notifon.Server.Business.Requests.TonClient {
                     Error = deployResultMessage.Error,
                     Address = deployResultMessage.Address
                 });
-                return;
             }
 
             var keyPair = deployResultMessage.KeyPair;
@@ -53,7 +51,7 @@ namespace Notifon.Server.Business.Requests.TonClient {
                 Abi = transferAbi,
                 CallSet = new CallSet {
                     FunctionName = "transfer",
-                    Input = new { comment = ToHexString(message) }.ToJsonElement()
+                    Input = new { comment = message.ToHexString() }.ToJsonElement()
                 },
                 IsInternal = true,
                 Signer = new Signer.None()
@@ -92,11 +90,6 @@ namespace Notifon.Server.Business.Requests.TonClient {
                 Address = address,
                 Messages = result.Transaction.Get<string[]>("out_msgs")
             });
-        }
-
-        public static string ToHexString(string input) {
-            var bytes = Encoding.Default.GetBytes(input);
-            return BitConverter.ToString(bytes).Replace("-", string.Empty);
         }
     }
 }

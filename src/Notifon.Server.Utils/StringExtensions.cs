@@ -19,5 +19,9 @@ namespace Notifon.Server.Utils {
                 .ToArray();
             return Encoding.UTF8.GetString(bb);
         }
+
+        public static string ToHexString(this string input) {
+            return Encoding.Default.GetBytes(input).ToHexString();
+        }
     }
 }

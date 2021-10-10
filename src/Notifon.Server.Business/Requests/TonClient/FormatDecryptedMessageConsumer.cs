@@ -54,7 +54,6 @@ namespace Notifon.Server.Business.Requests.TonClient {
                 }
 
                 await context.RespondAsync<FormattedMessage>(new { Text = text });
-                return;
             }
 
             await context.RespondAsync<DummyResponse>(new { });
