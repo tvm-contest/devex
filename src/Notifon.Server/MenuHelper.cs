@@ -87,8 +87,11 @@ namespace Notifon.Server {
         public static string FormatSubmitClientSuccessMessage(SubmitClientSuccess success) {
             return "👍 Looks good!\n" +
                    $"Notifications will be sent to {success.Endpoint}" +
-                   (success.IsTest ? "(can be open in web browser)" : null) + "\n" +
-                   "Now your can set rules for catching blockchain messages 🖐️";
+                   (success.IsTest ? "(can be open in the web browser)" : null) + "\n" +
+                   "Now you can set rules for catching blockchain messages 🖐️\n" +
+                   (success.IsSecretRequired
+                       ? "❗ Make sure you have set SecretKey to receive decrypted messages(pass 'help' to get details)\n"
+                       : null);
         }
 
         public static string ListEndpoints(IEnumerable<EndpointModel> endpoints) {

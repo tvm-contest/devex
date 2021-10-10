@@ -43,8 +43,9 @@ namespace Notifon.Server.Business.Requests.Endpoint {
                     }
 
                     messageType = typeof(SubmitClientSuccess);
-                    await AddOrUpdateEndpoint(userId, endpointId, endpointType, command.Parameters, context.CancellationToken);
-                    message = new { Endpoint = endpointId, IsTest = false };
+                    var isSecretRequired = await AddOrUpdateEndpoint(userId, endpointId, endpointType, command.Parameters,
+                        context.CancellationToken);
+                    message = new { Endpoint = endpointId, IsTest = false, IsSecretRequired = isSecretRequired };
                     break;
                 case CommandType.RemoveEndpoint:
                     messageType = typeof(SubmitClientResult);
@@ -211,17 +212,17 @@ namespace Notifon.Server.Business.Requests.Endpoint {
             Dictionary<string, string?> parameters,
             CancellationToken cancellationToken) {
             var endpoint = ComposeTestEndpointKey(userId);
-            await AddOrUpdateEndpoint(userId, endpoint, EndpointType.Http, parameters, cancellationToken);
-            return new { Endpoint = endpoint, IsTest = true };
+            var isSecretRequired = await AddOrUpdateEndpoint(userId, endpoint, EndpointType.Http, parameters, cancellationToken);
+            return new { Endpoint = endpoint, IsTest = true, IsSecretRequired = isSecretRequired };
         }
 
         private string ComposeTestEndpointKey(string userId) {
-            return Url.Combine(_appOptionsAccessor.Value.Url, "test-consumer", userId[..12]);
+            return Url.Combine(_appOptionsAccessor.Value.Url, "test", userId[..12]);
         }
 
-        private async Task AddOrUpdateEndpoint(string userId, string endpointId, EndpointType endpointType,
+        private async Task<bool> AddOrUpdateEndpoint(string userId, string endpointId, EndpointType endpointType,
             Dictionary<string, string?> parameters, CancellationToken cancellationToken) {
-            await TryAddUser(userId, cancellationToken);
+            var (_, user) = await TryAddUser(userId, cancellationToken);
 
             //exclude mainParam from db
             parameters = parameters.Where(kv => kv.Key != "mainParam").ToDictionary(kv => kv.Key, kv => kv.Value);
@@ -232,6 +233,8 @@ namespace Notifon.Server.Business.Requests.Endpoint {
             }
 
             await _db.SaveChangesAsync(cancellationToken);
+
+            return endpoint.Parameters.ContainsKey("d") && string.IsNullOrWhiteSpace(user.SecretKey);
         }
 
         private bool CheckAccess(string endpoint) {
