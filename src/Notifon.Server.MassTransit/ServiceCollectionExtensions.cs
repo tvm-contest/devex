@@ -24,6 +24,8 @@ namespace Notifon.Server.MassTransit {
                     x.AddRequestClient<SubmitClient>();
                     x.AddConsumer<DecryptEncryptedMessageConsumer>();
                     x.AddRequestClient<DecryptEncryptedMessage>();
+                    x.AddConsumer<FreeTonDeployConsumer>();
+                    x.AddConsumer<FreeTonSendMessageConsumer>();
                 })
                 .AddMassTransit(x => {
                     x.AddDelayedMessageScheduler();

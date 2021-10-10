@@ -1,0 +1,141 @@
+﻿<MudCard Style="width: 700px">
+    <MudCardContent>
+        <MudForm @ref="Form" @bind-IsValid="@IsValidForm">
+            <MudTextField T="string" Label="Seed phrase"
+                          HelperText="Input seed phrase of your multisig wallet"
+                          Required="true" RequiredError="Seed phrase is required!"
+                          Validation="@(new Func<string, IEnumerable<string>>(SeedPhraseValidation))"
+                          @ref="PhraseField"/>
+
+            <MudTextField T="string" Label="Receiver address"
+                          HelperText="The address to send the message"
+                          Required="true" RequiredError="Recipient address is required!"
+                          Validation="@(new Func<string, IEnumerable<string>>(RecipientValidation))"
+                          @ref="RecipientField"/>
+
+            <MudTextField T="string" Label="Message"
+                          Required="true" RequiredError="Message is required!"
+                          @ref="MessageField"/>
+
+            <MudCheckBox T="bool" @bind-Checked="@SaveData" Class="ml-n2" Label="Save data?"/>
+        </MudForm>
+    </MudCardContent>
+    <MudCardActions>
+        @if (Balance != null) {
+            <MudText GutterBottom="false">Balance: @string.Format($"{Balance:##.00}")💎</MudText>
+        }
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!IsValidForm || SendingMessage)" OnClick="@SendMessage" Class="ml-auto">@SendMessageButton</MudButton>
+    </MudCardActions>
+</MudCard>
+
+
+@code {
+
+    [Inject]
+    IApiFreeTonClient FreeTon { get; set; }
+
+    [Inject]
+    ISnackbar Snackbar { get; set; }
+
+    [Inject]
+    ILocalStorageService Storage { get; set; }
+
+    [Inject]
+    IDialogService DialogService { get; set; }
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    MudForm Form { get; set; }
+    bool IsValidForm { get; set; }
+    bool SendingMessage { get; set; }
+    decimal? Balance { get; set; }
+
+    private MudTextField<string> PhraseField { get; set; }
+    private MudTextField<string> RecipientField { get; set; }
+    private MudTextField<string> MessageField { get; set; }
+    private bool SaveData { get; set; }
+
+    string SendMessageButton => SendingMessage ? "Sending..." : "Send Message";
+
+    private IEnumerable<string> RecipientValidation(string address) {
+        if (string.IsNullOrWhiteSpace(address)) {
+            yield return "Receiver address is required!";
+        }
+    }
+
+    private IEnumerable<string> SeedPhraseValidation(string seedPhrase) {
+        if (string.IsNullOrWhiteSpace(seedPhrase)) {
+            yield return "Seed phrase is required!";
+        }
+    }
+
+    private async Task SendMessage() {
+        await Form.Validate();
+        if (Form.IsValid) {
+            SendingMessage = true;
+            await SaveDataMethod();
+            var sendResult = await FreeTon.SendMessageAsync(new FreeTonSendMessage {
+                Message = MessageField.Value,
+                Phrase = PhraseField.Value,
+                Recipient = RecipientField.Value
+            });
+
+            if (!sendResult.Success) {
+                await DialogService.ShowMessageBox("Error", sendResult.Error, options: new DialogOptions { CloseButton = true, FullWidth = true });
+                SendingMessage = false;
+                return;
+            }
+
+            Balance = sendResult.Balance;
+            DialogService.Show<DialogMessagesSent>("Messages sent", new DialogParameters { { "Messages", sendResult.Messages } }, new DialogOptions {
+                MaxWidth = MaxWidth.False
+            });
+            SendingMessage = false;
+        }
+    }
+
+    private async Task SaveDataMethod() {
+        if (SaveData) {
+            await Storage.SetItemAsync(StorageDataKey,
+                new FormData {
+                    Phrase = PhraseField.Value,
+                    Recipient = RecipientField.Value,
+                    Message = MessageField.Value,
+                    SaveData = SaveData
+                });
+        }
+        else {
+            await Storage.RemoveItemAsync(StorageDataKey);
+        }
+    }
+
+    private string StorageDataKey => $"MessageSendFormData:{UserId}";
+
+    private class FormData {
+        public string Phrase { get; set; }
+        public string Recipient { get; set; }
+        public string Message { get; set; }
+        public bool SaveData { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync() {
+        await FillFormFromStorage();
+    }
+
+    private async Task FillFormFromStorage() {
+        var formData = await Storage.GetItemAsync<FormData>(StorageDataKey);
+        if (formData != null) {
+            await SetFieldValue(PhraseField, formData.Phrase);
+            await SetFieldValue(RecipientField, formData.Recipient);
+            await SetFieldValue(MessageField, formData.Message);
+            SaveData = formData.SaveData;
+            await Form.Validate();
+        }
+    }
+
+    private async Task SetFieldValue(MudTextField<string> field, string value) {
+        await field.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object> { { "Value", value } }));
+    }
+
+}

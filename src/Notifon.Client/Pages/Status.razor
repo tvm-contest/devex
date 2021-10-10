@@ -1,5 +1,5 @@
 ﻿@page "/server-status"
-@inject IApiClient _apiClient;
+@inject IApiStatusClient _apiStatusClient;
 
 <MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">Server status</MudText>
 <MudGrid Spacing="6">
@@ -41,7 +41,7 @@
 @code{
 
     protected override async Task OnInitializedAsync() {
-        ServerStatus = await _apiClient.GetServerStatusAsync();
+        ServerStatus = await _apiStatusClient.GetServerStatusAsync();
     }
 
     private GetServerStatusResult ServerStatus { get; set; }

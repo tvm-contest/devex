@@ -32,6 +32,7 @@
 
     <ItemGroup>
         <Folder Include="App_Data" />
+        <Folder Include="_contracts" />
     </ItemGroup>
 
     <ItemGroup>

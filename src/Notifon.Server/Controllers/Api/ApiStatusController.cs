@@ -4,13 +4,13 @@ using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Notifon.Server.Business.Requests.Api;
 
-namespace Notifon.Server.Controllers {
+namespace Notifon.Server.Controllers.Api {
     [ApiController]
     [Route("api/status")]
-    public class ApiController : ControllerBase {
+    public class ApiStatusController : ControllerBase {
         private readonly IRequestClient<GetServerStatus> _getServerStatusRequestClient;
 
-        public ApiController(IRequestClient<GetServerStatus> getServerStatusRequestClient) {
+        public ApiStatusController(IRequestClient<GetServerStatus> getServerStatusRequestClient) {
             _getServerStatusRequestClient = getServerStatusRequestClient;
         }
 

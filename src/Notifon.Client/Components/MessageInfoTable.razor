@@ -1,4 +1,8 @@
-﻿<style>
+﻿@inject NavigationManager _navigation
+@inject IMessageInfoStorage _storage
+@implements IAsyncDisposable
+
+<style>
     .message {
         overflow-wrap: anywhere;
         max-height: 100px;
@@ -7,11 +11,12 @@
     }
 </style>
 
-<MudTable Items="@(MessageInfos ?? Array.Empty<MessageInfo>())" Dense="false" Hover="true" Bordered="false" Striped="true" Loading="@(MessageInfos == null)">
+<MudTable Items="@(Messages ?? Array.Empty<MessageInfo>())" Dense="false" Hover="true" Bordered="false" Striped="true" Loading="@(Messages == null)">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Recived messages: @(MessageInfos?.Count ?? 0)</MudText>
+        <MudText Typo="Typo.h6">Recived messages: @(Messages?.Count ?? 0)</MudText>
+        <ConsumerConnectionStatus IsConnected="@IsConnected"/>
         <MudSpacer/>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@OnClearClickCallback">Clear</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@OnClear">Clear</MudButton>
     </ToolBarContent>
     <ColGroup>
         <col style="min-width: 180px"/>
@@ -50,13 +55,7 @@
     public IJsApiService JsApiService { get; set; }
 
     [Parameter]
-    public IReadOnlyCollection<MessageInfo> MessageInfos { get; set; }
-
-    [Parameter]
-    public EventCallback UpdateMessagesEvent { get; set; }
-
-    [Parameter]
-    public EventCallback<MouseEventArgs> OnClearClickCallback { get; set; }
+    public string UserId { get; set; }
 
     private async Task CopyToClipboard(string message) {
         if (SelectedChip == null) return;
@@ -67,4 +66,36 @@
 
     private MudChip SelectedChip { get; set; }
 
+    private HubConnection _hubConnection;
+    private IReadOnlyCollection<MessageInfo> Messages { get; set; }
+    private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
+
+    protected override async Task OnInitializedAsync() {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(_navigation.ToAbsoluteUri($"/signalr?UserId={UserId}"))
+            .WithAutomaticReconnect(Enumerable.Range(0, 20).Select(r => TimeSpan.FromSeconds(r * 2)).ToArray())
+            .Build();
+        _hubConnection.On<string>("ReceiveMessage", async message => {
+            Messages = await _storage.Push(new MessageInfo { DateTime = DateTime.Now, Message = message });
+            StateHasChanged();
+        });
+        _hubConnection.Reconnecting += _ => InvokeAsync(StateHasChanged);
+        _hubConnection.Closed += _ => InvokeAsync(StateHasChanged);
+        _hubConnection.Reconnected += _ => InvokeAsync(StateHasChanged);
+        await _hubConnection.StartAsync();
+        await _storage.Init();
+        Messages = await _storage.GetAll();
+    }
+
+    public async ValueTask DisposeAsync() {
+        if (_hubConnection is not null) {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+    private async Task OnClear() {
+        Messages = null;
+        await _storage.Clear();
+        Messages = await _storage.GetAll();
+    }
 }

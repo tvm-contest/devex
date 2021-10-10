@@ -1,4 +1,5 @@
 using System;
+using ch1seL.TonNet.Client.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -57,7 +58,11 @@ namespace Notifon.Server {
             services.AddSingleton<IUserIdProvider, ByHashUserIdProvider>();
 
             // messages decrypting
-            services.AddTonClient();
+            services.AddTonClient(options => {
+                options.Network = new NetworkConfig {
+                    Endpoints = new[] { "net1.ton.dev", "net5.ton.dev" }
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

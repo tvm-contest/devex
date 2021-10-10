@@ -1,54 +1,17 @@
 ﻿@page "/test-consumer/{UserId}"
-@inject NavigationManager _navigation
-@inject IMessageInfoStorage _storage
-@implements IAsyncDisposable
 
-
-<MudGrid>
-    <MudItem xs="12">
-        <ConsumerConnectionStatus IsConnected="@IsConnected"/>
-    </MudItem>
-    <MudItem xs="12">
-        <MessageInfoTable MessageInfos="@Messages" OnClearClickCallback="@OnClear"/>
-    </MudItem>
-</MudGrid>
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="false" PanelClass="pa-6 ma-4">
+    <MudTabPanel Text="Consumer">
+        <MessageInfoTable UserId="@UserId"/>
+    </MudTabPanel>
+    <MudTabPanel Text="Message sender">
+        <MessageSender UserId="@UserId"/>
+    </MudTabPanel>
+</MudTabs>
 
 @code {
 
     [ParameterAttribute]
     public string UserId { get; set; }
-
-    private HubConnection _hubConnection;
-    private IReadOnlyCollection<MessageInfo> Messages { get; set; }
-    private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
-
-    protected override async Task OnInitializedAsync() {
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl(_navigation.ToAbsoluteUri($"/signalr?UserId={UserId}"))
-            .WithAutomaticReconnect(Enumerable.Range(0, 20).Select(r => TimeSpan.FromSeconds(r * 2)).ToArray())
-            .Build();
-        _hubConnection.On<string>("ReceiveMessage", async message => {
-            Messages = await _storage.Push(new MessageInfo { DateTime = DateTime.Now, Message = message });
-            StateHasChanged();
-        });
-        _hubConnection.Reconnecting += _ => InvokeAsync(StateHasChanged);
-        _hubConnection.Closed += _ => InvokeAsync(StateHasChanged);
-        _hubConnection.Reconnected += _ => InvokeAsync(StateHasChanged);
-        await _hubConnection.StartAsync();
-        await _storage.Init();
-        Messages = await _storage.GetAll();
-    }
-
-    public async ValueTask DisposeAsync() {
-        if (_hubConnection is not null) {
-            await _hubConnection.DisposeAsync();
-        }
-    }
-
-    private async Task OnClear() {
-        Messages = null;
-        await _storage.Clear();
-        Messages = await _storage.GetAll();
-    }
 
 }
