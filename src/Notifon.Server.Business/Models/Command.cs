@@ -56,11 +56,11 @@ namespace Notifon.Server.Business.Models {
                 paramString = data;
             }
 
-            foreach (var p in paramString.Split("-", StringSplitOptions.RemoveEmptyEntries)) {
-                string[] pSplit = p.Split(':', 2);
+            foreach (var pSplit in paramString.Split(" -", StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Split(':', 2))) {
                 if (pSplit.Length == 0) continue;
 
-                string key = pSplit[0].Trim();
+                string key = pSplit[0].Trim().TrimStart('-');
                 var value = pSplit.Length == 2 ? pSplit[1].Trim() : null;
 
                 parameters.TryAdd(key, value);

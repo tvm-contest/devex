@@ -10,6 +10,8 @@ namespace Notifon.Server.Business.Tests {
         [InlineData("", CommandType.ListEndpoints, "{}")]
         [InlineData("   ", CommandType.ListEndpoints, "{}")]
         [InlineData("test", CommandType.Test, "{}")]
+        [InlineData("telegram -t:1234546778:AABCD-ASD234werf123sdafq23r2sdfasdf", CommandType.AddEndpoint,
+            @"{""mainParam"":""telegram"", ""t"":""1234546778:AABCD-ASD234werf123sdafq23r2sdfasdf""}")]
         [InlineData("test -d", CommandType.Test, "{\"d\":null}")]
         [InlineData("secret", CommandType.Secret, "{}")]
         [InlineData("secret Super:SecretKey", CommandType.Secret, "{\"mainParam\":\"Super:SecretKey\"}")]
