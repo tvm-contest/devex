@@ -1,15 +1,28 @@
 [![Chat on Telegram](https://img.shields.io/badge/chat-on%20telegram-9cf.svg)](https://t.me/ton_actions_chat)
 [<img src="https://avatars3.githubusercontent.com/u/67861283?s=150&u=4536b61595a1b422604fab8a7012092d891278f6&v=4" align="right" width="150">](https://freeton.org/)
 
-# Notifon
+# TON Actions.Notifon
 
 Free TON Notification Provider
 
 ---
 
-## About
+## Features
 
-This is an application that provides messages transmission via the **HTTP**, **Telegram**, **Email**.
+- Supported endpoints **HTTP**, **Telegram**, **Email**.
+- Customizable retry policy for failed requests
+- Multiple endpoints per user support
+- Optional message decryption separately by endpoints
+- DeBot commands
+    - add/remove/clear/list endpoints
+    - get/set/remove secret key
+- Web application
+    - Server Status
+    - Test HTTP endpoints
+- Prometheus Metrics easy to integrate with Grafana(/metrics endpoint)
+    - Application resources
+    - Message Queues
+- Docker supported
 
 ---
 
