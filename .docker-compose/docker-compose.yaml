@@ -5,6 +5,13 @@ services:
     image: ghcr.io/ch1sel/free-ton-notify:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - RedisOptions__Configuration=redis
+      - RabbitMqOptions__Host=rabbitmq
+      - RabbitMqOptions__Username=user
+      - RabbitMqOptions__Password=bitnami
+      - ConnectionStrings__PostgreSql=Server=postgresql;Port=5432;User Id=postgres;Database=app
+    ports:
+      - '80:80'
     env_file: .env
     restart: unless-stopped
   redis:
