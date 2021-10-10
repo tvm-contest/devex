@@ -3,15 +3,15 @@ using System.IO;
 
 namespace Notifon.Server {
     public static class DotEnv {
+        private const int MaxNestingLevel = 20;
+
         public static void Load() {
             var envPath = AppContext.BaseDirectory;
             var envFile = Path.Combine(envPath, ".env");
             var rootPath = Path.GetPathRoot(envPath);
-            var i = 0;
-            while (!File.Exists(envFile) && rootPath != envPath && i <= 20) {
+            for (var i = 0; !File.Exists(envFile) && rootPath != envPath && i <= MaxNestingLevel; i++) {
                 envPath = Path.GetFullPath(Path.Combine(envPath, ".."));
                 envFile = Path.Combine(envPath, ".env");
-                i++;
             }
 
             if (!File.Exists(envFile)) return;
