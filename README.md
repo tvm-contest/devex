@@ -35,6 +35,8 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 ### Run from sources
 
+> ℹ️ Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly
+
 - Make sure that .Net 5.0 is installed (https://dotnet.microsoft.com/download)
 - Download or clone repo https://github.com/ton-actions/free-ton-http-notification-provider
 - Go to the repository directory and create minimal `.env` file
@@ -44,11 +46,15 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 ### Docker
 
+> ℹ️ Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly
+
 - Make sure that Docker Engine is installed and started (https://docs.docker.com/engine/install/)
 - Create minimal `.env` file
 - Exec `docker run --rm --name notifon --env-file=.env -p 80:80 ghcr.io/ch1sel/free-ton-notify:latest`
 
 ### Docker compose (Production-ready solution)
+
+> ℹ️ Uses postgresql, redis, rabbitmq to store state and organize retry policy
 
 - Create some directory for project
 -
@@ -56,7 +62,18 @@ KafkaOptions__Topic=YOUR_TOPIC
 Download [docker-compose.yaml](https://raw.githubusercontent.com/ch1seL/free-ton-http-notification-provider/main/.docker-compose/docker-compose.yaml?token=ADTL6OODHXLXUW5WOMPPSH3BMK6GY)
 
 - Create minimal `.env` file
-- Exec `docker-compose up -d
+- Exec `docker-compose up -d`
+
+## Advanced
+
+### Scaling
+
+Notifon is a scalable application and can be run on as many replicas as you like. See `docker-compose.cluster.yaml` and run clustered
+instance:
+
+```shell
+docker-compose -f docker-compose.yaml -f docker-compose.cluster.yaml up -d
+```    
 
 ### EF Core Migrations
 
