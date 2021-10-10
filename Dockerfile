@@ -4,6 +4,8 @@ WORKDIR /src
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT=Development
+#connect sql lite db as volume
+VOLUME /app/App_Data    
 EXPOSE 80
 
 FROM scratch AS csproj-client
