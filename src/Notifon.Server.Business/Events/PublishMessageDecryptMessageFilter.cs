@@ -16,7 +16,7 @@ namespace Notifon.Server.Business.Events {
         public async Task Send(PublishContext<T> context, IPipe<PublishContext<T>> next) {
             if (context.Message is PublishMessage publishMessage) {
                 var secretKey = publishMessage.SecretKey;
-                if (secretKey != null && publishMessage.ContainsDecryptParameter()) {
+                if (secretKey != null && HasDecryptParameter(publishMessage)) {
                     var encryptedMessage = EncryptedMessage.CreateFromBase(publishMessage.Message);
                     var decryptedMessage = await _decryptMessageClient.GetResponse<DecryptedMessage>(new {
                         EncryptedMessage = encryptedMessage,
@@ -31,5 +31,9 @@ namespace Notifon.Server.Business.Events {
         }
 
         public void Probe(ProbeContext context) { }
+
+        private static bool HasDecryptParameter(PublishMessage message) {
+            return message.Parameters.ContainsKey("d");
+        }
     }
 }
