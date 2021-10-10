@@ -118,6 +118,7 @@ via [environment variables](#Environment-variables). If no tokens were provided 
 | ConnectionStrings__PostgreSql | PostgreSql connection string Default: not set                 |
 | RetryPolicyOptions__Count     | Retry count (0-no retries) Default: 144                       |
 | RetryPolicyOptions__Interval  | Retry interval (TimeSpan format) Default: 00:10:00            |
+| Sentry__Dsn                   | Sentry Dsn (see: [sentry.io](http://sentry.io))               |
 
 ## Deployment
 
@@ -146,7 +147,6 @@ There is an application architectural diagram:
 
 ## TODO
 
-- Sentry integration
 - Grafana Dashboard for Message Queues
 - Helm chart for easy Kubernetes deployment
 - Plugin architecture for providers
