@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Server>ch1sel@notify-contest.ddns.net</Server>
-        <ServerPath>~/server/free-ton-notify/</ServerPath>
+        <ServerPath>~/notifon/</ServerPath>
         <ImageName>ghcr.io/ch1sel/free-ton-notify</ImageName>
         <ImagesPrune>false</ImagesPrune>
     </PropertyGroup>
@@ -18,12 +18,13 @@
     <Target Name="Deploy">
         <PropertyGroup>
             <Compose>--compatibility -f docker-compose.yaml -f docker-compose.cluster.yaml</Compose>
+            <Ssh>ssh -y $(Server)</Ssh>
         </PropertyGroup>
         <Exec Command="rsync -zvrc --exclude=&quot;.env&quot; --exclude=&quot;nginx/ssl&quot; .docker-compose/* $(Server):$(ServerPath)" />
-        <Exec Command="ssh $(Server) &quot;cd $(ServerPath); docker-compose $(Compose) pull&quot;" />
-        <Exec Command="ssh $(Server) &quot;cd $(ServerPath); docker-compose $(Compose) up --remove-orphans -d&quot;" />
-        <Exec Command="ssh $(Server) &quot;cd $(ServerPath); docker-compose $(Compose) exec -T nginx nginx -s reload&quot;" />
-        <Exec Condition="$(ImagesPrune)" Command="ssh $(Server) &quot;docker image prune -f&quot;" />
+        <Exec Command="$(Ssh) &quot;cd $(ServerPath);docker-compose $(Compose) pull&quot;" />
+        <Exec Command="$(Ssh) &quot;cd $(ServerPath);docker-compose $(Compose) up --remove-orphans -d&quot;" />
+        <Exec Command="$(Ssh) &quot;cd $(ServerPath);docker-compose $(Compose) exec -T nginx nginx -s reload&quot;" />
+        <Exec Command="$(Ssh) &quot;docker image prune -f&quot;" Condition="$(ImagesPrune)" />
     </Target>
 
     <ItemGroup>
