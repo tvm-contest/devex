@@ -9,8 +9,9 @@ namespace Notifon.Server.Business.Models {
 
         public string Nonce { get; }
         public string Message { get; }
-        public bool IsEncrypted => true;
         public string Text => $"{Nonce} {Message}";
+
+        public SubscriptionMessageType MessageType { get; } = SubscriptionMessageType.Encrypted;
 
         public static EncryptedMessage CreateFromBase(SubscriptionMessage subscriptionMessage) {
             var split = subscriptionMessage.Text.Split(' ', 2);

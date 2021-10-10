@@ -27,7 +27,7 @@ namespace Notifon.Server.Business.Requests.TonClient {
                 TheirPublic = ServerPublicKey
             });
 
-            await context.RespondAsync<DecryptedMessage>(new {
+            await context.RespondAsync(new DecryptedMessage {
                 Text = result.Decrypted.StringFromBase64()
             });
         }

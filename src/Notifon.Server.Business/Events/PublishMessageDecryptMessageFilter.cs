@@ -8,21 +8,34 @@ using Notifon.Server.Models;
 namespace Notifon.Server.Business.Events {
     public class PublishMessageDecryptMessageFilter<T> : IFilter<PublishContext<T>> where T : class {
         private readonly IRequestClient<DecryptEncryptedMessage> _decryptMessageClient;
+        private readonly IRequestClient<FormatDecryptedMessage> _formatMessageClient;
 
-        public PublishMessageDecryptMessageFilter(IRequestClient<DecryptEncryptedMessage> decryptMessageClient) {
+        public PublishMessageDecryptMessageFilter(IRequestClient<DecryptEncryptedMessage> decryptMessageClient,
+            IRequestClient<FormatDecryptedMessage> formatMessageClient) {
             _decryptMessageClient = decryptMessageClient;
+            _formatMessageClient = formatMessageClient;
         }
 
         public async Task Send(PublishContext<T> context, IPipe<PublishContext<T>> next) {
             if (context.Message is PublishMessage publishMessage) {
                 var secretKey = publishMessage.SecretKey;
-                if (secretKey != null && HasDecryptParameter(publishMessage)) {
+                if (secretKey != null && TryGetDecryptParameter(publishMessage, out var decryptFormat)) {
                     var encryptedMessage = EncryptedMessage.CreateFromBase(publishMessage.Message);
-                    var decryptedMessage = await _decryptMessageClient.GetResponse<DecryptedMessage>(new {
+                    var decryptedResponse = await _decryptMessageClient.GetResponse<DecryptedMessage>(new {
                         EncryptedMessage = encryptedMessage,
                         SecretKey = secretKey
                     });
-                    publishMessage.Message = decryptedMessage.Message;
+                    if (decryptFormat != null) {
+                        var formattedResponse = await _formatMessageClient.GetResponse<FormattedMessage>(new {
+                            decryptedResponse.Message,
+                            Format = decryptFormat
+                        });
+                        publishMessage.Message = formattedResponse.Message;
+                    }
+                    else {
+                        publishMessage.Message = decryptedResponse.Message;
+                    }
+
                     context.AddOrUpdatePayload(() => publishMessage, _ => publishMessage);
                 }
             }
@@ -34,8 +47,14 @@ namespace Notifon.Server.Business.Events {
             context.CreateFilterScope("decrypt");
         }
 
-        private static bool HasDecryptParameter(PublishMessage message) {
-            return message.Parameters.ContainsKey("d");
+        private static bool TryGetDecryptParameter(PublishMessage message, out string decryptFormat) {
+            if (message.Parameters.TryGetValue("d", out var format)) {
+                decryptFormat = format;
+                return true;
+            }
+
+            decryptFormat = null;
+            return false;
         }
     }
 }
