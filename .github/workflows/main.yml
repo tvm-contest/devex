@@ -45,4 +45,4 @@ jobs:
 
       - name: Build, Push, Deploy
         run: |
-          dotnet build ./Notifon.Deploy.proj
+          dotnet build ./Notifon.Deploy.proj -t:Push,Deploy -p:ImagesPrune=true

@@ -1,25 +1,29 @@
 <Project DefaultTargets="Deploy">
+
     <PropertyGroup>
-        <ImageName>ghcr.io/ch1sel/free-ton-notify</ImageName>
-        <ImageNameCache>free-ton-notify:cache</ImageNameCache>
         <Server>ch1sel@notify-contest.ddns.net</Server>
-        <Compose>--compatibility -f docker-compose.yaml -f docker-compose.cluster.yaml</Compose>
+        <ServerPath>~/server/free-ton-notify/</ServerPath>
+        <ImageName>ghcr.io/ch1sel/free-ton-notify</ImageName>
+        <ImagesPrune>false</ImagesPrune>
     </PropertyGroup>
 
     <Target Name="Build" BeforeTargets="Push">
         <Exec Command="docker build . -t $(ImageName):latest" />
     </Target>
 
-    <Target Name="Push" BeforeTargets="Deploy">
+    <Target Name="Push">
         <Exec Command="docker push $(ImageName):latest" />
     </Target>
 
     <Target Name="Deploy">
-        <Exec Command="rsync -zvrc --exclude=&quot;.env&quot; --exclude=&quot;nginx/ssl&quot; .docker-compose/* $(Server):~/server/free-ton-notify/" />
-        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose $(Compose) pull&quot;" />
-        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose $(Compose) up --remove-orphans -d&quot;" />
-        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose $(Compose) exec -T nginx nginx -s reload&quot;" />
-        <Exec Command="ssh $(Server) &quot;docker system prune -f&quot;" />
+        <PropertyGroup>
+            <Compose>--compatibility -f docker-compose.yaml -f docker-compose.cluster.yaml</Compose>
+        </PropertyGroup>
+        <Exec Command="rsync -zvrc --exclude=&quot;.env&quot; --exclude=&quot;nginx/ssl&quot; .docker-compose/* $(Server):$(ServerPath)" />
+        <Exec Command="ssh $(Server) &quot;cd $(ServerPath); docker-compose $(Compose) pull&quot;" />
+        <Exec Command="ssh $(Server) &quot;cd $(ServerPath); docker-compose $(Compose) up --remove-orphans -d&quot;" />
+        <Exec Command="ssh $(Server) &quot;cd $(ServerPath); docker-compose $(Compose) exec -T nginx nginx -s reload&quot;" />
+        <Exec Condition="$(ImagesPrune)" Command="ssh $(Server) &quot;docker image prune -f&quot;" />
     </Target>
 
     <ItemGroup>
