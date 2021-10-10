@@ -31,7 +31,10 @@ namespace Notifon.Server.Business.Events {
                             DecryptedMessage = decryptedResponse.Message,
                             Format = decryptFormat
                         });
-                        if (formattedResponse.Is(out Response<FormattedMessage> response)) publishMessage.Message = response.Message;
+                        if (formattedResponse.Is(out Response<FormattedMessage> response))
+                            publishMessage.Message = response.Message;
+                        else
+                            publishMessage.Message = decryptedResponse.Message;
                     }
                     else {
                         publishMessage.Message = decryptedResponse.Message;
