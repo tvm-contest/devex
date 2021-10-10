@@ -31,13 +31,8 @@ namespace Notifon.Server.Business.Events {
 
             var url = string.Format(SendMessageUrlFormat, parameters.BotToken);
             var request = new { chat_id = $"{parameters.ChatId}", text = parameters.Text };
-
-            _logger.LogTrace("Sending to {Endpoint} message {Message}", parameters.ChatId, parameters.Text);
             var response = await _httpClient.PostAsJsonAsync(url, request, cancellationToken);
             response.EnsureSuccessStatusCode();
-            var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", parameters.ChatId, parameters.Text,
-                successResponse);
         }
     }
 

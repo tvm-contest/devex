@@ -25,12 +25,8 @@ namespace Notifon.Server.Business.Events {
             var cancellationToken = context.CancellationToken;
 
             var request = new StringContent(messageText);
-            _logger.LogTrace("Sending to {Endpoint} message {Message}", endpoint.Url, messageText);
             var response = await _httpClient.PostAsync(endpoint.Url, request, cancellationToken);
             response.EnsureSuccessStatusCode();
-            var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", endpoint.Url, messageText,
-                successResponse);
         }
     }
 

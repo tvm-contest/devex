@@ -30,7 +30,9 @@ namespace Notifon.Server.Business.Events {
             await next.Send(context);
         }
 
-        public void Probe(ProbeContext context) { }
+        public void Probe(ProbeContext context) {
+            context.CreateFilterScope("decrypt");
+        }
 
         private static bool HasDecryptParameter(PublishMessage message) {
             return message.Parameters.ContainsKey("d");

@@ -41,15 +41,11 @@ namespace Notifon.Server.Business.Events {
                 KeyValuePair.Create("subject", parameters.Subject),
                 KeyValuePair.Create("text", parameters.Text)
             });
-
-            _logger.LogTrace("Sending to {Endpoint} message {Message}", parameters.To, parameters.Text);
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(AuthenticationSchemes.Basic.ToString(),
                 Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{parameters.ApiKey}")));
+
             var response = await _httpClient.PostAsync(url, request, cancellationToken);
             response.EnsureSuccessStatusCode();
-            var successResponse = await response.Content.ReadAsStringAsync(cancellationToken);
-            _logger.LogTrace("Message sent to {Endpoint} message {Message} result {Result}", parameters.To, parameters.Text,
-                successResponse);
         }
     }
 

@@ -44,6 +44,7 @@ namespace Notifon.Server.MassTransit {
                     else
                         x.UsingInMemory((context, cfg) => {
                             ConfigureContext(cfg, context);
+                            cfg.UseMessageScope(context);
                             cfg.ConfigureEndpoints(context);
                         });
                 })
@@ -55,6 +56,7 @@ namespace Notifon.Server.MassTransit {
         private static void ConfigureContext(IBusFactoryConfigurator cfg, IConfigurationServiceProvider context) {
             cfg.UseDelayedMessageScheduler();
             cfg.UsePublishFilter(typeof(PublishMessageDecryptMessageFilter<>), context);
+            cfg.UsePublishFilter(typeof(PublishMessageLoggingFilter<>), context);
             cfg.UsePrometheusMetrics();
         }
 
