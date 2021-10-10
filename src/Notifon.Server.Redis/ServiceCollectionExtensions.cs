@@ -12,7 +12,6 @@ namespace Notifon.Server.Redis {
             if (useRedis)
                 services
                     .AddSingleton<IDistributedCache, RedisCache>()
-                    .AddSingleton<IDistributedLock, RedisLock>()
                     .AddHealthChecks()
                     .Add(new HealthCheckRegistration("redis", (Func<IServiceProvider, IHealthCheck>)(sp => {
                         var redisConfiguration =
@@ -21,8 +20,7 @@ namespace Notifon.Server.Redis {
                     }), null, null, null));
             else
                 services
-                    .AddSingleton<IDistributedCache, MemoryDistributedCache>()
-                    .AddSingleton<IDistributedLock, MemoryLock>();
+                    .AddSingleton<IDistributedCache, MemoryDistributedCache>();
 
             return services;
         }

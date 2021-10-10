@@ -10,7 +10,6 @@ namespace Notifon.Server.Configuration {
             services
                 .Configure<KafkaOptions>(configuration.GetSection(Constants.KafkaOptions))
                 .Configure<RedisCacheOptions>(configuration.GetSection(Constants.RedisOptions))
-                .Configure<RedisLockOptions>(configuration.GetSection(Constants.RedisOptions))
                 .Configure<RabbitMqOptions>(configuration.GetSection(Constants.RabbitMqOptions))
                 .Configure<TelegramOptions>(configuration.GetSection(Constants.TelegramOptions))
                 .Configure<MailGunOptions>(configuration.GetSection(Constants.MailGunOptions))

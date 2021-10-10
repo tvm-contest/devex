@@ -10,23 +10,17 @@ namespace Notifon.Server.Kafka {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class KafkaMessageConsumer : IConsumer<KafkaMessage> {
         private readonly IDistributedCache _distributedCache;
-        private readonly IDistributedLock _lock;
         private readonly ILogger<KafkaMessageConsumer> _logger;
 
-        public KafkaMessageConsumer(ILogger<KafkaMessageConsumer> logger, IDistributedCache distributedCache, IDistributedLock @lock) {
+        public KafkaMessageConsumer(ILogger<KafkaMessageConsumer> logger, IDistributedCache distributedCache) {
             _logger = logger;
             _distributedCache = distributedCache;
-            _lock = @lock;
         }
 
         public async Task Consume(ConsumeContext<KafkaMessage> context) {
             var message = context.Message;
             var cacheKey = $"KafkaMessageKey:{context.GetKey<string>()}";
-            var lockKey = $"KafkaMessageLock:{context.GetKey<string>()}";
             var cancellationToken = context.CancellationToken;
-
-            // avoid consuming similar message 
-            using var @lock = await _lock.CreateLockAsync(lockKey, cancellationToken: cancellationToken);
 
             // check that this key wasn't consumed before
             var cache = await _distributedCache.GetAsync(cacheKey, cancellationToken);
