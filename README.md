@@ -102,23 +102,26 @@ via [environment variables](#Environment-variables). If no tokens were provided 
 
 ### Environment variables
 
-|        **Variable**           |                       **Description**                         |
-|-------------------------------|---------------------------------------------------------------|
-| ASPNETCORE_ENVIRONMENT        | Development, Staging, Production. Set logging levels and etc. |
-| COMING_SOON                   | Disable accepting DeBot command Default: false                |
-| TelegramOptions__BotToken     | Default token for telegram provider Default: not set          |
-| MailGunOptions__ApiKey        | Default Mailgun Api Key Default: not set                      |
-| MailGunOptions__Domain        | Default Mailgun Domain Default: not set                       |
-| MailGunOptions__From          | Default From address Default: not set                         |
-| MailGunOptions__Subject       | Default Email subject Default: not set                        |
-| RedisOptions__Configuration   | Redis configuration Default: not set                          |
-| RabbitMqOptions__Host         | RabbitMq host address Default: not set                        |
-| RabbitMqOptions__Username     | RabbitMq user name Default: not set                           |
-| RabbitMqOptions__Password     | RabbitMq password Default: not set                            |
-| ConnectionStrings__PostgreSql | PostgreSql connection string Default: not set                 |
-| RetryPolicyOptions__Count     | Retry count (0-no retries) Default: 144                       |
-| RetryPolicyOptions__Interval  | Retry interval (TimeSpan format) Default: 00:10:00            |
-| Sentry__Dsn                   | Sentry Dsn (see: [sentry.io](http://sentry.io))               |
+|           **Variable**                 |                       **Description**                         |
+|----------------------------------------|---------------------------------------------------------------|
+| ASPNETCORE_ENVIRONMENT                 | Development, Staging, Production. Set logging levels and etc. |
+| COMING_SOON                            | Disable accepting DeBot command Default: false                |
+| TelegramOptions__BotToken              | Default token for telegram provider Default: not set          |
+| MailGunOptions__ApiKey                 | Default Mailgun Api Key Default: not set                      |
+| MailGunOptions__Domain                 | Default Mailgun Domain Default: not set                       |
+| MailGunOptions__From                   | Default From address Default: not set                         |
+| MailGunOptions__Subject                | Default Email subject Default: not set                        |
+| RedisOptions__Configuration            | Redis configuration Default: not set                          |
+| RabbitMqOptions__Host                  | RabbitMq host address Default: not set                        |
+| RabbitMqOptions__Username              | RabbitMq user name Default: not set                           |
+| RabbitMqOptions__Password              | RabbitMq password Default: not set                            |
+| ConnectionStrings__PostgreSql          | PostgreSql connection string Default: not set                 |
+| RetryPolicyOptions__Count              | Retry count (0-no retries) Default: 144                       |
+| RetryPolicyOptions__Interval           | Retry interval (TimeSpan format) Default: 00:10:00            |
+| Sentry__Dsn                            | Sentry Dsn (see: [sentry.io](http://sentry.io))               |
+| TonClientNetwork__Endpoints__0         | net1.ton.dev Set free ton network endpoints                   |
+| TonClientNetwork__Endpoints__1         |   - Incriminate number to add another endpoints               |
+| TonClientNetwork__MessageRetriesCount  | The number of automatic message processing retries            |
 
 ## Deployment
 
