@@ -8,7 +8,7 @@ using Notifon.Server.Database.Models;
 namespace Notifon.Server {
     public static class MenuHelper {
         public const string CommonParameters =
-            "Decrypt parameter(set secret key to use decryption):\n" +
+            "Common decrypt parameter(set secret key for decryption):\n" +
             "-d decrypt message and send as json\n" +
             "-d:comment decrypt comment for internal or send json body for external\n";
 
@@ -49,7 +49,7 @@ namespace Notifon.Server {
 
         public static readonly string HelpCommand =
             "❓ Available commands:\n" +
-            CommandHelpers.CommandDescriptions + "\n" +
+            CommandHelpers.CommandDescriptions + "\n\n" +
             CommonParameters + "\n" +
             EndpointExamples + "\n" +
             ContactUs;
