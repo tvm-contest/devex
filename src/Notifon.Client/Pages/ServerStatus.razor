@@ -6,7 +6,7 @@
     <MudItem xs="10" sm="9" md="6">
         <MudPaper Class="d-flex flex-column" Outlined="true" Height="300px" Width="300px">
             <MudList Clickable="@false" Dense="@true">
-                @if (ServerStatus == null) {
+                @if (Status == null) {
                     for (var i = 0; i < 3; i++) {
                         <MudListItem>
                             <div class="d-flex flex-row">
@@ -19,10 +19,10 @@
                 }
                 else {
                     <MudListItem Icon="@Icons.Rounded.People" IconSize="@Size.Small">
-                        <MudText>Registered users: @ServerStatus.UserCount</MudText>
+                        <MudText>Registered users: @Status.UserCount</MudText>
                     </MudListItem>
                     <MudListItem Icon="@Icons.Rounded.People" IconSize="@Size.Small">
-                        <MudText>Registered endpoints: @ServerStatus.EndpointCount</MudText>
+                        <MudText>Registered endpoints: @Status.EndpointCount</MudText>
                     </MudListItem>
                     <MudListItem>
                         <div class="d-flex flex-row">
@@ -41,9 +41,9 @@
 @code{
 
     protected override async Task OnInitializedAsync() {
-        ServerStatus = await _apiStatusClient.GetServerStatusAsync();
+        Status = await _apiStatusClient.GetServerStatusAsync();
     }
 
-    private GetServerStatusResult ServerStatus { get; set; }
+    private GetServerStatusResult Status { get; set; }
 
 }
