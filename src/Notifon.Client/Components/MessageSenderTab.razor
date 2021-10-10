@@ -1,6 +1,6 @@
 ﻿@using System.Text.RegularExpressions
 <MudGrid>
-    <MudItem xs="12" md="6">
+    <MudItem xs="12" md="10">
         <MudCard Style="max-width: 700px">
             <MudCardContent>
                 <MudForm @ref="Form" @bind-IsValid="@IsValidForm" ValidationDelay="500">
@@ -27,7 +27,7 @@
                 @if (Balance != null) {
                     <MudText GutterBottom="false">Balance: @string.Format($"{Balance:##.00}")💎</MudText>
                 }
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!IsValidForm || SendingMessage)" OnClick="@SendMessage" Class="ml-auto">@SendMessageButton</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="SendButtonDisabled" OnClick="@SendMessage" Class="ml-auto">@SendMessageButton</MudButton>
             </MudCardActions>
         </MudCard>
     </MudItem>
@@ -52,7 +52,8 @@
 
     MudForm Form { get; set; }
     bool IsValidForm { get; set; }
-    bool SendingMessage { get; set; }
+    bool SendingInProgress { get; set; }
+    bool SendButtonDisabled => !Form.IsValid || SendingInProgress;
     decimal? Balance { get; set; }
     private string AddressByPhrase { get; set; }
 
@@ -61,7 +62,7 @@
     private MudTextField<string> MessageField { get; set; }
     private bool SaveData { get; set; }
 
-    string SendMessageButton => SendingMessage ? "Sending..." : "Send Message";
+    string SendMessageButton => SendingInProgress ? "Sending..." : "Send Message";
 
     static Regex _addressRegex = new("^(0|(-1)):[a-zA-Z0-9]{64}$", RegexOptions.Compiled);
 
@@ -79,6 +80,15 @@
         if (string.IsNullOrWhiteSpace(phrase)) {
             return "Seed phrase is required!";
         }
+
+        phrase = Regex.Replace(phrase.Replace('-', ' '), " {2,}", " ");
+
+    // var newPhrase = Regex.Replace(phrase.Replace('-', ' '), " {2,}", " ");
+    // if (!newPhrase.Equals(phrase)) {
+    //     await SetFieldValue(PhraseField, phrase);
+    //     return null;
+    // }
+
         var deployResult = await FreeTon.DeployAsync(new FreeTonDeploy { Phrase = phrase });
 
         if (!deployResult.Success) return deployResult.Error;
@@ -89,9 +99,9 @@
     }
 
     private async Task SendMessage() {
+        SendingInProgress = true;
         await Form.Validate();
         if (Form.IsValid) {
-            SendingMessage = true;
             await SaveDataMethod();
             var sendResult = await FreeTon.SendMessageAsync(new FreeTonSendMessage {
                 Message = MessageField.Value,
@@ -101,7 +111,7 @@
 
             if (!sendResult.Success) {
                 await DialogService.ShowMessageBox("Error", sendResult.Error, options: new DialogOptions { CloseButton = true, FullWidth = true });
-                SendingMessage = false;
+                SendingInProgress = false;
                 return;
             }
 
@@ -109,8 +119,8 @@
             DialogService.Show<DialogMessagesSent>("Messages sent", new DialogParameters { { "Messages", sendResult.Messages } }, new DialogOptions {
                 MaxWidth = MaxWidth.False
             });
-            SendingMessage = false;
         }
+        SendingInProgress = false;
     }
 
     private async Task SaveDataMethod() {
