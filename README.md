@@ -92,6 +92,13 @@ with `RetryPolicyOptions__Count` and `RetryPolicyOptions__Interval` variables.
 Notifon is a scalable application and can be run on as many replicas as you like. See `docker-compose.cluster.yaml` and try clustered
 instance `docker-compose -f docker-compose.yaml -f docker-compose.cluster.yaml up -d`
 
+### Endpoint configuration
+
+As a general rule services require token and another props to accept message. The Notifon app is able to deliver messages to various
+endpoints with two main approaches. First one is using user tokens which provided as endpoint parameters during registration in the
+Notification DeBot. And second, if user tokens weren't provided used application tokens, can be set
+via [environment variables](#Environment-variables). If no tokens were provided at all, then messages will not be delivered.
+
 ### Environment variables
 
 |        **Variable**           |                       **Description**                         |
