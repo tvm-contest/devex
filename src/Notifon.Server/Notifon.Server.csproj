@@ -34,13 +34,14 @@
 
     <ItemGroup>
         <Folder Include="App_Data" />
-        <Folder Include="_contracts" />
     </ItemGroup>
 
     <ItemGroup>
         <Content Update="appsettings.*.json">
             <DependentUpon>appsettings.json</DependentUpon>
         </Content>
+        <Content Remove="_contracts\*" />
+        <Content Include="_contracts\*" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>
