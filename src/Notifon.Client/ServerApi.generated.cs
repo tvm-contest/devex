@@ -291,7 +291,7 @@ namespace Notifon.Client
                 throw new System.ArgumentNullException("message");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append("test-consumer/{userId}");
+            urlBuilder_.Append("test/{userId}");
             urlBuilder_.Replace("{userId}", System.Uri.EscapeDataString(ConvertToString(userId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;

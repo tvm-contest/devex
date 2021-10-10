@@ -6,7 +6,7 @@ using Notifon.Server.SignalR;
 
 namespace Notifon.Server.Controllers {
     [ApiController]
-    [Route("test-consumer/{userId}")]
+    [Route("test/{userId}")]
     public class TestConsumerController : ControllerBase {
         private readonly IHubContext<SignalRHub> _signalRHub;
 
