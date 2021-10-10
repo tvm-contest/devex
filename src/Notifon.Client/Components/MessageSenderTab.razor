@@ -78,19 +78,17 @@
 
     private async Task<string> SeedPhraseValidation(string phrase) {
         if (string.IsNullOrWhiteSpace(phrase)) {
+            Balance = null;
+            AddressByPhrase = null;
             return "Seed phrase is required!";
         }
 
-        phrase = Regex.Replace(phrase.Replace('-', ' '), " {2,}", " ");
-
-    // var newPhrase = Regex.Replace(phrase.Replace('-', ' '), " {2,}", " ");
-    // if (!newPhrase.Equals(phrase)) {
-    //     await SetFieldValue(PhraseField, phrase);
-    //     return null;
-    // }
+        if (phrase.Contains("  ") || phrase.Contains('-')) {
+            phrase = Regex.Replace(phrase.Replace('-', ' '), " {2,}", " ");
+            await SetFieldValue(PhraseField, phrase);
+        }
 
         var deployResult = await FreeTon.DeployAsync(new FreeTonDeploy { Phrase = phrase });
-
         if (!deployResult.Success) return deployResult.Error;
         AddressByPhrase = $"Your address: {deployResult.Address}";
         Balance = deployResult.Balance;
