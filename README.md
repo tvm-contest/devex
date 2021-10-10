@@ -37,7 +37,7 @@ Free TON Notification Provider
 
 Yor can ask https://t.me/hi_artem or https://t.me/EkaterinaPantaz to register your provider.
 
-> ℹ️ If you run application just for local development or testing you can ask register http://localhost/endpoint as endpoint to avoid port forwarding and ssl generation etc.
+> ℹ️ If you run application just for local development or testing you may ask register http://localhost/endpoint as endpoint to avoid port forwarding and ssl generation etc.
 
 #### `.env`:
 
