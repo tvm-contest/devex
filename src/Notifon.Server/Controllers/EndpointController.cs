@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Notifon.Server.Business.Requests.Endpoint;
+using Notifon.Server.Database.Models;
 using Notifon.Server.Utils;
 
 namespace Notifon.Server.Controllers {
@@ -36,16 +38,18 @@ namespace Notifon.Server.Controllers {
                     .GetResponse<SubmitClientSuccess, SubmitClientResult>(new { UserId = hash, Data = data }, cancellationToken);
 
                 if (submitResult.Is(out Response<SubmitClientSuccess> submitClientSuccess))
-                    return Ok(MenuConstants.FormatSubmitClientSuccessMessage(submitClientSuccess.Message));
+                    return Ok(MenuHelper.FormatSubmitClientSuccessMessage(submitClientSuccess.Message));
 
                 if (submitResult.Is(out Response<SubmitClientResult> result))
                     return result.Message.ResultType switch {
                         SubmitClientResultType.OkWithMessage => Ok(result.Message.ResultValue),
-                        SubmitClientResultType.ComingSoon => Ok(MenuConstants.ComingSoon),
-                        SubmitClientResultType.NotSupportedEndpointFormat => Ok(MenuConstants.NotSupportedEndpointFormat),
-                        SubmitClientResultType.AccessDenied => Ok(MenuConstants.AccessDenied),
-                        SubmitClientResultType.NoEndpointsRegistered => Ok(MenuConstants.NoEndpointsRegistered),
-                        SubmitClientResultType.HelpCommand => Ok(MenuConstants.HelpCommand),
+                        SubmitClientResultType.ComingSoon => Ok(MenuHelper.ComingSoon),
+                        SubmitClientResultType.NotSupportedEndpointFormat => Ok(MenuHelper.NotSupportedEndpointFormat),
+                        SubmitClientResultType.AccessDenied => Ok(MenuHelper.AccessDenied),
+                        SubmitClientResultType.NoEndpointsRegistered => Ok(MenuHelper.NoEndpointsRegistered),
+                        SubmitClientResultType.HelpCommand => Ok(MenuHelper.HelpCommand),
+                        SubmitClientResultType.ListEndpoints => Ok(
+                            MenuHelper.ListEndpoints((List<EndpointModel>)result.Message.ResultValue)),
                         _ => throw new ArgumentOutOfRangeException()
                     };
             }
@@ -53,7 +57,7 @@ namespace Notifon.Server.Controllers {
                 _logger.LogError(ex, "Something went wrong {UserId}", hash);
             }
 
-            return Ok(string.Format(MenuConstants.SomethingWentWrong, hash));
+            return Ok(string.Format(MenuHelper.SomethingWentWrong, hash));
         }
 
         public class EndpointParameters {

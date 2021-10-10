@@ -201,7 +201,7 @@ namespace Notifon.Server.Business.Requests.Endpoint {
 
             if (endpoints.Count == 0) return new { ResultType = SubmitClientResultType.NoEndpointsRegistered };
 
-            return new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = endpoints };
+            return new { ResultType = SubmitClientResultType.ListEndpoints, ResultValue = endpoints };
         }
 
         private async Task<object> TestCommand(string userId,

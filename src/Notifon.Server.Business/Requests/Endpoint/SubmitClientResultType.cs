@@ -5,6 +5,7 @@ namespace Notifon.Server.Business.Requests.Endpoint {
         AccessDenied,
         OkWithMessage,
         NoEndpointsRegistered,
-        HelpCommand
+        HelpCommand,
+        ListEndpoints
     }
 }

@@ -1,9 +1,12 @@
-﻿using Notifon.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Notifon.Common;
 using Notifon.Server.Business.Models;
 using Notifon.Server.Business.Requests.Endpoint;
+using Notifon.Server.Database.Models;
 
 namespace Notifon.Server {
-    public static class MenuConstants {
+    public static class MenuHelper {
         public const string EndpointExamples =
             "❗ Supported endpoints and parameters:\n" +
             "HTTP endpoint:\n" +
@@ -72,6 +75,16 @@ namespace Notifon.Server {
                    $"Notifications will be sent to {success.Endpoint}" +
                    (success.IsTest ? "(can be open in web browser)" : null) + "\n" +
                    "Now your can set rules for catching blockchain messages 🖐️";
+        }
+
+        public static string ListEndpoints(IEnumerable<EndpointModel> endpoints) {
+            var endpointStrings = endpoints.Select(e => $"{e.Endpoint} {GetEndpointParametersString(e.Parameters)}");
+            return "Registered endpoints:\n" +
+                   string.Join('\n', endpointStrings);
+        }
+
+        private static string GetEndpointParametersString(Dictionary<string, string> parameters) {
+            return string.Join(' ', parameters.Select(p => $"-{p.Key}{(p.Value == null ? null : ':')}{p.Value}"));
         }
     }
 }
