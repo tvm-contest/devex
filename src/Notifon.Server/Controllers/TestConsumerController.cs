@@ -23,12 +23,6 @@ namespace Notifon.Server.Controllers {
             CancellationToken cancellationToken) {
             _logger.LogTrace("Sending to {Consumer} message {Message}", userId, message);
 
-            // await _publishEndpoint.Publish<User<SignalRHub>>(new
-            // {
-            //     UserId = consumer,
-            //     Messages = _protocols.ToProtocolDictionary("ReceiveMessage", new object[] { message+'-'+consumer })
-            // });
-
             await _signalRHub.Clients.User(userId).SendAsync("ReceiveMessage", message, cancellationToken);
 
             return Ok(message);

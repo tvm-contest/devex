@@ -1,7 +1,7 @@
 namespace Notifon.Server.Business.Requests.Endpoint {
     public enum SubmitClientResultType {
         ComingSoon,
-        EndpointValidationError,
+        NotSupportedEndpointFormat,
         AccessDenied,
         OkWithMessage,
         NoEndpointsRegistered,

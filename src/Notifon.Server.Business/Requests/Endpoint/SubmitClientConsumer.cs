@@ -85,28 +85,35 @@ namespace Notifon.Server.Business.Requests.Endpoint {
         private static bool TryGetEndpoint(IReadOnlyDictionary<string, string?> parameters, out string endpointId,
             out EndpointType endpointType, out object? message) {
             endpointType = EndpointType.Http;
+            message = null;
 
             if (!parameters.TryGetValue("mainParam", out endpointId!) || string.IsNullOrWhiteSpace(endpointId)) {
                 message = new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = "No endpoint provided" };
                 return false;
             }
 
-            if (EndpointValidationHelper.IsHttpEndpoint(endpointId)) {
-                endpointType = EndpointType.Http;
-            }
-            else if (EndpointValidationHelper.TryGetTelegramEndpoint(endpointId, out _)) {
-                endpointType = EndpointType.Telegram;
-            }
-            else if (EndpointValidationHelper.IsMailgunEndpoint(endpointId)) {
-                endpointType = EndpointType.Mailgun;
-            }
-            else {
-                message = new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = "No endpoint provided" };
+            if (CheckAccess(endpointId)) {
+                message = new { ResultType = SubmitClientResultType.AccessDenied };
                 return false;
             }
 
-            message = null;
-            return true;
+            if (EndpointValidationHelper.IsHttpEndpoint(endpointId)) {
+                endpointType = EndpointType.Http;
+                return true;
+            }
+
+            if (EndpointValidationHelper.TryGetTelegramChatId(endpointId, out _)) {
+                endpointType = EndpointType.Telegram;
+                return true;
+            }
+
+            if (EndpointValidationHelper.IsMailgunEndpoint(endpointId)) {
+                endpointType = EndpointType.Mailgun;
+                return true;
+            }
+
+            message = new { ResultType = SubmitClientResultType.NotSupportedEndpointFormat };
+            return false;
         }
 
         private async Task<(bool, EndpointModel endpoint)> TryAddEndpoint(string endpointId, string userId, EndpointType endpointType,
@@ -133,6 +140,8 @@ namespace Notifon.Server.Business.Requests.Endpoint {
             CancellationToken cancellationToken) {
             if (!parameters.TryGetValue("mainParam", out var endpointKey) || string.IsNullOrWhiteSpace(endpointKey))
                 return new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = "No endpoint to delete" };
+
+            if (endpointKey.Equals("test", StringComparison.OrdinalIgnoreCase)) endpointKey = ComposeTestEndpointKey(userId);
 
             var endpoint = await _db.Endpoints.FindAsync(new object[] { endpointKey, userId }, cancellationToken);
             if (endpoint == null) return new { ResultType = SubmitClientResultType.OkWithMessage, ResultValue = "Endpoint not found" };
@@ -198,9 +207,13 @@ namespace Notifon.Server.Business.Requests.Endpoint {
         private async Task<object> TestCommand(string userId,
             Dictionary<string, string?> parameters,
             CancellationToken cancellationToken) {
-            var endpoint = Url.Combine(ProjectConstants.ServerUrl, "test-consumer", userId[..12]);
+            var endpoint = ComposeTestEndpointKey(userId);
             await AddOrUpdateEndpoint(userId, endpoint, EndpointType.Http, parameters, cancellationToken);
             return new { Endpoint = endpoint, IsTest = true };
+        }
+
+        private static string ComposeTestEndpointKey(string userId) {
+            return Url.Combine(ProjectConstants.ServerUrl, "test-consumer", userId[..12]);
         }
 
         private async Task AddOrUpdateEndpoint(string userId, string endpointId, EndpointType endpointType,
@@ -218,10 +231,8 @@ namespace Notifon.Server.Business.Requests.Endpoint {
             await _db.SaveChangesAsync(cancellationToken);
         }
 
-        private static async Task<bool> DontAllowUseServerUrl(ConsumeContext context, string endpoint) {
-            if (!endpoint.StartsWith(ProjectConstants.ServerUrl, StringComparison.OrdinalIgnoreCase)) return false;
-            await context.RespondAsync<SubmitClientResult>(new { ResultType = SubmitClientResultType.AccessDenied });
-            return true;
+        private static bool CheckAccess(string endpoint) {
+            return endpoint.StartsWith(ProjectConstants.ServerUrl, StringComparison.OrdinalIgnoreCase);
         }
 
         private async Task<bool> ComingSoon(ConsumeContext context) {

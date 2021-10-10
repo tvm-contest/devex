@@ -11,7 +11,7 @@ namespace Notifon.Server.Business.Models {
                     { type = commandType, description = commandType.GetAttributeOfType<CommandDescriptionAttribute>() })
                 .ToDictionary(arg => arg.type, arg => arg.description);
 
-        public static readonly string CommandDescription =
+        public static readonly string CommandDescriptions =
             string.Join('\n',
                 DescriptionByCommandType
                     .Select(kv => {
