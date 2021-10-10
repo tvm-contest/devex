@@ -1,33 +1,37 @@
-﻿<MudCard Style="width: 700px">
-    <MudCardContent>
-        <MudForm @ref="Form" @bind-IsValid="@IsValidForm">
-            <MudTextField T="string" Label="Seed phrase"
-                          HelperText="Input seed phrase of your multisig wallet"
-                          Required="true" RequiredError="Seed phrase is required!"
-                          Validation="@(new Func<string, IEnumerable<string>>(SeedPhraseValidation))"
-                          @ref="PhraseField"/>
+﻿@using System.Text.RegularExpressions
+<MudGrid>
+    <MudItem xs="12" md="6">
+        <MudCard Style="max-width: 700px">
+            <MudCardContent>
+                <MudForm @ref="Form" @bind-IsValid="@IsValidForm" ValidationDelay="500">
+                    <MudTextField T="string" Label="Seed phrase"
+                                  HelperText="@(AddressByPhrase ?? "Input seed phrase of your multisig wallet")"
+                                  Required="true" RequiredError="Seed phrase is required!"
+                                  Validation="@(new Func<string, Task<string>>(SeedPhraseValidation))"
+                                  @ref="PhraseField"/>
 
-            <MudTextField T="string" Label="Receiver address"
-                          HelperText="The address to send the message"
-                          Required="true" RequiredError="Recipient address is required!"
-                          Validation="@(new Func<string, IEnumerable<string>>(RecipientValidation))"
-                          @ref="RecipientField"/>
+                    <MudTextField T="string" Label="Receiver address"
+                                  HelperText="The address to send the message"
+                                  Required="true" RequiredError="Recipient address is required!"
+                                  Validation="@(new Func<string, IEnumerable<string>>(RecipientValidation))"
+                                  @ref="RecipientField"/>
 
-            <MudTextField T="string" Label="Message"
-                          Required="true" RequiredError="Message is required!"
-                          @ref="MessageField"/>
+                    <MudTextField T="string" Label="Message"
+                                  Required="true" RequiredError="Message is required!"
+                                  @ref="MessageField"/>
 
-            <MudCheckBox T="bool" @bind-Checked="@SaveData" Class="ml-n2" Label="Save data?"/>
-        </MudForm>
-    </MudCardContent>
-    <MudCardActions>
-        @if (Balance != null) {
-            <MudText GutterBottom="false">Balance: @string.Format($"{Balance:##.00}")💎</MudText>
-        }
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!IsValidForm || SendingMessage)" OnClick="@SendMessage" Class="ml-auto">@SendMessageButton</MudButton>
-    </MudCardActions>
-</MudCard>
-
+                    <MudCheckBox T="bool" @bind-Checked="@SaveData" Class="ml-n2" Label="Save data?"/>
+                </MudForm>
+            </MudCardContent>
+            <MudCardActions>
+                @if (Balance != null) {
+                    <MudText GutterBottom="false">Balance: @string.Format($"{Balance:##.00}")💎</MudText>
+                }
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!IsValidForm || SendingMessage)" OnClick="@SendMessage" Class="ml-auto">@SendMessageButton</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+</MudGrid>
 
 @code {
 
@@ -50,6 +54,7 @@
     bool IsValidForm { get; set; }
     bool SendingMessage { get; set; }
     decimal? Balance { get; set; }
+    private string AddressByPhrase { get; set; }
 
     private MudTextField<string> PhraseField { get; set; }
     private MudTextField<string> RecipientField { get; set; }
@@ -58,16 +63,29 @@
 
     string SendMessageButton => SendingMessage ? "Sending..." : "Send Message";
 
+    static Regex _addressRegex = new("^(0|(-1)):[a-zA-Z0-9]{64}$", RegexOptions.Compiled);
+
     private IEnumerable<string> RecipientValidation(string address) {
         if (string.IsNullOrWhiteSpace(address)) {
             yield return "Receiver address is required!";
+            yield break;
+        }
+        if (!_addressRegex.IsMatch(address)) {
+            yield return "Not valid address!";
         }
     }
 
-    private IEnumerable<string> SeedPhraseValidation(string seedPhrase) {
-        if (string.IsNullOrWhiteSpace(seedPhrase)) {
-            yield return "Seed phrase is required!";
+    private async Task<string> SeedPhraseValidation(string phrase) {
+        if (string.IsNullOrWhiteSpace(phrase)) {
+            return "Seed phrase is required!";
         }
+        var deployResult = await FreeTon.DeployAsync(new FreeTonDeploy { Phrase = phrase });
+
+        if (!deployResult.Success) return deployResult.Error;
+        AddressByPhrase = $"Your address: {deployResult.Address}";
+        Balance = deployResult.Balance;
+        ShouldRender();
+        return null;
     }
 
     private async Task SendMessage() {
