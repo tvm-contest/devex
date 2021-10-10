@@ -51,7 +51,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 ### Run from sources
 
-> 💡 Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly
+> 💡 Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly after restarting
 
 - Make sure that .Net 5.0 is installed (https://dotnet.microsoft.com/download)
 - Download or clone repo https://github.com/ton-actions/free-ton-http-notification-provider
@@ -62,7 +62,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 ### Docker
 
-> 💡 Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly
+> 💡 Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly after restarting
 
 - Make sure that Docker Engine is installed and started (https://docs.docker.com/engine/install/)
 - Create [minimal .env](#env) file
