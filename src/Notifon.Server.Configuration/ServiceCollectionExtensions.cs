@@ -1,8 +1,10 @@
-﻿using ch1seL.TonNet.Client;
+﻿using System;
+using ch1seL.TonNet.Client;
 using ch1seL.TonNet.Client.Models;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Notifon.Server.Configuration.Options;
 
 namespace Notifon.Server.Configuration {
@@ -18,7 +20,11 @@ namespace Notifon.Server.Configuration {
                 .Configure<MailGunOptions>(configuration.GetSection(Sections.MailGun))
                 .Configure<RetryPolicyOptions>(configuration.GetSection(Sections.RetryPolicy))
                 .Configure<TonClientOptions>(options =>
-                    options.Network = configuration.GetSection(Sections.TonClientNetwork).Get<NetworkConfig>());
+                    options.Network = configuration.GetSection(Sections.TonClientNetwork).Get<NetworkConfig>())
+                .Configure<HealthCheckPublisherOptions>(options => {
+                    options.Delay = TimeSpan.FromSeconds(2);
+                    options.Predicate = check => check.Tags.Contains("ready");
+                });
             return services;
         }
     }

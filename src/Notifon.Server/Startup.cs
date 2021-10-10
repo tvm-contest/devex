@@ -95,10 +95,10 @@ namespace Notifon.Server {
                     endpoints.MapControllers();
                     endpoints.MapHub<SignalRHub>("/signalr");
                     endpoints.MapFallbackToFile("index.html");
-                    endpoints.MapHealthChecks("/health");
                     endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions {
                         Predicate = check => check.Tags.Contains("ready")
                     });
+                    endpoints.MapHealthChecks("/health/live", new HealthCheckOptions());
                     endpoints.MapMetrics();
                 });
         }
