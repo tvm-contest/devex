@@ -23,8 +23,7 @@ namespace Notifon.Client.Storage {
 
         public async Task<IReadOnlyCollection<MessageInfo>> Push(MessageInfo messageInfo) {
             return await Update(list => {
-                if (!list.Exists(info => info.Message == messageInfo.Message))
-                    list.Insert(0, messageInfo);
+                list.Insert(0, messageInfo);
                 return list;
             });
         }
