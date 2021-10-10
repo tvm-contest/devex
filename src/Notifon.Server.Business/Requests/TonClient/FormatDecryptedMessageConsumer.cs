@@ -49,7 +49,7 @@ namespace Notifon.Server.Business.Requests.TonClient {
                     }, cancellationToken);
 
                     text = isInternal
-                        ? messageBody.Value.Get<string>("body").HexToString()
+                        ? messageBody.Value.Get<string>("comment").HexToString()
                         : messageBody.Value.ToString();
                 }
 
