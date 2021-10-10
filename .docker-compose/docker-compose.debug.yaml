@@ -2,9 +2,14 @@ version: '3.3'
 
 services:
   nginx:
+    image: docker.io/bitnami/nginx:1.21
+    ports:
+      - '80:8080'
+      - '443:8443'
     volumes:
       - ./nginx/conf-debug/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
       - ./nginx/ssl:/opt/bitnami/nginx/ssl
+    restart: unless-stopped
   redis:
     ports:
       - '6379:6379'

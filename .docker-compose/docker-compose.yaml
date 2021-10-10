@@ -1,14 +1,11 @@
 version: '3.3'
 
 services:
-  nginx:
-    image: docker.io/bitnami/nginx:1.21
-    ports:
-      - '80:8080'
-      - '443:8443'
-    volumes:
-      - ./nginx/conf/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
-      - ./nginx/ssl:/opt/bitnami/nginx/ssl
+  app:
+    image: ghcr.io/ch1sel/free-ton-notify:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    env_file: .env
     restart: unless-stopped
   redis:
     image: docker.io/bitnami/redis:6.2
@@ -25,9 +22,6 @@ services:
       - 'RABBITMQ_DISK_FREE_RELATIVE_LIMIT=0.1'
     volumes:
       - rabbitmq_data:/bitnami
-    # shared to debug
-    ports:
-      - '15672:15672'
     restart: unless-stopped
   postgresql:
     image: docker.io/bitnami/postgresql:13.4.0-debian-10-r48

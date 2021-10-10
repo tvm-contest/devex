@@ -1,28 +1,11 @@
 version: '3.3'
 
 services:
-  app1:
+  app:
     build: ..
     environment:
       - 'ASPNETCORE_ENVIRONMENT=Staging'
-      - 'Serilog__MinimumLevel__Override__Notifon=Verbose'
-    env_file: secret.env
-    extra_hosts:
-      - "notify-contest.ddns.net:192.168.31.200"
-  app2:
-    build: ..
-    environment:
-      - 'ASPNETCORE_ENVIRONMENT=Staging'
-      - 'Serilog__MinimumLevel__Override__Notifon=Verbose'
-    env_file: secret.env
-    extra_hosts:
-      - "notify-contest.ddns.net:192.168.31.200"
-  app3:
-    build: ..
-    environment:
-      - 'ASPNETCORE_ENVIRONMENT=Staging'
-      - 'Serilog__MinimumLevel__Override__Notifon=Verbose'
-    env_file: secret.env
+    env_file: .env
     extra_hosts:
       - "notify-contest.ddns.net:192.168.31.200"
   redis:
