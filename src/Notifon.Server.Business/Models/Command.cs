@@ -43,17 +43,25 @@ namespace Notifon.Server.Business.Models {
         }
 
         private static Dictionary<string, string?> GetParameters(string data) {
-            return data.Split(' ')
-                .Where(p => !string.IsNullOrWhiteSpace(p))
-                .Select(p => {
-                    if (!p.StartsWith('-'))
-                        return new { key = "mainParam", value = (string?)p };
-                    var pSplit = p.Split(':', 2);
-                    var key = pSplit[0].TrimStart('-');
-                    var value = pSplit.Length == 2 ? pSplit[1] : null;
-                    return new { key, value };
-                })
-                .ToDictionary(arg => arg.key, arg => arg.value);
+            Dictionary<string, string?> parameters = new();
+
+            foreach (var p in data.Split(' ', StringSplitOptions.RemoveEmptyEntries)) {
+                string key;
+                string? value;
+                if (!p.StartsWith('-')) {
+                    key = "mainParam";
+                    value = p;
+                }
+                else {
+                    string[] pSplit = p.Split(':', 2);
+                    key = pSplit[0].TrimStart('-');
+                    value = pSplit.Length == 2 ? pSplit[1] : null;
+                }
+
+                parameters.TryAdd(key, value);
+            }
+
+            return parameters;
         }
 
         private static CommandType GetCommandType(string data) {
