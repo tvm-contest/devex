@@ -26,13 +26,12 @@ namespace Notifon.Server.Business.Requests.TonClient {
         }
 
         public async Task Consume(ConsumeContext<FormatDecryptedMessage> context) {
-            var message = context.Message.Message;
+            var message = context.Message.DecryptedMessage;
             var format = context.Message.Format;
             var cancellationToken = context.CancellationToken;
 
-            var msg = JsonDocument.Parse(message.Text).RootElement;
-
             if (format.Equals("comment", StringComparison.OrdinalIgnoreCase)) {
+                var msg = JsonDocument.Parse(message.Text).RootElement;
                 var isInternal = msg.Get<int>("msg_type") == 0;
 
                 var abi = isInternal
@@ -41,7 +40,7 @@ namespace Notifon.Server.Business.Requests.TonClient {
 
                 string text;
                 if (msg.Get<string>("body") == EmptyBody) {
-                    text = "<Empty body>";
+                    text = "<Empty comment>";
                 }
                 else {
                     var messageBody = await _tonClient.Abi.DecodeMessage(new ParamsOfDecodeMessage {
@@ -54,8 +53,11 @@ namespace Notifon.Server.Business.Requests.TonClient {
                         : messageBody.Value.ToString();
                 }
 
-                await context.RespondAsync(new FormattedMessage { Text = text });
+                await context.RespondAsync<FormattedMessage>(new { Text = text });
+                return;
             }
+
+            await context.RespondAsync<DummyResponse>(new { });
         }
     }
 }

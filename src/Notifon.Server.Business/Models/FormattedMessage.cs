@@ -3,6 +3,6 @@
 namespace Notifon.Server.Business.Models {
     public class FormattedMessage : SubscriptionMessage {
         public string Text { get; init; }
-        public SubscriptionMessageType MessageType { get; } = SubscriptionMessageType.DecryptedFormatted;
+        public SubscriptionMessageType MessageType => SubscriptionMessageType.DecryptedFormatted;
     }
 }

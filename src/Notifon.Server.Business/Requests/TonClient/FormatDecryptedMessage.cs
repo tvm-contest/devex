@@ -2,7 +2,7 @@
 
 namespace Notifon.Server.Business.Requests.TonClient {
     public interface FormatDecryptedMessage {
-        DecryptedMessage Message { get; }
+        DecryptedMessage DecryptedMessage { get; }
         string Format { get; }
     }
 }

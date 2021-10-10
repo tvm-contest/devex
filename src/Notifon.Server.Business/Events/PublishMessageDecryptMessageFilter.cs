@@ -25,12 +25,13 @@ namespace Notifon.Server.Business.Events {
                         EncryptedMessage = encryptedMessage,
                         SecretKey = secretKey
                     });
+
                     if (decryptFormat != null) {
-                        var formattedResponse = await _formatMessageClient.GetResponse<FormattedMessage>(new {
-                            decryptedResponse.Message,
+                        var formattedResponse = await _formatMessageClient.GetResponse<FormattedMessage, DummyResponse>(new {
+                            DecryptedMessage = decryptedResponse.Message,
                             Format = decryptFormat
                         });
-                        publishMessage.Message = formattedResponse.Message;
+                        if (formattedResponse.Is(out Response<FormattedMessage> response)) publishMessage.Message = response.Message;
                     }
                     else {
                         publishMessage.Message = decryptedResponse.Message;
