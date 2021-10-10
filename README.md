@@ -9,7 +9,9 @@ Free TON Notification Provider
 
 ## About
 
-This is an application that provides notifications transmission via the HTTP, Telegram, Email.
+This is an application that provides messages transmission via the HTTP, Telegram, Email.
+
+---
 
 ## Quick start
 
@@ -39,7 +41,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 - Make sure that .Net 5.0 is installed (https://dotnet.microsoft.com/download)
 - Download or clone repo https://github.com/ton-actions/free-ton-http-notification-provider
-- Go to the repository directory and create minimal `.env` file
+- Go to the repository directory and create [Link to Header](#the-header) `.env` file
 - Exec `dotnet run --project .\src\Notifon.Server --urls=http://localhost/`
 - Application will be started at http://localhost and DeBot endpoint is http://localhost/endpoint
 - Configure port forwarding and ssl as needed
@@ -49,7 +51,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 > ℹ️ Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly
 
 - Make sure that Docker Engine is installed and started (https://docs.docker.com/engine/install/)
-- Create minimal `.env` file
+- Create [minimal](#env) `.env` file
 - Exec `docker run --rm --name notifon --env-file=.env -p 80:80 ghcr.io/ch1sel/free-ton-notify:latest`
 
 ### Docker compose (Production-ready solution)
@@ -64,6 +66,8 @@ Download [docker-compose.yaml](https://raw.githubusercontent.com/ch1seL/free-ton
 - Create minimal `.env` file
 - Exec `docker-compose up -d`
 
+---
+
 ## Advanced
 
 ### Scaling
@@ -75,9 +79,11 @@ instance:
 docker-compose -f docker-compose.yaml -f docker-compose.cluster.yaml up -d
 ```    
 
-### EF Core Migrations
-
 ---
+
+## Development
+
+### EF Core Migrations
 
 #### Add migration:
 
