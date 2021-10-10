@@ -3,8 +3,6 @@ version: '3.3'
 services:
   app:
     build: ..
-    environment:
-      - 'ASPNETCORE_ENVIRONMENT=Staging'
     env_file: .env
     extra_hosts:
       - "notify-contest.ddns.net:192.168.31.200"

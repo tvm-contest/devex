@@ -2,9 +2,11 @@ version: '3.3'
 
 services:
   app:
+    deploy:
+      replicas: 0
+  app1:
     image: ghcr.io/ch1sel/free-ton-notify:latest
     env_file: .env
-    ports: [ ]
     restart: unless-stopped
   app2:
     image: ghcr.io/ch1sel/free-ton-notify:latest

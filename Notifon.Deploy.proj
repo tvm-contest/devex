@@ -3,7 +3,7 @@
         <ImageName>ghcr.io/ch1sel/free-ton-notify</ImageName>
         <ImageNameCache>free-ton-notify:cache</ImageNameCache>
         <Server>ch1sel@notify-contest.ddns.net</Server>
-        <ComposeFiles>-f docker-compose.yaml -f docker-compose.cluster.yaml</ComposeFiles>
+        <Compose>--compatibility -f docker-compose.yaml -f docker-compose.cluster.yaml</Compose>
     </PropertyGroup>
 
     <Target Name="Build" BeforeTargets="Push">
@@ -16,9 +16,9 @@
 
     <Target Name="Deploy">
         <Exec Command="rsync -zvrc --exclude=&quot;.env&quot; --exclude=&quot;nginx/ssl&quot; .docker-compose/* $(Server):~/server/free-ton-notify/" />
-        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose $(ComposeFiles) pull&quot;" />
-        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose $(ComposeFiles) up --remove-orphans -d&quot;" />
-        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose $(ComposeFiles) exec -T nginx nginx -s reload&quot;" />
+        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose $(Compose) pull&quot;" />
+        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose $(Compose) up --remove-orphans -d&quot;" />
+        <Exec Command="ssh $(Server) &quot;cd ~/server/free-ton-notify; docker-compose $(Compose) exec -T nginx nginx -s reload&quot;" />
         <Exec Command="ssh $(Server) &quot;docker system prune -f&quot;" />
     </Target>
 
