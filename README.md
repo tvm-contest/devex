@@ -10,6 +10,7 @@ Free TON Notification Provider
 ## Features
 
 - Supported endpoints **HTTP**, **Telegram**, **Email**.
+- Horizontally scalable
 - Customizable retry policy for failed requests
 - Multiple endpoints per user support
 - Optional message decryption separately by endpoints
