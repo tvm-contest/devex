@@ -11,11 +11,11 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 	const messagesForSending = await messsageManager.get({ isDelivered: false, isDeleted: false });
 
 	messagesForSending.forEach(async (message) => {
-			if(typeof message.endpoint !== "undefined" ){
-				const url = message.endpoint.url
+			if(typeof message.callbackUrl !== "undefined" ){
+				const url = message.callbackUrl
 				const body = { nonce: message.nonce, encodedMessage: message.message}
 				try{
-					console.log(`Post request to ${url} with body ${body}`)
+					console.log(`Post request to ${url} with body ${JSON.stringify(body)}`)
 					await axios.post(url, body);
 					await messsageManager.setPropery(message._id, { isDelivered: true })
 					await messsageManager.delete(message._id);

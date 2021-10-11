@@ -8,7 +8,7 @@ const endpoint = new mongoose.Schema(
 		"secret":{
 			type: String,
 		},
-		"url": {
+		"callbackUrl": {
 			type: String,
 		},
 		"admin": {

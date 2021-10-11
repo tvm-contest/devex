@@ -34,14 +34,13 @@ const consume = async () => {
 	await consumer.subscribe({ topic, fromBeginning: true })
 	await consumer.run({
 		// this function is called every time the consumer gets a new message
-		eachMessage: ({ message }) => {
+		eachMessage: async ({ message }) => {
 			const rawMessage = message.value.toString();
 			// here, we just log the message to the standard output
 			console.log(`received message: ${rawMessage}`)
 			const rawMessageArray =rawMessage.split(' ')
-			const callbackUrl = await enpointManager.get({hash: rawMessageArray[0]});
-			console.log(callbackUrl);
-			messsageManager.add( {hash: rawMessageArray[0], nonce: rawMessageArray[1], message: rawMessageArray[2]} )
+			const endpoint = await enpointManager.get({hash: rawMessageArray[0]});
+			messsageManager.add( {hash: rawMessageArray[0], callbackUrl: endpoint[0].callbackUrl, nonce: rawMessageArray[1], message: rawMessageArray[2]} )
 		}
 	})
 }
