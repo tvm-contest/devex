@@ -6,7 +6,7 @@ const md5 = require('md5');
 
 const coreController = {
 	async ping(req, res) {
-		res.send( 'pong' );
+		res.send( "pong" );
 	},
 
 	async index(req, res) {

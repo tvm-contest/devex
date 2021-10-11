@@ -5,7 +5,10 @@ block content
    
     form
       div.mb-3
-      input.form-control.mr-sm-2(type="text" id="secret" placeholder="Secret")
+      p Your secret:
+        input.form-control.mr-sm-2(type="text" id="secret" placeholder="Secret" readonly)
+      p Your Endpoint:
+        input.form-control.mr-sm-2(type="text" id="endpoint")
       div(id="emailHelp" class="form-text") We'll never share your secrect with anyone else.
       button(type="submit" id="setSecret" class="btn btn-primary") Save 
     include footer.pug

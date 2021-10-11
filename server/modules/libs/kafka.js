@@ -1,5 +1,5 @@
 const configurationManager = require('./configuration')
-const callbackManager = require('../endpoint/endpoint.manager')
+const enpointManager = require('../endpoint/endpoint.manager')
 const messsageManager = require('../message/message.manager')
 const { Kafka, logLevel } = require("kafkajs")
 const { default: axios } = require('axios')
@@ -39,6 +39,8 @@ const consume = async () => {
 			// here, we just log the message to the standard output
 			console.log(`received message: ${rawMessage}`)
 			const rawMessageArray =rawMessage.split(' ')
+			const callbackUrl = await enpointManager.get({hash: rawMessageArray[0]});
+			console.log(callbackUrl);
 			messsageManager.add( {hash: rawMessageArray[0], nonce: rawMessageArray[1], message: rawMessageArray[2]} )
 		}
 	})

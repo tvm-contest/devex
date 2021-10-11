@@ -6,7 +6,7 @@ const coreController = {
 	},
 
 	async get (filter = {}) {
-		return await endpointModel.find(filter);
+		return await endpointModel.find(filter).exec();
 	},
 
 	async userValidation(secret){
