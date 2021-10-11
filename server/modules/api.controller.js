@@ -28,7 +28,11 @@ const coreController = {
 			hash: req.body.hash, 
 			secret: secret, 
 			url: toolkit.Base64Decode(req.body.data)})
-		res.send(`Your endpoint was successfully set. Here is your secret link for logging https://freeton-notification-service.voip-lab.ru/login/${secret}. Please set notification rules and follow the instructions https://github.com/nrukavkov/freeton-notification-service/blob/master/README.md`)
+		res.send(`Your endpoint was successfully set. Secret link for log in 
+👉 https://freeton-notification-service.voip-lab.ru/login/${secret}. 
+		
+Please set notification rules and follow the instructions 
+👉 https://github.com/nrukavkov/freeton-notification-service/blob/master/README.md`)
 	},
 	async endpointDelete(req, res) {
 		res.json( await endpointManager.delete(req.params.id) );

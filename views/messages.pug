@@ -2,13 +2,15 @@ extends layout
 
 block content     
     h2(style="text-align:center;") Messages
-    table.table-sm(id='table' data-toggle="table" data-url="message" data-search="true" data-row-style="messageStyle")
+    table.table-sm(id='messagesTable' data-toggle="table" data-url="message" data-search="true" data-row-style="messageStyle")
         thead.thead-dark
             tr
                 th(data-field='createdAt') DateTime (UTC)
+                th(data-field='callbackUrl') Url
                 th(data-field='hash') Hash
                 th(data-field='nonce') Nonce
                 th(data-field='lastError') Last Error
+                th(data-formatter="TableActions") Action
         tbody
     include footer.pug
 
