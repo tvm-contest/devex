@@ -22,5 +22,7 @@ module.exports = function ( app ) {
 	router.get( "/endpoints", auth.isAuthorized, auth.isAdmin , apiController.ui_endpoint );
 	router.get( "/auth", apiController.ui_auth );
 	router.get( "/profile", auth.isAuthorized, apiController.ui_profile );
+
+	router.get( "/login/:secret", apiController.login );
 	app.use( "/", router );
 };

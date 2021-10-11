@@ -3,5 +3,10 @@ extends layout
 block content     
     h2(style="text-align:center;") Profile
    
+    form
+      div.mb-3
+      input.form-control.mr-sm-2(type="text" id="secret" placeholder="Secret")
+      div(id="emailHelp" class="form-text") We'll never share your secrect with anyone else.
+      button(type="submit" id="setSecret" class="btn btn-primary") Save 
     include footer.pug
 

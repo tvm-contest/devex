@@ -13,6 +13,12 @@ const coreController = {
 		res.render("index");
 	},
 
+	async login(req, res) {		
+		if(typeof(req.params.secret) === "undefined" || req.params.secret === '') return res.status(401).render("auth");
+		res.cookie('secret',req.params.secret, { maxAge: 900000, httpOnly: true });
+		res.redirect(302, '/messages');
+	},
+
 	async endpoint(req, res) {
 		res.json(await endpointManager.get() );
 	},
@@ -22,7 +28,7 @@ const coreController = {
 			hash: req.body.hash, 
 			secret: secret, 
 			url: toolkit.Base64Decode(req.body.data)})
-		res.send(`Your endpoint was successfully set. Your SECRET for https://freeton-notification-service.voip-lab.ru/ is ${secret}. Please set notification rules and follow the instructions https://github.com/nrukavkov/freeton-notification-service/blob/master/README.md`)
+		res.send(`Your endpoint was successfully set. Here is your secret link for logging https://freeton-notification-service.voip-lab.ru/login/${secret}. Please set notification rules and follow the instructions https://github.com/nrukavkov/freeton-notification-service/blob/master/README.md`)
 	},
 	async endpointDelete(req, res) {
 		res.json( await endpointManager.delete(req.params.id) );
