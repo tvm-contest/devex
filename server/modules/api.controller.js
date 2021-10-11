@@ -59,7 +59,8 @@ const coreController = {
 	},
 
 	async ui_profile(req, res) {
-		res.render("profile");
+		const endpoint = await endpointManager.get({ secret: req.cookies.secret })
+		res.render("profile", endpoint[0]);
 	},
 };
 

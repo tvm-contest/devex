@@ -5,10 +5,12 @@ block content
    
     form
       div.mb-3
-      p Your secret:
-        input.form-control.mr-sm-2(type="text" id="secret" placeholder="Secret" readonly)
-      p Your Endpoint:
-        input.form-control.mr-sm-2(type="text" id="endpoint")
+      p Hash:
+        input.form-control.mr-sm-2(type="text" id="hash" placeholder="Hash" value=`${hash}` readonly)
+      p Secret:
+        input.form-control.mr-sm-2(type="text" id="secret" placeholder="Secret" value=`${secret}` readonly)
+      p Endpoint:
+        input.form-control.mr-sm-2(type="text" id="endpoint" value=`${callbackUrl}`)
       div(id="emailHelp" class="form-text") We'll never share your secrect with anyone else.
       button(type="submit" id="setSecret" class="btn btn-primary") Save 
     include footer.pug
