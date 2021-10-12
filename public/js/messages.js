@@ -6,12 +6,6 @@ $(document).on('change','#secret',function(){
 	document.cookie = "secret=" + $(this).val()
 });
 
-
-$(document).on('click-row.bs.table','#messagesTable' , function (event, row, $element) {
-  alert(row.message);
-
-})
-
 $( document ).ready(function() {
     $('#secret').val(getCookie('secret'));
 });
@@ -29,12 +23,18 @@ function messageStyle(row, index) {
 }
 
 function TableActions (value, row, index) {
-  return [
-      '<a class="like" href="javascript:void(0)" title="Edit">',
-      '<button type="button" class="btn btn-info">Info</button>',
-      '</a> ',
-      '<a class="danger remove" href="javascript:void(0)" data-visitorserial="'+row.visitor_id+'" data-visitornames="'+row.visitor_names+'" data-visitorid="'+row.visitor_number+'" data-toggle="modal" data-target="#VisitorDelete" title="Remove">',
-      '<i class="glyphicon glyphicon-trash"></i>',
-      '</a>'
-  ].join('');
+  return '<button type="button" class="btn btn-danger">Delete</button>';
+}
+
+function makeShortUrl (value, row, index) {
+  const callbackUrl = row.callbackUrl;
+  return (callbackUrl.length>120 ? `${callbackUrl.slice(0,100)}...`: callbackUrl)
+}
+
+function detailFormatter(index, row) {
+  var html = []
+  $.each(row, function (key, value) {
+    html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+  })
+  return html.join('')
 }
