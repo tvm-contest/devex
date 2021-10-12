@@ -5,12 +5,19 @@ block content
    
     form
       div.mb-3
+      h2 General settings
       p Hash:
         input.form-control.mr-sm-2(type="text" id="hash" placeholder="Hash" value=`${hash}` readonly)
-      p Secret:
+      p API Key:
         input.form-control.mr-sm-2(type="text" id="secret" placeholder="Secret" value=`${secret}` readonly)
-      p Endpoint:
+      h2 HTTP Endpoint
+      p Url:
         input.form-control.mr-sm-2(type="text" id="endpoint" value=`${callbackUrl}`)
+      h2 Telegram Endpoint
+      p API Token:
+        input.form-control.mr-sm-2(type="text" placeholder="Telegram API Token" id="telegramApiKey" value=`${telegram.apiKey}`)
+      p Chat ID:
+        input.form-control.mr-sm-2(type="text" placeholder="Chat Id" id="telegramChatId" value=`${telegram.chatId}`)
       div(id="emailHelp" class="form-text") We'll never share your secrect with anyone else.
       button(type="submit" id="setSecret" class="btn btn-primary") Save 
     include footer.pug
