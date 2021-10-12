@@ -20,6 +20,7 @@ const message = new mongoose.Schema({
 	},
 	"callbackUrl": {
 		type: String,
+		default: ""
 	},
 	"lastError": {
 		type: String,

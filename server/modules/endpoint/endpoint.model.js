@@ -1,16 +1,5 @@
 const mongoose = require("mongoose");
 
-const telegram = new mongoose.Schema(
-	{
-		"apiKey": {
-			type: String,
-		},
-		"сhatId": {
-			type: String,
-		},
-	}
-);
-
 const endpoint = new mongoose.Schema(	
 	{
 		"hash": {
@@ -21,9 +10,15 @@ const endpoint = new mongoose.Schema(
 		},
 		"callbackUrl": {
 			type: String,
+			default: ""
 		},
-		"telegram": {
-			type: telegram,
+		"telegramChatId": {
+			type: String,
+			default: ""
+		},
+		"telegramApiKey": {
+			type: String,
+			default: ""
 		},
 		"admin": {
 			type: Boolean,

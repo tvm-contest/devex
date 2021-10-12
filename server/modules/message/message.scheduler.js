@@ -11,29 +11,20 @@ var job = new CronJob(configurationManager.SCHEDULE, async function() {
 	const messagesForSending = await messsageManager.get({ isDelivered: false, isDeleted: false });
 
 	messagesForSending.forEach(async (message) => {
-			if(typeof message.callbackUrl !== "undefined" ){
-				const url = message.callbackUrl
-				const body = { nonce: message.nonce, encodedMessage: message.message}
-				try{
-					console.log(`Post request to ${url} with body ${JSON.stringify(body)}`)
-					await axios.post(url, body);
-					await messsageManager.setPropery(message._id, { isDelivered: true })
-					await messsageManager.delete(message._id);
-					await messsageManager.setPropery(message._id, { lastError: "" })
-				}
-				catch(e){
-					console.log(e.toString());
-					await messsageManager.setPropery(message._id, { lastError: e.toString() })
-				}
-			}
-			else{
-				const errorMessage = `Could not find customer's url.`
-				console.log(`${errorMessage} The message ${message._id} will be deleted`)
-				await messsageManager.delete(message._id);
-				await messsageManager.setPropery(message._id, { lastError: errorMessage })
-			}
+		const url = message.callbackUrl
+		const body = { nonce: message.nonce, encodedMessage: message.message}
+		try{
+			(url.startsWith('https://api.telegram.org') ? await axios.get(url) : await axios.post(url, body))
+			
+			await messsageManager.setPropery(message._id, { isDelivered: true })
+			await messsageManager.delete(message._id);
+			await messsageManager.setPropery(message._id, { lastError: "" })
 		}
-	)
+		catch(e){
+			console.log(e.toString());
+			await messsageManager.setPropery(message._id, { lastError: e.toString() })
+		}
+	})
 }, null, true, 'America/Los_Angeles');
 
 exports.module = job.start();

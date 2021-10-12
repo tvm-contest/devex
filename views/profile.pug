@@ -3,22 +3,22 @@ extends layout
 block content     
     h2(style="text-align:center;") Profile
    
-    form
+    form(method="POST")
       div.mb-3
       h2 General settings
       p Hash:
         input.form-control.mr-sm-2(type="text" id="hash" placeholder="Hash" value=`${hash}` readonly)
       p API Key:
-        input.form-control.mr-sm-2(type="text" id="secret" placeholder="Secret" value=`${secret}` readonly)
+        input.form-control.mr-sm-2(type="text" id="usersecret" placeholder="Secret" value=`${secret}` readonly)
       h2 HTTP Endpoint
       p Url:
-        input.form-control.mr-sm-2(type="text" id="endpoint" value=`${callbackUrl}`)
+        input.form-control.mr-sm-2(type="text" id="callbackUrl" name="callbackUrl" value=`${callbackUrl}`)
       h2 Telegram Endpoint
       p API Token:
-        input.form-control.mr-sm-2(type="text" placeholder="Telegram API Token" id="telegramApiKey" value=`${telegram.apiKey}`)
+        input.form-control.mr-sm-2(type="text" placeholder="Telegram API Token" name="telegramApiKey" id="telegramApiKey" value=`${telegramApiKey}`)
       p Chat ID:
-        input.form-control.mr-sm-2(type="text" placeholder="Chat Id" id="telegramChatId" value=`${telegram.chatId}`)
+        input.form-control.mr-sm-2(type="text" placeholder="Chat Id" id="telegramChatId" name="telegramChatId" value=`${telegramChatId}`)
       div(id="emailHelp" class="form-text") We'll never share your secrect with anyone else.
-      button(type="submit" id="setSecret" class="btn btn-primary") Save 
+      button(type="submit" class="btn btn-primary") Save 
     include footer.pug
 
