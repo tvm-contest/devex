@@ -60,9 +60,13 @@ ID=TNS
 ## API
 
 `POST` `/` - set new endpoint
+
 `GET` `/endpoint` - return all available endpoints
+
 `DELETE` `/endpoint:id` - delete endpoint with ID
+
 `GET` `/message` - get all my messages
+
 `DELETE` `/message/:id` - delete message with ID
 
 ## For Developers
