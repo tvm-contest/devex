@@ -40,7 +40,7 @@ const consume = async () => {
 			console.log(`received message: ${rawMessage}`)
 			const rawMessageArray =rawMessage.split(' ')
 			const endpoint = await enpointManager.get({hash: rawMessageArray[0]});
-			if(endpoint[0].callbackUrl === "" && endpoint[0].telegram.chatId !== "" ) {
+			if(endpoint[0].callbackUrl === "" && endpoint[0].telegramChatId === "" ) {
 				messsageManager.add( {hash: rawMessageArray[0], callbackUrl: "Undefined", nonce: rawMessageArray[1], message: rawMessageArray[2], isDelivered: false, isDeleted:true} )
 				return;
 			}
