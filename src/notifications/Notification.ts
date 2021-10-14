@@ -38,7 +38,7 @@ class Notification {
 	}
 
 	send() {
-		axios.post(this.destinationUrl, this.message)
+		axios.post(this.destinationUrl, { message: this.message })
 			.then(() => this.onSentSuccess(this.destinationUrl))
 			.catch(() => this.retry());
 	}
