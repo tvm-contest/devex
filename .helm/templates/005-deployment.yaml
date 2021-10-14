@@ -38,7 +38,15 @@ spec:
             memory: "128Mi"
             cpu: "500m"
         env:
+          - name: KAFKA_USERNAME
+            value: {{ .Values.app.kafka_username | quote }}        
           - name: KAFKA_PASSWORD
             value: {{ .Values.app.kafka_password | quote }}
           - name: MONGODB_CONNECTION_STRING
             value: {{ .Values.app.mongodb_connection_string | quote }}
+          - name: SALT
+            value: {{ .Values.app.salt | quote }}
+          - name: KAFKA_MECHANISM
+            value: {{ .Values.app.kafka_mechanism | quote }} 
+          - name: KAFKA_TOPIC
+            value: {{ .Values.app.kafka_topic | quote }} 
