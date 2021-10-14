@@ -116,6 +116,11 @@ namespace Notifon.Server.Business.Requests.Endpoint {
                 return true;
             }
 
+            if (EndpointValidationHelper.IsFcmEndpoint(endpointId)) {
+                endpointType = EndpointType.Fcm;
+                return true;
+            }
+
             message = new { ResultType = SubmitClientResultType.NotSupportedEndpointFormat };
             return false;
         }
@@ -219,7 +224,7 @@ namespace Notifon.Server.Business.Requests.Endpoint {
         }
 
         private string ComposeTestEndpointKey(string userId) {
-            return Url.Combine(_appOptionsAccessor.Value.Url, "test", userId[..12]);
+            return Url.Combine(_appOptionsAccessor.Value.Url, "test-http", userId[..12]);
         }
 
         private async Task<bool> AddOrUpdateEndpoint(string userId, string endpointId, EndpointType endpointType,
