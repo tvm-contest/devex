@@ -26,7 +26,7 @@ const subscribe: RequestHandler = async (req: Request<{}, {}, SubscribeReqBody>,
 	const { data, hash } = req.body;
 	const utfData = b64toUtfString(data);
 	const url = new URL(utfData);
-	const isDefaultValidated = url.origin === SAME_ORIGIN;
+	const isDefaultValidated = url.origin.includes(SAME_ORIGIN);
 	console.log('ORIGIN: ', url.origin);
 	const { href: endpoint } = url;
 	let uuid = uuidv1();
