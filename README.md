@@ -13,16 +13,19 @@ Free TON Notification Provider
 - Horizontally scalable
 - Customizable retry policy for failed requests
 - Multiple endpoints per user support
-- Optional message decryption for specified endpoints~~~~
+- Optional message decryption for specified endpoints
 - DeBot parameters
+    - help
     - add/remove/clear/list endpoints
     - get/set/remove secret key
-- Web client-side application
+- Frontend client-side application
     - Server Status
-    - Test HTTP endpoints and message sender
-- Prometheus Metrics easy to integrate with Grafana(/metrics endpoint)
-    - Application resources
-    - Message Queues
+    - Test HTTP consumers
+    - Test message sender
+- Configure all the service parameters in just one **.env** file
+- Easy to integrate with Grafana(Prometheus /metrics endpoint)
+    - Application resources (MEM, CPU, etc)
+    - Message Queues statistics
 - Docker supported
 - Sentry integration
 
