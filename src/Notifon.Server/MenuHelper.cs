@@ -97,7 +97,7 @@ namespace Notifon.Server {
         public static string ListEndpoints(IEnumerable<EndpointModel> endpoints) {
             var endpointStrings = endpoints.Select(e => $"{e.Endpoint} {GetEndpointParametersString(e.Parameters)}");
             return "Registered endpoints:\n" +
-                   string.Join('\n', endpointStrings);
+                   string.Join("\n\n", endpointStrings);
         }
 
         private static string GetEndpointParametersString(Dictionary<string, string> parameters) {
