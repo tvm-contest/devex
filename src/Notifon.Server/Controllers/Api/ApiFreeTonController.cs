@@ -5,9 +5,11 @@ using ch1seL.TonNet.Client;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Notifon.Server.Business.Requests.TonClient;
+using NSwag.Annotations;
 
 namespace Notifon.Server.Controllers.Api {
     [ApiController]
+    [OpenApiTag("API")]
     [Route("api/free-ton")]
     public class ApiFreeTonController : ControllerBase {
         private readonly IRequestClient<FreeTonDeploy> _freeTonDeployClient;

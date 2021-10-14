@@ -2,9 +2,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Notifon.Server.Configuration.Options;
+using NSwag.Annotations;
 
 namespace Notifon.Server.Controllers.Api {
     [ApiController]
+    [OpenApiTag("API")]
     [Route("api/app-info")]
     public class ApiAppInfoController : ControllerBase {
         private readonly IOptions<AppOptions> _appOptionsAccessor;

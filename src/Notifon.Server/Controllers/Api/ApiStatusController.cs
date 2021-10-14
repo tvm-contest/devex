@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Notifon.Server.Business.Requests.Api;
+using NSwag.Annotations;
 
 namespace Notifon.Server.Controllers.Api {
     [ApiController]
+    [OpenApiTag("API")]
     [Route("api/status")]
     public class ApiStatusController : ControllerBase {
         private readonly IRequestClient<GetServerStatus> _getServerStatusRequestClient;
