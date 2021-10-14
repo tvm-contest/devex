@@ -19,11 +19,17 @@ function getCookie(name) {
 
 function messageStyle(row, index) {
     if (row.isDelivered) { return { css: { 'background-color': '#d4edda' } } }
+    if (row.isDeleted && !row.isDelivered) { return { css: { 'background-color': '#BBBBBB' } } }
     else { return { css: { 'background-color': '#f8d7da' } } }
 }
 
 function TableActions (value, row, index) {
-  return '<button type="button" class="btn btn-danger">Delete</button>';
+  if(row.isDelivered || row.isDeleted) return "";
+  return `<button type="button" onClick="
+    $.ajax({ url: '/message/${row._id}', method: 'DELETE'})
+    .done(function( data ) { console.log('Message ${row._id} deleted') });" 
+    class=\"btn btn-danger\">Stop sending</button>`;
+
 }
 
 function makeShortUrl (value, row, index) {

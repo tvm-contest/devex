@@ -15,7 +15,7 @@ const messsageManager = {
 	},
 	
 	async get(filter = {}) {
-		return await messageModel.find(filter).populate("endpoint").sort({ date: 1 }).exec()
+		return await messageModel.find(filter).populate("endpoint").sort({ date: -1 }).exec()
 	},
 };
 
