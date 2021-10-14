@@ -211,6 +211,8 @@ namespace Notifon.Server.Business.Requests.Endpoint {
         private async Task<object> TestCommand(string userId,
             Dictionary<string, string?> parameters,
             CancellationToken cancellationToken) {
+            // do not allow use different methods for test only post
+            parameters.Remove("m");
             var endpoint = ComposeTestEndpointKey(userId);
             var isSecretRequired = await AddOrUpdateEndpoint(userId, endpoint, EndpointType.Http, parameters, cancellationToken);
             return new { Endpoint = endpoint, IsTest = true, IsSecretRequired = isSecretRequired };

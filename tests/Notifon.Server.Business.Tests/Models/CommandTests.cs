@@ -4,7 +4,7 @@ using FluentAssertions;
 using Notifon.Server.Business.Models;
 using Xunit;
 
-namespace Notifon.Server.Business.Tests {
+namespace Notifon.Server.Business.Tests.Models {
     public class CommandTests {
         [Theory]
         [InlineData("", CommandType.ListEndpoints, "{}")]

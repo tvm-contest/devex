@@ -16,7 +16,7 @@ namespace Notifon.Server {
         public const string EndpointExamples =
             "❗ Supported endpoints and parameters:\n" +
             "HTTP endpoint:\n" +
-            "http(s)://your-domain.com/you-endpoint [-d[:body]]\n" +
+            "http(s)://your-domain.com/you-endpoint [-d[:body]] [-m:PUT|GET|POST]\n" +
             "test [-d[:body]]\n" +
             "\n" +
             "Telegram endpoint:\n" +
@@ -29,7 +29,7 @@ namespace Notifon.Server {
             "✨ Examples commands:\n" +
             "'https://notifon.requestcatcher.com/test' just relay encrypted messages to HTTP endpoint\n" +
             "\n" +
-            "'https://notifon.requestcatcher.com/test -d' decrypt messages with SECRET_KEY and post it to HTTP endpoint\n" +
+            "'https://notifon.requestcatcher.com/test -d -m:GET' decrypt messages with SECRET_KEY and post it to HTTP endpoint with GET method\n" +
             "\n" +
             "'https://t.me/free_ton_notification' relay encrypted messages to @free_ton_notification uses @free_ton_notify_bot as default bot\n" +
             "\n" +

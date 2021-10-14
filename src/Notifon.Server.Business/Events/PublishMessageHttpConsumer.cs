@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.Extensions.Logging;
@@ -18,15 +19,28 @@ namespace Notifon.Server.Business.Events {
         }
 
         public async Task Consume(ConsumeContext<PublishMessage> context) {
-            if (context.Message.EndpointType != EndpointType.Http) return;
+            var contextMessage = context.Message;
+            if (contextMessage.EndpointType != EndpointType.Http) return;
 
-            var endpoint = HttpEndpoint.FromPublishMessage(context.Message);
-            var messageText = context.Message.Message.Text;
             var cancellationToken = context.CancellationToken;
 
-            var request = new StringContent(messageText);
-            var response = await _httpClient.PostAsync(endpoint.Url, request, cancellationToken);
+            var endpoint = HttpEndpoint.FromPublishMessage(contextMessage);
+            var method = GetMethodByParameters(contextMessage.Parameters);
+            var request = new HttpRequestMessage(method, endpoint.Url) {
+                Content = new StringContent(contextMessage.Message.Text)
+            };
+            var response = await _httpClient.SendAsync(request, cancellationToken);
             response.EnsureSuccessStatusCode();
+        }
+
+        private static HttpMethod GetMethodByParameters(IReadOnlyDictionary<string, string> parameters) {
+            if (parameters.TryGetValue("m", out var method))
+                return method.ToUpper() switch {
+                    "GET" => HttpMethod.Get,
+                    "PUT" => HttpMethod.Put,
+                    _ => HttpMethod.Post
+                };
+            return HttpMethod.Post;
         }
     }
 
