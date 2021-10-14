@@ -52,6 +52,8 @@ class Notification {
 			return;
 		}
 
+		logger.warn(`Retry delivery to ${this.destinationUrl}`);
+
 		setTimeout(() => this.send(), NOTIFICATION.RETRY_TIMEOUT);
 	}
 }

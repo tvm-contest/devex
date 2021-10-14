@@ -27,7 +27,6 @@ const subscribe: RequestHandler = async (req: Request<{}, {}, SubscribeReqBody>,
 	const utfData = b64toUtfString(data);
 	const url = new URL(utfData);
 	const isDefaultValidated = url.origin.includes(SAME_ORIGIN);
-	console.log('ORIGIN: ', url.origin);
 	const { href: endpoint } = url;
 	let uuid = uuidv1();
 
@@ -42,8 +41,6 @@ const subscribe: RequestHandler = async (req: Request<{}, {}, SubscribeReqBody>,
 		uuid = consumerWithHashInDB.uuid;
 
 		await consumerWithHashInDB.save();
-
-		console.dir(consumerWithHashInDB);
 	} else {
 		const consumer = new WebhookConsumer({
 			uuid,

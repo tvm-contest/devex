@@ -40,8 +40,12 @@ class NotificationsFactory {
 
 		this.enqueueNotification(notification, consumer.endpoint);
 
+		console.log(this.notificationsQueue);
+
 		if (this.notificationsQueue[consumer.endpoint].length === 1) {
 			notification.send();
+
+			console.log('sent');
 		}
 	}
 

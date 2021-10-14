@@ -7,7 +7,12 @@ if (dotenvResult.error) {
 	dotenv.config({ path: '.env.default' });
 }
 
+import axios from 'axios';
 import util from 'util';
+import NOTIFICATION from './constants/notification';
+
+axios.defaults.timeout = NOTIFICATION.RETRY_TIMEOUT;
+
 import app from './app';
 import runKafka from './notifications/kafka-client';
 import SafeMongooseConnection from './lib/safe-mongoose-connection';
