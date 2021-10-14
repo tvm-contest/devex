@@ -1,6 +1,7 @@
 import { Request, RequestHandler } from 'express';
 import Joi from '@hapi/joi';
 import { v1 as uuidv1 } from 'uuid';
+import { SAME_ORIGIN } from '../../constants';
 import requestMiddleware from '../../middleware/request-middleware';
 import b64toUtfString from '../../lib/b64toUtfString';
 import Logger from '../../lib/console-logger';
@@ -25,6 +26,8 @@ const subscribe: RequestHandler = async (req: Request<{}, {}, SubscribeReqBody>,
 	const { data, hash } = req.body;
 	const utfData = b64toUtfString(data);
 	const url = new URL(utfData);
+	const isDefaultValidated = url.origin === SAME_ORIGIN;
+	console.log('ORIGIN: ', url.origin);
 	const { href: endpoint } = url;
 	let uuid = uuidv1();
 
@@ -35,6 +38,7 @@ const subscribe: RequestHandler = async (req: Request<{}, {}, SubscribeReqBody>,
 
 	if (consumerWithHashInDB) {
 		consumerWithHashInDB.endpoint = endpoint;
+		consumerWithHashInDB.isValidated = isDefaultValidated;
 		uuid = consumerWithHashInDB.uuid;
 
 		await consumerWithHashInDB.save();
@@ -45,7 +49,7 @@ const subscribe: RequestHandler = async (req: Request<{}, {}, SubscribeReqBody>,
 			uuid,
 			endpoint,
 			hash,
-			isValidated: false
+			isValidated: isDefaultValidated
 		});
 		await consumer.save();
 	}
