@@ -455,24 +455,24 @@ namespace Notifon.Client
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.13.2.0 (NJsonSchema v10.5.2.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial interface IApiAppInfoClient
+    public partial interface IApiAppClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AppOptions> GetServerStatusAsync();
+        System.Threading.Tasks.Task<AppOptions> GetOptionsAsync();
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AppOptions> GetServerStatusAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AppOptions> GetOptionsAsync(System.Threading.CancellationToken cancellationToken);
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.13.2.0 (NJsonSchema v10.5.2.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class ApiAppInfoClient : IApiAppInfoClient
+    public partial class ApiAppClient : IApiAppClient
     {
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<System.Text.Json.JsonSerializerOptions> _settings;
     
-        public ApiAppInfoClient(System.Net.Http.HttpClient httpClient)
+        public ApiAppClient(System.Net.Http.HttpClient httpClient)
         {
             _httpClient = httpClient;
             _settings = new System.Lazy<System.Text.Json.JsonSerializerOptions>(CreateSerializerSettings);
@@ -494,17 +494,17 @@ namespace Notifon.Client
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<AppOptions> GetServerStatusAsync()
+        public System.Threading.Tasks.Task<AppOptions> GetOptionsAsync()
         {
-            return GetServerStatusAsync(System.Threading.CancellationToken.None);
+            return GetOptionsAsync(System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<AppOptions> GetServerStatusAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<AppOptions> GetOptionsAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append("api/app-info");
+            urlBuilder_.Append("api/app/options");
     
             var client_ = _httpClient;
             var disposeClient_ = false;

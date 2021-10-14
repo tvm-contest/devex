@@ -7,16 +7,16 @@ using NSwag.Annotations;
 namespace Notifon.Server.Controllers.Api {
     [ApiController]
     [OpenApiTag("API")]
-    [Route("api/app-info")]
-    public class ApiAppInfoController : ControllerBase {
+    [Route("api/app")]
+    public class ApiAppController : ControllerBase {
         private readonly IOptions<AppOptions> _appOptionsAccessor;
 
-        public ApiAppInfoController(IOptions<AppOptions> appOptionsAccessor) {
+        public ApiAppController(IOptions<AppOptions> appOptionsAccessor) {
             _appOptionsAccessor = appOptionsAccessor;
         }
 
-        [HttpGet]
-        public async Task<AppOptions> GetServerStatus() {
+        [HttpGet("options")]
+        public async Task<AppOptions> GetOptions() {
             var appOptions = await Task.FromResult(_appOptionsAccessor.Value);
 
             return appOptions;

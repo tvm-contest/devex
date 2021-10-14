@@ -10,12 +10,12 @@
 @code{
 
     [Inject]
-    AppInfoProvider AppInfoProvider { get; set; }
+    AppOptionsProvider AppOptionsProvider { get; set; }
 
     AppOptions App { get; set; } = new();
 
     protected override async Task OnInitializedAsync() {
-        App = await AppInfoProvider.GetAppOptions();
+        App = await AppOptionsProvider.GetAppOptions();
     }
 
     private string SwaggerUrl => _navigationManager.ToAbsoluteUri("swagger").ToString();

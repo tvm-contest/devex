@@ -24,7 +24,7 @@
 @code {
 
     [Inject]
-    AppInfoProvider AppInfoProvider { get; set; }
+    AppOptionsProvider AppOptionsProvider { get; set; }
 
     AppOptions App { get; set; } = new();
 
@@ -34,7 +34,7 @@
     protected override async Task OnInitializedAsync() {
         var isDarkThemeSelected = await _localStorageService.GetItemAsync<bool>("IsDarkThemeSelected");
         _currentTheme = isDarkThemeSelected ? DarkTheme : DefaultTheme;
-        App = await AppInfoProvider.GetAppOptions();
+        App = await AppOptionsProvider.GetAppOptions();
     }
 
     void DrawerToggle() {

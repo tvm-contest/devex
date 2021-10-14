@@ -4,19 +4,21 @@ using System.Threading.Tasks;
 using Blazored.LocalStorage;
 
 namespace Notifon.Client {
-    public class AppInfoProvider {
+    public class AppOptionsProvider {
+        private const string StorageKey = "AppOptions";
         private readonly Lazy<Task<AppOptions>> _appOptionsLazy;
 
-        public AppInfoProvider(HttpClient httpClient, ILocalStorageService localStorageService) {
+        public AppOptionsProvider(HttpClient httpClient, ILocalStorageService localStorageService) {
             _appOptionsLazy = new Lazy<Task<AppOptions>>(async () => {
-                var appInfoClient = new ApiAppInfoClient(httpClient);
+                var appInfoClient = new ApiAppClient(httpClient);
+
                 try {
-                    var options = await appInfoClient.GetServerStatusAsync();
-                    await localStorageService.SetItemAsync("AppOptions", options);
+                    var options = await appInfoClient.GetOptionsAsync();
+                    await localStorageService.SetItemAsync(StorageKey, options);
                     return options;
                 }
                 catch (HttpRequestException) {
-                    var appOptions = await localStorageService.GetItemAsync<AppOptions>("AppOptions");
+                    var appOptions = await localStorageService.GetItemAsync<AppOptions>(StorageKey);
                     return appOptions ?? new AppOptions();
                 }
             });
