@@ -75,19 +75,14 @@ The primary instance installed in Kubernetes Cluster. But you can start it local
 
 But you have to set some ENV variables. 
 
-`
+```
 MONGODB_CONNECTION_STRING="mongodb://USERNAME:PASSWORD@HOST_OR_IP/DATABASE?authSource=admin"
-
 SALT=CHANGE_ME
-
 KAFKA_USERNAME=CHANGE_ME
-
 KAFKA_PASSWORD=CHANGE_ME
-
 KAFKA_MECHANISM=scram-sha-512
-
 KAFKA_TOPIC=CHANGE_ME
-`
+```
 
 ### Deploy
 
