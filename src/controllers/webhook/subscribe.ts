@@ -3,7 +3,13 @@ import Joi from '@hapi/joi';
 import { v1 as uuidv1 } from 'uuid';
 import requestMiddleware from '../../middleware/request-middleware';
 import b64toUtfString from '../../lib/b64toUtfString';
+import Logger from '../../lib/console-logger';
 import WebhookConsumer from '../../models/WebhookConsumer';
+
+const logger = new Logger();
+
+const formSubscribeSuccessResponse = (endpoint: string, uuid: string): string => `Notifications will be sent to ${endpoint}, but you have to prove the domain ownership.
+	\nPlease, create the file i4ins-validation.txt inside your domain .well-known directory and put there the following string: ${uuid}`;
 
 export const subscribeSchema = Joi.object().keys({
 	data: Joi.string().required(),
@@ -17,18 +23,34 @@ interface SubscribeReqBody {
 
 const subscribe: RequestHandler = async (req: Request<{}, {}, SubscribeReqBody>, res) => {
 	const { data, hash } = req.body;
-	const uuid = uuidv1();
-	const endpoint = b64toUtfString(data);
+	const utfData = b64toUtfString(data);
+	const url = new URL(utfData);
+	const { href: endpoint } = url;
+	let uuid = uuidv1();
 
-	// eslint-disable-next-line no-console
-	console.log(`DATA: ${endpoint}`);
-	// eslint-disable-next-line no-console
-	console.log(`HASH: ${hash}`);
+	logger.info(`ENDPOINT: ${endpoint}`);
+	logger.info(`HASH: ${hash}`);
 
-	const consumer = new WebhookConsumer({ uuid, endpoint, hash });
-	await consumer.save();
+	const consumerWithHashInDB = await WebhookConsumer.findOne({ hash });
 
-	res.send(`Notifications will be sent to ${endpoint}`);
+	if (consumerWithHashInDB) {
+		consumerWithHashInDB.endpoint = endpoint;
+		uuid = consumerWithHashInDB.uuid;
+
+		await consumerWithHashInDB.save();
+
+		console.dir(consumerWithHashInDB);
+	} else {
+		const consumer = new WebhookConsumer({
+			uuid,
+			endpoint,
+			hash,
+			isValidated: false
+		});
+		await consumer.save();
+	}
+
+	res.send(formSubscribeSuccessResponse(endpoint, uuid));
 };
 
 export default requestMiddleware(subscribe, { validation: { body: subscribeSchema } });

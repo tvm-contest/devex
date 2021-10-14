@@ -9,6 +9,7 @@ if (dotenvResult.error) {
 
 import util from 'util';
 import app from './app';
+import runKafka from './notifications/kafka-client';
 import SafeMongooseConnection from './lib/safe-mongoose-connection';
 import logger from './logger';
 
@@ -41,6 +42,8 @@ const safeMongooseConnection = new SafeMongooseConnection({
 
 const serve = () => app.listen(PORT, () => {
 	logger.info(`🌏 Express server started at http://localhost:${PORT}`);
+
+	runKafka();
 
 	if (process.env.NODE_ENV === 'development') {
 		// This route is only present in development mode

@@ -4,7 +4,8 @@ import TimeStampPlugin, { ITimeStampedDocument } from './plugins/timestamp-plugi
 export interface IWebhookConsumer extends ITimeStampedDocument {
 	uuid: string;
 	endpoint: string;
-	hash?: string;
+	hash: string;
+	isValidated: boolean;
 }
 
 interface IWebhookConsumerModel extends Model<IWebhookConsumer> { }
@@ -16,15 +17,13 @@ const schema = new Schema<IWebhookConsumer>({
 		required: true,
 		unique: true
 	},
-	endpoint: {
-		type: String,
-		index: true
-	},
+	endpoint: String,
 	hash: {
 		type: String,
 		index: true,
 		unique: true
-	}
+	},
+	isValidated: Boolean
 });
 
 schema.plugin(TimeStampPlugin);
