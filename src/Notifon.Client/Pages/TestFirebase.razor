@@ -11,17 +11,17 @@
 </style>
 <MudText Typo="@Typo.h4" Align="@Align.Center" GutterBottom="@true">Firebase Cloud Messaging test</MudText>
 <MudGrid>
-    <MudItem xs="12">
-        <MudText Typo="@Typo.h6" Class="ml-5" GutterBottom="@true" Style="white-space: nowrap">
-            Instruction
-        </MudText>
+    <MudItem xs="12" md="9">
+        <MudText Typo="@Typo.h6" Class="ml-5" GutterBottom="@true" Style="white-space: nowrap">Instruction</MudText>
         <MudPaper Class="d-flex flex-column" Outlined="true">
             <MudList Clickable="false" Dense="true">
-                <MudListItem Icon="@Icons.Sharp.Filter1" IconSize="@Size.Small">Run <MudLink Target="_blank" Href="@App.NotificationDeBot">Notification DeBot</MudLink></MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter2" IconSize="@Size.Small">Sign two transactions to deploy your notification contract if not done yet</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter3" IconSize="@Size.Small">Click <b>Send callbackUrl | deviceToken to provider</b></MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter4" IconSize="@Size.Small">Select <b>tonactions</b> provider(github.com/ton-actions/free-ton-http-notification-provider, ID = tonactions)</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter5" IconSize="@Size.Small">
+                <MudListItem Icon="@Icons.Sharp.Filter1" IconSize="@Size.Small">Allow this site to show notifications</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter2" IconSize="@Size.Small">Run <MudLink Target="_blank" Href="@App.NotificationDeBot">Notification DeBot</MudLink></MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter3" IconSize="@Size.Small">Sign two transactions to deploy your notification contract if not done yet</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter4" IconSize="@Size.Small"><b>Set rules</b> as you need</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter5" IconSize="@Size.Small">Click <b>Send callbackUrl | deviceToken to provider</b></MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter6" IconSize="@Size.Small">Select <b>tonactions</b> provider(github.com/ton-actions/free-ton-http-notification-provider, ID = tonactions)</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter7" IconSize="@Size.Small">
                     <MudPaper Elevation="0" Class="d-flex flex-row">
                         <MudPaper Elevation="0" Class="my-3 pr-2">Copy</MudPaper>
                         @if (FCMID != null) {
@@ -37,9 +37,8 @@
                         }
                     </MudPaper>
                 </MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter7" IconSize="@Size.Small">Past this token into DeBot dialog</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter8" IconSize="@Size.Small">Come back to DeBot and <b>Set rules</b> to receive messages</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter9" IconSize="@Size.Small">Now you'll get background push messages on this site</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter8" IconSize="@Size.Small">Past this token into DeBot dialog</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter9" IconSize="@Size.Small">Send message to/from address from your rules</MudListItem>
             </MudList>
         </MudPaper>
     </MudItem>

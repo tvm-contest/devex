@@ -1,5 +1,6 @@
 ﻿<MudItem xs="12" md="10">
-    <MudCard Style="max-width: 700px">
+    <MudText Typo="@Typo.h6" Class="ml-5" GutterBottom="@true" Style="white-space: nowrap">Message sender</MudText>
+    <MudCard Style="max-width: 700px" Outlined="true" Elevation="0">
         <MudCardContent>
             <MudForm @ref="Form" @bind-IsValid="@IsValidForm" ValidationDelay="500">
                 <MudTextField T="string" Label="Seed phrase"
