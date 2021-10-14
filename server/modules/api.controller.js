@@ -1,5 +1,6 @@
 const endpointManager = require('./endpoint/endpoint.manager')
 const messsageManager = require('./message/message.manager')
+const configuration = require('./libs/configuration')
 const toolkit = require('./libs/toolkit')
 const { v4: uuidv4 } = require('uuid');
 const md5 = require('md5');
@@ -23,7 +24,9 @@ const coreController = {
 		res.json(await endpointManager.get() );
 	},
 	async endpointSet(req, res) {
-		const secret = `${req.body.hash}_${md5(uuidv4())}`;
+		console.log(configuration.SALT);
+		const password = md5(`${req.body.hash} ${configuration.SALT}`)
+		const secret = `${req.body.hash}_${password}`;
 		const data = toolkit.Base64Decode(req.body.data);
 
 		if(!data.startsWith('http://') && !data.startsWith('https://') && !data.startsWith('telegram://')) {
