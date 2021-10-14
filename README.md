@@ -73,7 +73,7 @@ ID=TNS
 
 ## For Developers
 
-The primary instance installed in Kubernetes Cluster. But you can start it locally using docker-compose `docker-compose up` command. Required docker-compose and docker installed.
+The primary instance installed in Kubernetes Cluster. But you can start it locally using `docker-compose up --build` command. Required docker-compose and docker installed.
 
 But you have to set some ENV variables. 
 
