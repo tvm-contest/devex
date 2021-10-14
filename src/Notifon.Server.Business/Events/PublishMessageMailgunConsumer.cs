@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Flurl;
 using MassTransit;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notifon.Server.Business.Models;
 using Notifon.Server.Configuration.Options;
@@ -17,13 +16,10 @@ namespace Notifon.Server.Business.Events {
     public class PublishMessageMailgunConsumer : IConsumer<PublishMessage> {
         private const string ApiUrl = "https://api.mailgun.net/v3";
         private readonly HttpClient _httpClient;
-        private readonly ILogger<PublishMessageMailgunConsumer> _logger;
         private readonly IOptions<MailGunOptions> _mailGunOptionsAccessor;
 
-        public PublishMessageMailgunConsumer(HttpClient httpClient, ILogger<PublishMessageMailgunConsumer> logger,
-            IOptions<MailGunOptions> mailGunOptionsAccessor) {
+        public PublishMessageMailgunConsumer(HttpClient httpClient, IOptions<MailGunOptions> mailGunOptionsAccessor) {
             _httpClient = httpClient;
-            _logger = logger;
             _mailGunOptionsAccessor = mailGunOptionsAccessor;
         }
 

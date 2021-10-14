@@ -2,7 +2,6 @@
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using MassTransit;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notifon.Server.Business.Models;
 using Notifon.Server.Configuration.Options;
@@ -13,14 +12,11 @@ namespace Notifon.Server.Business.Events {
         private const string SendMessageUrlFormat = "https://api.telegram.org/bot{0}/sendMessage";
 
         private readonly HttpClient _httpClient;
-        private readonly ILogger<PublishMessageTelegramConsumer> _logger;
         private readonly IOptions<TelegramOptions> _telegramOptionsAccessor;
 
-        public PublishMessageTelegramConsumer(HttpClient httpClient, IOptions<TelegramOptions> telegramOptionsAccessor,
-            ILogger<PublishMessageTelegramConsumer> logger) {
+        public PublishMessageTelegramConsumer(HttpClient httpClient, IOptions<TelegramOptions> telegramOptionsAccessor) {
             _httpClient = httpClient;
             _telegramOptionsAccessor = telegramOptionsAccessor;
-            _logger = logger;
         }
 
         public async Task Consume(ConsumeContext<PublishMessage> context) {
