@@ -20,7 +20,7 @@ namespace Notifon.Client {
                 .AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
                 .AddTransient<IApiStatusClient, ApiStatusClient>()
                 .AddTransient<IApiFreeTonClient, ApiFreeTonClient>()
-                .AddScoped<AppOptionsProvider>();
+                .AddScoped<AppConfigProvider>();
 
             builder.Services
                 .AddBlazoredLocalStorage()

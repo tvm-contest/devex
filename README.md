@@ -9,7 +9,7 @@ Free TON Notification Provider
 
 ## Features
 
-- Supported endpoint types: **HTTP**, **Telegram**, **Email**.
+- Supported endpoint types: **HTTP**, **Telegram**, **Email**, **Firebase Cloud Messages(FCM)**.
 - Horizontally scalable
 - Customizable retry policy for failed requests
 - Multiple endpoints per user support
@@ -135,6 +135,51 @@ If no tokens were provided at all, then messages will not be delivered.
 | TonClientNetwork__Endpoints__N        | Incriminate number to add another endpoints        | not set                                                                  |
 | TonClientNetwork__MessageRetriesCount | The number of automatic message processing retries | not set                                                                  |
 | TonClientNetwork__MessageRetriesCount | The number of automatic message processing retries | not set                                                                  |
+
+## Firebase Cloud Messaging configure
+
+See https://firebase.google.com/docs/cloud-messaging?hl=en&authuser=0
+Just get keys and config and mount them into the docker container or place in src/Notifon.Server folder See mounting example
+in https://github.com/ton-actions/free-ton-http-notification-provider/blob/main/.docker-compose/docker-compose.cluster.yaml
+
+### Keys file
+
+Create and mount file with your keys `firebase-key.json`:
+
+```json
+{
+    "type": "service_account",
+    "project_id": "project_id",
+    "private_key_id": "private_key_id",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nprivate_key\n-----END PRIVATE KEY-----\n",
+    "client_email": "client_email",
+    "client_id": "client_id",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-wa4xo%40notifon-be3df.iam.gserviceaccount.com"
+}
+```
+
+### App config file
+
+Create and mount file with your app config and vapidKey `firebase-config.json`:
+
+```json
+{
+    "config": {
+        "apiKey": "AIzaSyBRtA8KuKWMEohjxo9L7ZoTaP3CCRJie_g",
+        "authDomain": "notifon-be3df.firebaseapp.com",
+        "projectId": "notifon-be3df",
+        "storageBucket": "notifon-be3df.appspot.com",
+        "messagingSenderId": "858600272109",
+        "appId": "1:858600272109:web:8cfe6742ba84116a35dce4",
+        "measurementId": "G-QQHHEP62YM"
+    },
+    "vapidKey": "BBB38sWK51da-UgyaafKaySrJKiu8k_4UPV-2k4vv2roOpg5jjWM7ULxxuFEfA8rY7CVDr-_WHZVCg7b6d4pTlg"
+}
+```
+
 ## Deployment
 
 - Make sure that .Net 5.0 is installed (https://dotnet.microsoft.com/download)

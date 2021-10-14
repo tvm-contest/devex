@@ -7,14 +7,20 @@ services:
   app1:
     image: ghcr.io/ch1sel/free-ton-notify:latest
     env_file: .env
+    volumes:
+      - ./firebase-key.json:/app/firebase-key.json
     restart: unless-stopped
   app2:
     image: ghcr.io/ch1sel/free-ton-notify:latest
     env_file: .env
+    volumes:
+      - ./firebase-key.json:/app/firebase-key.json
     restart: unless-stopped
   app3:
     image: ghcr.io/ch1sel/free-ton-notify:latest
     env_file: .env
+    volumes:
+      - ./firebase-key.json:/app/firebase-key.json
     restart: unless-stopped
   nginx:
     image: docker.io/bitnami/nginx:1.21

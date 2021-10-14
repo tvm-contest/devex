@@ -1,4 +1,8 @@
 using System;
+using System.IO;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Notifon.Server.Configuration;
-using Notifon.Server.Configuration.Options;
 using Notifon.Server.Database;
 using Notifon.Server.MassTransit;
 using Notifon.Server.Redis;
@@ -16,6 +19,7 @@ using Notifon.Server.SignalR;
 using NSwag;
 using Prometheus;
 using Serilog;
+using AppOptions = Notifon.Server.Configuration.Options.AppOptions;
 
 namespace Notifon.Server {
     public class Startup {
@@ -45,6 +49,11 @@ namespace Notifon.Server {
 
             // http client for sending http hooks
             services.AddHttpClient();
+
+            //Firebase messaging
+            services.AddSingleton(FirebaseMessaging.GetMessaging(FirebaseApp.Create(new FirebaseAdmin.AppOptions {
+                Credential = GoogleCredential.FromFile(Path.Combine(Directory.GetCurrentDirectory(), "firebase-key.json"))
+            })));
 
             // add masstransit with rabbit if configured else use in-memory bus
             services.AddMassTransit(Configuration.ContainsRabbitMqOptions());

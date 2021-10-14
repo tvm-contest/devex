@@ -20,7 +20,7 @@
             <Compose>--compatibility -f docker-compose.yaml -f docker-compose.cluster.yaml</Compose>
             <Ssh>ssh -y $(Server)</Ssh>
         </PropertyGroup>
-        <Exec Command="rsync -zvrc --exclude=&quot;.env&quot; --exclude=&quot;nginx/ssl&quot; .docker-compose/* $(Server):$(ServerPath)" />
+        <Exec Command="rsync -zvrc --exclude=&quot;.env&quot; --exclude=&quot;nginx/ssl&quot; --exclude=&quot;firebase-key.json&quot; .docker-compose/* $(Server):$(ServerPath)" />
         <Exec Command="$(Ssh) &quot;cd $(ServerPath);docker-compose $(Compose) pull&quot;" />
         <Exec Command="$(Ssh) &quot;cd $(ServerPath);docker-compose $(Compose) up --remove-orphans -d&quot;" />
         <Exec Command="$(Ssh) &quot;cd $(ServerPath);docker-compose $(Compose) exec -T nginx nginx -s reload&quot;" />

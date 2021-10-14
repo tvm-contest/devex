@@ -26,6 +26,9 @@ namespace Notifon.Server {
             "Mailgun endpoint:\n" +
             "your-name@your-domain.com [-d[:body]] [-mf:FROM_ADDRESS] [-md:MAILGUN_DOMAIN] [-mk:MAILGUN_APIKEY] [-ms:MAILGUN_SUBJECT]\n" +
             "\n" +
+            "Firebase Cloud Messages\n" +
+            "FCM-ID:YOU_FCM_TOKEN [-d[:body]]\n" +
+            "\n" +
             "✨ Examples commands:\n" +
             "'https://notifon.requestcatcher.com/test' just relay encrypted messages to HTTP endpoint\n" +
             "\n" +
@@ -77,6 +80,7 @@ namespace Notifon.Server {
             " - HTTP notifications starting with http:// or https://\n" +
             " - Telegram notifications https://t.me/{chat_key} or TelegramChatId:{chat_id}(useful for private group)\n" +
             " - Emails notification youname@youdomain.com" + "\n" +
+            " - FCM notification FCM-ID:{FCM-TOKEN}" + "\n" +
             "pass 'help' as callback to get full description" + "\n" +
             ContactUs;
 

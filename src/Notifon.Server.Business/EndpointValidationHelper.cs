@@ -14,6 +14,9 @@ namespace Notifon.Server.Business {
         private static readonly Regex TelegramChatIdRegex =
             new(@"^TelegramChatId:(?'chatId'-\d{1,32})$", RegexOptions.Compiled);
 
+        private static readonly Regex FcmEndpointRegex =
+            new(@"^FCM-ID:.*$", RegexOptions.Compiled);
+
         public static bool IsHttpEndpoint(string endpoint) {
             return HttpEndpointRegex.IsMatch(endpoint);
         }
@@ -43,6 +46,10 @@ namespace Notifon.Server.Business {
             catch (FormatException) {
                 return false;
             }
+        }
+
+        public static bool IsFcmEndpoint(string endpoint) {
+            return FcmEndpointRegex.IsMatch(endpoint);
         }
     }
 }

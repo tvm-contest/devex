@@ -10,3 +10,5 @@ App_Data
 **/nginx/ssl
 
 /publish
+
+firebase-key.json

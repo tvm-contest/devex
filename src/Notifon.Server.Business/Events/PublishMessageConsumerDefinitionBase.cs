@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using FirebaseAdmin.Messaging;
 using GreenPipes;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
@@ -26,6 +27,9 @@ namespace Notifon.Server.Business.Events {
                 e.UseDelayedRedelivery(configurator => {
                     configurator.Ignore<WrongEndpointFormatException>();
                     configurator.Ignore<NoRequiredParametersException>();
+                    configurator.Ignore<NoFirebaseMessagingException>();
+                    configurator.Ignore<FirebaseMessagingException>(
+                        exception => exception.Message.Equals("Requested entity was not found."));
                     configurator.Ignore<HttpRequestException>(exception => exception.StatusCode != null
                                                                            && !_retryStatusCodes.Contains((int)exception.StatusCode)
                                                                            && (int)exception.StatusCode is >= 400 and <= 499);

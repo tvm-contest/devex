@@ -2,6 +2,7 @@
     public enum EndpointType {
         Http,
         Telegram,
-        Mailgun
+        Mailgun,
+        Fcm
     }
 }
