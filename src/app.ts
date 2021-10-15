@@ -34,10 +34,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(ROUTES.LOGS.INFO, (req, res) => {
-	console.log('logs requested');
-	const path2 = path.join(__dirname, '../../logs');
-	console.log(path.join(__dirname, '../../logs'));
-	res.sendFile(path2);
+	const pathToLogs = path.join(__dirname, '../../logs/info.log');
+
+	console.log(pathToLogs);
+
+	res.sendFile(pathToLogs);
 });
 
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
