@@ -6,7 +6,7 @@ Surf: 0:a9ef47b6bec35e001d1f295b34b9ec9abc0ca5c8623de4f414b4fd0b0dc6ca08
 
 # FreeTON Notification Service
 
-FNS (FreeTON Notification Service) is a http service allows you to forward encrypted messages from FreeTON Network to http(s) web services and Telegram.
+FNS (FreeTON Notification Service) is a http service allows you to forward encrypted messages from FreeTON Network to http(s) web services and Telegram. We guarantee delivery: no one loss even a server or service unavailable. FNS will repeat to try send a callback until it is done. Or until you want to stop it.
 
 ![image](https://user-images.githubusercontent.com/54890287/137313922-3345660c-b800-4512-a794-7bb206ae775c.png)
 
