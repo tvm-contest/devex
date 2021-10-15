@@ -1,0 +1,117 @@
+{{ define "callbackURL_info.html" }}
+<!doctype html>
+<html dir="ltr" lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Callback URL info</title>
+    <link rel="icon" type="image/png" href="/misc/images/favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row" style="padding: 2rem;">
+        <div class="col-6 is-center"> <img src="/misc/images/logo.png"/> </div>
+        <div class="col-6">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  Id
+                </td>
+                <td>
+                  {{ .Id }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  URL
+                </td>
+                <td>
+                  {{ .URL }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Method
+                </td>
+                <td>
+                  {{ .Method }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Query
+                </td>
+                <td>
+                  {{ .Query }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Confirmed
+                </td>
+                <td>
+                  {{ .Confirmed }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Counter
+                </td>
+                <td>
+                  {{ .Counter }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Verification way
+                </td>
+                <td>
+                  {{ .VerificationWay }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Verification secret
+                </td>
+                <td>
+                  {{ .VerificationSecret }} 
+                  {{if .Confirmed}}
+                      {{else}}
+                      <a href="/verification_way/{{ .Id }}">Instructions</a> 
+                  {{end}}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Created time
+                </td>
+                <td>
+                  {{ .CreatedTime }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Updated time
+                </td>
+                <td>
+                  {{ .UpdatedTime }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 is-center"> Contact - support@mytonwallet.com </div>
+      </div>
+    </div>
+  </body>
+</html>
+{{ end }}

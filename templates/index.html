@@ -1,0 +1,31 @@
+{{ define "index.html" }}
+<!doctype html>
+<html dir="ltr" lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Verification process</title>
+    <link rel="icon" type="image/png" href="/misc/images/favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row" style="padding: 2rem;">
+        <div class="col-6 is-center"> <img src="{{ .logo }}"/> </div>
+        <div class="col-6">
+          <h1>{{ .name }}</h1>
+          <p>{{ .description }}</p>
+          <h3>Input format</h3>
+          <p>Path {{ .input_format.url }}</p>
+          <p>Method {{ .input_format.method }}</p>
+          <p>Parameters:</p>
+          <p>Hash - {{ .input_format.params.hash }}</p>
+          <p>Data - {{ .input_format.params.data }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 is-center"> Contact - {{ .support_contact }} </div>
+      </div>
+    </div>
+  </body>
+</html>
+{{ end }}
