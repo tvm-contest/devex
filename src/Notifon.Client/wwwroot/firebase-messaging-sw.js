@@ -14,8 +14,8 @@ importScripts('https://www.gstatic.com/firebasejs/9.1.1/firebase-messaging-compa
 // https://firebase.google.com/docs/web/setup#config-object
 fetch('/api/app/firebase-config')
     .then(response => {
-        console.log(response.body);
         response.json().then(config => {
+            console.log('Firebase config:', config);
             firebase.initializeApp(config.config);
             const messaging = firebase.messaging();
             messaging.onBackgroundMessage(function (payload) {
