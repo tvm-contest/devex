@@ -9,7 +9,6 @@
                                               StateTtlConfig$UpdateType
                                               StateTtlConfig$StateVisibility)
            (org.apache.flink.api.common.time Time)
-           (org.apache.flink.metrics MeterView)
            (org.apache.flink.java CoProcessFunctionBase
                                   UniqueStrings
                                   StringToLongMapStateDescriptor
@@ -58,8 +57,8 @@
             notifications {:get getNotifications :set setNotifications}
             usersCounter {:get getUsersCounter :set setUsersCounter}
             subscriptionsCounter {:get getSubscriptionsCounter :set setSubscriptionsCounter}
-            undeliverableNotificationsMeter {:get getUndeliverableNotificationsMeter
-                                             :set setUndeliverableNotificationsMeter}}
+            undeliverableNotificationsCounter {:get getUndeliverableNotificationsCounter
+                                               :set setUndeliverableNotificationsCounter}}
   :prefix "processor-")
 
 (defn- enable-ttl
@@ -93,9 +92,9 @@
     (.setNotifications this notifications)
     (.setUsersCounter this (-> ctx .getMetricGroup (.counter "users")))
     (.setSubscriptionsCounter this (-> ctx .getMetricGroup (.counter "subscriptions")))
-    (.setUndeliverableNotificationsMeter
+    (.setUndeliverableNotificationsCounter
       this
-      (-> ctx .getMetricGroup (.meter "undeliverable-notifications" (MeterView. 60))))))
+      (-> ctx .getMetricGroup (.counter "undeliverable-notifications")))))
 
 ;;
 ;; This is the place where commands from the Control stream are being processed.
@@ -135,7 +134,7 @@
                                                   (.getHash event)
                                                   (.getNonce event)
                                                   (.getEncryptedMessage event)))))))
-      (-> this .getUndeliverableNotificationsMeter .markEvent)))) ; track undeliverable notifications
+      (-> this .getUndeliverableNotificationsCounter .inc)))) ; track undeliverable notifications
 
 (defn processor-getProducedType [_]
   (TypeInformation/of (class NotificationEvent)))
@@ -159,10 +158,10 @@
   :extends org.apache.flink.java.RichAsyncFunctionBase
   :implements [org.apache.flink.api.java.typeutils.ResultTypeQueryable]
   :exposes {executor {:get getExecutor :set setExecutor}
-            deliveredNotificationsMeter {:get getDeliveredNotificationsMeter
-                                         :set setDeliveredNotificationsMeter}
-            undeliveredNotificationsMeter {:get getUndeliveredNotificationsMeter
-                                           :set setUndeliveredNotificationsMeter}}
+            deliveredNotificationsCounter {:get getDeliveredNotificationsCounter
+                                           :set setDeliveredNotificationsCounter}
+            undeliveredNotificationsCounter {:get getUndeliveredNotificationsCounter
+                                             :set setUndeliveredNotificationsCounter}}
   :prefix "sender-")
 
 ;;
@@ -197,12 +196,12 @@
        ScheduledExecutorServiceAdapter.
        (.setExecutor this))
   (let [ctx (.getRuntimeContext this)]
-    (.setDeliveredNotificationsMeter
+    (.setDeliveredNotificationsCounter
       this
-      (-> ctx .getMetricGroup (.meter "delivered-notifications" (MeterView. 60))))
-    (.setUndeliveredNotificationsMeter
+      (-> ctx .getMetricGroup (.counter "delivered-notifications")))
+    (.setUndeliveredNotificationsCounter
       this
-      (-> ctx .getMetricGroup (.meter "undelivered-notifications" (MeterView. 60))))))
+      (-> ctx .getMetricGroup (.counter "undelivered-notifications")))))
 
 ;;
 ;; Makes the whole stream non-blocking and allows sending HTTP notifications
@@ -227,13 +226,9 @@
                    (reify BiConsumer
                       (accept [_ _ throwable]
                         (if (nil? throwable)
-                            (do (-> this
-                                    .getDeliveredNotificationsMeter
-                                    .markEvent) ; track delivered notifications
+                            (do (-> this .getDeliveredNotificationsCounter .inc) ; track delivered notifications
                                 (.complete result-future (Collections/emptyList)))
-                            (do (-> this
-                                    .getUndeliveredNotificationsMeter
-                                    .markEvent) ; track undelivered notifications, i.e. subscriptions removal
+                            (do (-> this .getUndeliveredNotificationsCounter .inc) ; track undelivered notifications
                                 (->> (CommandEvent. (.getHash input)
                                                     (quot (System/currentTimeMillis) 1000)
                                                     "remove-subscription"
