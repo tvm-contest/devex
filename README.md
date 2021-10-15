@@ -1,7 +1,7 @@
 ## Contact
 
 * Telegram: [@rukavkov](https://t.me/rukavkov)
-* Surf: 0:a9ef47b6bec35e001d1f295b34b9ec9abc0ca5c8623de4f414b4fd0b0dc6ca08
+* Surf: 0:392300ae37bdccb044a8e2ba13f9f3a2f966f26c53a776bc10706f2ed591487d
 
 Repository(actual readme): https://github.com/nrukavkov/freeton-notification-service
 
