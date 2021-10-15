@@ -14,21 +14,22 @@ importScripts('https://www.gstatic.com/firebasejs/9.1.1/firebase-messaging-compa
 // https://firebase.google.com/docs/web/setup#config-object
 fetch('/api/app/firebase-config')
     .then(response => {
-        response.json().then(config => {
-            console.log('Firebase config:', config);
-            firebase.initializeApp(config.config);
-            const messaging = firebase.messaging();
-            messaging.onBackgroundMessage(function (payload) {
-                console.log('[firebase-messaging-sw.js] Received background message ', payload);
-                // Customize notification here
-                const notificationTitle = payload.notification.title;
-                const notificationOptions = {
-                    body: payload.notification.body,
-                    icon: '/logo.png'
-                };
-                self.registration.showNotification(notificationTitle, notificationOptions);
-            });
-        })
+        response.json()
+            .then(config => {
+                console.log('Firebase config:', config);
+                firebase.initializeApp(config.config);
+                const messaging = firebase.messaging();
+                messaging.onBackgroundMessage(function (payload) {
+                    console.log('[firebase-messaging-sw.js] Received background message ', payload);
+                    // Customize notification here
+                    const notificationTitle = payload.notification.title;
+                    const notificationOptions = {
+                        body: payload.notification.body,
+                        icon: '/logo.png'
+                    };
+                    self.registration.showNotification(notificationTitle, notificationOptions);
+                });
+            })
     });
 
 

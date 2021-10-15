@@ -15,12 +15,12 @@
         <MudText Typo="@Typo.h6" Class="ml-5" GutterBottom="@true" Style="white-space: nowrap">Testing guide</MudText>
         <MudPaper Class="d-flex flex-column" Outlined="true">
             <MudList Clickable="false" Dense="true">
-                <MudListItem Icon="@Icons.Sharp.Filter1" IconSize="@Size.Small">Run <MudLink Target="_blank" Href="@App.NotificationDeBot">Notification DeBot</MudLink></MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter2" IconSize="@Size.Small">Sign two transactions to deploy your notification contract if not done yet</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter3" IconSize="@Size.Small"><b>Set rules</b> as you need</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter4" IconSize="@Size.Small">Click <b>Send callbackUrl | deviceToken to provider</b></MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter5" IconSize="@Size.Small">Select <b>tonactions</b> provider(github.com/ton-actions/free-ton-http-notification-provider, ID = tonactions)</MudListItem>
-                <MudListItem Icon="@Icons.Sharp.Filter6" IconSize="@Size.Small"><MudLink Style="cursor: pointer" @onclick="@RequestNotification">Click</MudLink> and allow this site to show notifications</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter1" IconSize="@Size.Small">Allow this site to show notifications</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter2" IconSize="@Size.Small">Run <MudLink Target="_blank" Href="@App.NotificationDeBot">Notification DeBot</MudLink></MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter3" IconSize="@Size.Small">Sign two transactions to deploy your notification contract if not done yet</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter4" IconSize="@Size.Small"><b>Set rules</b> as you need</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter5" IconSize="@Size.Small">Click <b>Send callbackUrl | deviceToken to provider</b></MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter6" IconSize="@Size.Small">Select <b>tonactions</b> provider(github.com/ton-actions/free-ton-http-notification-provider, ID = tonactions)</MudListItem>
                 <MudListItem Icon="@Icons.Sharp.Filter7" IconSize="@Size.Small">
                     <MudPaper Elevation="0" Class="d-flex flex-row">
                         <MudPaper Elevation="0" Class="my-3 pr-2">Copy</MudPaper>
@@ -64,8 +64,7 @@
 
     protected override async Task OnInitializedAsync() {
         App = await AppConfigProvider.GetAppOptions();
-
-    // await GetToken();
+        await GetToken();
     }
 
     private async Task GetToken() {
@@ -80,16 +79,6 @@
         await JsApiService.CopyToClipboardAsync(message);
         await Task.Delay(TimeSpan.FromSeconds(0.5));
         SelectedChip = null;
-    }
-
-    private async Task RequestNotification() {
-        var result = await JsRuntime.InvokeAsync<string>("Notification.requestPermission");
-        if (result == "granted") {
-            await GetToken();
-        }
-        else {
-            FCMID = "No permissions to receive push notification";
-        }
     }
 
 }

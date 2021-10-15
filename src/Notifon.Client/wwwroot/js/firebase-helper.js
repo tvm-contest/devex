@@ -1,12 +1,19 @@
-async function getMessagingToken() {
-    const configResponse = await fetch('/api/app/firebase-config');
-    const config = await configResponse.json();
+let vapidKey;
 
-    console.log('Firebase config:', config);
+fetch('/api/app/firebase-config')
+    .then(response => {
+        response.json()
+            .then(config => {
+                firebase.initializeApp(config.config);
+                vapidKey = config.vapidKey
+            })
+    });
 
-    firebase.initializeApp(config.config);
-
+function getMessagingToken() {
+    // Notification.requestPermission();
     const messaging = firebase.messaging();
-
-    return messaging.getToken({vapidKey: config.vapidKey})
-} 
+    messaging.onMessage((payload) => {
+        console.log('Message received. ', payload);
+    });
+    return messaging.getToken({vapidKey: vapidKey});
+}
