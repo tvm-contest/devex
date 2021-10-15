@@ -1,0 +1,49 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"pong","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "send",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "receiveMessage",
+			"inputs": [
+				{"name":"message","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "_pong",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_pong","type":"address"}
+			]
+		},
+		{
+			"name": "_message",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_message","type":"bytes"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}
