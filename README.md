@@ -7,7 +7,7 @@ Service PROD version is already deployed here: https://ftns.freeton-stats.org/ a
   * Guaranteed delivery of notifications - notifications will be delivered even after service shutdown, repeated delivery for 24h in case if webhook consumer unavailable
   * Support for HTTPS protocol
   * Verification of a domain ownership - via adding a validation file in a .well-known folder
-  * Logging of events of http notifications for the possibility of displaying them in charts
+  * Logging of events of http notifications for the possibility of displaying them in charts - https://ftns.freeton-stats.org/log/info
   * All HTTP API methods must return a 200 response if the requested operation is successful and corresponding HTTP error code otherwise
   * Module information - available here https://ftns.freeton-stats.org/info/get
   * Well documented with openapi
@@ -45,7 +45,7 @@ Note: if you are going to use docker-compose, you should also update environment
 |---|---|---|---|
 | NODE_ENV  | string  | `development` |API runtime environment. eg: `staging`  |
 |  PORT | number  | `3000` | Port to run the API server on |
-|  MONGO_URL | string  | `mongodb://localhost:27017/books` | URL for MongoDB |
+|  MONGO_URL | string  | `mongodb://localhost:27017/ftns` | URL for MongoDB |
 |  KAFKA_USERNAME | string  | `undefined` | Your username |
 |  KAFKA_PASSWORD | string  | `undefined` | Your password |
 |  KAFKA_TOPIC | string  | `undefined` | Your topic |
@@ -115,3 +115,5 @@ The application uses [winston](https://github.com/winstonjs/winston) as the defa
 * The `docker-compose` file has a volume attached to container to expose host directory to the container for writing logs.
 * Console messages are prettified
 * Each line in error log file is a stringified JSON.
+
+Application logs available here: https://ftns.freeton-stats.org/log/info

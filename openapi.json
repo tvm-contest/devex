@@ -25,7 +25,11 @@
     {
       "name": "info",
       "description": "Info APIs"
-    }
+    },
+	{
+	  "name": "logs",
+	  "description": "Service logs"
+	}
   ],
   "paths": {
     "/info/get": {
@@ -57,11 +61,40 @@
         }
       }
     },
+	"/log/info": {
+		"get": {
+		  "tags": ["logs"],
+		  "summary": "Get service logs",
+		  "operationId": "log-info",
+		  "responses": {
+			"200": {
+			  "description": "Ok",
+			  "content": {
+				"text/plain": {
+				  "schema": {
+					"type": "string"
+				  }
+				}
+			  }
+			},
+			"500": {
+			  "description": "Internal Server Error",
+			  "content": {
+				"application/json": {
+				  "schema": {
+					"$ref": "#/components/schemas/ServerErrorSchema"
+				  }
+				}
+			  }
+			}
+		  }
+		}
+	},
     "/webhook/subscribe": {
         "post": {
             "tags": ["webhook"],
             "summary": "Subscribe to notifications",
-            "operationId": "info-get",
+            "operationId": "webhook-subscribe",
             "requestBody": {
                 "description": "Subscribe to notifications",
                 "required": true,
@@ -76,7 +109,13 @@
             "responses": {
                 "200": {
                     "description": "Ok",
-                    "content": "string"
+                    "content": {
+						"text/plain": {
+						  "schema": {
+							"type": "string"
+						  }
+						}
+					}
                 },
                 "400": {
                     "description": "Bad request",

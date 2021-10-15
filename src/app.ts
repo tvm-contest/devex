@@ -36,8 +36,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(ROUTES.LOGS.INFO, (req, res) => {
 	const pathToLogs = path.join(__dirname, '../../logs/info.log');
 
-	console.log(pathToLogs);
-
 	res.sendFile(pathToLogs);
 });
 
