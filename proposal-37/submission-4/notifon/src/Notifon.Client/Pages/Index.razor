@@ -1,0 +1,46 @@
+﻿@page "/"
+@using System.Threading
+@inject NavigationManager _navigationManager;
+
+<MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">@App.ServicePurpose</MudText>
+<MudText Align="Align.Center" GutterBottom="@true">@App.ServiceDescription</MudText>
+<MudText Align="Align.Left">GitHub: <MudLink Target="_blank" Href="@App.GitHub">@App.GitHub</MudLink></MudText>
+<MudText Align="Align.Left">Telegram: <MudLink Target="_blank" Href="@App.Telegram">@App.Telegram</MudLink></MudText>
+<MudText Align="Align.Left">Swagger: <MudLink Target="_blank" Href="@SwaggerUrl">@SwaggerUrl</MudLink></MudText>
+@if (Grafana) {
+    <MudText Align="Align.Left">Grafana: <MudLink Target="_blank" Href="/grafana">Grafana</MudLink></MudText>
+}
+
+@code{
+
+    [Inject]
+    AppConfigProvider AppConfigProvider { get; set; }
+
+    [Inject]
+    HttpClient HttpClient { get; set; }
+
+    AppOptions App { get; set; } = new();
+
+    protected override async Task OnInitializedAsync() {
+        App = await AppConfigProvider.GetAppOptions();
+        if (await CheckGrafanaSite()) {
+            Grafana = true;
+        }
+    }
+
+    public bool Grafana { get; set; }
+
+    private async Task<bool> CheckGrafanaSite() {
+        try {
+            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+            var responseMessage = await HttpClient.GetAsync("/grafana/123123", cts.Token);
+            return (int)responseMessage.StatusCode == 404;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    private string SwaggerUrl => _navigationManager.ToAbsoluteUri("swagger").ToString();
+
+}

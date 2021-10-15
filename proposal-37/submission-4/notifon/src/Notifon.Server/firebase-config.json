@@ -1,0 +1,12 @@
+{
+  "config": {
+    "apiKey": "AIzaSyBRtA8KuKWMEohjxo9L7ZoTaP3CCRJie_g",
+    "authDomain": "notifon-be3df.firebaseapp.com",
+    "projectId": "notifon-be3df",
+    "storageBucket": "notifon-be3df.appspot.com",
+    "messagingSenderId": "858600272109",
+    "appId": "1:858600272109:web:8cfe6742ba84116a35dce4",
+    "measurementId": "G-QQHHEP62YM"
+  },
+  "vapidKey": "BBB38sWK51da-UgyaafKaySrJKiu8k_4UPV-2k4vv2roOpg5jjWM7ULxxuFEfA8rY7CVDr-_WHZVCg7b6d4pTlg"
+}

@@ -1,0 +1,84 @@
+﻿@page "/test-firebase"
+
+<style>
+    .token {
+        overflow-wrap: anywhere;
+        max-height: 30px;
+        width: auto;
+        overflow: auto;        
+        font-size: 0.7rem;
+    }
+</style>
+<MudText Typo="@Typo.h4" Align="@Align.Center" GutterBottom="@true">Firebase Cloud Messaging test</MudText>
+<MudGrid>
+    <MudItem xs="12" md="9">
+        <MudText Typo="@Typo.h6" Class="ml-5" GutterBottom="@true" Style="white-space: nowrap">Testing guide</MudText>
+        <MudPaper Class="d-flex flex-column" Outlined="true">
+            <MudList Clickable="false" Dense="true">
+                <MudListItem Icon="@Icons.Sharp.Filter1" IconSize="@Size.Small">Allow this site to show notifications</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter2" IconSize="@Size.Small">Run <MudLink Target="_blank" Href="@App.NotificationDeBot">Notification DeBot</MudLink></MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter3" IconSize="@Size.Small">Sign two transactions to deploy your notification contract if not done yet</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter4" IconSize="@Size.Small"><b>Set rules</b> as you need</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter5" IconSize="@Size.Small">Click <b>Send callbackUrl | deviceToken to provider</b></MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter6" IconSize="@Size.Small">Select <b>tonactions</b> provider(github.com/ton-actions/free-ton-http-notification-provider, ID = tonactions)</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter7" IconSize="@Size.Small">
+                    <MudPaper Elevation="0" Class="d-flex flex-row">
+                        <MudPaper Elevation="0" Class="my-3 pr-2">Copy</MudPaper>
+                        @if (FCMID != null) {
+                            <MudPaper Elevation="0" Class="token my-3">@FCMID</MudPaper>
+                            <MudPaper Elevation="0" Class="my-1">
+                                <MudChipSet @bind-SelectedChip="SelectedChip" Filter="true" Mandatory="false">
+                                    <MudChip OnClick="@(() => CopyToClipboard(FCMID))" Icon="@Icons.Filled.ContentCopy" Color="Color.Info"/>
+                                </MudChipSet>
+                            </MudPaper>
+                        }
+                        else {
+                            <MudPaper Elevation="0" Class="my-2">Please click link from previous step</MudPaper>
+                        }
+                    </MudPaper>
+                </MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter8" IconSize="@Size.Small">Past this token into DeBot dialog</MudListItem>
+                <MudListItem Icon="@Icons.Sharp.Filter9" IconSize="@Size.Small">Send message to/from address from your rules</MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12">
+        <MessageSenderWidget/>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    [Inject]
+    AppConfigProvider AppConfigProvider { get; set; }
+
+    [Inject]
+    IJSRuntime JsRuntime { get; set; }
+
+    [Inject]
+    IJsApiService JsApiService { get; set; }
+
+    AppOptions App { get; set; } = new();
+
+    public string FCMID { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        App = await AppConfigProvider.GetAppOptions();
+        await GetToken();
+    }
+
+    private async Task GetToken() {
+        var token = await JsRuntime.InvokeAsync<string>("getMessagingToken");
+        FCMID = $"FCM-ID:{token}";
+    }
+
+    public MudChip SelectedChip { get; set; }
+
+    private async Task CopyToClipboard(string message) {
+        if (SelectedChip == null) return;
+        await JsApiService.CopyToClipboardAsync(message);
+        await Task.Delay(TimeSpan.FromSeconds(0.5));
+        SelectedChip = null;
+    }
+
+}

@@ -1,0 +1,39 @@
+<Project DefaultTargets="Deploy">
+
+    <PropertyGroup>
+        <Server>ch1sel@notify-contest.ddns.net</Server>
+        <ServerPath>~/notifon/</ServerPath>
+        <ImageName>ghcr.io/ton-actions/notifon:latest</ImageName>
+        <ImagesPrune>false</ImagesPrune>
+        <FullStack>false</FullStack>
+    </PropertyGroup>
+
+    <Target Name="Build" BeforeTargets="Push">
+        <Exec Command="docker build . -t $(ImageName)" />
+    </Target>
+
+    <Target Name="Push">
+        <Exec Command="docker push $(ImageName)" />
+    </Target>
+
+    <Target Name="Deploy">
+        <PropertyGroup Condition="$(FullStack)">
+            <FullCompose>-f docker-compose.vpn.yaml -f docker-compose.grafana.yaml</FullCompose>
+        </PropertyGroup>
+        <PropertyGroup>
+            <Compose>--compatibility -f docker-compose.yaml -f docker-compose.cluster.yaml $(FullCompose)</Compose>
+            <Ssh>ssh -y $(Server)</Ssh>
+        </PropertyGroup>
+        <Exec Command="rsync -zvrc --exclude=&quot;.env&quot; --exclude=&quot;nginx/ssl&quot; --exclude=&quot;firebase-key.json&quot; .docker-compose/* $(Server):$(ServerPath)" />
+        <Exec Command="$(Ssh) &quot;cd $(ServerPath);docker-compose $(Compose) pull&quot;" />
+        <Exec Command="$(Ssh) &quot;cd $(ServerPath);docker-compose $(Compose) up --remove-orphans -d&quot;" />
+        <Exec Command="$(Ssh) &quot;cd $(ServerPath);docker-compose $(Compose) exec -T nginx nginx -s reload&quot;" />
+        <Exec Command="$(Ssh) &quot;docker image prune -f&quot;" Condition="$(ImagesPrune)" />
+    </Target>
+
+    <ItemGroup>
+        <Content Include="Dockerfile" />
+        <Content Include=".docker-compose/**" />
+        <Content Include=".github/**" />
+    </ItemGroup>
+</Project>

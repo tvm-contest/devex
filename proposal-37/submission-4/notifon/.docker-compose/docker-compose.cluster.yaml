@@ -1,0 +1,33 @@
+version: '3.3'
+
+services:
+  app:
+    deploy:
+      replicas: 0
+  app1:
+    image: ghcr.io/ton-actions/notifon:latest
+    env_file: .env
+    volumes:
+      - ./firebase-key.json:/app/firebase-key.json
+    restart: unless-stopped
+  app2:
+    image: ghcr.io/ton-actions/notifon:latest
+    env_file: .env
+    volumes:
+      - ./firebase-key.json:/app/firebase-key.json
+    restart: unless-stopped
+  app3:
+    image: ghcr.io/ton-actions/notifon:latest
+    env_file: .env
+    volumes:
+      - ./firebase-key.json:/app/firebase-key.json
+    restart: unless-stopped
+  nginx:
+    image: docker.io/bitnami/nginx:1.21
+    ports:
+      - '80:8080'
+      - '443:8443'
+    volumes:
+      - ./nginx/conf/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
+      - ./nginx/ssl:/opt/bitnami/nginx/ssl
+    restart: unless-stopped
