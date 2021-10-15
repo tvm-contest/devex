@@ -12,9 +12,6 @@ class NotificationsFactory {
 		const [hash, nonce, encodedMessage] = value.split(' ');
 		const consumer = await WebhookConsumer.findOne({ hash });
 
-		console.log('HASH ON CREATE: ', hash);
-		console.dir(consumer);
-
 		if (!consumer?.endpoint) {
 			logger.error('Consumer is not defined or has no endpoint');
 
