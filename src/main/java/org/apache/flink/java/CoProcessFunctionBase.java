@@ -2,7 +2,6 @@ package org.apache.flink.java;
 
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
 import org.apache.flink.metrics.Counter;
-import org.apache.flink.metrics.Meter;
 import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.MapState;
 import org.apache.flink.clojure.dto.SubscriptionEvent;
@@ -18,6 +17,6 @@ public abstract class CoProcessFunctionBase extends CoProcessFunction<Subscripti
     protected transient MapState<String, Long> notifications;
     protected transient Counter usersCounter;
     protected transient Counter subscriptionsCounter;
-    protected transient Meter undeliverableNotificationsMeter;
+    protected transient Counter undeliverableNotificationsCounter;
 }
 
