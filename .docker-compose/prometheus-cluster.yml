@@ -1,0 +1,32 @@
+global:
+  scrape_interval: 5s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+# - "first_rules.yml"
+# - "second_rules.yml"
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: [ 'localhost:9090' ]
+  #  - job_name: 'docker'
+  #    static_configs:
+  #      - targets: ['docker.for.mac.localhost:9323']
+  - job_name: 'rabbitmq-server'
+    static_configs:
+      - targets:
+          - 'rabbitmq:15692'
+  - job_name: 'notifon'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+          - 'app1:80'
+          - 'app2:80'
+          - 'app3:80'
