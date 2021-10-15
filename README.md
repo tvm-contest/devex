@@ -58,7 +58,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 > 💡 Uses an in-memory queue and Sqlite database. So the processing state is not saved on disk, and not committed Kafka messages can be processed repeatedly after restarting
 
 - Make sure that .Net 5.0 is installed (https://dotnet.microsoft.com/download)
-- Download or clone repo https://github.com/ton-actions/free-ton-http-notification-provider
+- Download or clone repo https://github.com/ton-actions/free-ton-http-notification-provider.git
 - Go to the repository directory and create [minimal .env](#env) file
 - Exec `dotnet run --project .\src\Notifon.Server --urls=http://localhost/`
 - Application will be started at http://localhost and DeBot endpoint is http://localhost/endpoint
@@ -70,7 +70,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 - Make sure that Docker Engine is installed and started (https://docs.docker.com/engine/install/)
 - Create [minimal .env](#env) file
-- Exec `docker run --rm --name notifon --env-file=.env -p 80:80 ghcr.io/ton-actions/free-ton-notify`
+- Exec `docker run --rm --name notifon --env-file=.env -p 80:80 ghcr.io/ton-actions/notifon:latest`
 
 ### Docker compose (Production-ready solution)
 

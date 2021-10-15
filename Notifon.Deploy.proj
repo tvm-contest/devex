@@ -5,6 +5,7 @@
         <ServerPath>~/notifon/</ServerPath>
         <ImageName>ghcr.io/ton-actions/notifon:latest</ImageName>
         <ImagesPrune>false</ImagesPrune>
+        <FullStack>false</FullStack>
     </PropertyGroup>
 
     <Target Name="Build" BeforeTargets="Push">
@@ -16,8 +17,11 @@
     </Target>
 
     <Target Name="Deploy">
+        <PropertyGroup Condition="$(FullStack)">
+            <FullCompose>-f docker-compose.vpn.yaml</FullCompose>
+        </PropertyGroup>
         <PropertyGroup>
-            <Compose>--compatibility -f docker-compose.yaml -f docker-compose.cluster.yaml</Compose>
+            <Compose>--compatibility -f docker-compose.yaml -f docker-compose.cluster.yaml $(FullCompose)</Compose>
             <Ssh>ssh -y $(Server)</Ssh>
         </PropertyGroup>
         <Exec Command="rsync -zvrc --exclude=&quot;.env&quot; --exclude=&quot;nginx/ssl&quot; --exclude=&quot;firebase-key.json&quot; .docker-compose/* $(Server):$(ServerPath)" />

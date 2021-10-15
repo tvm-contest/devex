@@ -25,7 +25,7 @@ services:
     image: bitnami/rabbitmq:3.9
     environment:
       - 'RABBITMQ_COMMUNITY_PLUGINS=https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.9.0/rabbitmq_delayed_message_exchange-3.9.0.ez'
-      - 'RABBITMQ_PLUGINS=rabbitmq_management rabbitmq_web_dispatch rabbitmq_management_agent rabbitmq_delayed_message_exchange'
+      - 'RABBITMQ_PLUGINS=rabbitmq_management rabbitmq_web_dispatch rabbitmq_management_agent rabbitmq_delayed_message_exchange rabbitmq_prometheus'
       - 'RABBITMQ_DISK_FREE_RELATIVE_LIMIT=0.1'
     volumes:
       - rabbitmq_data:/bitnami
