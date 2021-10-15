@@ -7,7 +7,8 @@ const ROUTES = {
 		SUBSCRIBE: `${WEBHOOK_ROOT}/subscribe`
 	},
 	INFO: {
-		GET: `${INFO_ROOT}/get`
+		GET: `${INFO_ROOT}/get`,
+		LOGS: `${INFO_ROOT}/logs`
 	},
 	DOCS: {
 		API: `${DOCS_ROOT}/api`

@@ -12,6 +12,7 @@ router.post(ROUTES.WEBHOOK.SUBSCRIBE, WebhookController.subscribe);
 
 // Info routes
 router.get(ROUTES.INFO.GET, InfoController.get);
+router.get(ROUTES.INFO.LOGS, InfoController.logs);
 
 // Docs routes
 const swaggerUiOptions = {
