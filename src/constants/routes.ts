@@ -1,7 +1,7 @@
 const WEBHOOK_ROOT = '/webhook';
 const INFO_ROOT = '/info';
 const DOCS_ROOT = '/docs';
-const LOGS_ROOT = '/logs';
+const LOGS_ROOT = '/log';
 
 const ROUTES = {
 	WEBHOOK: {
