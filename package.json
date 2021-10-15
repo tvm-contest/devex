@@ -1,0 +1,26 @@
+{
+  "name": "ton-events",
+  "version": "1.0.0",
+  "description": "HTTP Notifications Provider for the Free TON network",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "keywords": ["freeton", "ton"],
+  "author": "Serge Medvedev <sergemedvedev@ukr.net>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "amqplib": "^0.8.0",
+    "async": "^3.2.1",
+    "cookie-parser": "^1.4.5",
+    "debug": "^4.3.2",
+    "express": "^4.17.1",
+    "got": "^11.8.2",
+    "http-errors": "^1.8.0",
+    "lodash": "^4.17.21",
+    "morgan": "^1.10.0",
+    "pug": "^3.0.2",
+    "serve-favicon": "^2.5.0",
+    "validator": "^13.6.0"
+  }
+}
