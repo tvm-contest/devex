@@ -458,18 +458,18 @@ namespace Notifon.Client
     public partial interface IApiAppClient
     {
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AppOptions> GetOptionsAsync();
+        System.Threading.Tasks.Task<AppOptions> GetAppOptionsAsync();
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AppOptions> GetOptionsAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AppOptions> GetAppOptionsAsync(System.Threading.CancellationToken cancellationToken);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AppConfig> GetConfigAsync();
+        System.Threading.Tasks.Task<FileResponse> GetFirebaseConfigAsync();
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AppConfig> GetConfigAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<FileResponse> GetFirebaseConfigAsync(System.Threading.CancellationToken cancellationToken);
     
     }
     
@@ -501,14 +501,14 @@ namespace Notifon.Client
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<AppOptions> GetOptionsAsync()
+        public System.Threading.Tasks.Task<AppOptions> GetAppOptionsAsync()
         {
-            return GetOptionsAsync(System.Threading.CancellationToken.None);
+            return GetAppOptionsAsync(System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<AppOptions> GetOptionsAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<AppOptions> GetAppOptionsAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("api/app/options");
@@ -573,17 +573,17 @@ namespace Notifon.Client
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<AppConfig> GetConfigAsync()
+        public System.Threading.Tasks.Task<FileResponse> GetFirebaseConfigAsync()
         {
-            return GetConfigAsync(System.Threading.CancellationToken.None);
+            return GetFirebaseConfigAsync(System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<AppConfig> GetConfigAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<FileResponse> GetFirebaseConfigAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append("api/app/config");
+            urlBuilder_.Append("api/app/firebase-config");
     
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -592,7 +592,7 @@ namespace Notifon.Client
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/octet-stream"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
     
@@ -615,14 +615,12 @@ namespace Notifon.Client
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 200 || status_ == 206)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AppConfig>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            return objectResponse_.Object;
+                            var responseStream_ = response_.Content == null ? System.IO.Stream.Null : await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, null, response_); 
+                            disposeClient_ = false; disposeResponse_ = false; // response and client are disposed by FileResponse
+                            return fileResponse_;
                         }
                         else
                         {
@@ -1288,18 +1286,6 @@ namespace Notifon.Client
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class AppConfig 
-    {
-        [System.Text.Json.Serialization.JsonPropertyName("options")]
-        public AppOptions Options { get; set; }
-    
-        [System.Text.Json.Serialization.JsonPropertyName("firebase")]
-        public Firebase Firebase { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class FreeTonSendMessageResult 
     {
         [System.Text.Json.Serialization.JsonPropertyName("success")]
@@ -1392,21 +1378,6 @@ namespace Notifon.Client
     
         [System.Text.Json.Serialization.JsonPropertyName("endpointCount")]
         public int EndpointCount { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.5.2.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Firebase 
-    {
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [System.Text.Json.Serialization.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
     
     
     }

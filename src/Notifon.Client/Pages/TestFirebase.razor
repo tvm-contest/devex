@@ -63,8 +63,7 @@
     public string FCMID { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        var config = await AppConfigProvider.GetAppOptions();
-        App = config.Options;
+        App = await AppConfigProvider.GetAppOptions();
         var token = await JsRuntime.InvokeAsync<string>("getMessagingToken");
         FCMID = $"FCM-ID:{token}";
     }

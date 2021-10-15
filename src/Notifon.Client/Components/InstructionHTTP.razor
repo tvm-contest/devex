@@ -20,8 +20,7 @@
     AppOptions App { get; set; } = new();
 
     protected override async Task OnInitializedAsync() {
-        var config = await AppConfigProvider.GetAppOptions();
-        App = config.Options;
+        App = await AppConfigProvider.GetAppOptions();
     }
 
 }
