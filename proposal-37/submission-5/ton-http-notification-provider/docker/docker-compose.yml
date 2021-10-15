@@ -1,0 +1,15 @@
+version: "3"
+services:
+  http-notification-provider:
+    build: 
+      context: .
+    image: http-notification-provider:latest
+    restart: always
+    network: bridge
+    ports:
+      - 3000:3000
+    volumes:
+      - ./http-provider.conf:/etc/supervisor.d/http-provider.conf
+      - ./build:/opt
+      - /opt/docker/logs/supervisor:/var/log/supervisor
+    container_name: http-notification-provider
