@@ -82,4 +82,4 @@ All files will be placed in `./build` folder
 
 # Contributing / Issues / Requests
 
-For ideas, issues, additions, modifications please raise an issue or a pull request at https://github.com/mytonwallet/ton-http-notification-provider-test-serer
+For ideas, issues, additions, modifications please raise an issue or a pull request at https://github.com/mytonwallet/ton-http-notification-provider-test-server
