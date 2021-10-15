@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Flurl;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notifon.Server.Business.Models;
 using Notifon.Server.Configuration.Options;
@@ -16,11 +17,14 @@ namespace Notifon.Server.Business.Events {
     public class PublishMessageMailgunConsumer : IConsumer<PublishMessage> {
         private const string ApiUrl = "https://api.mailgun.net/v3";
         private readonly HttpClient _httpClient;
+        private readonly ILogger<PublishMessageMailgunConsumer> _logger;
         private readonly IOptions<MailGunOptions> _mailGunOptionsAccessor;
 
-        public PublishMessageMailgunConsumer(HttpClient httpClient, IOptions<MailGunOptions> mailGunOptionsAccessor) {
+        public PublishMessageMailgunConsumer(HttpClient httpClient, IOptions<MailGunOptions> mailGunOptionsAccessor,
+            ILogger<PublishMessageMailgunConsumer> logger) {
             _httpClient = httpClient;
             _mailGunOptionsAccessor = mailGunOptionsAccessor;
+            _logger = logger;
         }
 
         public async Task Consume(ConsumeContext<PublishMessage> context) {
@@ -41,7 +45,15 @@ namespace Notifon.Server.Business.Events {
                 Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{parameters.ApiKey}")));
 
             var response = await _httpClient.PostAsync(url, request, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            try {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException) {
+                if (response.Content.Headers.ContentLength > 0) {
+                    var result = await response.Content.ReadAsStringAsync(cancellationToken);
+                    _logger.LogWarning("Mail sending {Result}", result);
+                }
+            }
         }
     }
 

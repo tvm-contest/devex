@@ -36,6 +36,7 @@ namespace Notifon.Server.Business.Events {
             };
             if (_firebaseMessaging == null)
                 throw new NoFirebaseMessagingException("No Firebase Messaging Instance. Make sure that file firebase-key.json exists");
+            _logger.LogTrace("FCM Message {@Message}", msg);
             await _firebaseMessaging.SendAsync(msg, cancellationToken);
         }
     }
