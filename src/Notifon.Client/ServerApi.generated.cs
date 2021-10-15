@@ -1379,6 +1379,9 @@ namespace Notifon.Client
         [System.Text.Json.Serialization.JsonPropertyName("endpointCount")]
         public int EndpointCount { get; set; }
     
+        [System.Text.Json.Serialization.JsonPropertyName("tonEndpoints")]
+        public System.Collections.Generic.ICollection<string> TonEndpoints { get; set; }
+    
     
     }
 

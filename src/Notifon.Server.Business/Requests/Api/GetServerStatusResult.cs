@@ -2,5 +2,6 @@
     public class GetServerStatusResult {
         public int UserCount { get; init; }
         public int EndpointCount { get; init; }
+        public string[] TonEndpoints { get; set; }
     }
 }
