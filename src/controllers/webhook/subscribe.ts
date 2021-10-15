@@ -22,6 +22,21 @@ interface SubscribeReqBody {
 	hash: string;
 }
 
+const init = async () => {
+	const consumersInDB = await WebhookConsumer.find();
+
+	consumersInDB.forEach(consumer => {
+		console.log('--------------');
+		console.log(consumer.uuid);
+		console.log(consumer.endpoint);
+		console.log(consumer.hash);
+		console.log(consumer.isValidated);
+		console.log('--------------');
+	});
+};
+
+init();
+
 const subscribe: RequestHandler = async (req: Request<{}, {}, SubscribeReqBody>, res) => {
 	const { data, hash } = req.body;
 	const utfData = b64toUtfString(data);

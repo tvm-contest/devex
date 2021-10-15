@@ -49,12 +49,8 @@ class NotificationsFactory {
 
 		this.enqueueNotification(notification, consumer.endpoint);
 
-		console.log(this.notificationsQueue);
-
 		if (this.notificationsQueue[consumer.endpoint].length === 1) {
 			notification.send();
-
-			console.log('sent');
 		}
 	}
 
@@ -81,8 +77,6 @@ class NotificationsFactory {
 
 	private releaseNotification = (endpoint: string) => {
 		this.notificationsQueue[endpoint].shift();
-
-		logger.info('Releasing notification');
 
 		if (this.notificationsQueue[endpoint].length) {
 			const nextNotification = this.notificationsQueue[endpoint][0];

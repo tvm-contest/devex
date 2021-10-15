@@ -21,7 +21,8 @@ const schema = new Schema<IWebhookConsumer>({
 	hash: {
 		type: String,
 		index: true,
-		unique: true
+		unique: true,
+		required: true
 	},
 	isValidated: Boolean
 });
