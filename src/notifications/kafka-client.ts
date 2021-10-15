@@ -1,9 +1,7 @@
 import { Kafka } from 'kafkajs';
 
-import Logger from '../lib/console-logger';
+import logger from '../logger';
 import NotificationsFactory from './NotificationsFactory';
-
-const logger = new Logger();
 
 const kafka = new Kafka({
 	clientId: 'i4ins-kafka-client',
@@ -15,22 +13,36 @@ const kafka = new Kafka({
 	}
 });
 
-const consumer = kafka.consumer({ groupId: 'i4ins-notifications-consumer' });
+const topic = process.env.KAFKA_TOPIC || 'notifications-7';
+const groupId = process.env.KAFKA_GROUP_ID || 'i4ins-notifications-consumer';
+
+const consumer = kafka.consumer({ groupId });
+
+const logMessage = (messageValue: string) => {
+	const [hash, nonce, encodedMessage] = messageValue.split(' ');
+
+	const logObj = {
+		hash,
+		nonce,
+		message: encodedMessage
+	};
+
+	logger.verbose(JSON.stringify(logObj));
+};
 
 const run = async () => {
 	await consumer.connect();
-	await consumer.subscribe({ topic: 'notifications-7' });
+	await consumer.subscribe({ topic });
 
 	await consumer.run({
 		autoCommit: true,
 		autoCommitInterval: 5000,
 		autoCommitThreshold: 100,
-		eachMessage: async ({ topic, partition, message }) => {
+		eachMessage: async ({ message }) => {
 			const messageValue = message.value.toString();
 			const messageKey = message.key.toString();
 
-			logger.info(`Message: ${messageValue}`);
-			logger.info(`Key: ${messageKey}`);
+			logMessage(messageValue);
 
 			await NotificationsFactory.createNotification(messageKey, messageValue);
 		}

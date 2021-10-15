@@ -2,10 +2,8 @@ version: "3"
 
 services:
   i4ins:
-    build:
-      context: .
     container_name: i4ins
-    image: i4ins
+    image: asolodkov/i4ins
     restart: unless-stopped
     environment:
       - NODE_ENV=production

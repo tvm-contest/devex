@@ -1,6 +1,6 @@
 {
   "name": "free-ton-notifications-service",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Notifications Module for Free TON Blockchaing events",
   "repository": {
     "type": "git",

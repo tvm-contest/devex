@@ -9,7 +9,7 @@ if (dotenvResult.error) {
 
 import axios from 'axios';
 import util from 'util';
-import NOTIFICATION from './constants/notification';
+import { NOTIFICATION, ROUTES } from './constants';
 
 axios.defaults.timeout = NOTIFICATION.RETRY_TIMEOUT;
 
@@ -52,7 +52,7 @@ const serve = () => app.listen(PORT, () => {
 
 	if (process.env.NODE_ENV === 'development') {
 		// This route is only present in development mode
-		logger.info(`⚙️  Swagger UI hosted at http://localhost:${PORT}/dev/api-docs`);
+		logger.info(`⚙️  Swagger UI hosted at http://localhost:${PORT}${ROUTES.DOCS.API}`);
 	}
 });
 

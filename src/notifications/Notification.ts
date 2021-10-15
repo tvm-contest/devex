@@ -38,8 +38,6 @@ class Notification {
 	}
 
 	send() {
-		console.log('MESSAGE BEFORE SEND: ', this.message);
-
 		axios.post(this.destinationUrl, { message: this.message })
 			.then(() => this.onSentSuccess(this.destinationUrl))
 			.catch(() => this.retry());

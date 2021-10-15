@@ -12,6 +12,9 @@
   "servers": [
     {
       "url": "http://localhost:3000/"
+    },
+    {
+      "url": "https://ftns.freeton-stats.org/"
     }
   ],
   "tags": [
@@ -25,39 +28,18 @@
     }
   ],
   "paths": {
-    "/book/add": {
-      "post": {
-        "tags": ["book"],
-        "summary": "Add a book to the database",
-        "operationId": "book-add",
-        "requestBody": {
-          "description": "New user signing up",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DraftBookSchema"
-              }
-            }
-          }
-        },
+    "/info/get": {
+      "get": {
+        "tags": ["info"],
+        "summary": "Get service information",
+        "operationId": "info-get",
         "responses": {
           "200": {
-            "description": "Book was added",
+            "description": "Ok",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookSchema"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestSchema"
+                  "$ref": "#/components/schemas/InfoSchema"
                 }
               }
             }
@@ -75,172 +57,49 @@
         }
       }
     },
-    "/book/all": {
-      "get": {
-        "tags": ["book"],
-        "summary": "Get all books in database",
-        "operationId": "book-get-all",
-        "responses": {
-          "200": {
-            "description": "Search results",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "books": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/BookSchema"
+    "/webhook/subscribe": {
+        "post": {
+            "tags": ["webhook"],
+            "summary": "Subscribe to notifications",
+            "operationId": "info-get",
+            "requestBody": {
+                "description": "Subscribe to notifications",
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SubscribeSchema"
+                    }
+                  }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Ok",
+                    "content": "string"
+                },
+                "400": {
+                    "description": "Bad request",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/BadRequestSchema"
+                        }
                       }
                     }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerErrorSchema"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/book/{bookId}": {
-      "get": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "bookId",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "ID of book to retrieve"
-          }
-        ],
-        "tags": ["book"],
-        "summary": "Retrieve a book by ID",
-        "operationId": "book-get",
-        "responses": {
-          "200": {
-            "description": "Book details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "book": {
-                      "$ref": "#/components/schemas/BookSchema"
+                },
+                "500": {
+                    "description": "Internal Server Error",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ServerErrorSchema"
+                            }
+                        }
                     }
-                  }
                 }
-              }
             }
-          },
-          "404": {
-            "description": "Book not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotFoundErrorSchema"
-                }
-              }
-            }
-          }
         }
-      },
-      "delete": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "bookId",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "ID of book to remove"
-          }
-        ],
-        "tags": ["book"],
-        "summary": "Remove a book by ID",
-        "operationId": "book-remove",
-        "responses": {
-          "204": {
-            "description": "Book removed"
-          },
-          "404": {
-            "description": "Book not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotFoundErrorSchema"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/book/search": {
-      "get": {
-        "tags": ["book"],
-        "summary": "Search books by name or author",
-        "operationId": "book-search",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "name",
-            "schema": {
-              "type": "string",
-              "default": "hitchhiker"
-            },
-            "description": "String containing full name or partial name of the book"
-          },
-          {
-            "in": "query",
-            "name": "author",
-            "schema": {
-              "type": "string",
-              "default": "douglas"
-            },
-            "description": "String containing full name or partial name of the author"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Search results",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "books": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/BookSchema"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerErrorSchema"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -251,7 +110,7 @@
           "error": {
             "type": "string",
             "description": "Error message",
-            "example": "PATH: [author] ;; MESSAGE: \"author\" is required"
+            "example": "PATH: [endpoint] ;; MESSAGE: \"endpoint\" is required"
           }
         },
         "required": ["error"]
@@ -278,47 +137,94 @@
         },
         "required": ["error"]
       },
-      "DraftBookSchema": {
+      "InfoSchema": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
-            "description": "Name of the book",
-            "example": "The Hitchhiker's Guide to the Galaxy"
+            "description": "Service name",
+            "example": "Free TON Notifications Service"
           },
-          "author": {
+          "id": {
             "type": "string",
-            "description": "Name of the author",
-            "example": "Douglas Adams"
+            "description": "Service id in DeBot",
+            "example": "i4ins"
+          },
+          "description": {
+            "type": "string",
+            "description": "Service description",
+            "example": "Notifications Module for Free TON Blockchaing events"
+          },
+          "source": {
+            "type": "string",
+            "description": "Service source code on github",
+            "example": "https://github.com/Strafi/free-ton-notifications-service"
+          },
+          "surf": {
+            "type": "string",
+            "description": "Wallet of service developer",
+            "example": "0:e9fd9b03ae67de6c071510bce975bc5a0b6c5451546e6b941723df5787f95877"
           }
         },
-        "required": ["name", "author"]
+        "required": ["name", "id", "description", "source", "surf"]
       },
-      "BookSchema": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/DraftBookSchema"
-          }
-        ],
+	  "NotificationSchema": {
+		"type": "object",
+		"properties": {
+		  "message": {
+			  "type": "string",
+			  "description": "Message that will be sent to the consumer endpoint. Consist of nonce and encodedMessage itself (divided by spaces)",
+			  "example": "0TA/ffMTfi1PkE4MKI3xYAp89VrggvIs CMiMfTlCkflmn8UivdwiVpBro+RbLW7oT+lvI80wMVmM2W4dEwTaPffA0lYnbsMjPtrJCOJYu69AVHu+itm9E9n87HogYzoSKVcaDuF4+H+..."
+			}
+		},
+		"required": ["hash", "endpoint"]
+	  },
+      "ConsumerSchema": {
         "type": "object",
         "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "Unique id to make validation",
+            "example": "c1fce470-2dcb-11ec-9683-49f69e46b8de"
+          },
           "_id": {
             "type": "string",
-            "description": "MongoDB id of the document",
-            "example": "5d7224d3b40b1a1a046697dd"
+            "description": "Mongo document id",
+            "example": "c1fce470da23vgerbz"
           },
-          "createdAt": {
-            "type": "number",
-            "description": "Created at timestamp in miliseconds",
-            "example": 1616158942428
+          "endpoint": {
+            "type": "string",
+            "description": "Consumer endpoint to receive notifications",
+            "example": "https://ftns.freeton-stats.org/test/webhook"
           },
-          "updatedAt": {
-            "type": "number",
-            "description": "Updated at timestamp in miliseconds",
-            "example": 1616158942428
+          "hash": {
+            "type": "string",
+            "description": "Hash from notifications DeBot",
+            "example": "e5586c86a42f0f79a31a9750d2949a97a5155f3f7fe151ffdb2c250f32d5771c"
+          },
+          "isValidated": {
+            "type": "string",
+            "description": "Is consumer's endpoint validated",
+            "example": "false"
           }
         },
-        "required": ["_id", "createdAt", "updatedAt"]
+        "required": ["_id", "uuid", "endpoint", "hash"]
+      },
+      "SubscribeSchema": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+                "type": "string",
+                "description": "Consumer endpoint to receive notifications",
+                "example": "https://ftns.freeton-stats.org/test/webhook"
+              },
+              "hash": {
+                "type": "string",
+                "description": "Hash from notifications DeBot",
+                "example": "e5586c86a42f0f79a31a9750d2949a97a5155f3f7fe151ffdb2c250f32d5771c"
+              }
+          },
+          "required": ["hash", "endpoint"]
       }
     }
   }

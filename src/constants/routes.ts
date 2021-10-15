@@ -1,5 +1,6 @@
 const WEBHOOK_ROOT = '/webhook';
 const INFO_ROOT = '/info';
+const DOCS_ROOT = '/docs';
 
 const ROUTES = {
 	WEBHOOK: {
@@ -7,6 +8,9 @@ const ROUTES = {
 	},
 	INFO: {
 		GET: `${INFO_ROOT}/get`
+	},
+	DOCS: {
+		API: `${DOCS_ROOT}/api`
 	}
 };
 

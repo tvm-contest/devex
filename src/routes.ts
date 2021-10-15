@@ -13,14 +13,12 @@ router.post(ROUTES.WEBHOOK.SUBSCRIBE, WebhookController.subscribe);
 // Info routes
 router.get(ROUTES.INFO.GET, InfoController.get);
 
-// Dev routes
-if (process.env.NODE_ENV === 'development') {
-	const swaggerUiOptions = {
-		customCss: '.swagger-ui .topbar { display: none }'
-	};
+// Docs routes
+const swaggerUiOptions = {
+	customCss: '.swagger-ui .topbar { display: none }'
+};
 
-	router.use('/dev/api-docs', swaggerUi.serve);
-	router.get('/dev/api-docs', swaggerUi.setup(apiSpec, swaggerUiOptions));
-}
+router.use(ROUTES.DOCS.API, swaggerUi.serve);
+router.get(ROUTES.DOCS.API, swaggerUi.setup(apiSpec, swaggerUiOptions));
 
 export default router;
