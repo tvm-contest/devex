@@ -26,6 +26,8 @@ const run = async () => {
 			const messageValue = message.value.toString();
 			const messageKey = message.key.toString();
 
+			console.log(message);
+
 			logger.info(`Message: ${messageValue}`);
 			logger.info(`Key: ${messageKey}`);
 

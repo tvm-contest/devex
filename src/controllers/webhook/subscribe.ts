@@ -23,7 +23,9 @@ interface SubscribeReqBody {
 }
 
 const init = async () => {
+	console.log('GET CONSUMERS');
 	const consumersInDB = await WebhookConsumer.find();
+	console.log(consumersInDB);
 
 	consumersInDB.forEach(consumer => {
 		console.log('--------------');
