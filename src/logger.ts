@@ -19,7 +19,8 @@ const logTransports = [
 	}),
 	new transports.File({
 		level: 'verbose',
-		filename: './logs/info.log'
+		filename: './logs/info.log',
+		format: format.simple()
 	}),
 	new ConsoleLoggerTransport()
 ];
