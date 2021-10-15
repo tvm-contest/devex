@@ -5,19 +5,19 @@ services:
     deploy:
       replicas: 0
   app1:
-    image: ghcr.io/ch1sel/free-ton-notify:latest
+    image: ghcr.io/ton-actions/notifon:latest
     env_file: .env
     volumes:
       - ./firebase-key.json:/app/firebase-key.json
     restart: unless-stopped
   app2:
-    image: ghcr.io/ch1sel/free-ton-notify:latest
+    image: ghcr.io/ton-actions/notifon:latest
     env_file: .env
     volumes:
       - ./firebase-key.json:/app/firebase-key.json
     restart: unless-stopped
   app3:
-    image: ghcr.io/ch1sel/free-ton-notify:latest
+    image: ghcr.io/ton-actions/notifon:latest
     env_file: .env
     volumes:
       - ./firebase-key.json:/app/firebase-key.json
@@ -31,7 +31,3 @@ services:
       - ./nginx/conf/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
       - ./nginx/ssl:/opt/bitnami/nginx/ssl
     restart: unless-stopped
-  rabbitmq:
-    # shared to debug
-    ports:
-      - '15672:15672'

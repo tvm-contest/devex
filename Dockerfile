@@ -4,6 +4,7 @@ WORKDIR /src
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT=Development
+LABEL org.opencontainers.image.source = "https://github.com/ton-actions/free-ton-http-notification-provider"
 #connect sql lite db as volume
 VOLUME /app/App_Data    
 EXPOSE 80
@@ -53,7 +54,6 @@ RUN dotnet build -c Release Notifon.Server
 RUN dotnet publish -c Release --no-build -o /publish Notifon.Server
 
 FROM runtime AS final
-LABEL org.opencontainers.image.source = "https://github.com/ch1seL/free-ton-http-notification-provider"
 WORKDIR /app
 COPY --from=build-client /publish .
 COPY --from=build-server /publish .

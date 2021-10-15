@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   app:
-    image: ghcr.io/ch1sel/free-ton-notify:latest
+    image: ghcr.io/ton-actions/notifon:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - Redis__Configuration=redis

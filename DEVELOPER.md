@@ -2,7 +2,7 @@
 
 ## Application architectural diagram~~~~
 
-![alt text](https://github.com/ch1seL/free-ton-http-notification-provider/blob/main/docs/Notifon%20Application%20Architectural%20Diagram.drawio.png?raw=true)
+![alt text](https://github.com/ton-actions/free-ton-http-notification-provider/blob/main/docs/Notifon%20Application%20Architectural%20Diagram.drawio.png?raw=true)
 
 ## EF Core Migrations~~~~
 

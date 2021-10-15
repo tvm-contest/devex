@@ -3,16 +3,16 @@
     <PropertyGroup>
         <Server>ch1sel@notify-contest.ddns.net</Server>
         <ServerPath>~/notifon/</ServerPath>
-        <ImageName>ghcr.io/ch1sel/free-ton-notify</ImageName>
+        <ImageName>ghcr.io/ton-actions/notifon:latest</ImageName>
         <ImagesPrune>false</ImagesPrune>
     </PropertyGroup>
 
     <Target Name="Build" BeforeTargets="Push">
-        <Exec Command="docker build . -t $(ImageName):latest" />
+        <Exec Command="docker build . -t $(ImageName)" />
     </Target>
 
     <Target Name="Push">
-        <Exec Command="docker push $(ImageName):latest" />
+        <Exec Command="docker push $(ImageName)" />
     </Target>
 
     <Target Name="Deploy">

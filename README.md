@@ -70,7 +70,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 - Make sure that Docker Engine is installed and started (https://docs.docker.com/engine/install/)
 - Create [minimal .env](#env) file
-- Exec `docker run --rm --name notifon --env-file=.env -p 80:80 ghcr.io/ch1sel/free-ton-notify:latest`
+- Exec `docker run --rm --name notifon --env-file=.env -p 80:80 ghcr.io/ton-actions/free-ton-notify`
 
 ### Docker compose (Production-ready solution)
 
@@ -201,7 +201,7 @@ Create and mount file with your app config and vapidKey `firebase-config.json`:
 
 There is an application architectural diagram:
 
-![alt text](https://github.com/ch1seL/free-ton-http-notification-provider/blob/main/docs/Notifon%20Application%20Architectural%20Diagram.drawio.png?raw=true)
+![alt text](https://github.com/ton-actions/free-ton-http-notification-provider/blob/main/docs/Notifon%20Application%20Architectural%20Diagram.drawio.png?raw=true)
 
 ---
 
@@ -211,3 +211,4 @@ There is an application architectural diagram:
 - Helm chart for easy Kubernetes deployment
 - Plugin architecture for providers
 - DeBot interaction from app
+- Docker versioning
