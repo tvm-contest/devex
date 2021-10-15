@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import path from 'path';
 import express, { Request, Response, NextFunction } from 'express';
+import ROUTES from './constants/routes';
 import ApplicationError from './errors/application-error';
 import routes from './routes';
 import logger from './logger';
@@ -31,6 +32,10 @@ app.use(logResponseTime);
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(ROUTES.LOGS.INFO, (req, res) => {
+	res.sendFile('/logs');
+});
 
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
