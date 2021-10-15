@@ -59,6 +59,10 @@ ID=TNS
 
 ![image](https://user-images.githubusercontent.com/54890287/135270524-f89214ce-360b-4113-8d7c-d9ab71682d6a.png)
 
+## Selfhosted version
+
+If you want you can use self hosted version of FreeTON Notification Service. In this case you can have admin rights. It allows you to see all messages and enpoints. To get admin rights just set in mongodb `isAdmin` field to `true` for your endpoint.
+
 ## API
 
 `POST` `/` - set new endpoint
@@ -73,9 +77,7 @@ ID=TNS
 
 ## For Developers
 
-The primary instance installed in Kubernetes Cluster. But you can start it locally using `docker-compose up --build` command. Required docker-compose and docker installed.
-
-But you have to set some ENV variables. 
+The primary instance installed in Kubernetes Cluster. But you can start it locally using `docker-compose up --build` command. Required docker-compose and docker installed and `.env` with variables:
 
 ```
 MONGODB_CONNECTION_STRING="mongodb://USERNAME:PASSWORD@HOST_OR_IP/DATABASE?authSource=admin"
