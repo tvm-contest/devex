@@ -8,7 +8,7 @@ using Polly;
 using Polly.Extensions.Http;
 using NotificationProvider.Functions.Extensions;
 using Azure.Data.Tables;
-using System.Configuration;
+using NotificationProvider.Functions.Enteties;
 
 [assembly: FunctionsStartup(typeof(NotificationProvider.Functions.Startup))]
 namespace NotificationProvider.Functions
@@ -20,9 +20,14 @@ namespace NotificationProvider.Functions
             builder.Services.AddLogging();
             builder.Services.AddHttpClient("pollyClient").AddPolicyHandler(GetRetryPolicy());
 
-            var table = new TableClient(Environment.GetEnvironmentVariable("AzureTableStorage_ConnectionString"), "tonevents");
-            table.CreateIfNotExists();
-            builder.Services.AddSingleton(table);
+            var connectionString = Environment.GetEnvironmentVariable("AzureTableStorage_ConnectionString");
+            var eventReceivers = new TableClient<EventReceiver>(connectionString);
+            eventReceivers.CreateIfNotExists();
+            builder.Services.AddSingleton(eventReceivers);
+
+            var kafkaMsgTable = new TableClient<KafkaMessage>(connectionString);
+            kafkaMsgTable.CreateIfNotExists();
+            builder.Services.AddSingleton(kafkaMsgTable);
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy() =>

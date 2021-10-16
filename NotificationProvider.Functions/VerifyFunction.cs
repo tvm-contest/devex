@@ -18,9 +18,9 @@ namespace NotificationProvider.Functions
 {
     public class VerifyFunction
     {
-        private readonly TableClient _eventReceivers;
+        private readonly TableClient<EventReceiver> _eventReceivers;
 
-        public VerifyFunction(TableClient eventReceivers)
+        public VerifyFunction(TableClient<EventReceiver> eventReceivers)
         {
             _eventReceivers = eventReceivers;
         }

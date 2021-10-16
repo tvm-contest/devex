@@ -15,15 +15,15 @@ namespace NotificationProvider.Functions
 {
     public class RegisterFunction
     {
-        private readonly TableClient _eventReceivers;
+        private readonly TableClient<EventReceiver> _eventReceivers;
 
-        public RegisterFunction(TableClient eventReceivers)
+        public RegisterFunction(TableClient<EventReceiver> eventReceivers)
         {
             _eventReceivers = eventReceivers;
         }
 
         [FunctionName("send-event")]
-        public async Task<IActionResult> Reigster(
+        public async Task<IActionResult> Register(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req, ILogger log)
         {
             var query = string.Empty;
@@ -37,7 +37,7 @@ namespace NotificationProvider.Functions
                 var hash = queryString["hash"];
                 var url = queryString["data"].Base64ToUtf8();
                 log.LogInformation(
-                    nameof(Reigster),
+                    nameof(Register),
                     new[] { new
                     {
                         hash,
@@ -91,7 +91,7 @@ namespace NotificationProvider.Functions
             {
                 log.LogError(
                     ex,
-                    nameof(Reigster),
+                    nameof(Register),
                     new[] { new
                     {
                         query

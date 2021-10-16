@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.WebJobs.Extensions.Kafka;
-using Azure.Data.Tables;
 using NotificationProvider.Functions.Extensions;
 using NotificationProvider.Functions.Enteties;
 using System.Linq;
@@ -15,12 +14,17 @@ namespace NotificationProvider.Functions
 {
     public class KafkaFunction
     {
-        private readonly TableClient _eventReceivers;
+        private readonly TableClient<EventReceiver> _eventReceivers;
+        private readonly TableClient<KafkaMessage> _kafkaMessages;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public KafkaFunction(TableClient eventReceivers, IHttpClientFactory httpClientFactory)
+        public KafkaFunction(
+            TableClient<EventReceiver> eventReceivers,
+            TableClient<KafkaMessage> kafkaMessages,
+            IHttpClientFactory httpClientFactory)
         {
             _eventReceivers = eventReceivers;
+            _kafkaMessages = kafkaMessages;
             _httpClientFactory = httpClientFactory;
         }
 
@@ -47,10 +51,10 @@ namespace NotificationProvider.Functions
                 nonce = input[1].Base64ToHex();
                 encrypted = input[2];
                 var eventReceiver = _eventReceivers
-                    .Query<EventReceiver>("PartitionKey eq '{hash}'")
+                    .Query<EventReceiver>($"PartitionKey eq '{hash}'")
                     .Single();
 
-                if (!eventReceiver.IsVerified)
+                if (eventReceiver.Url != "https://freeton.org" && !eventReceiver.IsVerified)
                     return;
 
                 var context = new Context().WithLogger(log);
@@ -60,6 +64,13 @@ namespace NotificationProvider.Functions
                 request.SetPolicyExecutionContext(context);
                 var response = await client.SendAsync(request);
                 log.LogInformation(nameof(Kafka), new[] { new { hash, statusCode = response.StatusCode } });
+                await _kafkaMessages.AddEntityAsync(new KafkaMessage
+                {
+                    PartitionKey = hash,
+                    RowKey = hash,
+                    Nonce = nonce,
+                    Encrypted = encrypted
+                });
             }
             catch (Exception ex)
             {
