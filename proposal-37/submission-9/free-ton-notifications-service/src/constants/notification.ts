@@ -1,0 +1,6 @@
+const NOTIFICATION = {
+	MAX_RETRY_COUNT: 720,
+	RETRY_TIMEOUT: 60000 // 1min
+};
+
+export default NOTIFICATION;
