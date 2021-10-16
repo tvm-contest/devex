@@ -18,7 +18,7 @@
 
     <Target Name="Deploy">
         <PropertyGroup Condition="$(FullStack)">
-            <FullCompose>-f docker-compose.vpn.yaml -f docker-compose.grafana.yaml</FullCompose>
+            <FullCompose>-f docker-compose.vpn.yaml</FullCompose>
         </PropertyGroup>
         <PropertyGroup>
             <Compose>--compatibility -f docker-compose.yaml -f docker-compose.cluster.yaml $(FullCompose)</Compose>
