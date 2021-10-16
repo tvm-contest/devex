@@ -110,14 +110,14 @@ If no tokens were provided at all, then messages will not be delivered.
 |                Variable               |                     Description                    |                                  Default                                 |
 |:--------------------------------------|:---------------------------------------------------|:-------------------------------------------------------------------------|
 | ASPNETCORE_ENVIRONMENT                | Set logging levels and etc.(Staging, Production)   | Development                                                              |
-| App_Name                              | App Name                                           | Notifon                                                                  |
-| App_Url                               | App Url                                            | https://notify-contest.ddns.net/                                         |
-| App_Github                            | Github repository link                             | https://github.com/..                                                    |
-| App_Telegram                          | Telegram support link                              | https://t.me/ton_actions_chat                                            |
-| App_ServicePurpose                    | Main page title                                    | Free TON Notification Provider                                           |
-| App_ServiceDescription                | More service description for main page             | Catching messages from the blockchain and send them to various endpoints |
-| App_NotificationDeBot                 | Surf Notification DeBot address                    | https://web.ton.surf/debot?address=0%3A43..3ae3&net=devnet               |
 | COMING_SOON                           | Disable accepting DeBot command                    | false                                                                    |
+| App__Name                             | App Name                                           | Notifon                                                                  |
+| App__Url                              | App Url                                            | https://notify-contest.ddns.net/                                         |
+| App__Github                           | Github repository link                             | https://github.com/..                                                    |
+| App__Telegram                         | Telegram support link                              | https://t.me/ton_actions_chat                                            |
+| App__ServicePurpose                   | Main page title                                    | Free TON Notification Provider                                           |
+| App__ServiceDescription               | More service description for main page             | Catching messages from the blockchain and send them to various endpoints |
+| App__NotificationDeBot                | Surf Notification DeBot address                    | https://web.ton.surf/debot?address=0%3A43..3ae3&net=devnet               |
 | Kafka__Host                           | Required!!! Kafka host or ip ask TonLabs           | not set                                                                  |
 | Kafka__UserName                       | Required!!! Kafka Username ask TonLabs             | not set                                                                  |
 | Kafka__Password                       | Required!!! Kafka Parssword ask TonLabs            | not set                                                                  |
