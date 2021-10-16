@@ -132,6 +132,8 @@ Additionally, each notification contains an `x-te-signature` header set to the _
 
 #### Testing live
 
+Watching [this introductory video](https://youtu.be/77oqFU8ulIA) might be helpful.
+
 If you have your own webhook server, implemented in compliance with [Appendix C](#appendix-c), go and send callback URL(s) to the `tonevents` provider via Notification DeBot.
 
 Otherwise, use the Playground Bot. Like that:
