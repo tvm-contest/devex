@@ -45,7 +45,7 @@ Note: if you are going to use docker-compose, you should also update environment
 |---|---|---|---|
 | NODE_ENV  | string  | `development` |API runtime environment. eg: `staging`  |
 |  PORT | number  | `3000` | Port to run the API server on |
-|  MONGO_URL | string  | `mongodb://localhost:27017/ftns` | URL for MongoDB |
+|  MONGO_URL | string  | `mongodb://mongo:27017/ftns` | URL for MongoDB |
 |  KAFKA_USERNAME | string  | `undefined` | Your username |
 |  KAFKA_PASSWORD | string  | `undefined` | Your password |
 |  KAFKA_TOPIC | string  | `undefined` | Your topic |
@@ -64,7 +64,7 @@ $ docker-compose -f docker-compose.prod.yml up
 $ docker pull asolodkov/i4ins
 $ docker run -t -i \
       --env NODE_ENV=production \
-      --env MONGO_URL=mongodb://localhost:27017/ftns \
+      --env MONGO_URL=mongodb://mongo:27017/ftns \
       --env KAFKA_USERNAME={YOUR_KAFKA_USERNAME} \
       --env KAFKA_PASSWORD={YOUR_KAFKA_PASSWORD} \
       --env KAFKA_TOPIC={YOUR_KAFKA_TOPIC} \
@@ -92,7 +92,7 @@ $ yarn build && yarn start
 $ docker build -t i4ins .
 $ docker run -t -i \
       --env NODE_ENV=production \
-      --env MONGO_URL=mongodb://localhost:27017/ftns \
+      --env MONGO_URL=mongodb://mongo:27017/ftns \
       --env KAFKA_USERNAME={YOUR_KAFKA_USERNAME} \
       --env KAFKA_PASSWORD={YOUR_KAFKA_PASSWORD} \
       --env KAFKA_TOPIC={YOUR_KAFKA_TOPIC} \
