@@ -8,7 +8,7 @@
 <MudText Align="Align.Left">Telegram: <MudLink Target="_blank" Href="@App.Telegram">@App.Telegram</MudLink></MudText>
 <MudText Align="Align.Left">Swagger: <MudLink Target="_blank" Href="@SwaggerUrl">@SwaggerUrl</MudLink></MudText>
 @if (Grafana) {
-    <MudText Align="Align.Left">Grafana: <MudLink Target="_blank" Href="/grafana">Grafana</MudLink></MudText>
+    <MudText Align="Align.Left">Grafana: <MudLink Target="_blank" Href="/grafana">@_navigationManager.ToAbsoluteUri("grafana").ToString()</MudLink></MudText>
 }
 
 @code{
