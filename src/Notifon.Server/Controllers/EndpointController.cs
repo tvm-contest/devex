@@ -13,6 +13,7 @@ using Notifon.Server.Utils;
 
 namespace Notifon.Server.Controllers {
     [ApiController]
+    [Route("")]
     [Route("endpoint")]
     public class EndpointController : ControllerBase {
         private readonly ILogger<EndpointController> _logger;

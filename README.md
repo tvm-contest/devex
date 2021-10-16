@@ -42,7 +42,7 @@ Free TON Notification Provider
 
 Yor can ask https://t.me/hi_artem or https://t.me/EkaterinaPantaz to register your provider.
 
-> 💡 If you run application just for local development or testing you may ask register http://localhost/endpoint as endpoint to avoid port forwarding and ssl generation etc.
+> 💡 If you run application just for local development or testing you may ask register http://localhost/endpoint as endpoint or use 'devnull' provider to avoid port forwarding and ssl generation etc.
 
 #### `.env`:
 
@@ -60,7 +60,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 - Make sure that .Net 5.0 is installed (https://dotnet.microsoft.com/download)
 - Download or clone repo https://github.com/ton-actions/free-ton-http-notification-provider.git
 - Go to the repository directory and create [minimal .env](#env) file
-- Exec `dotnet run --project .\src\Notifon.Server --urls=http://localhost/`
+- Exec `dotnet run --project .\src\Notifon.Server --urls=http://localhost:8080/`
 - Application will be started at http://localhost and DeBot endpoint is http://localhost/endpoint
 - Configure port forwarding and ssl as needed
 
@@ -70,7 +70,7 @@ KafkaOptions__Topic=YOUR_TOPIC
 
 - Make sure that Docker Engine is installed and started (https://docs.docker.com/engine/install/)
 - Create [minimal .env](#env) file
-- Exec `docker run --rm --name notifon --env-file=.env -p 80:80 ghcr.io/ton-actions/notifon:latest`
+- Exec `docker run --rm --name notifon --env-file=.env -p 8080:80 ghcr.io/ton-actions/notifon:latest`
 
 ### Docker compose (Production-ready solution)
 
@@ -94,8 +94,9 @@ with `RetryPolicyOptions__Count` and `RetryPolicyOptions__Interval` variables.
 
 ### Scaling
 
-Notifon is a scalable application and can be run on as many replicas as you like. See `docker-compose.cluster.yaml` and try clustered
-instance `docker-compose -f docker-compose.yaml -f docker-compose.cluster.yaml up -d`
+Notifon is a scalable application and can be run on as many replicas as you like.
+See [docker-compose.cluster.yaml](https://raw.githubusercontent.com/ton-actions/free-ton-http-notification-provider/main/.docker-compose/docker-compose.cluster.yaml)
+and try clustered instance `docker-compose -f docker-compose.yaml -f docker-compose.cluster.yaml up -d`
 
 ### Endpoint configuration
 
@@ -138,9 +139,10 @@ If no tokens were provided at all, then messages will not be delivered.
 
 ## Firebase Cloud Messaging configure
 
-See https://firebase.google.com/docs/cloud-messaging?hl=en&authuser=0
-Just get keys and config and mount them into the docker container or place in src/Notifon.Server folder See mounting example
-in https://github.com/ton-actions/free-ton-http-notification-provider/blob/main/.docker-compose/docker-compose.cluster.yaml
+See docs https://firebase.google.com/docs/cloud-messaging?hl=en&authuser=0
+
+Just get keys and config and mount them into the docker container or place in src/Notifon.Server folder. Mounting example
+in [docker-compose.cluster.yaml](https://raw.githubusercontent.com/ton-actions/free-ton-http-notification-provider/main/.docker-compose/docker-compose.cluster.yaml)
 
 ### Keys file
 
@@ -207,7 +209,6 @@ There is an application architectural diagram:
 
 ## TODO
 
-- Grafana Dashboard for Message Queues
 - Helm chart for easy Kubernetes deployment
 - Plugin architecture for providers
 - DeBot interaction from app
