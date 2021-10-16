@@ -47,10 +47,10 @@ Yor can ask https://t.me/hi_artem or https://t.me/EkaterinaPantaz to register yo
 #### `.env`:
 
 ```dotenv
-KafkaOptions__Host=notification.services.tonlabs.io:29092
-KafkaOptions__UserName=YOUR_LOGIN
-KafkaOptions__Password=YOUR_PASSWORD
-KafkaOptions__Topic=YOUR_TOPIC
+Kafka__Host=notification.services.tonlabs.io:29092
+Kafka__UserName=YOUR_LOGIN
+Kafka__Password=YOUR_PASSWORD
+Kafka__Topic=YOUR_TOPIC
 ```
 
 ### Run from sources
@@ -118,6 +118,10 @@ If no tokens were provided at all, then messages will not be delivered.
 | App_ServiceDescription                | More service description for main page             | Catching messages from the blockchain and send them to various endpoints |
 | App_NotificationDeBot                 | Surf Notification DeBot address                    | https://web.ton.surf/debot?address=0%3A43..3ae3&net=devnet               |
 | COMING_SOON                           | Disable accepting DeBot command                    | false                                                                    |
+| Kafka__Host                           | Required!!! Kafka host or ip ask TonLabs           | not set                                                                  |
+| Kafka__UserName                       | Required!!! Kafka Username ask TonLabs             | not set                                                                  |
+| Kafka__Password                       | Required!!! Kafka Parssword ask TonLabs            | not set                                                                  |
+| Kafka__Topic                          | Required!!! Kafka Toptoc ask TonLabs               | not set                                                                  |
 | Telegram__BotToken                    | Default token for telegram provider                | not set                                                                  |
 | MailGun__ApiKey                       | Default Mailgun Api Key                            | not set                                                                  |
 | MailGun__Domain                       | Default Mailgun Domain                             | not set                                                                  |
