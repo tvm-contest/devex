@@ -11,7 +11,7 @@ services:
       - RabbitMq__Password=bitnami
       - PostgreSql__ConnectionString=Server=postgresql;Port=5432;User Id=postgres;Database=app
     ports:
-      - '80:80'
+      - '8080:80'
     env_file: .env
     restart: unless-stopped
   redis:

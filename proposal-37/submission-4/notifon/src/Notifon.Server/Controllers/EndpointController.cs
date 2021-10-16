@@ -10,9 +10,12 @@ using Microsoft.Extensions.Logging;
 using Notifon.Server.Business.Requests.Endpoint;
 using Notifon.Server.Database.Models;
 using Notifon.Server.Utils;
+using NSwag.Annotations;
 
 namespace Notifon.Server.Controllers {
     [ApiController]
+    [OpenApiController("DebotEndpoint")]
+    [Route("")]
     [Route("endpoint")]
     public class EndpointController : ControllerBase {
         private readonly ILogger<EndpointController> _logger;
