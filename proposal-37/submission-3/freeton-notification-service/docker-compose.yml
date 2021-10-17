@@ -1,0 +1,18 @@
+version: "3"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      KAFKA_USERNAME: "${KAFKA_USERNAME}"
+      KAFKA_PASSWORD: "${KAFKA_PASSWORD}"  
+      MONGODB_CONNECTION_STRING: "${MONGODB_CONNECTION_STRING}"
+      SALT: "${SALT}"
+      KAFKA_MECHANISM: "${KAFKA_MECHANISM}"
+      KAFKA_TOPIC: "${KAFKA_TOPIC}"
+  mongo:
+    image: "mongo"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"  
+      MONGO_INITDB_ROOT_PASSWORD: "secret"

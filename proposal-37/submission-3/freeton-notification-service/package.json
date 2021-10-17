@@ -1,0 +1,40 @@
+{
+  "name": "freeton-notification-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nrukavkov/freeton-notification-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nrukavkov/freeton-notification-service/issues"
+  },
+  "homepage": "https://github.com/nrukavkov/freeton-notification-service#readme",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "cron": "^1.8.2",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "kafkajs": "^1.15.0",
+    "md5": "^2.3.0",
+    "mongoose": "^6.0.8",
+    "pug": "^3.0.2",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.1.2",
+    "request": "^2.88.2"
+  }
+}

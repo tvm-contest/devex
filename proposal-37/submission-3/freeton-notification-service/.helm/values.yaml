@@ -1,0 +1,7 @@
+app:
+  port: 8000
+  url: freeton-notification-service.voip-lab.ru
+  kafka_username: tns
+  kafka_mechanism: "scram-sha-512"
+  kafka_topic: "notifications-4"
+  
