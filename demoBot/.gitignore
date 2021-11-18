@@ -1,5 +1,2 @@
-log.log
-demoBot.abi.json
-demoBot.tvc
+*.log
 demoBot.keys.json
-address.log
