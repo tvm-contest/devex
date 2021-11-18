@@ -1,0 +1,38 @@
+pragma ton-solidity >=0.35.0;
+
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Menu/Menu.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Base64/Base64.sol";
+
+contract Base64Item {
+    function base64Start(uint32 index) public {
+        index = index;
+        Terminal.print(tvm.functionId(base64Menu), "");
+    }
+
+    function base64Menu() public {
+        Menu.select("Interface 'Base64'", "", [
+            MenuItem("Encode", "", tvm.functionId(base64Encode)),
+            MenuItem("Decode", "", tvm.functionId(base64Decode)),
+            MenuItem("Back", "", 0x02)
+            ]);
+    }
+
+    function base64Encode(uint32 index) public {
+        index = index;
+        Base64.encode(tvm.functionId(base64PrintEncode));
+    }
+
+    function base64Decode(uint32 index) public {
+        index = index;
+        Base64.decode(tvm.functionId(base64PrintDecode));
+    }
+
+    function base64PrintEncode(bytes value) public {
+        Terminal.print(tvm.functionId(base64Menu), format("Encoded:\n{}", value));
+    }
+
+    function base64PrintDecode(string value) public {
+        Terminal.print(tvm.functionId(base64Menu), format("Decoded:\n{}", value));
+    }
+}

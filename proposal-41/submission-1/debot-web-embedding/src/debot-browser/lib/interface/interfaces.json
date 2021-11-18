@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Address Input"
+  },
+  {
+    "name": "Amount Input"
+  },
+  {
+    "name": "Confirm Input"
+  },
+  {
+    "name": "Menu"
+  },
+  {
+    "name": "Network"
+  },
+  {
+    "name": "Number Input"
+  },
+  {
+    "name": "QR Code"
+  },
+  {
+    "name": "Signing Box Input"
+  },
+  {
+    "name": "Terminal"
+  },
+  {
+    "name": "User Info"
+  }
+]

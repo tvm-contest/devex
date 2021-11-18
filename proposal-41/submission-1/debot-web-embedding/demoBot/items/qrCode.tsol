@@ -1,0 +1,15 @@
+pragma ton-solidity >=0.35.0;
+
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/QRCode/QRCode.sol";
+
+contract QrCodeItem {
+    function qrCodeStart(uint32 index) public {
+        index = index;
+        QRCode.scan(tvm.functionId(qrCodePrint));
+    }
+
+    function qrCodePrint(string value) public {
+        Terminal.print(0x01, format("Recognized QR Code data:\n\n{}", value));
+    }
+}
