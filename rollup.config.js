@@ -52,7 +52,7 @@ const config = [{
       preventAssignment: true,
       values: {
         '__DEV_MODE__': !production,
-        '__CDN_URL__': (!production ? 'http://localhost:10002/debot-browser' : 'https://cdn.jsdelivr.net/')
+        '__CDN_URL__': (!production ? 'http://localhost:10002/debot-browser' : 'https://cdn.jsdelivr.net/gh/mytonwallet/debot-web-embedding@master/dist/debot-browser')
       }
     }),
   ],
@@ -97,7 +97,7 @@ const config = [{
       preventAssignment: true,
       values: {
         '__DEV_MODE__': !production,
-        '__CDN_URL__': (!production ? 'http://localhost:10002/debot-browser' : 'https://cdn.jsdelivr.net/')
+        '__CDN_URL__': (!production ? 'http://localhost:10002/debot-browser' : 'https://cdn.jsdelivr.net/gh/mytonwallet/debot-web-embedding@master/dist/debot-browser')
       }
     }),
   ],
