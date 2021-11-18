@@ -8,9 +8,9 @@
     "lint": "eslint . --ext .svelte --ext .js --fix",
     "dist": "rollup --config",
     "start": "rollup --config --watch",
-    "run-tonos": "docker run -d --name local-node -e USER_AGREEMENT=yes -p7777:80 tonlabs/local-node",
-    "version": "gulp patchVersion && auto-changelog -p -l 20 -t keepachangelog"
+    "run-tonos": "docker run -d --name local-node -e USER_AGREEMENT=yes -p7777:80 tonlabs/local-node"
   },
+  "homepage": "https://embeddebot.mytonwallet.com/",
   "repository": {
     "type": "git",
     "url": "https://github.com/mytonwallet/debot-web-embedding.git"
