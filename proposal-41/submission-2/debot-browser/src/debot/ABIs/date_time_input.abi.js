@@ -1,0 +1,59 @@
+const DATE_TIME_INPUT_ABI = {
+  'ABI version': 2,
+  header: ['time'],
+  functions: [
+    {
+      name: 'getDate',
+      inputs: [
+        { name: 'answerId', type: 'uint32' },
+        { name: 'prompt', type: 'bytes' },
+        { name: 'defaultDate', type: 'int128' },
+        { name: 'minDate', type: 'int128' },
+        { name: 'maxDate', type: 'int128' },
+      ],
+      outputs: [{ name: 'date', type: 'int128' }],
+    },
+    {
+      name: 'getTime',
+      inputs: [
+        { name: 'answerId', type: 'uint32' },
+        { name: 'prompt', type: 'bytes' },
+        { name: 'defaultTime', type: 'uint32' },
+        { name: 'minTime', type: 'uint32' },
+        { name: 'maxTime', type: 'uint32' },
+        { name: 'minuteInterval', type: 'uint8' },
+      ],
+      outputs: [{ name: 'time', type: 'uint32' }],
+    },
+    {
+      name: 'getDateTime',
+      inputs: [
+        { name: 'answerId', type: 'uint32' },
+        { name: 'prompt', type: 'bytes' },
+        { name: 'defaultDatetime', type: 'int128' },
+        { name: 'minDatetime', type: 'int128' },
+        { name: 'maxDatetime', type: 'int128' },
+        { name: 'minuteInterval', type: 'uint8' },
+        { name: 'inTimeZoneOffset', type: 'int16' },
+      ],
+      outputs: [
+        { name: 'datetime', type: 'int128' },
+        { name: 'timeZoneOffset', type: 'int16' },
+      ],
+    },
+    {
+      name: 'getTimeZoneOffset',
+      inputs: [{ name: 'answerId', type: 'uint32' }],
+      outputs: [{ name: 'timeZoneOffset', type: 'int16' }],
+    },
+    {
+      name: 'constructor',
+      inputs: [],
+      outputs: [],
+    },
+  ],
+  data: [],
+  events: [],
+};
+
+export default DATE_TIME_INPUT_ABI;
