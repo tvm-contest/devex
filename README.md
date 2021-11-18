@@ -57,6 +57,16 @@ Navigate in your browser to the http://localhost:10002/debot-browser/index.html 
 
 Navigate in your browser to the http://localhost:10002/embed-tool/index.html to develop "embed tool"
 
+To test the code embedding for direct way needs to change content in [this file](/src/embed-tool/assets/demoScene.html) and then navigate to [this page](http://localhost:10002/embed-tool/assets/demoScene.html)
+
+To test the code embedding for iframe way needs to change content in [this file](/src/embed-tool/assets/demoIframe.html) and then navigate to [this page](http://localhost:10002/embed-tool/assets/demoSceneWithIframe.html)
+
+To prepare distribution file needs to run
+
+```console
+npm run dist
+```
+
 # Embed tool
 
 To embed DeBot on any web page you need to select network and enter DeBot address.
@@ -103,4 +113,3 @@ For Iframe need to place code from "embed tool" to any web page. For example on 
 ```html
 <iframe width="300" height="200" src="SOURCE_FROM_https://gist.github.com/"></iframe>
 ```
-

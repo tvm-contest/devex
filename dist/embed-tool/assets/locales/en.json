@@ -1,0 +1,94 @@
+{
+  "copy": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "error": "Error"
+  },
+  "debotInfo": {
+    "name": "Name",
+    "author": "Author",
+    "language": "Language",
+    "publisher": "Publisher",
+    "support": "Support",
+    "version": "Version",
+    "launch": "Launch",
+    "untitled": "Untitled",
+    "unknown": "Unknown"
+  },
+  "approveDialog": {
+    "title": "Approve activity",
+    "type": "Type:",
+    "dst": "Destination:",
+    "fee": "Fee:",
+    "outs": "Outs:",
+    "amount": "Amount",
+    "dst1": "Destination",
+    "unknown": "Unknown activity type!",
+    "reject": "Reject",
+    "approve": "Approve"
+  },
+  "validation": {
+    "required": "Required.",
+    "address": "Incorrect address format.",
+    "gte": "Must be greater or equal to %n.",
+    "lte": "Must be less or equal to %n.",
+    "scale": "Reduce the number of decimal places.",
+    "isInt": "Should be integer."
+  },
+  "tag": {
+    "unknown": "Unknown Element",
+    "inputAmount": {
+      "amount": "Amount",
+      "apply": "Apply"
+    },
+    "inputNumber": {
+      "number": "Number",
+      "apply": "apply"
+    },
+    "input": {
+      "value": "Value",
+      "apply": "apply"
+    },
+    "fatal": {
+      "error": "Error",
+      "refresh": "Restart",
+      "console": "See details in console."
+    },
+    "inputAddress": {
+      "address": "Address",
+      "apply": "Apply"
+    },
+    "inputConfirm": {
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "selectKey": {
+      "title": "The deBot requires a key",
+      "key": "Key",
+      "pass": "Password",
+      "myKeys": "My Keys",
+      "select": "Select",
+      "unknownError": "Unknown error."
+    },
+    "scanQrCode": {
+      "title": "QR code",
+      "drop":  "DROP SOME IMAGES HERE",
+      "or":  "OR",
+      "upload":  "Upload",
+      "scan":  "Scan",
+      "couldNotRecognize":  "Could not recognize",
+      "error":  "Error  %s",
+      "allowCamera":"Allow camera in your device",
+      "cancel": "Cancel"
+    },
+    "network": {
+      "error": "Request error"
+    }
+  },
+  "keystore": {
+    "invalidFile": "Invalid keystore file.",
+    "corrupted": "Cannot decrypt keystore file. Probably it's corrupted.",
+    "invalidPassword": "Invalid password.",
+    "unknownVersion": "Unknown keystore version."
+  }
+}
