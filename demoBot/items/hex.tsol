@@ -1,0 +1,38 @@
+pragma ton-solidity >=0.35.0;
+
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Menu/Menu.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Hex/Hex.sol";
+
+contract HexItem {
+    function hexStart(uint32 index) public {
+        index = index;
+        Terminal.print(tvm.functionId(hexMenu), "");
+    }
+
+    function hexMenu() public {
+        Menu.select("Interface 'HEX'", "", [
+            MenuItem("Encode", "", tvm.functionId(hexEncode)),
+            MenuItem("Decode", "", tvm.functionId(hexDecode)),
+            MenuItem("Back", "", 0x02)
+            ]);
+    }
+
+    function hexEncode(uint32 index) public {
+        index = index;
+        Hex.encode(tvm.functionId(hexPrintEncode));
+    }
+
+    function hexDecode(uint32 index) public {
+        index = index;
+        Hex.decode(tvm.functionId(hexPrintDecode));
+    }
+
+    function hexPrintEncode(bytes value) public {
+        Terminal.print(tvm.functionId(hexMenu), format("Encoded:\n{}", value));
+    }
+
+    function hexPrintDecode(string value) public {
+        Terminal.print(tvm.functionId(hexMenu), format("Decoded:\n{}", value));
+    }
+}

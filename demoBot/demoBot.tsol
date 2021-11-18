@@ -1,0 +1,75 @@
+// Source code https://github.com/extraton/debrowser/tree/master/demoBot
+
+pragma ton-solidity >=0.35.0;
+pragma AbiHeader expire;
+pragma AbiHeader time;
+pragma AbiHeader pubkey;
+
+import "./Debot.tsol";
+import "./items/.solc_imports/Menu.sol";
+import "./items/terminal.tsol";
+import "./items/base64.tsol";
+import "./items/hex.tsol";
+import "./items/json.tsol";
+import "./items/qrCode.tsol";
+import "./items/addressInput.tsol";
+import "./items/amountInput.tsol";
+import "./items/numberInput.tsol";
+import "./items/confirmInput.tsol";
+import "./items/userInfo.tsol";
+import "./items/signingBoxInput.tsol";
+import "./items/network.tsol";
+
+contract DemoBot is Debot, TerminalItem, QrCodeItem, AddressInputItem, AmountInputItem,
+        NumberInputItem, ConfirmInputItem, UserInfoItem, signingBoxInputItem, NetworkItem,
+        JsonItem, Base64Item, HexItem {
+    bytes m_icon;
+ 
+    function setIcon(bytes icon) public {
+        require(msg.pubkey() == tvm.pubkey(), 100);
+        tvm.accept();
+        m_icon = icon;
+    }
+
+    function start() public functionID(0x01) override {
+        Menu.select("Hello, I'm the Interfaces Demo Bot!\nWhich one interface you would like to see?", "", [
+            MenuItem("Terminal", "Simple input/output", tvm.functionId(terminalStart)),
+            MenuItem("QR Code", "Allows to scan qrcode and return its data as string", tvm.functionId(qrCodeStart)),
+            MenuItem("Menu", "Interface for menu", tvm.functionId(toStartFromMenu)),
+            MenuItem("Address Input", "Allows to input smart contract address", tvm.functionId(addressInputStart)),
+            MenuItem("Amount Input", "Interface for amount input", tvm.functionId(amountInputStart)),
+            MenuItem("Number Input", "Interface for number input", tvm.functionId(numberInputStart)),
+            MenuItem("Confirm Input", "Interface for confirm input", tvm.functionId(confirmInputStart)),
+            MenuItem("User Info", "Allows to get information about current user.", tvm.functionId(userInfoStart)),
+            MenuItem("Signing Box Input", "Interface for getting signing box", tvm.functionId(signingBoxInputStart)),
+            MenuItem("Network", "Interface for network requests.", tvm.functionId(networkStart)),
+            MenuItem("Json", "Interface for json deserializing.", tvm.functionId(jsonStart)),
+            MenuItem("Base64", "Interface for base64 encode/decode.", tvm.functionId(base64Start)),
+            MenuItem("Hex", "Interface for hex encode/decode.", tvm.functionId(hexStart))
+            ]);
+    }
+
+    function toStartFromMenu(uint32 index) public functionID(0x02) {
+        index = index;
+        Terminal.print(0x01, "");
+    }
+
+    function getDebotInfo() public functionID(0xDEB) override view returns (
+        string name, string version, string publisher, string key, string author,
+        address support, string hello, string language, string dabi, bytes icon
+    ) {
+        name = "Interfaces Debot Demo";
+        version = "1.0.0";
+        publisher = "TON community";
+        key = "Start develop DeBot from here";
+        author = "MTW team";
+        support = address.makeAddrStd(0, 0x0);
+        hello = "Hello, I'm the Interfaces Demo DeBot.";
+        language = "en";
+        dabi = m_debotAbi.get();
+        icon = m_icon;
+    }
+
+    function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
+    }
+}
