@@ -6,6 +6,12 @@
 
 This repository contains source code for DeBot engine that allow interaction with Free Ton (freeTON) blockchain from web pages.
 
+# Debot engine
+
+<div align="center">
+  <img src="./img/embedded DeBot.gif" title="My TON wallet - Debot engine embed tool">
+</div>
+
 # Installation additional tools
 
 To easy make the deployment process you need to install `tondev`
@@ -69,6 +75,10 @@ npm run dist
 
 # Embed tool
 
+<div align="center">
+  <img src="./img/embed tool.gif" title="My TON wallet - Debot engine embed tool">
+</div>
+
 To embed DeBot on any web page you need to select network and enter DeBot address.
 You can adjust Debot UI by changing css variables.
 Available these variables:
@@ -99,6 +109,8 @@ You can select/adjust:
 4. handler way for used cards
 5. UI styles
 6. Embedding way (tick iframe if need to embed iframe way)
+
+To deploy you must to change __CDN_URL__ in [rollup.config.js](/rollup.config.js)
 
 # Code for embedding
 
