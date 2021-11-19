@@ -1,0 +1,51 @@
+.stage-component {
+	&__confirm-input-container {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 20px;
+	}
+
+	&__confirm-input-label {
+		margin-bottom: 12px;
+		font-weight: 600;
+		font-size: 20px;
+		word-break: break-word;
+	}
+
+	&__confirm-input-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 36px;
+		margin-bottom: 6px;
+		font-weight: 600;
+		font-size: 16px;
+		color: var(--confirm-accent-color);
+		border: 1px solid var(--confirm-accent-color);
+		background-color: var(--confirm-color);
+		border-radius: 8px;
+		user-select: none;
+		cursor: pointer;
+		transition: color .2s, background-color .2s;
+
+		&:hover {
+			color: var(--confirm-color);
+			background-color: var(--confirm-accent-color);
+		}
+
+		&--decline {
+			color: var(--decline-accent-color);
+			border-color: var(--decline-accent-color);
+			background-color: var(--decline-color);
+
+			&:hover {
+				color: var(--decline-color);
+				background-color: var(--decline-accent-color);
+			}
+		}
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}

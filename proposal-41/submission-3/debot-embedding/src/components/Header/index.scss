@@ -1,0 +1,129 @@
+@import '../../styles/mixins.scss';
+@import '../../styles/size.scss';
+
+.header-container {
+	z-index: 50;
+	position: sticky;
+	top: 0;
+	display: flex;
+	padding: $app-top-padding $app-side-padding 10px;
+	margin-bottom: $header-margin;
+	background-color: var(--background-color);
+
+	@media(max-width: #{$mobile-checkpoint}) {
+		margin-bottom: 10px;
+	}
+
+	&__back-button {
+		display: flex;
+		align-items: center;
+		margin-right: 12px;
+		color: var(--back-button-color);
+		transition: color .2s;
+
+		&:not(a.header-container__back-button--disabled) {
+			&:hover {
+				color: var(--back-button-hover-color);
+			}
+	
+			.back-icon {
+				path {
+					transition: stroke .2s;
+				}
+			}
+		}
+
+		&--disabled {
+			color: var(--disabled-color);
+			opacity: 0.4;
+			cursor: default;
+
+			&:hover {
+				color: var(--disabled-color);
+			}
+		}
+
+		@media (max-width: #{$mobile-checkpoint}) {
+			display: none;
+		}
+	}
+
+	&__settings-bar {
+		display: flex;
+		align-items: center;
+		padding-left: 12px;
+
+		.options-list {
+			justify-content: center;
+			height: $header-height;
+			width: 36px;
+			min-width: 36px;
+			margin-left: 8px;
+			padding: 0;
+			border-radius: 50%;
+
+			&__list {
+				left: auto;
+				right: 0;
+
+				&-item {
+					position: relative;
+					text-align: center;
+				}
+			}
+
+			&__selected-item {
+				.network-icon {
+					margin: 0;
+				}
+			}
+
+			&:first-child {
+				margin-left: 0px;
+			}
+	
+			.arrow-icon {
+				display: none;
+			}
+
+			.selected-text-item {
+				font-size: 22px;
+    			line-height: 22px;
+				font-weight: 600;
+			}
+		}
+	}
+
+	&__connect-button {
+		margin-left: 12px;
+		font-weight: 600;
+		font-size: 16px;
+		color: $blue;
+		cursor: pointer;
+		transition: color .2s;
+
+		&:hover {
+			color: var(--semi-button-hover-color);
+		}
+	}
+
+	&__account {
+		display: flex;
+		align-items: center;
+		margin-left: 12px;
+
+		span {
+			line-height: 21px;
+			font-weight: 600;
+			font-size: 16px;
+		}
+
+		.logout-icon {
+			@include cancel-button-effects(var(--cancel-hover-color), 'fill');
+		}
+	}
+
+	.debot__controls {
+		margin: 0;
+	}
+}

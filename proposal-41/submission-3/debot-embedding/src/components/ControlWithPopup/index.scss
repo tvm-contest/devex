@@ -1,0 +1,73 @@
+@import '../../styles/size.scss';
+
+.control-with-popup {
+	position: relative;
+	height: max-content;
+	margin-right: 20px;
+
+	&__label {
+		font-weight: 600;
+		font-size: 18px;
+		color: var(--semi-button-color);
+		cursor: pointer;
+		transition: color .2s;
+		user-select: none;
+
+		&:hover {
+			color: var(--semi-button-hover-color);
+		}
+	}
+
+	&--active {
+		.control-with-popup__label {
+			color: var(--semi-button-active-color);
+
+			&:hover {
+				color: var(--semi-button-active-color);
+			}
+		}
+	}
+
+	&:last-child {
+		margin-right: 0;
+	}
+
+	@media(max-width: #{$mobile-checkpoint}) {
+		width: 100%;
+		min-width: 100%;
+
+		.control-with-popup__container {
+			right: auto;
+			left: calc(0px - #{$app-side-padding});
+			width: calc(100% + #{$app-side-padding} + #{$app-side-padding});
+		}
+	}
+
+	&__container {
+		--height: 252px;
+		--width: 460px;
+		--right: 0px;
+		position: absolute;
+		z-index: 10;
+		visibility: hidden;
+		opacity: 0;
+		right: var(--right, 0px);
+		top: 30px;
+		height: max-content;
+		max-height: var(--height);
+		width: var(--width);
+		max-width: 600px;
+		background-color: var(--background-color);
+		border-radius: 10px;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+		transition: opacity .2s, top .2s;
+		overflow: auto;
+		cursor: default;
+
+		&--visible {
+			visibility: visible;
+			opacity: 1;
+			top: 38px;
+		}
+	}
+}

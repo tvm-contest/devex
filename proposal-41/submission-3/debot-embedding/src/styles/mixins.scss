@@ -1,0 +1,97 @@
+@import './colors.scss';
+
+@mixin button-effects($background-hover, $color-hover) {
+	transition: background-color .2s, color .2s;
+	cursor: pointer;
+
+	&:hover {
+		color: $color-hover;
+		background-color: $background-hover;
+	}
+}
+
+@mixin light-button-effects($background-hover, $color-hover) {
+	transition: background-color .2s, color .2s;
+	cursor: pointer;
+
+	&:hover {
+		color: $color-hover;
+		background-color: $background-hover;
+	}
+}
+
+@mixin bordered-button($color, $activeColor) {
+	color: $color;
+	border: 1px solid $color;
+	border-radius: 8px;
+	background-color: $activeColor;
+	cursor: pointer;
+	transition: color .2s, background-color .2s;
+
+	&:hover {
+		color: $activeColor;
+		background-color: $color;
+	}
+}
+
+@mixin cancel-button-effects($hover-color, $propery: 'stroke') {
+	cursor: pointer;
+
+	path {
+		transition: #{$propery} .2s;
+	}
+
+	&:hover {
+		path {
+			#{$propery}: $hover-color;
+		}
+	}
+}
+
+@mixin custom-scroll-bar {
+	scrollbar-width: thin;
+			
+	&::-webkit-scrollbar {
+		width: 6px;
+		height: 10px;
+		border-radius: 3px;
+		-webkit-box-shadow: inset 0 0 12px rgba(0, 0, 0, .1);
+		box-shadow: inset 0 0 12px rgba(0, 0, 0, .1);
+		background-color: rgba(#FAFAFA, .8);
+	}
+	
+	&::-webkit-scrollbar-thumb {
+		border-radius: 3px;
+		-webkit-box-shadow: inset 0 0 12px rgba(0, 0, 0, .35);
+		box-shadow: inset 0 0 12px rgba(0, 0, 0, .35);
+	}
+}
+
+@mixin base-input {
+	height: 40px;
+	width: 100%;
+	padding: 10px 17px;
+	font-size: 16px;
+	font-weight: 500;
+	color: $black;
+	border: 1px solid $table-input-color;
+	border-radius: 6px;
+	outline: none;
+
+	&:focus {
+		border-color: $dark-blue;
+	}
+	
+	&--error {
+		border-color: $red;
+		color: $red;
+
+		&::placeholder {
+			color: $red;
+		}
+
+		&:focus {
+			border-color: $red;
+		}
+	}
+}

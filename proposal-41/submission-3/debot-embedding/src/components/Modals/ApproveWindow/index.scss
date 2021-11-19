@@ -1,0 +1,125 @@
+@import '../../../styles/size.scss';
+@import '../../../styles/mixins.scss';
+
+.approve-window {
+	&__header {
+		width: 100%;
+		margin-bottom: 16px;
+		text-align: center;
+		font-size: 30px;
+		font-weight: 700;
+		color: var(--header-text-color);
+	}
+
+	&__description {
+		margin-bottom: 20px;
+		font-size: 20px;
+		color: var(--text-color);
+	}
+
+	&__details {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		margin-bottom: 20px;
+		font-size: 18px;
+		background: var(--table-background-color);
+		border-radius: 8px;
+
+		&-row {
+			display: flex;
+
+			&:not(:last-child) {
+				border-bottom: 1px dashed var(--table-border-color);
+			}
+		}
+
+		&-col {
+			width: 70%;
+			padding: 4px 7px 4px 6px;
+			word-wrap: break-word; 
+
+			&--title {
+				width: 30%;
+				font-weight: 600;
+				padding: 4px 6px 4px 7px;
+				border-right: 1px dashed var(--table-border-color);
+			}
+
+			a {
+				color: var(--semi-button-color);
+
+				&:hover {
+					color: var(--semi-button-hover-color);
+				}
+			}
+		}
+
+		&-description {
+			margin-bottom: 20px;
+			font-weight: 600;
+			font-size: 20px;
+
+			&--warning {
+				color: var(--warning-color);
+			};
+		}
+	}
+
+	&__transfers {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		margin-bottom: 20px;
+		font-size: 18px;
+		background: var(--table-background-color);
+		border-radius: 8px;
+
+		&-row {
+			display: flex;
+
+			&:not(:last-child) {
+				border-bottom: 1px dashed var(--table-border-color);
+			}
+		}
+
+		&-col {
+			width: 30%;
+			padding: 4px 7px 4px 6px;
+
+			&:first-child {
+				width: 70%;
+				padding: 4px 6px 4px 7px;
+				word-wrap: break-word;
+				border-right: 1px dashed var(--table-border-color);
+			}
+
+			&--title {
+				text-align: center;
+				font-weight: 600;
+			}
+
+			a {
+				color: var(--semi-button-color);
+
+				&:hover {
+					color: var(--semi-button-hover-color);
+				}
+			}
+		}
+
+		&-description {
+			margin-bottom: 20px;
+			font-weight: 600;
+			font-size: 20px;
+
+			&--warning {
+				color: var(--warning-color);
+			};
+		}
+	}
+
+	&__confirm {
+		margin-top: auto;
+	}
+}

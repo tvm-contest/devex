@@ -1,0 +1,32 @@
+@import '../../../styles/mixins.scss';
+
+.connect-wallet-modal {
+	min-height: max-content;
+	padding: 20px 25px;
+
+	@media(max-width: 640px) {
+		padding: 15px 20px;
+	}
+
+	&__header {
+		width: 100%;
+		margin-bottom: 16px;
+		text-align: center;
+		font-size: 30px;
+		font-weight: 700;
+		color: var(--header-text-color);
+	}
+
+	&__description {
+		font-size: 20px;
+		color: var(--text-color);
+	}
+
+	&__retry {
+		margin: 5vh auto 0;
+		padding: 8px 16px;
+		font-size: 26px;
+
+		@include bordered-button(var(--semi-button-color), var(--background-color));
+	}
+}

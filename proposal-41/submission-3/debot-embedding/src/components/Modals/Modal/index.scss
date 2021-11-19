@@ -1,0 +1,65 @@
+@import '../../../styles/mixins.scss';
+@import '../../../styles/size.scss';
+
+.abstract-modal {
+	position: sticky;
+	z-index: 100;
+	top: 0;
+	left: 0;
+	transform: translateX(-#{$app-side-padding});
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: calc(100% + #{$app-side-padding} + #{$app-side-padding}) ;
+	height: calc(100% + #{$app-top-padding});
+	background-color: rgba(0, 0, 0, 0.66);
+	overflow-x: hidden;
+
+	@media(max-width: 640px) {
+		overflow: hidden;
+	}
+
+	&__container {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: 90%;
+		height: max-content;
+		max-width: 640px;
+		max-height: 640px;
+		min-height: 480px;
+		padding: 15px 20px;
+		background: var(--background-color);
+		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+		border-radius: 12px;
+		overflow: auto;
+
+		@media(max-width: 640px) {
+			width: 100%;
+			height: 100%;
+			max-height: 100%;
+			max-width: 100%;
+			min-height: unset;
+			padding: 15px 2% 10px;
+			border-radius: 0px;
+		}
+	}
+
+	&__cancel-icon {
+		position: absolute;
+		top: 10px;
+		right: 14px;
+
+		.cancel-icon {
+			@include cancel-button-effects(var(--cancel-hover-color), 'stroke');
+			width: 20px;
+			height: 20px;
+
+			&:hover {
+				path {
+					stroke: var(--cancel-active-color);
+				}
+			}
+		}
+	}
+}
