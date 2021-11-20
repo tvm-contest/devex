@@ -3,20 +3,25 @@ import fs from 'fs'
 
 import { globals } from '../config/globals'
 
-const NftRootFileName = path.join(globals.APP_ROOT, '/src/nft/NftRoot.sol')
+const NftRootFileName = path.join(globals.APP_ROOT, '/data-samples/NftRoot.sol')
+
+const markForParamDefenition = '/*%PARAM_DEFENITION%*/'
+const markForParamConstructor = '/*%PARAM_CONSTRUCTOR%*/'
+const markForParamSet = '/*%PARAM_SET%*/'
 
 class AddParamsToNftRootService {
+
     async addSingleParamToNftRoot(paramType: string, paramName: string) : Promise<void>{
         
-        const paramDefenition = paramType + ' ' + paramName + ';\n\t/*%PARAM_DEFENITION%*/'
-        const paramConstructor = ', ' + paramType + ' _' + paramName+'/*%PARAM_CONSTRUCTOR%*/'
-        const paramSet = paramName + ' = _' + paramName + ';\n\t\t/*%PARAM_SET%*/'
+        let paramDefenition = paramType + ' ' + paramName + ';\n\t' + markForParamDefenition;
+        let paramConstructor = ', ' + paramType + ' _' + paramName + markForParamConstructor;
+        let paramSet = paramName + ' = _' + paramName + ';\n\t\t' + markForParamSet;
 
         let code_source = fs.readFileSync(NftRootFileName, 'utf8')
         
-        code_source = code_source.replace(/\/\*%PARAM_DEFENITION%\*\//, paramDefenition)
-        code_source = code_source.replace(/\/\*%PARAM_CONSTRUCTOR%\*\//, paramConstructor)
-        code_source = code_source.replace(/\/\*%PARAM_SET%\*\//, paramSet)
+        code_source = code_source.replace(markForParamDefenition, paramDefenition)
+        code_source = code_source.replace(markForParamConstructor, paramConstructor)
+        code_source = code_source.replace(markForParamSet, paramSet)
             
         fs.writeFileSync(NftRootFileName, code_source, 'utf8')
             

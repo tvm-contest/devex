@@ -15,12 +15,34 @@ contract NftRoot is DataResolver, IndexResolver {
 
     uint256 _totalMinted;
     address _addrBasis;
+	int test;
+	int test0;
+	int test1;
+	int test2;
+	int test3;
+	int test4;
+	int test5;
+	int test6;
+	int test7;
+	int test8;
+	int test9;
 	/*%PARAM_DEFENITION%*/
 
-    constructor(TvmCell codeIndex, TvmCell codeData/*%PARAM_CONSTRUCTOR%*/) public {
+    constructor(TvmCell codeIndex, TvmCell codeData, int _test, int _test0, int _test1, int _test2, int _test3, int _test4, int _test5, int _test6, int _test7, int _test8, int _test9/*%PARAM_CONSTRUCTOR%*/) public {
         tvm.accept();
         _codeIndex = codeIndex;
         _codeData = codeData;
+		test = _test;
+		test0 = _test0;
+		test1 = _test1;
+		test2 = _test2;
+		test3 = _test3;
+		test4 = _test4;
+		test5 = _test5;
+		test6 = _test6;
+		test7 = _test7;
+		test8 = _test8;
+		test9 = _test9;
 		/*%PARAM_SET%*/
     }
 
