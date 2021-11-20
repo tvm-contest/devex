@@ -1,12 +1,11 @@
-{
-    "compilerOptions": {
+{ "compilerOptions": {
         "allowJs": true,
         "checkJs": false,
-        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "strict": true,
         "lib": ["es6"],
+	"resolveJsonModule": true,
         "moduleResolution": "node",
         "noImplicitAny": false,
         "outDir": "dist",
@@ -16,7 +15,7 @@
         "target": "es6",
         "rootDirs": ["src"],
         "typeRoots": ["./node_modules/@types"],
-    },
+  },
     "compileOnSave": true,
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]
