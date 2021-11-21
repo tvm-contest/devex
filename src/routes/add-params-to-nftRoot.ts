@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
   }
   addSeveralParamsToNftRoot(testArray)
   
-  res.send('respond with a resource');
+  res.send('Контракт сформирован');
 });
 
 export {router as addParamsRouter};
