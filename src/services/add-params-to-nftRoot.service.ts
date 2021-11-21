@@ -3,6 +3,11 @@ import fs from 'fs'
 
 import { globals } from '../config/globals'
 
+export type ContractParam = {
+    type: string
+    name: string
+}
+
 const NftRootFileName = path.join(globals.APP_ROOT, '/data-samples/NftRoot.sol')
 
 const markForParamDefenition = '/*%PARAM_DEFENITION%*/'
@@ -11,11 +16,11 @@ const markForParamSet = '/*%PARAM_SET%*/'
 
 class AddParamsToNftRootService {
 
-    async addSingleParamToNftRoot(paramType: string, paramName: string) : Promise<void>{
-        
-        let paramDefenition = paramType + ' ' + paramName + ';\n\t' + markForParamDefenition;
-        let paramConstructor = ', ' + paramType + ' _' + paramName + markForParamConstructor;
-        let paramSet = paramName + ' = _' + paramName + ';\n\t\t' + markForParamSet;
+    async addSingleParamToNftRoot(param: ContractParam) : Promise<void>{
+
+        let paramDefenition = param.type + ' ' + param.name + ';\n\t' + markForParamDefenition;
+        let paramConstructor = ', ' + param.type + ' _' + param.name + markForParamConstructor;
+        let paramSet = param.name + ' = _' + param.name + ';\n\t\t' + markForParamSet;
 
         let code_source = fs.readFileSync(NftRootFileName, 'utf8')
         
@@ -25,14 +30,14 @@ class AddParamsToNftRootService {
             
         fs.writeFileSync(NftRootFileName, code_source, 'utf8')
             
-        console.log('NftRoot has been upgrade');
+        console.log('NftRoot has been update');
             
     }
 
-    async addSeveralParamsToNftRoot(paramsArr:Array<[string, string]>) : Promise<void>{
+    async addSeveralParamsToNftRoot(paramsArr: ContractParam[]) : Promise<void>{
 
-        paramsArr.forEach(paramPair => {
-            addSingleParamToNftRoot(paramPair[0], paramPair[1])
+        paramsArr.forEach(param => {
+            addSingleParamToNftRoot(param)
         });
 
     }
