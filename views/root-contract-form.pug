@@ -2,28 +2,29 @@ extends layout
 
 mixin collection-type
   .collection-type
+    span.delete-type-button(onclick="deleteType(this);") &#215;
     .input-block
       span.name-input Тип коллекции
-      input(type="text" pattern="[A-Za-zА-Яа-я0-9_ ]+")
+      input(type="text" pattern="[A-Za-z0-9_]+" name="typeName" onInput="checkLatinInput(this)")
     .input-block
       span.name-input Количество токенов
-      input(type="text" pattern="[0-9]+")
+      input(type="text" pattern="[0-9]+" name="typeLimit" onInput="checkNumberInput(this)")
 
 block content
-  form(action="", method="get") 
-    h1 Создание контракта
+  form(id="root-contract-form" action="", method="post") 
+    span.form-title Создание контракта
     .input-block
       span.name-input Название контракта
-      input(type="text" pattern="[A-Za-z0-9_ ]+")
+      input(type="text" pattern="[A-Za-z0-9_]+" name="nameContract" onInput="checkLatinInput(this)")
     .input-block
       span.name-input Максимальное количество токенов
-      input(type="text" pattern="[0-9]+")
+      input(type="text" pattern="[0-9]+" name="tokenLimit" onInput="checkNumberInput(this)") 
     .collection-type-list
       +collection-type
-    input(type="button" value="Добавить тип" onclick="addType();")
+    input.add-type-button.form-button(type="button" value=" + Добавить тип" onclick="addType();")
+    input.submit-button.form-button(type="submit" value="Отправить")
 
-  script.
-    const addType = () => document.getElementsByClassName("collection-type-list")[0].innerHTML += document.getElementsByClassName("collection-type")[0].innerHTML
+  script(src="/scripts/root-contract-form.js")
       
       
 
