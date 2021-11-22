@@ -11,7 +11,7 @@ const path = require("path");
 
 class TestDeployFromString {
     #client;
-    #hash;
+    #hash = '';
     #testFolder = 'temp';
     #keys  = {
         secret: "f6d2b219db1bcccd8ed38c82a5037cfe41db08b4cca1832b52de8fda33a22dca",
@@ -19,11 +19,10 @@ class TestDeployFromString {
     }
     #endpoints = "http://localhost";
 
-     constructor(solFile){
+
+
+     constructor(){
         TonClient.useBinaryLibrary(libNode);
-
-        this.#hash = crypto.createHash('md5').update(solFile).digest('hex');
-
 
         this.#client = new TonClient({
             network: {
@@ -34,11 +33,12 @@ class TestDeployFromString {
         if (!fs.existsSync(this.#testFolder)){
             fs.mkdirSync(this.#testFolder);
         }
-
-
      }
 
-     async compileMethod() {
+
+     async compileMethod(solString) {
+
+        this.setHash(solString);
 
         //Create .sol file
         fs.writeFileSync(`${this.#testFolder}\\${this.#hash}.sol`, solFile, function (err) {
@@ -62,9 +62,14 @@ class TestDeployFromString {
 
     
      
-     async deployMethod() {
+     async deployMethod(solString) {
 
+        // if (this.#hash == '') {
+        //     return new Error("Can't deploy without compiled files")
+        // }
 
+        const compile = await this.compileMethod(solString);
+        
         const AccContract = {
             abi: JSON.parse(fs.readFileSync(`${this.#testFolder}\\${this.#hash}.abi.json`)),
             tvc: fs.readFileSync(`${this.#testFolder}\\${this.#hash}.tvc`, {encoding: 'base64'}),
@@ -122,9 +127,7 @@ class TestDeployFromString {
 
     }
 
-    getName() {
-        return this.#hash;
-    }
+  
 
     async close(){
 
@@ -145,15 +148,24 @@ class TestDeployFromString {
 
     } //end close
 
+
+    setHash(solString) {
+        this.#hash = crypto.createHash('md5').update(solString).digest('hex');
+    }
+
+    getName() {
+        return this.#hash;
+    }
+
 } //end class
 
 
 
-// const solFile = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
+const solString = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
 
-// let d = new TestDeployFromString(solFile);
+let d = new TestDeployFromString();
 // d.compileMethod();
-// d.deployMethod();
+d.compileMethod(solString);
 // console.log(d.getTvcDecode());
 // console.log(d.getDabi());
 // d.close();
