@@ -6,12 +6,12 @@ const fs = require('fs');
 const crypto = require('crypto');
 const path = require("path");
 
-//const { globals } = require ('../config/globals');
+
+//import { globals } from '../config/globals'
 
 
-class TestDeployFromString {
+class DeployFromString {
     #client;
-    #hash = '';
     #testFolder = 'temp';
     #keys  = {
         secret: "f6d2b219db1bcccd8ed38c82a5037cfe41db08b4cca1832b52de8fda33a22dca",
@@ -23,6 +23,7 @@ class TestDeployFromString {
 
      constructor(){
         TonClient.useBinaryLibrary(libNode);
+
 
         this.#client = new TonClient({
             network: {
@@ -38,53 +39,49 @@ class TestDeployFromString {
 
      async compileMethod(solString) {
 
-        this.setHash(solString);
+        const hash = await this.getHash(solString);
 
         //Create .sol file
-        fs.writeFileSync(`${this.#testFolder}\\${this.#hash}.sol`, solFile, function (err) {
+        fs.writeFileSync(`${this.#testFolder}\\${hash}.sol`, solString, function (err) {
             if (err) return console.log(err);
          });
 
         //Compile
         await runCommand(consoleTerminal, "sol compile", {
-            file: `${this.#testFolder}\\${this.#hash}.sol`
+            file: `${this.#testFolder}\\${hash}.sol`,
+            outputDir: `${this.#testFolder}\\`
+            
          });
+     }
+     
 
-         //Костыль для переноса в папку temp (исправлю, как разберусь перенаправить итог компиляции)
-         fs.renameSync(`${this.#hash}.abi.json`, `${this.#testFolder}\\${this.#hash}.abi.json`, function (err) {
-            if (err) console.log(err)
-          })
+     async createContractAccount(solString) {
 
-          fs.renameSync(`${this.#hash}.tvc`, `${this.#testFolder}\\${this.#hash}.tvc`, function (err) {
-            if (err) console.log(err)
-          })
+        const hash = await this.getHash(solString);
+        const compile = await this.compileMethod(solString);
+
+        const AccContract = {
+            abi: JSON.parse(fs.readFileSync(`${this.#testFolder}\\${hash}.abi.json`)),
+            tvc: fs.readFileSync(`${this.#testFolder}\\${hash}.tvc`, {encoding: 'base64'}),
+        };
+
+        const keys = await this.#client.crypto.generate_random_sign_keys();
+        const signer = signerKeys(keys);
+
+        const client = this.#client;
+
+        //формируем контракт
+        const acc = new Account(AccContract, { signer, client });
+
+        return acc;
+
      }
 
     
      
      async deployMethod(solString) {
 
-        // if (this.#hash == '') {
-        //     return new Error("Can't deploy without compiled files")
-        // }
-
-        const compile = await this.compileMethod(solString);
-        
-        const AccContract = {
-            abi: JSON.parse(fs.readFileSync(`${this.#testFolder}\\${this.#hash}.abi.json`)),
-            tvc: fs.readFileSync(`${this.#testFolder}\\${this.#hash}.tvc`, {encoding: 'base64'}),
-        };
-        
-        //Сформировываем связку ключей
-        //const keys = await this.#client.crypto.generate_random_sign_keys();
-
-        //json связки ключей
-        const signer = signerKeys(this.#keys);
-
-        const client = this.#client;
-
-        //предварительно создаем контракт
-        const acc = new Account(AccContract, { signer, client });
+        const acc = await this.createContractAccount(solString);
 
         //получаем адрес будущего контракта
         const address = await acc.getAddress();
@@ -103,25 +100,26 @@ class TestDeployFromString {
 
 
 
-     async getTvcDecode() {
+     async getTvcDecode(solString) {
         //Сформировываем tvc_decode для экспорта
-        const tvc_string = fs.readFileSync(`${this.#testFolder}\\${this.#hash}.tvc`, {encoding: 'base64'});
-        const boc = new BocModule(this.#client);
-        const temp = await boc.decode_tvc({ tvc: tvc_string});
+ 
+        const acc = await this.createContractAccount(solString);
 
-        //fs.writeFileSync(this.#hash + ".decode.json", JSON.stringify(temp, null, '\t'));
+        const boc = new BocModule(this.#client);
+        const temp = await boc.decode_tvc({ tvc: acc.contract.tvc});
+
 
         return  JSON.stringify(temp, null, '\t');
     }
 
     async getDabi() {
-        const abi =  await JSON.parse(fs.readFileSync(`${this.#testFolder}\\${this.#hash}.abi.json`));
+
+
+        const acc = await this.createContractAccount(solString);
 
         const dabi =  {
-            dabi: Buffer.from(JSON.stringify(abi)).toString('base64'),
+            dabi: Buffer.from(JSON.stringify(acc.contract.abi)).toString('base64'),
         };
-
-        //fs.writeFileSync(this.#hash + ".dabi.json", JSON.stringify(dabi, null, '\t'));
 
         return JSON.stringify(dabi, null, '\t');
 
@@ -149,13 +147,11 @@ class TestDeployFromString {
     } //end close
 
 
-    setHash(solString) {
-        this.#hash = crypto.createHash('md5').update(solString).digest('hex');
+    getHash(solString) {
+        const hash = crypto.createHash('md5').update(solString).digest('hex');
+        return hash;
     }
 
-    getName() {
-        return this.#hash;
-    }
 
 } //end class
 
@@ -163,9 +159,9 @@ class TestDeployFromString {
 
 const solString = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
 
-let d = new TestDeployFromString();
-// d.compileMethod();
-d.compileMethod(solString);
-// console.log(d.getTvcDecode());
-// console.log(d.getDabi());
-// d.close();
+let d = new DeployFromString(); 
+//d.deployMethod(solString);
+//d.compileMethod(solString);
+//console.log(d.getTvcDecode(solString));
+ //console.log(d.getDabi());
+ //d.close();
