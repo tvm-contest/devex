@@ -22,13 +22,13 @@ class AddParamsToNftRootService {
         let paramConstructor = ', ' + param.type + ' _' + param.name + markForParamConstructor;
         let paramSet = param.name + ' = _' + param.name + ';\n\t\t' + markForParamSet;
 
-        let code_source = fs.readFileSync(NftRootFileName, 'utf8')
+        let codeSource = fs.readFileSync(NftRootFileName, 'utf8')
         
-        code_source = code_source.replace(markForParamDefenition, paramDefenition)
-        code_source = code_source.replace(markForParamConstructor, paramConstructor)
-        code_source = code_source.replace(markForParamSet, paramSet)
+        codeSource = codeSource.replace(markForParamDefenition, paramDefenition)
+        codeSource = codeSource.replace(markForParamConstructor, paramConstructor)
+        codeSource = codeSource.replace(markForParamSet, paramSet)
             
-        fs.writeFileSync(NftRootFileName, code_source, 'utf8')
+        fs.writeFileSync(NftRootFileName, codeSource, 'utf8')
             
         console.log('NftRoot has been update');
             

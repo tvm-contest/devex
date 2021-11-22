@@ -1,7 +1,7 @@
 import express from 'express';
-import { addSingleParamToNftRoot } from '../services/add-params-to-nftRoot.service';
-import { addSeveralParamsToNftRoot } from '../services/add-params-to-nftRoot.service';
-import { ContractParam } from '../services/add-params-to-nftRoot.service';
+import { addSingleParamToNftRoot } from '../services/add-params-to-nft-root.service';
+import { addSeveralParamsToNftRoot } from '../services/add-params-to-nft-root.service';
+import { ContractParam } from '../services/add-params-to-nft-root.service';
 
 const router = express.Router();
 

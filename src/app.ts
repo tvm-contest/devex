@@ -7,7 +7,7 @@ import { globals } from './config/globals';
 
 import {indexRouter} from './routes/index';
 import {sampleRouter} from './routes/sample';
-import {addParamsRouter} from './routes/add-params-to-nftRoot';
+import {addParamsRouter} from './routes/add-params-to-nft-root';
 
 
 
@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 
 app.use('/', indexRouter);
 app.use('/my-sample', sampleRouter);
-app.use('/addParams', addParamsRouter);
+app.use('/add-params', addParamsRouter);
 
 app.use((req: Request, res: Response) => {
     res.status(404);
