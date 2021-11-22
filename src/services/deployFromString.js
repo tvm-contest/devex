@@ -2,35 +2,38 @@ const {TonClient, signerKeys, BocModule} = require("@tonclient/core");
 const {libNode} = require("@tonclient/lib-node");
 const { Account } = require("@tonclient/appkit");
 const { consoleTerminal, runCommand, downloadFromGithub} = require("tondev");
-const path = require("path");
 const fs = require('fs');
 const crypto = require('crypto');
-const { globals } = require ('../config/globals');
+const path = require("path");
 
+//const { globals } = require ('../config/globals');
 
 
 class TestDeployFromString {
     #client;
     #hash;
-    #dir
+    #testFolder = 'temp';
+    #keys  = {
+        secret: "f6d2b219db1bcccd8ed38c82a5037cfe41db08b4cca1832b52de8fda33a22dca",
+        public: "24379d4a9d8f16b292bc814f492762e43de69c5d472435e68753cd22f1f50eee"     
+    }
+    #endpoints = "http://localhost";
 
-     constructor(solFile, network){
+     constructor(solFile){
         TonClient.useBinaryLibrary(libNode);
 
-        const temp = crypto.createHash('md5').update(solFile).digest('hex');
+        this.#hash = crypto.createHash('md5').update(solFile).digest('hex');
 
-        this.#hash =  temp + '/' + temp;
 
         this.#client = new TonClient({
             network: {
-                endpoints: [network]
+                endpoints: [this.#endpoints]
             }
         });
 
-        if (!fs.existsSync(temp)){
-            fs.mkdirSync(temp);
+        if (!fs.existsSync(this.#testFolder)){
+            fs.mkdirSync(this.#testFolder);
         }
-
 
 
      }
@@ -38,16 +41,23 @@ class TestDeployFromString {
      async compileMethod() {
 
         //Create .sol file
-        fs.writeFileSync(this.#hash + ".sol", solFile, function (err) {
+        fs.writeFileSync(`${this.#testFolder}\\${this.#hash}.sol`, solFile, function (err) {
             if (err) return console.log(err);
          });
 
         //Compile
         await runCommand(consoleTerminal, "sol compile", {
-            file: path.resolve( __dirname + "\\" + "4120707e7e06c7607319cffa1262a25b" , "4120707e7e06c7607319cffa1262a25b.sol")
+            file: `${this.#testFolder}\\${this.#hash}.sol`
          });
-  
-     
+
+         //Костыль для переноса в папку temp (исправлю, как разберусь перенаправить итог компиляции)
+         fs.renameSync(`${this.#hash}.abi.json`, `${this.#testFolder}\\${this.#hash}.abi.json`, function (err) {
+            if (err) console.log(err)
+          })
+
+          fs.renameSync(`${this.#hash}.tvc`, `${this.#testFolder}\\${this.#hash}.tvc`, function (err) {
+            if (err) console.log(err)
+          })
      }
 
     
@@ -56,15 +66,15 @@ class TestDeployFromString {
 
 
         const AccContract = {
-            abi: JSON.parse(fs.readFileSync(this.#hash + ".abi.json")),
-            tvc: fs.readFileSync(this.#hash + ".tvc", {encoding: 'base64'}),
+            abi: JSON.parse(fs.readFileSync(`${this.#testFolder}\\${this.#hash}.abi.json`)),
+            tvc: fs.readFileSync(`${this.#testFolder}\\${this.#hash}.tvc`, {encoding: 'base64'}),
         };
-
+        
         //Сформировываем связку ключей
-        const keys = await this.#client.crypto.generate_random_sign_keys();
+        //const keys = await this.#client.crypto.generate_random_sign_keys();
 
         //json связки ключей
-        const signer = signerKeys(keys);
+        const signer = signerKeys(this.#keys);
 
         const client = this.#client;
 
@@ -90,16 +100,17 @@ class TestDeployFromString {
 
      async getTvcDecode() {
         //Сформировываем tvc_decode для экспорта
-        const tvc_string = fs.readFileSync(this.#hash + ".tvc", {encoding: 'base64'});
+        const tvc_string = fs.readFileSync(`${this.#testFolder}\\${this.#hash}.tvc`, {encoding: 'base64'});
         const boc = new BocModule(this.#client);
         const temp = await boc.decode_tvc({ tvc: tvc_string});
+
         //fs.writeFileSync(this.#hash + ".decode.json", JSON.stringify(temp, null, '\t'));
 
         return  JSON.stringify(temp, null, '\t');
     }
 
     async getDabi() {
-        const abi =  await JSON.parse(fs.readFileSync(this.#hash + ".abi.json"));
+        const abi =  await JSON.parse(fs.readFileSync(`${this.#testFolder}\\${this.#hash}.abi.json`));
 
         const dabi =  {
             dabi: Buffer.from(JSON.stringify(abi)).toString('base64'),
@@ -107,32 +118,42 @@ class TestDeployFromString {
 
         //fs.writeFileSync(this.#hash + ".dabi.json", JSON.stringify(dabi, null, '\t'));
 
-        return  JSON.stringify(dabi, null, '\t');
+        return JSON.stringify(dabi, null, '\t');
 
     }
 
     getName() {
-        return  this.#hash;
+        return this.#hash;
     }
 
-    close(){
-        this.#client.close();
+    async close(){
 
-    }
+       this.#client.close();
 
+       //delete all files from temp
+       const deleteFile = await fs.readdir(this.#testFolder, (err, files) => {
+        if (err) throw err;
+        for (const file of files) {
+          fs.unlinkSync(path.join(this.#testFolder, file), err => {
+            if (err) throw err;
+          });
+        }
+        fs.open(`${this.#testFolder}/.gitkeep`, 'w', 
+        function (err) { 
+        });
+      });
 
-
-
+    } //end close
 
 } //end class
 
 
-const endpoints = "http://localhost"
-const solFile = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
 
-let d = new TestDeployFromString(solFile, endpoints);
-d.compileMethod();
+// const solFile = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
+
+// let d = new TestDeployFromString(solFile);
+// d.compileMethod();
 // d.deployMethod();
+// console.log(d.getTvcDecode());
+// console.log(d.getDabi());
 // d.close();
-// d.getTvcDecode();
-// d.getDabi();
