@@ -1,5 +1,6 @@
 dist
 node_modules
 src/module/test/*
+src/services/temp/*
 .idea
 .env
