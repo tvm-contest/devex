@@ -2,6 +2,6 @@ dist
 node_modules
 src/module/test/*
 src/services/temp/*
-src/services/temp/.gitkeep
+!src/services/temp/.gitkeep
 .idea
 .env
