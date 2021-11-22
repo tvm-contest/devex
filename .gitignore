@@ -3,3 +3,4 @@ node_modules
 src/module/test/*
 .idea
 .env
+.DS_Store
