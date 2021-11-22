@@ -8,6 +8,7 @@ import { globals } from './config/globals';
 import {indexRouter} from './routes/index';
 import {sampleRouter} from './routes/sample';
 import {addParamsRouter} from './routes/add-params-to-nft-root';
+import {rootContractForm} from './routes/root-contract-form';
 
 
 
@@ -30,6 +31,7 @@ app.use(bodyParser.json());
 app.use('/', indexRouter);
 app.use('/my-sample', sampleRouter);
 app.use('/add-params', addParamsRouter);
+app.use('/root-contract-form', rootContractForm);
 
 app.use((req: Request, res: Response) => {
     res.status(404);
