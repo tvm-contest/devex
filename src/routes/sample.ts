@@ -24,7 +24,7 @@ router.get('/testDeploy', async function(req, res, next) {
   const getDabi = await d.getDabi(solString);
   console.log(getDabi);
   
-  //await d.close();
+  await d.close();
 
 
 });
