@@ -64,9 +64,9 @@ export class DeployFromString {
         };
 
         //поменять при необходимости на this.keys
-        const keys = await this.client.crypto.generate_random_sign_keys();
+        //const keys = await this.client.crypto.generate_random_sign_keys();
 
-        const signer = signerKeys(keys);
+        const signer = signerKeys(KEYS);
         const client = this.client;
 
         //формируем контракт
