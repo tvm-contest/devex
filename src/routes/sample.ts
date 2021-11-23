@@ -13,20 +13,16 @@ router.get('/addFileToIPFS', async function(req, res, next) {
   res.render('my-sample', { title: 'My-sample', CID: CID });
 });
 
-router.get('/testDeploy', async function(req, res, next) {
-	const solString = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'helloWorld';}}";
+router.get('/deployService', async function(req, res, next) {
+	const solString = path.join(globals.SAMPLE_DATA_PATH, '/stringContract.txt');
 	const d = new DeployFromString(); 
-	const deploy = await d.deployMethod(solString);
-
-  const getTvc = await d.getTvcDecode(solString);
+  const acc = await d.createContractAccount(solString);
+	const deploy = await d.deployMethod(acc);
+  const getTvc = await d.getTvcDecode(acc);
   console.log(getTvc);
-
-  const getDabi = await d.getDabi(solString);
+  const getDabi = await d.getDabi(acc);
   console.log(getDabi);
-  
   await d.close();
-
-
 });
 
 

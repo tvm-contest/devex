@@ -67,7 +67,6 @@ export class DeployFromString {
         //const keys = await this.client.crypto.generate_random_sign_keys();
 
         const signer = signerKeys(KEYS);
-
         const client = this.client;
 
         //формируем контракт
@@ -77,9 +76,7 @@ export class DeployFromString {
 
      }
 
-     async deployMethod(solString: string) : Promise<void> {
-
-        const acc = await this.createContractAccount(solString);
+     async deployMethod(acc: Account) : Promise<void> {
 
         //получаем адрес будущего контракта
         const address = await acc.getAddress();
@@ -98,10 +95,8 @@ export class DeployFromString {
 
 
 
-     async getTvcDecode(solString: string): Promise<ResultOfDecodeTvc> {
+     async getTvcDecode(acc: Account): Promise<ResultOfDecodeTvc> {
         //Сформировываем tvc_decode для экспорта
- 
-        const acc = await this.createContractAccount(solString);
 
         const boc = new BocModule(this.client);
         const tvc = acc.contract.tvc;
@@ -110,21 +105,16 @@ export class DeployFromString {
         if(tvc !== undefined) {
             decode_tvc = await boc.decode_tvc({tvc: tvc});
         }
-
         return  await decode_tvc;
-    }
+    } //end getTvcDecode
 
-    async getDabi(solString: string): Promise<string> {
+    async getDabi(acc: Account): Promise<string> {
         //Сформировываем getDabi для экспорта
-
-        const acc = await this.createContractAccount(solString);
 
         const dabi =  {
             dabi: Buffer.from(JSON.stringify(acc.contract.abi)).toString('base64'),
         };
-
         return  JSON.stringify(dabi, null, '\t');
-
     }
 
     async close(){
@@ -141,15 +131,15 @@ export class DeployFromString {
         function (err) { 
         });
       });
-
     } //end close
 
      getHash(solString: string): number {
         var hash = 0;
         if (solString.length == 0) return hash;
+
         for (var i = 0; i < solString.length; i++) {
             var char = solString.charCodeAt(i);
-            hash = ((hash<<5)-hash)+char;
+            hash = ( (hash << 5)- hash) + char;
             hash = hash & hash; // Convert to 32bit integer
         }
         return hash;
