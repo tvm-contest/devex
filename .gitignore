@@ -1,7 +1,9 @@
 dist
 node_modules
+package-lock.json
 src/module/test/*
 src/services/temp/*
 !src/services/temp/.gitkeep
 .idea
 .env
+.DS_Store
