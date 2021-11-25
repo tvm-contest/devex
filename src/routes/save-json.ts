@@ -3,42 +3,40 @@ import fs from 'fs'
 import path from 'path';
 
 import { globals } from '../config/globals';
+import { Collection } from '../models/collection';
+import { DescriptCollection } from '../models/descript-collection';
+import { Parametr } from '../models/parametr';
+import { Rarity } from '../models/rarity';
+import { Token } from '../models/token';
 
 const router = express.Router();
 
 router.get('/', function(req, res, next) {
-    //Создаю объект с вложенностью и массивом, чтобы быть уверенным 
-    //что со сложными объектами тоже будет работать
-    let exapmpleObject  = {
-        name: 'exampleName',
-        description: 'exampleDescription',
-        collection: [
-            {
-                innerName: 'exampleInnerName1',
-                innerDescription: 'exampleInnerDescription1'
-            },
-            {
-                innerName: 'exampleInnerName2',
-                innerDescription: 'exampleInnerDescription2'
-            },
-        ],
-        user: {
-            userName: 'exampleUserName',
-            userDescription: 'exampleUserDescription'
-        }
-    };
-
-    let jsonString : string = JSON.stringify(exapmpleObject, null, '\t');
     
+    let params : Parametr[] = [new Parametr("param1", "int"), new Parametr("param2", "string")];
+    let rariry : Rarity[] = [new Rarity("rare", 10), new Rarity("norare", 90)];
+    let description : DescriptCollection = new DescriptCollection("Collect1", 100);
+    let collection : Collection = new Collection(description, rariry, params);
+    let jsonCollection : string = JSON.stringify(collection, null, '\t');
+
+    let tokenParams : Parametr[] = [new Parametr("param1", "int", 31), new Parametr("param2", "string", "valueForParam")];
+    let token : Token = new Token(collection, tokenParams, rariry[0]);
+    let jsonToken : string = JSON.stringify(token, null, '\t');
+
     let tepmDir = fs.mkdtempSync(path.join(globals.TEMP_ROOT, 'json-'));
-    let jsonFile = path.join(tepmDir, 'object.json');
+    let jsonFileCollection = path.join(tepmDir, 'collection.json');
+    let jsonFileToken = path.join(tepmDir, 'token.json');
 
-    fs.writeFileSync(jsonFile, jsonString);
+    fs.writeFileSync(jsonFileCollection, jsonCollection, {flag: 'w'});
+    fs.writeFileSync(jsonFileToken, jsonToken, {flag: 'a'});
 
-    res.download(jsonFile, () => {
+    // res.download(jsonFileCollection, () => {
+    //     fs.rmSync(tepmDir, {recursive: true, force: true});
+    // });
+    res.download(jsonFileToken, () => {
         fs.rmSync(tepmDir, {recursive: true, force: true});
     });
-    
+
 });
 
 export {router as saveJsonRouter};
