@@ -1,27 +1,29 @@
 import express from 'express';
-import { addSingleParamToNftRoot } from '../services/add-params-to-nft-root.service';
-import { addSeveralParamsToNftRoot } from '../services/add-params-to-nft-root.service';
-import { ContractParam } from '../services/add-params-to-nft-root.service';
+import path from 'path';
+import { globals } from '../config/globals';
+import { Parametr } from '../models/parametr';
+import { addSingleParam } from '../services/add-params.service';
+import { addSeveralParams } from '../services/add-params.service';
 
 const router = express.Router();
 
 /* GET addParams listing. */
 router.get('/', function(req, res, next) {
 
-  let param : ContractParam = {
-    type: String(req.query.paramType),
-    name: String(req.query.paramName)
-  }
+  let param : Parametr = new Parametr(
+    String(req.query.paramName),
+    String(req.query.paramType)
+  )
 
-  addSingleParamToNftRoot(param);
+  addSingleParam(param, path.join(globals.APP_ROOT, "data-samples", "NftRoot.sol"));
 
   //FOR TEST
-  let testArray: ContractParam[]
+  let testArray: Parametr[]
   testArray = []
   for (let index = 0; index < 10; index++) {
-    testArray.push( {type: req.query.paramType+'', name: req.query.paramName+''+index} ) 
+    testArray.push( new Parametr(req.query.paramName+''+index, req.query.paramType+'') ) 
   }
-  addSeveralParamsToNftRoot(testArray)
+  addSeveralParams(testArray, path.join(globals.APP_ROOT, "data-samples", "NftRoot.sol"))
   
   res.send('Контракт сформирован');
 });

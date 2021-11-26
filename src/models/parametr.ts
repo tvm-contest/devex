@@ -18,7 +18,7 @@ export class Parametr {
         return this.name;
     }
 
-    getLimit() : string {
+    getType() : string {
         return this.type;
     }
 
@@ -34,7 +34,7 @@ export class Parametr {
         this.name = name;
     }
 
-    setLimit(type: string) {
+    setType(type: string) {
         this.type = type;
     }
 
