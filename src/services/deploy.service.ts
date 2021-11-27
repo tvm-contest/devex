@@ -6,29 +6,22 @@ import { TonClient, signerKeys, BocModule, ResultOfDecodeTvc } from '@tonclient/
 import { libNode } from '@tonclient/lib-node';
 import * as fs from 'fs';
 import { globals } from '../config/globals'
-
-
-const COMPILE_PATH = path.resolve(globals.BASE_PATH, "temp");
-const KEYS  = {
-    public: "af0115f94c93848ac16afb811e3bb992116b0b85f9a2ac618adae56b5f4e2039",
-    secret: "c0152d49dee1e48791f1e4c749abdd1be0026cd2042db21f8ca65d8e905cc87d"  
-};
+import { everscale_settings } from '../config/everscale-settings';
 
 export class DeployService {
     private client: TonClient;
-    private readonly endpoints = "http://localhost";
 
     constructor(){
         TonClient.useBinaryLibrary(libNode);
 
         this.client = new TonClient({
             network: {
-                endpoints: [this.endpoints]
+                endpoints: [everscale_settings.ENDPOINTS]
             }
         });
 
-        if (!fs.existsSync(COMPILE_PATH)){
-            fs.mkdirSync(COMPILE_PATH);
+        if (!fs.existsSync(globals.TEMP_ROOT)){
+            fs.mkdirSync(globals.TEMP_ROOT);
         }
     }
 
@@ -46,10 +39,10 @@ export class DeployService {
             });
         } else {
             hash = this.getHash(contractDotSolCode);
-            fs.writeFileSync(path.resolve(COMPILE_PATH, hash + ".sol"), contractDotSolCode);
+            fs.writeFileSync(path.resolve(globals.TEMP_ROOT, hash + ".sol"), contractDotSolCode);
             await runCommand(consoleTerminal, "sol compile", {
-                file: path.resolve(COMPILE_PATH, hash + '.sol'),
-                outputDir: COMPILE_PATH
+                file: path.resolve(globals.TEMP_ROOT, hash + '.sol'),
+                outputDir: globals.TEMP_ROOT
                 
             });
         }
@@ -59,14 +52,14 @@ export class DeployService {
     async createContractAccount(contractDotSolCode: string, relative_path?) : Promise<Account> {
         const hash = await this.compileContract(contractDotSolCode, relative_path);
 
-        let abi = await JSON.parse(fs.readFileSync(path.resolve(relative_path || COMPILE_PATH, hash + ".abi.json")).toString());
-        let tvc = fs.readFileSync(path.resolve(relative_path || COMPILE_PATH, hash + ".tvc"), {encoding: 'base64'});
+        let abi = await JSON.parse(fs.readFileSync(path.resolve(relative_path || globals.TEMP_ROOT, hash + ".abi.json")).toString());
+        let tvc = fs.readFileSync(path.resolve(relative_path || globals.TEMP_ROOT, hash + ".tvc"), {encoding: 'base64'});
         
         const ContractAcc = new Account({
             abi: abi,
             tvc: tvc
         }, {
-            signer: signerKeys(KEYS),
+            signer: signerKeys(everscale_settings.KEYS),
             client: this.client
         });
 
@@ -104,9 +97,9 @@ export class DeployService {
     }
 
     private async deleteFiles(hash: string) : Promise<void> {
-        fs.unlinkSync(path.resolve(COMPILE_PATH, hash + ".sol"));
-        fs.unlinkSync(path.resolve(COMPILE_PATH, hash + ".abi.json"));
-        fs.unlinkSync(path.resolve(COMPILE_PATH, hash + ".tvc"));
+        fs.unlinkSync(path.resolve(globals.TEMP_ROOT, hash + ".sol"));
+        fs.unlinkSync(path.resolve(globals.TEMP_ROOT, hash + ".abi.json"));
+        fs.unlinkSync(path.resolve(globals.TEMP_ROOT, hash + ".tvc"));
     }
     
     private getHash(solString: string) : string {

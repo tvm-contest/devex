@@ -17,7 +17,7 @@ router.get('/addFileToIPFS', async function(req, res, next) {
 
 router.get('/deployService', async function(req, res, next) {
   //const solString = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'hello';}}";
-    const filepath = path.join(globals.SAMPLE_DATA_PATH, '/stringContract.txt');
+  const filepath = path.join(globals.SAMPLE_DATA_PATH, '/stringContract.txt');
 	var solString = fs.readFileSync(filepath, 'utf8');
 
 	const d = new DeployService();
