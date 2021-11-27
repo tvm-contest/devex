@@ -2,7 +2,22 @@ doctype html
 html
   head
     title= title
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src="/scripts/bootstrap.bundle.min.js") 
     script(src="/scripts/jquery-3.6.0.min.js") 
   body
+    nav(class="navbar navbar-expand-lg navbar-light bg-light")
+      a(class="navbar-brand" href="#")="Navbar"
+      div(class="collapse navbar-collapse" id="navbarNav")
+        ul(class="navbar-nav")
+          li(class="nav-item active")
+            a(class="nav-link" href="#")="Home"
+              span(class="sr-only")="(current)"
+          li(class="nav-item")
+            a(class="nav-link" href="#")="Features"
+          li(class="nav-item")
+            a(class="nav-link" href="#")="Pricing"
+          li(class="nav-item")
+            a(class="nav-link disabled" href="#")="Disabled"
     block content
