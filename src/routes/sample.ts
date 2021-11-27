@@ -1,11 +1,12 @@
 import express from 'express';
 import { consoleTerminal } from 'tondev';
-const router = express.Router();
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 import { globals } from '../config/globals'
 import { addFileToIPFS } from '../services/add-ipfs.service';
-import {DeployFromString} from '../services/deployFromString';
+import {DeployService} from '../services/deploy.service';
+import {DeployTrueNftService} from '../services/deployTrueNft.service';
+const router = express.Router();
 
 router.get('/addFileToIPFS', async function(req, res, next) {
   const filepath = path.join(globals.SAMPLE_DATA_PATH, '/textfile-test-ipfs-upload.txt');
@@ -16,10 +17,10 @@ router.get('/addFileToIPFS', async function(req, res, next) {
 
 router.get('/deployService', async function(req, res, next) {
   //const solString = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'hello';}}";
-    const filepath = path.join(globals.SAMPLE_DATA_PATH, '/stringContract.txt');
+  const filepath = path.join(globals.SAMPLE_DATA_PATH, '/stringContract.txt');
 	var solString = fs.readFileSync(filepath, 'utf8');
 
-	const d = new DeployFromString();
+	const d = new DeployService();
   var acc; 
  
   try {
@@ -30,8 +31,8 @@ router.get('/deployService', async function(req, res, next) {
   }
 
   try {
-    const deploy = await d.deployMethod(acc);
-    const getTvc = await d.getTvcDecode(acc);
+    await d.deploy(acc);
+    const getTvc = await d.getDecodeTVC(acc);
     console.log(getTvc);
     const getDabi = await d.getDabi(acc);
     console.log(getDabi);
@@ -40,10 +41,14 @@ router.get('/deployService', async function(req, res, next) {
     console.error(err);
 
   } finally {
-    await d.close();
+    d.destructor();
   }
 });
 
-
+router.get('/deployTrueNftService', async function(req, res, next) {
+  const deployTrueNftService = new DeployTrueNftService();
+  const testPath = path.resolve(globals.BASE_PATH, "src" ,"sample-data", "trueNftSample");
+  deployTrueNftService.deployTrueNft(testPath);
+});
 
 export {router as sampleRouter};

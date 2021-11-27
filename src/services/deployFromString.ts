@@ -1,4 +1,4 @@
-
+//todo удалить файл со временем
 import path from 'path';
 import { consoleTerminal, runCommand } from 'tondev';
 import { Account } from '@tonclient/appkit';
