@@ -48,7 +48,7 @@ export default function AccountPopover() {
     setOpen(false);
   };
 
-  if (!account) {
+  if (!account.isReady) {
     return '';
   }
 
