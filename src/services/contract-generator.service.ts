@@ -16,7 +16,7 @@ const resolversDir = path.join(globals.CONTRACTS_ROOT, 'resolvers');
 
 class ContractGenerator {
 
-  generateContract(collectionSettings : Collection){
+  async generateContract(collectionSettings : Collection) : Promise<string>{
     const hashContract = sha256(JSON.stringify(collectionSettings));
     const tempDir = path.join(globals.TEMP_ROOT, hashContract)
 
@@ -42,9 +42,11 @@ class ContractGenerator {
       fs.copyFileSync(nftRootFile, nftRootFileTepm);
       fs.copyFileSync(dataFile, dataFileTepm);
     } else {
-      addParamsService.addSeveralParams(collectionSettings.getParameters(), nftRootFile, nftRootFileTepm);
-      addParamsService.addSeveralParams(collectionSettings.getParameters(), dataFile, dataFileTepm);
+      await addParamsService.addSeveralParams(collectionSettings.getParameters(), nftRootFile, nftRootFileTepm);
+      await addParamsService.addSeveralParams(collectionSettings.getParameters(), dataFile, dataFileTepm);
     }
+
+    return tempDir;
 
   }
 

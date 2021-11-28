@@ -10,7 +10,7 @@ export class DeployTrueNftService {
         this.deployService = new DeployService();
     }
     
-    async deployTrueNft(pathWithContracts : string) : Promise<void> {
+    async deployTrueNft(pathWithContracts : string) : Promise<string> {
         
         let indexBasisContract = fs.readFileSync(path.resolve(pathWithContracts, "IndexBasis.sol")).toString();
         let dataContract = fs.readFileSync(path.resolve(pathWithContracts, "Data.sol")).toString();
@@ -22,11 +22,13 @@ export class DeployTrueNftService {
         let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, pathWithContracts);
         let indexBasisAccount = await this.deployService.createContractAccount(indexBasisContract, pathWithContracts);
         
-        this.deployRootNft(rootNftAccount, indexAccount, dataAccount);
+        let address = this.deployRootNft(rootNftAccount, indexAccount, dataAccount);
         this.deployBasis(rootNftAccount, indexBasisAccount);
+
+        return address;
     }
 
-    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account) : Promise<void> {
+    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account) : Promise<string> {
         try {
             await this.deployService.deploy(
                 rootNftAccount,
@@ -35,8 +37,10 @@ export class DeployTrueNftService {
                     codeData: (await this.deployService.getDecodeTVC(dataAccount)).code  
                 }
             );
+            return rootNftAccount.getAddress();
         } catch(err) {
             console.log(err);
+            return "0";
         }
     }
 
