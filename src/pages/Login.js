@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // material
@@ -16,10 +16,11 @@ export default function Login() {
   const navigate = useNavigate();
   const { account, ton } = state;
 
-  if (account.isReady) {
-    navigate('/dashboard');
-    return '';
-  }
+  useEffect(() => {
+    if (account.isReady) {
+      navigate('/dashboard');
+    }
+  }, [account.isReady, navigate]);
 
   const onButtonClick = () => {
     login(state, dispatch);
