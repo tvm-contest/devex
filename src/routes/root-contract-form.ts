@@ -21,7 +21,7 @@ router.post('/', async function(req, res, next) {
   let deployTrueNftService = new DeployTrueNftService()
   let address = await deployTrueNftService.deployTrueNft(contractDir)
 
-  deleteContractDirTemp(collection)
+  // deleteContractDirTemp(collection)
 
   res.send("Адрес коллекции: " + address)
 });
