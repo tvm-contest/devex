@@ -1,12 +1,30 @@
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 // material
 import { Container, Typography, Grid, Button } from '@mui/material';
 
 // components
 import Page from '../components/Page';
+import StoreContext from '../store/StoreContext';
+import { login } from '../store/actions/account';
 
 // ----------------------------------------------------------------------
 
 export default function Login() {
+  const { state, dispatch } = useContext(StoreContext);
+  const navigate = useNavigate();
+  const { account, ton } = state;
+
+  if (account.isReady) {
+    navigate('/dashboard');
+    return '';
+  }
+
+  const onButtonClick = () => {
+    login(state, dispatch);
+  };
+
   return (
     <Page title="Login">
       <Container>
@@ -18,11 +36,13 @@ export default function Login() {
             Here description and link to
             https://chrome.google.com/webstore/detail/ton-crystal-wallet/cgeeodpfagjceefieflmdfphplkenlfk
           </Grid>
-          <Grid item xs={12}>
-            <Button fullWidth variant="contained">
-              Connect
-            </Button>
-          </Grid>
+          {ton.isReady && (
+            <Grid item xs={12}>
+              <Button fullWidth variant="contained" onClick={onButtonClick}>
+                Connect
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Container>
     </Page>

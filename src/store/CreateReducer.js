@@ -2,6 +2,7 @@ import { ProviderRpcClient } from 'ton-inpage-provider';
 import { useReducer, useEffect } from 'react';
 
 import reducer from './reducer';
+import { login } from './actions/account';
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -41,6 +42,11 @@ const CreateReducer = () => {
   useEffect(() => {
     InitTon(dispatch);
   }, []);
+
+  useEffect(() => {
+    login(state, dispatch, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.ton.isReady]);
 
   return [state, dispatch];
 };

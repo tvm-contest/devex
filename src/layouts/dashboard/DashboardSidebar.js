@@ -66,24 +66,33 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
-        <Link underline="none" component={RouterLink} to="/dashboard/login">
-          <Button fullWidth variant="contained">
-            Login
-          </Button>
-        </Link>
-        <Link underline="none" component={RouterLink} to="#">
-          <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
-            <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
-              </Typography>
-            </Box>
-          </AccountStyle>
-        </Link>
+        {!account.isReady && (
+          <Link underline="none" component={RouterLink} to="/dashboard/login">
+            <Button fullWidth variant="contained">
+              Login
+            </Button>
+          </Link>
+        )}
+
+        {account.isReady && (
+          <Link underline="none" component={RouterLink} to="#">
+            <AccountStyle>
+              <Avatar src={account.photoURL} alt="photoURL" />
+              <Box sx={{ ml: 2 }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ color: 'text.primary' }}
+                  title={account.address}
+                >
+                  {account.address}
+                </Typography>
+                {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {account.role}
+                </Typography> */}
+              </Box>
+            </AccountStyle>
+          </Link>
+        )}
       </Box>
 
       <NavSection navConfig={sidebarConfig} />

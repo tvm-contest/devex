@@ -10,6 +10,8 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 // components
 import StoreContext from '../../store/StoreContext';
 import MenuPopover from '../../components/MenuPopover';
+import { logout } from '../../store/actions/account';
+
 //
 
 // ----------------------------------------------------------------------
@@ -35,9 +37,8 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
-  const {
-    state: { account }
-  } = useContext(StoreContext);
+  const { state, dispatch } = useContext(StoreContext);
+  const { account } = state;
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
 
@@ -51,6 +52,11 @@ export default function AccountPopover() {
   if (!account.isReady) {
     return '';
   }
+
+  const onLogoutClick = () => {
+    logout(state, dispatch);
+    handleClose();
+  };
 
   return (
     <>
@@ -84,12 +90,12 @@ export default function AccountPopover() {
         sx={{ width: 220 }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle1" noWrap>
-            {account.displayName}
+          <Typography variant="subtitle1" noWrap title={account.address}>
+            {account.address}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+          {/* <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {account.email}
-          </Typography>
+          </Typography> */}
         </Box>
 
         <Divider sx={{ my: 1 }} />
@@ -117,7 +123,7 @@ export default function AccountPopover() {
         ))}
 
         <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button fullWidth color="inherit" variant="outlined">
+          <Button fullWidth color="inherit" variant="outlined" onClick={onLogoutClick}>
             Logout
           </Button>
         </Box>

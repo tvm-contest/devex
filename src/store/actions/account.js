@@ -1,25 +1,33 @@
-const accountAction = {
-  login: async (store, dispatch, isInit) => {
-    if (isInit) {
-      if (!localStorage.getItem('ton_inited')) {
-        return;
-      }
+export const login = async (state, dispatch, isInit) => {
+  if (isInit) {
+    if (!localStorage.getItem('ton_inited')) {
+      return;
     }
-    const { accountInteraction } = await store.ton.requestPermissions({
-      permissions: ['tonClient', 'accountInteraction']
-    });
-    dispatch({
-      action: 'SET_ACCOUNT',
-      payload: {
-        isReady: true,
-        address: accountInteraction.address
-      }
-    });
-  },
-  logout: async (ton) => {
-    await ton.disconnect();
-    localStorage.removeItem('ton_inited');
   }
+  if (!state.ton.isReady) {
+    return;
+  }
+  const { accountInteraction } = await state.ton.provider.requestPermissions({
+    permissions: ['tonClient', 'accountInteraction']
+  });
+  localStorage.setItem('ton_inited', 1);
+  dispatch({
+    type: 'SET_ACCOUNT',
+    payload: {
+      isReady: true,
+      address: accountInteraction.address.toString()
+    }
+  });
 };
 
-export default accountAction;
+export const logout = async (state, dispatch) => {
+  await state.ton.provider.disconnect();
+  dispatch({
+    type: 'SET_ACCOUNT',
+    payload: {
+      isReady: false,
+      address: null
+    }
+  });
+  localStorage.removeItem('ton_inited');
+};
