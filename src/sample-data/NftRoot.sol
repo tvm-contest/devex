@@ -17,7 +17,7 @@ contract NftRoot is DataResolver, IndexResolver {
     address _addrBasis;
 	/*%PARAM_DEFENITION%*/
 
-    constructor(TvmCell codeIndex, TvmCell codeData/*%PARAM_CONSTRUCTOR%*/) public {
+    constructor(TvmCell codeIndex, TvmCell codeData, undefined _undefined0, undefined _undefined1, undefined _undefined2, undefined _undefined3, undefined _undefined4, undefined _undefined5, undefined _undefined6, undefined _undefined7, undefined _undefined8, undefined _undefined9/*%PARAM_CONSTRUCTOR%*/) public {
         tvm.accept();
         _codeIndex = codeIndex;
         _codeData = codeData;
@@ -27,7 +27,7 @@ contract NftRoot is DataResolver, IndexResolver {
     function mintNft() public {
         TvmCell codeData = _buildDataCode(address(this));
         TvmCell stateData = _buildDataState(codeData, _totalMinted);
-        new Data{stateInit: stateData, value: 1.1 ton}(msg.sender, _codeIndex/*%PARAM_TO_DATA%*/);
+        new Data{stateInit: stateData, value: 1.1 ton}(msg.sender, _codeIndex, undefined0, undefined1, undefined2, undefined3, undefined4, undefined5, undefined6, undefined7, undefined8, undefined9/*%PARAM_TO_DATA%*/);
 
         _totalMinted++;
     }
