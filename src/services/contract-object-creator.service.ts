@@ -9,7 +9,7 @@ export class ContractObjectCreator {
   makeRootContractObjectFromReq(req: Request) : Collection{
 
     let nameContract = req.body.nameContract;
-    let tokenLimit = req.body.tokenLimit;
+    let tokenLimit = Number(req.body.tokenLimit);
     let icon = req.body.icon;
 
     let descriptCollection = new DescriptCollection(nameContract, tokenLimit, icon);
@@ -22,14 +22,14 @@ export class ContractObjectCreator {
       for (let index = 0; index < req.body.typeName.length; index++) {
         let rarity : Rarity = new Rarity(
           req.body.typeName[index],
-          req.body.typeLimit[index],
+          Number(req.body.typeLimit[index]),
         )
         rarities.push(rarity)    
       }
     } else if (req.body.typeName) {
       let rarity : Rarity = new Rarity(
         req.body.typeName,
-        req.body.typeLimit,
+        Number(req.body.typeLimit),
       )
       rarities.push(rarity) 
     }

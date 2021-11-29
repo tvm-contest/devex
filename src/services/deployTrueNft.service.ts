@@ -62,27 +62,20 @@ export class DeployTrueNftService {
         let _nftTypes : string[] = [];
         let _limit : number[] = [];
         for (let index = 0; index < collection.getRarities().length; index++) {
-            _nftTypes.push('"' + collection.getRarities()[index].getName() + '"')
+            _nftTypes.push(collection.getRarities()[index].getName())
             _limit.push(collection.getRarities()[index].getLimit())
         }
         let _name = collection.getDescription().getName()
-        let _icon = collection.getDescription().getIcon()
+        let _icon = collection.getDescription().getIcon() ?? ""
 
-        let initInputString : string = `{
-            "codeIndex": "${(await this.deployService.getDecodeTVC(indexAccount)).code}",
-            "codeData": "${(await this.deployService.getDecodeTVC(dataAccount)).code}",
-            "nftTypes": [${_nftTypes.toString()}],
-            "limit": [${_limit}],
-            "name": "${_name}",
-            "icon": "${_icon}"`
-        
-        for (let index = 0; index < collection.getParameters().length; index++) {
-            let paramName = collection.getParameters()[index].getName()
-            initInputString += `,\n"_${paramName}": "${paramName}"`
+        let initInput = {
+            codeIndex: (await this.deployService.getDecodeTVC(indexAccount)).code,
+            codeData: (await this.deployService.getDecodeTVC(dataAccount)).code,
+            nftTypes: _nftTypes,
+            limit: _limit,
+            name: _name,
+            icon: _icon
         }
-        initInputString += `}`
-
-        let initInput = JSON.parse(initInputString)
 
         console.log(initInput)
         return initInput

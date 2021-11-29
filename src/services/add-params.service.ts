@@ -6,6 +6,7 @@ const markForParamDefenition = '/*%PARAM_DEFENITION%*/'
 const markForParamConstructor = '/*%PARAM_CONSTRUCTOR%*/'
 const markForParamSet = '/*%PARAM_SET%*/'
 const markForParamToData = '/*%PARAM_TO_DATA%*/'
+const markForParamToMint = '/*%PARAM_TO_MINT%*/'
 
 export class AddParamsService {
 
@@ -41,11 +42,13 @@ export class AddParamsService {
     let paramConstructor = ', ' + param.getType() + ' _' + param.getName() + markForParamConstructor;
     let paramSet = param.getName() + ' = _' + param.getName() + ';\n\t\t' + markForParamSet;
     let paramToData = ', ' + param.getName() + markForParamToData;
+    let paramToMint = ', ' + param.getType() + ' ' + param.getName() + markForParamToMint;
 
     codeSource = codeSource.replace(markForParamDefenition, paramDefenition)
     codeSource = codeSource.replace(markForParamConstructor, paramConstructor)
     codeSource = codeSource.replace(markForParamSet, paramSet)
     codeSource = codeSource.replace(markForParamToData, paramToData)
+    codeSource = codeSource.replace(markForParamToMint, paramToMint)
 
     return codeSource;
 

@@ -20,7 +20,6 @@ contract NftRoot is DataResolver, IndexResolver {
     address _addrBasis;
     string _name;
     bytes _icon;
-    /*%PARAM_DEFENITION%*/
 
     mapping(string=>uint) _limitByTypes; 
     mapping(string=>uint) _mintedByTypes; 
@@ -31,8 +30,7 @@ contract NftRoot is DataResolver, IndexResolver {
         string[] nftTypes,
         uint[] limit,
         string name,
-        bytes icon
-        /*%PARAM_CONSTRUCTOR%*/
+        string icon
         ) public {
         tvm.accept();
 
@@ -40,7 +38,6 @@ contract NftRoot is DataResolver, IndexResolver {
         _codeIndex = codeIndex;
         _name = name;
         _icon = icon;
-        /*%PARAM_SET%*/
 
         for(uint i = 0; i < nftTypes.length; i++)
         {
@@ -48,7 +45,7 @@ contract NftRoot is DataResolver, IndexResolver {
         }
     }
 
-    function mintNft(string nftType, int color) public {
+    function mintNft(string nftType, int color/*%PARAM_TO_MINT%*/) public {
         require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
         require(_mintedByTypes[nftType] < _limitByTypes[nftType], LIMIT_REACHED, "Limit reached");
         TvmCell codeData = _buildDataCode(address(this));
