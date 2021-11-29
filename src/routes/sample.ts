@@ -48,7 +48,7 @@ router.get('/deployService', async function(req, res, next) {
 router.get('/deployTrueNftService', async function(req, res, next) {
   const deployTrueNftService = new DeployTrueNftService();
   const testPath = path.resolve(globals.BASE_PATH, "src" ,"sample-data", "trueNftSample");
-  deployTrueNftService.deployTrueNft(testPath);
+  // deployTrueNftService.deployTrueNft(testPath);
 });
 
 export {router as sampleRouter};

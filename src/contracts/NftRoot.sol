@@ -20,6 +20,7 @@ contract NftRoot is DataResolver, IndexResolver {
     address _addrBasis;
     string _name;
     bytes _icon;
+    /*%PARAM_DEFENITION%*/
 
     mapping(string=>uint) _limitByTypes; 
     mapping(string=>uint) _mintedByTypes; 
@@ -31,6 +32,7 @@ contract NftRoot is DataResolver, IndexResolver {
         uint[] limit,
         string name,
         bytes icon
+        /*%PARAM_CONSTRUCTOR%*/
         ) public {
         tvm.accept();
 
@@ -38,6 +40,7 @@ contract NftRoot is DataResolver, IndexResolver {
         _codeIndex = codeIndex;
         _name = name;
         _icon = icon;
+        /*%PARAM_SET%*/
 
         for(uint i = 0; i < nftTypes.length; i++)
         {
@@ -54,7 +57,7 @@ contract NftRoot is DataResolver, IndexResolver {
         new Data {
             stateInit: stateData,
             value: 1.1 ton
-        } (msg.sender, _codeIndex, nftType, color);
+        } (msg.sender, _codeIndex, nftType, color/*%PARAM_TO_DATA%*/);
 
         _mintedByTypes[nftType]++;
         _totalMinted++;

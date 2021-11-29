@@ -22,13 +22,15 @@ contract Data is IData, IndexResolver {
     string _nftType;
     ColorEnum _color;
     ColorEnum _defColor = ColorEnum.white;
-    //to make the parameter optional, uncomment line 53
+    /*%PARAM_DEFENITION%*/
+    //to make the parameter optional, uncomment line 56
 
     constructor(
         address addrOwner,
         TvmCell codeIndex,
         string nftType,
         int color
+        /*%PARAM_CONSTRUCTOR%*/
     )
         public
         deploymentSolvency 
@@ -45,6 +47,7 @@ contract Data is IData, IndexResolver {
         _addrAuthor = addrOwner;
         _codeIndex = codeIndex;
         _nftType = nftType;
+        /*%PARAM_SET%*/
 
         if((color < int(ColorEnum.lastEnum)) && (color >= 0)){
             _color = ColorEnum(color);
