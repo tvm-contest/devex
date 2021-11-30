@@ -43,6 +43,9 @@ services:
       - |
         FLINK_PROPERTIES=
         jobmanager.rpc.address: flink-jobmanager
+        taskmanager.memory.process.size: 4Gb
+        taskmanager.memory.managed.size: 0
+        taskmanager.numberOfTaskSlots: 8
         state.backend: hashmap
         state.checkpoints.dir: file:///data/flink/checkpoints
         state.savepoints.dir: file:///data/flink/savepoints
@@ -54,7 +57,7 @@ services:
       - type: volume
         source: flink-data
         target: /data/flink
-    scale: 3
+    scale: 1
     restart: always
 
   rabbitmq:
