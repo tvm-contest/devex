@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // material
-import { Container, Typography, Button, Input, Stack } from '@mui/material';
+import { Container, Typography, Button, Input, Stack, Card, CardMedia } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 // components
 import Page from '../components/Page';
@@ -29,7 +29,7 @@ export default function CreateNFT() {
     setLayerData([
       ...layerData,
       {
-        id: layerData.length + 1,
+        id: Math.floor(Math.random() * 1000),
         traitName: '',
         imagArr: []
       }
@@ -44,9 +44,18 @@ export default function CreateNFT() {
   };
 
   const handleAddMultiImage = (files) => {
-    const newArr = layerData.filter((elem) =>
-      elem.id === currentLayer ? elem.imagArr.push(Object.values(files)) : elem
-    );
+    const newArr = layerData.filter((elem) => {
+      if (elem.id === currentLayer) {
+        Object.entries(files).forEach(([key, value]) => {
+          elem.imagArr.push({
+            traitVal: '',
+            src: URL.createObjectURL(value),
+            traitRar: ''
+          });
+        });
+      }
+      return elem;
+    });
     setLayerData(newArr);
   };
 
@@ -55,18 +64,29 @@ export default function CreateNFT() {
     setLayerData(newArr);
   };
 
+  const handleImageUpdate = (val, type, index) => {
+    const newArr = layerData.filter((elem) => {
+      if (elem.id === currentLayer) {
+        if (type === 'name') {
+          elem.imagArr[index].traitVal = val;
+        } else {
+          elem.imagArr[index].traitRar = val;
+        }
+      }
+      return elem;
+    });
+    setLayerData(newArr);
+  };
+
   const onDrop = useCallback(
     (acceptedFiles) => {
-      // Do something with the files
       if (acceptedFiles.length !== 0) handleAddMultiImage(acceptedFiles);
-      console.log('filess', acceptedFiles);
     },
     [layerData]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  console.log(layerData);
   return (
     <Page title="Create you new Nft">
       <Container>
@@ -81,7 +101,9 @@ export default function CreateNFT() {
         <div>
           <Input placeholder="Collection Description" />
         </div>
-        <Typography variant="h6">Layers</Typography>
+        <Typography variant="h6" sx={{ marginTop: 1 }}>
+          Layers
+        </Typography>
         {layerData &&
           layerData.map((data) => (
             <Stack
@@ -98,8 +120,12 @@ export default function CreateNFT() {
                   value={data.traitName}
                   onChange={(e) => handleTraitNameChange(e.target.value)}
                 />
-                <Button variant="contained" component="label" style={{ position: 'relative' }}>
-                  Upload File
+                <Button
+                  variant="contained"
+                  component="label"
+                  style={{ position: 'relative', marginTop: 10, marginBottom: 10 }}
+                >
+                  Upload image
                   <input
                     type="file"
                     accept="image/*"
@@ -113,15 +139,49 @@ export default function CreateNFT() {
                   Delete Layer
                 </Button>
               </Stack>
-              <div {...getRootProps({ className: 'dropzone' })}>
+              <div
+                {...getRootProps({ className: 'dropzone' })}
+                style={{ width: '100%', paddingLeft: 25 }}
+              >
                 <input {...getInputProps()} />
-                {isDragActive ? (
-                  <p>Drop the files here ...</p>
-                ) : (
-                  <p>Drag 'n' drop some files here, or click to select files</p>
-                )}
-                {data.imagArr.length &&
-                  data.imagArr.map((file) => <img src={file} key={file} alt="hi" />)}
+                <Stack direction="row" alignItems="center" sx={{ marginTop: 2 }}>
+                  {data.imagArr.length ? (
+                    data.imagArr.map((file, index) => (
+                      <Card
+                        key={file}
+                        variant="outlined"
+                        sx={{
+                          maxWidth: 200,
+                          maxHeight: 150,
+                          padding: 1,
+                          marginRight: 2,
+                          zIndex: 999
+                        }}
+                      >
+                        <Input
+                          placeholder="Trait Value"
+                          value={file.traitVal}
+                          onChange={(e) => handleImageUpdate(e.target.value, 'name', index)}
+                        />
+                        <CardMedia
+                          component="img"
+                          height="50"
+                          width="10"
+                          image={file.src}
+                          alt="Drop Pic"
+                          style={{ marginTop: 5, marginBottom: 5 }}
+                        />
+                        <Input
+                          placeholder="Trait Rarity"
+                          value={file.traitRar}
+                          onChange={(e) => handleImageUpdate(e.target.value, 'rarity', index)}
+                        />
+                      </Card>
+                    ))
+                  ) : (
+                    <p>Drag 'n' drop some files here, or click to select files</p>
+                  )}
+                </Stack>
               </div>
             </Stack>
           ))}
