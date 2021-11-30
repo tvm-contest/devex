@@ -11,13 +11,13 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-
+    console.log("Нажали")
     let rootContractForm : RootContractForm = {
         nameContract: req.body.nameContract,
         tokenLimit: req.body.tokenLimit,
         collections: []
     }
-
+    console.log("Нажали")
     //если был только один тип то в req будет строка, если несколько,то массив
     if (typeof req.body.typeName === 'object') {
         for (let index = 0; index < req.body.typeName.length; index++) {
