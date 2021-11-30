@@ -1,3 +1,7 @@
+.forms{
+    padding: 50px 0;
+}
+
 #root-contract-form{
     padding: 10px;
     max-width: 300px;
@@ -6,57 +10,23 @@
     margin: 0 auto;;
 }
 
-.input-block{
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    margin-bottom: 10px;
-}
-
-.input-block input{
-    min-height: 25px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding-left: 5px;
-}
-
-.input-block input:focus {
-    outline: none;
-    border-color: black;
-}
-
-.collection-type{
-    padding: 7px;
-    position: relative;
-    border: 1px solid #e6e6e6;
-    margin-bottom: 10px;
-    box-shadow: 2px 2px 5px #8e8e8e;
-}
-
-.delete-type-button {
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    right: 5px;
-    z-index: 100;
-}
-
-.form-title{
-    font-size: 1.3em;
-    align-self: center;
-    margin-bottom: 10px;
-}
-
 .form-button{
-    margin-bottom: 10px;
-    background-color: white;
-    border: 1px solid black;
-    border-radius: 5px;
-    min-height: 25px;
     align-self: self-end;
     padding: 5px;
 }
-
 .form-button:hover{
-    background-color: #e6e6e6;
+    background-color: #474646;
+}
+
+.block-for-col_type{
+    border: #fff;
+}
+.col{
+    padding: 10px;
+}
+
+.button-delete{
+    width: 30px;
+    height: 30px;
+    text-align: center;
 }
