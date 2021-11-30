@@ -1,29 +1,30 @@
 extends layout
 
-mixin collection-type
-  .collection-type
-    span.delete-type-button(onclick="deleteType(this);") &#215;
-    .input-block
-      span.name-input Тип коллекции
-      input(type="text" pattern="[A-Za-z0-9_]+" name="typeName" onInput="checkLatinInput(this)")
-    .input-block
-      span.name-input Количество токенов
-      input(type="text" pattern="[0-9]+" name="typeLimit" onInput="checkNumberInput(this)")
-
 block content
-  form(id="root-contract-form" action="", method="post") 
-    span.form-title Создание контракта
-    .input-block
-      span.name-input Название контракта
-      input(type="text" pattern="[A-Za-z0-9_]+" name="nameContract" onInput="checkLatinInput(this)")
-    .input-block
-      span.name-input Максимальное количество токенов
-      input(type="text" pattern="[0-9]+" name="tokenLimit" onInput="checkNumberInput(this)") 
-    .collection-type-list
-      +collection-type
-    input.add-type-button.form-button(type="button" value=" + Добавить тип" onclick="addType();")
-    input.submit-button.form-button(type="submit" value="Отправить")
-
+  .forms
+    .container
+      form.row.g-3
+        .content
+          .row.row_init
+            .col
+              label.form-label() Название контракта
+              input.form-control(onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Название контракта" aria-label="Название контракта")
+            .col
+              label.form-label() Максимальное количество токенов
+              input.form-control( onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Максимальное количество токенов" aria-label="Максимальное количество токенов")
+          
+          .block-for-col_type
+            .row.collection-type-
+                .col
+                  label.form-label() Тип коллекции
+                  input.form-control(type="text" pattern="[A-Za-z0-9_]+" name="typeName" onInput="checkLatinInput(this)" placeholder="Тип коллекции" aria-label="Тип коллекции")
+                .col
+                  label.form-label() Количество токенов
+                  input.form-control(type="text" pattern="[0-9]+" name="typeLimit" onInput="checkNumberInput(this)" placeholder="Количество токенов" aria-label="Количество токенов")                            
+                    
+        input.btn.btn-dark(class="btn btn-dark" type="button" value="- Удалить тип" onclick="deleteType(this);")
+        input.btn.btn-dark(type="button" value=" + Добавить тип" onclick="addType();")
+        input.btn.btn-dark(type="submit" value="Отправить")
   script(src="/scripts/root-contract-form.js")
       
       
