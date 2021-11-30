@@ -1,11 +1,8 @@
 let arr_collection_type = []
 value_id = 0
 const addType = () => {
-    // if ($(".row.collection-type-").length === 1)
-    //     $(".container")[0].append('input.btn.btn-dark(class="btn btn-dark" type="button" value="-" onclick="deleteType(this);")')
     let typeConteiner = document.createElement('div');
     typeConteiner.innerHTML = $(".block-for-col_type")[0].innerHTML
-    //typeConteiner.className = ".row.collection-type-"
     arr_collection_type.push(value_id)
     typeConteiner.id=value_id
     $(".content")[0].append(typeConteiner)
