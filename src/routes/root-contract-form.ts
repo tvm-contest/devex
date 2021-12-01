@@ -71,7 +71,6 @@ router.post('/', function(req, res, next) {
         }
         rootContractForm.parameters.push(paramCollection)   
     }
-    console.log(rootContractForm,req.body)
     rootContractFormHandler(rootContractForm)
     res.send("форма")
     
