@@ -61,10 +61,10 @@ export class TokensData {
             account: await rootNftAccount.boc(),
             abi: rootNftAccount.abi,
         });
-        return await message.decoded?.out_messages[0].value;;
+        return await message.decoded?.out_messages[0].value;
     }
 
-    private async getTokensDataCollection(codeHashData) : Promise<any[]> {
+    private async getTokensDataCollection(codeHashData: any) : Promise<any[]> {
         let tokensDataCollection = (
             await this.client.net.query_collection({
                 collection: "accounts",
