@@ -1,0 +1,48 @@
+extends layout
+
+block content
+  .container
+    form.row.g-3
+      .search
+        .row.row_init
+          .col
+            label.form-label() Адрес токена
+            input.form-control(name="tokenAddress" onInput="checkAddressInput(this)" type="text" pattern="[A-Za-z0-9:]+" placeholder="Адрес токена" aria-label="Адрес токена")
+      input.btn.btn-dark(type="submit" value="Найти")
+
+    .token-info-container
+      if tokenInfo
+        .row
+          .col
+            p Адрес токена:
+          .col 
+            p= tokenInfo.addrData
+        .row
+          .col
+            p Адрес коллекции:
+          .col 
+            p= tokenInfo.addrRoot
+        .row
+          .col
+            p Адрес владельца:
+          .col 
+            p= tokenInfo.addrOwner
+        .row
+          .col
+            p Адрес доверенного кошелька:
+          .col 
+            p= tokenInfo.addrTrusted
+        .row
+          .col
+            p Цвет:
+          .col 
+            p= tokenInfo.color
+    
+
+  script(src="/scripts/root-contract-form.js")
+  script(src="/scripts/input-validation.js")
+    
+
+
+
+
