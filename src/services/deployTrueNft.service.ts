@@ -50,7 +50,7 @@ export class DeployTrueNftService {
         let walletAcc = await this.getWalletAcc(rootNftAccount);
         let rootNftAddress = await rootNftAccount.getAddress();
         let transaction = await this.getTransaction(walletAcc, rootNftAddress, body);
-        const result = await this.getResult(rootNftAccount, rootNftAddress, transaction)
+        const result = this.getResult(rootNftAccount, rootNftAddress, transaction);
         console.log(result);
     }
 
