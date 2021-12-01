@@ -1,17 +1,18 @@
 extends layout
 
 block content
+  
   .forms
     .container
-      form.row.g-3
+      form.row.g-3(action="", method="post")
         .content
           .row.row_init
             .col
               label.form-label() Название контракта
-              input.form-control(onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Название контракта" aria-label="Название контракта")
+              input.form-control(name="nameContract" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Название контракта" aria-label="Название контракта")
             .col
               label.form-label() Максимальное количество токенов
-              input.form-control( onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Максимальное количество токенов" aria-label="Максимальное количество токенов")
+              input.form-control(name="tokenLimit" onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Максимальное количество токенов" aria-label="Максимальное количество токенов")
           
           .block-for-col_type
             .row.collection-type-
@@ -21,10 +22,33 @@ block content
                 .col
                   label.form-label() Количество токенов
                   input.form-control(type="text" pattern="[0-9]+" name="typeLimit" onInput="checkNumberInput(this)" placeholder="Количество токенов" aria-label="Количество токенов")                            
-                    
+          .block-for-col-param-choice#0
+            .row.parameter-choice    
+                .col
+                  select.type-parameter.form-select(name="selectpicker")
+                      option(value="1") Выберите тип параметра
+                      option(value="2") Число
+                      option(value="3") Строка
+            .row.parameter-number
+              .col
+                label.form-label() Минимальное значение
+                input.form-control(type="text" name = "minValue" pattern="[0-9]+" onInput="checkNumberInput(this)")
+              .col
+                label.form-label() Максимальное значение
+                input.form-control(type="text" name = "maxValue" pattern="[0-9]+" onInput="checkNumberInput(this)")
+            .row.parameter-string
+              .col
+                label.form-label() Минимальная длинна
+                input.form-control(type="text" name = "minLength" pattern="[0-9]+" onInput="checkNumberInput(this)")
+              .col
+                label.form-label() Максимальная длинна
+                input.form-control(type="text" name = "maxLength" pattern="[0-9]+" onInput="checkNumberInput(this)")
+
+            
         input.btn.btn-dark(class="btn btn-dark" type="button" value="- Удалить тип" onclick="deleteType(this);")
         input.btn.btn-dark(type="button" value=" + Добавить тип" onclick="addType();")
-        input.btn.btn-dark(type="submit" value="Отправить")
+        input.btn.btn-dark(type="button" value=" + Добавить параметр" onclick="addParam();")
+        input.submit-button.btn.btn-dark(type="submit" value="Отправить")
   script(src="/scripts/root-contract-form.js")
       
       
