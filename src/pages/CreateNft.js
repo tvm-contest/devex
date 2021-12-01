@@ -1,7 +1,7 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // material
-import { Container, Typography, Button, Input, Stack, Card, CardMedia } from '@mui/material';
+import { Container, Typography, Button, Input, Stack, Card, CardMedia, Box } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 // components
 import Page from '../components/Page';
@@ -15,13 +15,14 @@ export default function CreateNFT() {
   const navigate = useNavigate();
   const [layerData, setLayerData] = useState([]);
   const [currentLayer, setCurrentLayer] = useState();
+  const [over, setOver] = useState([]);
   const {
     state: { account }
   } = useContext(StoreContext);
 
   useEffect(() => {
     if (!account.isReady) {
-      navigate('/dashboard/login');
+      // navigate('/dashboard/login');
     }
   }, [account.isReady, navigate]);
 
@@ -36,9 +37,9 @@ export default function CreateNFT() {
     ]);
   };
 
-  const handleTraitNameChange = (val) => {
+  const handleTraitNameChange = (val, currentId) => {
     const newArr = layerData.filter((elem) =>
-      elem.id === currentLayer ? (elem.traitName = val) : elem
+      elem.id === currentId ? (elem.traitName = val) : elem
     );
     setLayerData(newArr);
   };
@@ -47,7 +48,9 @@ export default function CreateNFT() {
     const newArr = layerData.filter((elem) => {
       if (elem.id === currentLayer) {
         Object.entries(files).forEach(([key, value]) => {
+          // console.log(key);
           elem.imagArr.push({
+            id: Math.floor(Math.random() * 100000),
             traitVal: '',
             src: URL.createObjectURL(value),
             traitRar: ''
@@ -64,9 +67,9 @@ export default function CreateNFT() {
     setLayerData(newArr);
   };
 
-  const handleImageUpdate = (val, type, index) => {
+  const handleImageUpdate = (val, type, index, currentId) => {
     const newArr = layerData.filter((elem) => {
-      if (elem.id === currentLayer) {
+      if (elem.id === currentId) {
         if (type === 'name') {
           elem.imagArr[index].traitVal = val;
         } else {
@@ -78,14 +81,28 @@ export default function CreateNFT() {
     setLayerData(newArr);
   };
 
-  const onDrop = useCallback(
-    (acceptedFiles) => {
-      if (acceptedFiles.length !== 0) handleAddMultiImage(acceptedFiles);
-    },
-    [layerData]
-  );
+  const handleImageDelete = (index, currentId) => {
+    const newArr = layerData.filter((elem) => {
+      if (elem.id === currentId) {
+        elem.imagArr.splice(index, 1);
+      }
+      return elem;
+    });
+    setLayerData(newArr);
+  };
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const handleClick = (dataId) => {
+    if (over.includes(dataId)) {
+      if (window.confirm('Are you want to delete this Image?')) {
+        const newArr = over.filter((x) => x !== dataId);
+        setOver(newArr);
+      }
+    } else {
+      setOver([...over, dataId]);
+    }
+  };
+
+  const { getRootProps, getInputProps } = useDropzone();
 
   return (
     <Page title="Create you new Nft">
@@ -118,7 +135,7 @@ export default function CreateNFT() {
                 <Input
                   placeholder="Trait Name"
                   value={data.traitName}
-                  onChange={(e) => handleTraitNameChange(e.target.value)}
+                  onChange={(e) => handleTraitNameChange(e.target.value, data.id)}
                 />
                 <Button
                   variant="contained"
@@ -143,25 +160,49 @@ export default function CreateNFT() {
                 {...getRootProps({ className: 'dropzone' })}
                 style={{ width: '100%', paddingLeft: 25 }}
               >
-                <input {...getInputProps()} />
+                <input {...getInputProps()} onChange={(e) => handleAddMultiImage(e.target.files)} />
                 <Stack direction="row" alignItems="center" sx={{ marginTop: 2 }}>
                   {data.imagArr.length ? (
                     data.imagArr.map((file, index) => (
                       <Card
-                        key={file}
+                        key={file.id}
                         variant="outlined"
                         sx={{
                           maxWidth: 200,
                           maxHeight: 150,
                           padding: 1,
                           marginRight: 2,
-                          zIndex: 999
+                          position: 'relative'
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          handleClick(file.id);
                         }}
                       >
+                        {over.includes(file.id) && (
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              right: 1,
+                              padding: 1,
+                              border: '1px solid #000',
+                              margin: '35px 0 0',
+                              borderRadius: 1,
+                              background: '#fff',
+                              cursor: 'pointer'
+                            }}
+                            onClick={() => handleImageDelete(index, data.id)}
+                          >
+                            Delete Image
+                          </Box>
+                        )}
                         <Input
                           placeholder="Trait Value"
                           value={file.traitVal}
-                          onChange={(e) => handleImageUpdate(e.target.value, 'name', index)}
+                          onChange={(e) =>
+                            handleImageUpdate(e.target.value, 'name', index, data.id)
+                          }
                         />
                         <CardMedia
                           component="img"
@@ -174,7 +215,9 @@ export default function CreateNFT() {
                         <Input
                           placeholder="Trait Rarity"
                           value={file.traitRar}
-                          onChange={(e) => handleImageUpdate(e.target.value, 'rarity', index)}
+                          onChange={(e) =>
+                            handleImageUpdate(e.target.value, 'rarity', index, data.id)
+                          }
                         />
                       </Card>
                     ))
