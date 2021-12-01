@@ -1,13 +1,30 @@
 {
 	"ABI version": 2,
-	"version": "2.1",
+	"version": "2.2",
 	"header": ["time", "expire"],
 	"functions": [
 		{
 			"name": "constructor",
 			"inputs": [
 				{"name":"codeIndex","type":"cell"},
-				{"name":"codeData","type":"cell"}
+				{"name":"codeData","type":"cell"},
+				{"name":"pay","type":"uint128"},
+				{"name":"koef","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addMetadata",
+			"inputs": [
+				{"name":"metadata","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "startSelling",
+			"inputs": [
 			],
 			"outputs": [
 			]
@@ -90,6 +107,38 @@
 			"outputs": [
 				{"name":"_totalMinted","type":"uint256"}
 			]
+		},
+		{
+			"name": "preGenerateMetadata",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"preGenerateMetadata","type":"bytes[]"}
+			]
+		},
+		{
+			"name": "price",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"price","type":"uint128"}
+			]
+		},
+		{
+			"name": "koef",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"koef","type":"uint128"}
+			]
+		},
+		{
+			"name": "start",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"start","type":"bool"}
+			]
 		}
 	],
 	"data": [
@@ -107,6 +156,10 @@
 		{"name":"_addrOwner","type":"address"},
 		{"name":"_name","type":"bytes"},
 		{"name":"_totalMinted","type":"uint256"},
-		{"name":"_addrBasis","type":"address"}
+		{"name":"_addrBasis","type":"address"},
+		{"name":"preGenerateMetadata","type":"bytes[]"},
+		{"name":"price","type":"uint128"},
+		{"name":"koef","type":"uint128"},
+		{"name":"start","type":"bool"}
 	]
 }
