@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  form(id="root-contract-form" action="", method="post") 
+    span.form-title Get a list of all tokens by the root address
+    .input-block
+      span.name-input Enter root nft address 
+      input(type="text" name="rootNftAddress")
+      input.submit-button.form-button(type="submit" value="Отправить")
