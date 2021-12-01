@@ -3,12 +3,13 @@ value_id = 1
 param_id = 0
 $('form').on("change", ".type-parameter",function(){
     var curentSelectedVal = $(this).find('option:selected').val();
+    console.log($(this))
     if (curentSelectedVal == 2) {
-        $(`.block-for-col-param-choice#p${param_id} .row.parameter-number`).css('display','flex');
-        $(`.block-for-col-param-choice#p${param_id} .row.parameter-string`).css('display','none');
+        $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-number").css('display','flex');
+        $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-string").css('display','none');
     } else if(curentSelectedVal == 3){
-        $(`.block-for-col-param-choice#p${param_id} .row.parameter-string`).css('display','flex');
-        $(`.block-for-col-param-choice#p${param_id} .row.parameter-number`).css('display','none');
+        $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-string").css('display','flex');
+        $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-number").css('display','none');
     }
 });
 
@@ -19,9 +20,9 @@ const addParam = () => {
     param_id=param_id+1
     typeConteiner.id="p"+param_id
     console.log(typeConteiner)
-    $(".content")[0].append(typeConteiner)
-    $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-min").attr('name', `parameter[${param_id}][numbur][min]`);
-    $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-max").attr('name', `parameter[${param_id}][numbur][max]`);
+    $(".content-param")[0].append(typeConteiner)
+    $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-min").attr('name', `parameter[${param_id}][number][min]`);
+    $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-max").attr('name', `parameter[${param_id}][number][max]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-string").find(".param-line-min").attr('name', `parameter[${param_id}][line][min]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-string").find(".param-line-max").attr('name', `parameter[${param_id}][line][max]`);
     
@@ -39,7 +40,7 @@ const addType = () => {
     typeConteiner.className = "row collection-type-"
     arr_collection_type.push(value_id)
     typeConteiner.id="c"+ value_id
-    $(".content")[0].append(typeConteiner)
+    $(".block-for-col-types")[0].append(typeConteiner)
     $(`#c${value_id}.row.collection-type-`).find(".col-limit").attr('name', `type[${value_id}][limit]` );
     $(`#c${value_id}.row.collection-type-`).find(".col-name").attr('name', `type[${value_id}][name]` );
     value_id= value_id+1
