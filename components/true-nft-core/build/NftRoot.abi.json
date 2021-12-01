@@ -32,7 +32,6 @@
 		{
 			"name": "mintNft",
 			"inputs": [
-				{"name":"metadata","type":"bytes"}
 			],
 			"outputs": [
 			]

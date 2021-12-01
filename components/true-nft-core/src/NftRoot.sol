@@ -59,7 +59,7 @@ contract NftRoot is DataResolver, IndexResolver {
         start = true;
     }
 
-    function mintNft(bytes metadata) public {
+    function mintNft() public {
         require(preGenerateMetadata.length != 0, 101,"tokens is over");
         require(msg.value >= price,102,"not enough money");
         require(start,103,"not all tokens was upload or owner forget to start");
