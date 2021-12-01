@@ -22,7 +22,7 @@ export default function CreateNFT() {
 
   useEffect(() => {
     if (!account.isReady) {
-      // navigate('/dashboard/login');
+      navigate('/dashboard/login');
     }
   }, [account.isReady, navigate]);
 
