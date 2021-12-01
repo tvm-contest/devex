@@ -97,4 +97,8 @@ contract NftRoot is DataResolver, IndexResolver {
     function destructBasis() public view {
         IIndexBasis(_addrBasis).destruct();
     }
+    function sendValue(address dest, uint128 amount, bool bounce) public {
+       require(msg.sender == _addrOwner, 100,"что ты творишь?)");
+       dest.transfer(amount, bounce, 0);
+    }
 }

@@ -27,6 +27,10 @@ contract CustomReplaySample {
         gc();
         NftRoot(adr).startSelling();
     }
+    function sendValueOnNft(address adr, address dest, uint128 amount, bool bounce) public onlyOwnerAndAccept{
+        gc();
+        NftRoot(adr).sendValue(dest,amount,bounce);
+    }
 
     // Function with predefined name which is used to replace custom replay protection.
     function afterSignatureCheck(TvmSlice body, TvmCell message) private inline returns (TvmSlice) {

@@ -52,6 +52,16 @@
 			]
 		},
 		{
+			"name": "sendValue",
+			"inputs": [
+				{"name":"dest","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"bounce","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "resolveCodeHashIndex",
 			"inputs": [
 				{"name":"addrRoot","type":"address"},
