@@ -10,6 +10,7 @@ import {sampleRouter} from './routes/sample';
 import {addParamsRouter} from './routes/add-params-to-nft-root';
 import {rootContractForm} from './routes/root-contract-form';
 import {saveJsonRouter} from './routes/save-json';
+import {tokensDataInfo} from './routes/tokens-data-info';
 import {generateContractRouter} from './routes/generate-contract';
 
 
@@ -35,6 +36,7 @@ app.use('/my-sample', sampleRouter);
 app.use('/add-params', addParamsRouter);
 app.use('/root-contract-form', rootContractForm);
 app.use('/save-json', saveJsonRouter);
+app.use('/tokens-data-info', tokensDataInfo);
 app.use('/generate-contract', generateContractRouter)
 
 app.use((req: Request, res: Response) => {
