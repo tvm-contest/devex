@@ -30,6 +30,12 @@
     height: 30px;
     text-align: center;
 }
-.block-for-param{
+/* .block-for-param{
+    display: none;
+} */
+.row.parameter-number {
+    display: none;
+}
+.row.parameter-string {
     display: none;
 }

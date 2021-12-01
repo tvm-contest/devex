@@ -22,28 +22,27 @@ block content
                 .col
                   label.form-label() Количество токенов
                   input.form-control(type="text" pattern="[0-9]+" name="typeLimit" onInput="checkNumberInput(this)" placeholder="Количество токенов" aria-label="Количество токенов")                            
-          .block-for-col-param-choice
+          .block-for-col-param-choice#0
             .row.parameter-choice    
                 .col
-                  select.type-parameter.form-select
+                  select.type-parameter.form-select(name="selectpicker")
                       option(value="1") Выберите тип параметра
                       option(value="2") Число
                       option(value="3") Строка
-            .block-for-param
-              .row.parameter-number  
-                .col
-                  label.form-label() Минимальное значение
-                  input.form-control(type="text" pattern="[0-9]+" onInput="checkNumberInput(this)")
-                .col
-                  label.form-label() Максимальное значение
-                  input.form-control(type="text" pattern="[0-9]+" onInput="checkNumberInput(this)")
-              .row.parameter-string  
-                .col
-                  label.form-label() Минимальная длинна
-                  input.form-control(type="text" pattern="[0-9]+" onInput="checkNumberInput(this)")
-                .col
-                  label.form-label() Максимальная длинна
-                  input.form-control(type="text" pattern="[0-9]+" onInput="checkNumberInput(this)")
+            .row.parameter-number
+              .col
+                label.form-label() Минимальное значение
+                input.form-control(type="text" name = "minValue" pattern="[0-9]+" onInput="checkNumberInput(this)")
+              .col
+                label.form-label() Максимальное значение
+                input.form-control(type="text" name = "maxValue" pattern="[0-9]+" onInput="checkNumberInput(this)")
+            .row.parameter-string
+              .col
+                label.form-label() Минимальная длинна
+                input.form-control(type="text" name = "minLength" pattern="[0-9]+" onInput="checkNumberInput(this)")
+              .col
+                label.form-label() Максимальная длинна
+                input.form-control(type="text" name = "maxLength" pattern="[0-9]+" onInput="checkNumberInput(this)")
 
             
         input.btn.btn-dark(class="btn btn-dark" type="button" value="- Удалить тип" onclick="deleteType(this);")
