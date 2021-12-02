@@ -1,12 +1,25 @@
 pragma ton-solidity >= 0.43.0;
 
 interface IData {
+    enum ColorEnum{white, red, blue, green, lastEnum}
+
     function transferOwnership(address addrTo) external;
 
+    function giveRightsTo(address addrTrusted) external;
+
+    function returnRightsBack() external;
+
     function getOwner() external view returns (address addrOwner);
+
     function getInfo() external view returns (
+        address addrData,
         address addrRoot,
         address addrOwner,
-        address addrData
+        address addrTrusted,
+        ColorEnum color
     );
+
+    function rightsTransferabilityStatus() external view returns(bool status);
+
+    function getTradabilityInfo() external view responsible returns (address addrNftOwner, address addrTrusted);
 }
