@@ -13,7 +13,7 @@ export class DeployTrueNftService {
         this.deployService = new DeployService();
     }
     
-    async deployTrueNft(pathWithContracts : string, initInputParameters?: Parametr[]) : Promise<void> {
+    async deployTrueNft(pathWithContracts : string, collection: Collection, initInputParameters?: Parametr[]) : Promise<string> {
         
         let indexBasisContract = fs.readFileSync(path.resolve(pathWithContracts, "IndexBasis.sol")).toString();
         let dataContract = fs.readFileSync(path.resolve(pathWithContracts, "Data.sol")).toString();
@@ -24,17 +24,21 @@ export class DeployTrueNftService {
         let indexAccount = await this.deployService.createContractAccount(indexContract, pathWithContracts);
         let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, pathWithContracts);
         let indexBasisAccount = await this.deployService.createContractAccount(indexBasisContract, pathWithContracts);
-
+        let address = "0";
         try {
-            await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, initInputParameters);
+            address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection);
             await this.deployBasis(rootNftAccount, indexBasisAccount);
         } catch(err) {
+
             console.log(err);
         }
+
+        return address;
     }
     
-    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, initInputParameters?: Parametr[]) : Promise<string> {
-        let initInput = await this.createInitInputByParameters(indexAccount, dataAccount, initInputParameters);
+    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<string> {
+        // let initInput = await this.createInitInputByParameters(indexAccount, dataAccount, initInputParameters);
+        let initInput = await this.buildInitInput(indexAccount, dataAccount, collection)
         try {
             await this.deployService.deploy(
                 rootNftAccount,
@@ -142,11 +146,15 @@ export class DeployTrueNftService {
         let _nftTypes : string[] = [];
         let _limit : number[] = [];
         for (let index = 0; index < collection.getRarities().length; index++) {
-            _nftTypes.push(collection.getRarities()[index].getName())
+            let typeName = collection.getRarities()[index].getName()
+            _nftTypes.push(Buffer.from(typeName).toString("hex"))
             _limit.push(collection.getRarities()[index].getLimit())
         }
+
         let _name = collection.getDescription().getName()
         let _icon = collection.getDescription().getIcon() ?? ""
+        _name = Buffer.from(_name).toString("hex")
+        _icon = Buffer.from(_icon).toString("hex")
 
         let initInput = {
             codeIndex: (await this.deployService.getDecodeTVC(indexAccount)).code,

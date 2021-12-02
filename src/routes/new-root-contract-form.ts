@@ -22,7 +22,7 @@ router.get('/', async function(req, res, next) {
     let collection : Collection = new Collection(description, rariry, params);
     await generateContract(collection);
     let deployTrueNftService = new DeployTrueNftService();
-    await deployTrueNftService.deployTrueNft(getTempDir(collection), params);
+    await deployTrueNftService.deployTrueNft(getTempDir(collection), collection);
 });
 
 /*

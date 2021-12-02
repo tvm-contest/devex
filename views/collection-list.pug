@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .container
+      each collection in collectionList
+        .collection-container
+          .row
+            .col
+              p Название коллекции:
+            .col
+              p= collection.name
+          .row
+            .col
+              p Адрес:
+            .col
+              p= collection.address
