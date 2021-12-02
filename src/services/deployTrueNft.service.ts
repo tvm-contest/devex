@@ -3,7 +3,8 @@ import fs from 'fs';
 import { DeployService } from './deploy.service';
 import { Account } from '@tonclient/appkit';
 import { Collection } from '../models/collection';
-import { globals } from '../config/globals'
+import { globals } from '../config/globals';
+import { Parametr } from '../models/parametr';
 
 export class DeployTrueNftService {
     private deployService : DeployService;
@@ -12,7 +13,7 @@ export class DeployTrueNftService {
         this.deployService = new DeployService();
     }
     
-    async deployTrueNft(pathWithContracts : string, collection: Collection) : Promise<string> {
+    async deployTrueNft(pathWithContracts : string, initInputParameters?: Parametr[]) : Promise<void> {
         
         let indexBasisContract = fs.readFileSync(path.resolve(pathWithContracts, "IndexBasis.sol")).toString();
         let dataContract = fs.readFileSync(path.resolve(pathWithContracts, "Data.sol")).toString();
@@ -23,16 +24,17 @@ export class DeployTrueNftService {
         let indexAccount = await this.deployService.createContractAccount(indexContract, pathWithContracts);
         let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, pathWithContracts);
         let indexBasisAccount = await this.deployService.createContractAccount(indexBasisContract, pathWithContracts);
-        
-        let initInput = await this.buildInitInput(indexAccount, dataAccount, collection)
-        let address = await this.deployRootNft(rootNftAccount, initInput);
-        await this.deployBasis(rootNftAccount, indexBasisAccount);
 
-        return address;
-
+        try {
+            await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, initInputParameters);
+            await this.deployBasis(rootNftAccount, indexBasisAccount);
+        } catch(err) {
+            console.log(err);
+        }
     }
     
-    private async deployRootNft(rootNftAccount: Account, initInput) : Promise<string> {
+    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, initInputParameters?: Parametr[]) : Promise<string> {
+        let initInput = await this.createInitInputByParameters(indexAccount, dataAccount, initInputParameters);
         try {
             await this.deployService.deploy(
                 rootNftAccount,
@@ -43,6 +45,18 @@ export class DeployTrueNftService {
             console.log(err);
             return "0";
         }
+    }
+
+    private async createInitInputByParameters(indexAccount: Account, dataAccount: Account, initInputParameters?: Parametr[]) : Promise<object> {
+        let initInputMap = new Map<any, any>();
+        initInputMap.set("codeIndex", (await this.deployService.getDecodeTVC(indexAccount)).code);
+        initInputMap.set("codeData", (await this.deployService.getDecodeTVC(dataAccount)).code);
+        if (initInputParameters !== undefined ) {
+            for (let i = 0; i < initInputParameters.length; i++) {
+                initInputMap.set("_" + initInputParameters[i].getName(), initInputParameters[i].getValue());
+            }
+        }
+        return await Object.fromEntries(initInputMap);
     }
     
     private async deployBasis(rootNftAccount: Account, indexBasisAccount: Account) : Promise<void> {
