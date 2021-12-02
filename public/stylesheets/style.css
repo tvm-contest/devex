@@ -30,9 +30,45 @@
     height: 30px;
     text-align: center;
 }
+
+.delete-type-button {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    z-index: 100;
+}
+
+.form-title {
+    font-size: 1.3em;
+    align-self: center;
+    margin-bottom: 10px;
+}
+
 .row.parameter-number {
     display: none;
 }
 .row.parameter-string {
     display: none;
 }
+
+.parameterForm {
+    padding: 20px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+.parameter {
+    padding: 7px;
+    position: relative;
+    border: 1px solid white;
+    margin-bottom: 10px;
+    box-shadow: 2px 2px 5px #ccc;
+}
+
+.param-label {
+    display: block;
+}
+

@@ -1,0 +1,12 @@
+extends layout
+
+block content
+
+  div#root
+
+   script(src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin)
+   script(src="https://unpkg.com/react@17/umd/react.development.js" crossorigin)
+   script(src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin)
+
+   script(src="/scripts/ParamForm.js" data-plugins="transform-es2015-modules-umd" type="text/babel")
+   script(src="/scripts/index.js" data-plugins="transform-es2015-modules-umd" type="text/babel")

@@ -14,7 +14,7 @@ import {tokensDataInfo} from './routes/tokens-data-info';
 import {generateContractRouter} from './routes/generate-contract';
 import { oneTokenInfoRouter } from './routes/one-token-info';
 import {newRootContractForm} from './routes/new-root-contract-form';
-
+import { parameterForm } from './routes/parameter-form'
 
 
 const app = express();
@@ -42,6 +42,7 @@ app.use('/one-token-info', oneTokenInfoRouter);
 app.use('/tokens-data-info', tokensDataInfo);
 app.use('/generate-contract', generateContractRouter);
 app.use('/new-root-contract-form', newRootContractForm);
+app.use('/parameter-form', parameterForm);
 
 app.use((req: Request, res: Response) => {
     res.status(404);
