@@ -1,30 +1,65 @@
 extends layout
 
 block content
+  
   .forms
     .container
-      form.row.g-3
-        .content
-          .row.row_init
-            .col
-              label.form-label() Название контракта
-              input.form-control(onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Название контракта" aria-label="Название контракта")
-            .col
-              label.form-label() Максимальное количество токенов
-              input.form-control( onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Максимальное количество токенов" aria-label="Максимальное количество токенов")
-          
-          .block-for-col_type
-            .row.collection-type-
+      form.row.g-3(action="", method="post")
+        ul.nav.nav-tabs.justify-content-center#myTab(role="tablist" )
+          li.nav-item(role="presentation")
+            button.nav-link.active#home-tab(data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true") Тип
+          li.nav-item(role="presentation")
+            button.nav-link#profile-tab(data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false") Параметры
+        .tab-content#myTabContent
+          .tab-pane.fade.show.active#home(role="tabpanel" aria-labelledby="home-tab") 
+            .content-type
+              .row.row_init
                 .col
-                  label.form-label() Тип коллекции
-                  input.form-control(type="text" pattern="[A-Za-z0-9_]+" name="typeName" onInput="checkLatinInput(this)" placeholder="Тип коллекции" aria-label="Тип коллекции")
+                  label.form-label() Название контракта
+                  input.form-control(name="nameContract" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Название контракта" aria-label="Название контракта")
                 .col
-                  label.form-label() Количество токенов
-                  input.form-control(type="text" pattern="[0-9]+" name="typeLimit" onInput="checkNumberInput(this)" placeholder="Количество токенов" aria-label="Количество токенов")                            
-                    
-        input.btn.btn-dark(class="btn btn-dark" type="button" value="- Удалить тип" onclick="deleteType(this);")
-        input.btn.btn-dark(type="button" value=" + Добавить тип" onclick="addType();")
-        input.btn.btn-dark(type="submit" value="Отправить")
+                  label.form-label() Максимальное количество токенов
+                  input.form-control(name="tokenLimit" onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Максимальное количество токенов" aria-label="Максимальное количество токенов")
+              .block-for-col-types
+                .row.collection-type-#c0
+                    .col.name
+                      label.form-label() Тип коллекции
+                      input.form-control.col-name(name="type[0][name]" type="text" pattern="[A-Za-z0-9_]+" onInput="checkLatinInput(this)" placeholder="Тип коллекции" aria-label="Тип коллекции")
+                    .col.limit
+                      label.form-label() Количество токенов
+                      input.form-control.col-limit(name="type[0][limit]" type="text" pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Количество токенов" aria-label="Количество токенов")                            
+              .buttons
+                input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Удалить тип" onclick="deleteType();")
+                input.btn.btn-dark.btn-block(type="button" value=" + Добавить тип" onclick="addType();")
+          .tab-pane.fade#profile(role="tabpanel" aria-labelledby="profile-tab")
+            .content-param
+              .block-for-col-param-choice#p0
+                .row.parameter-choice    
+                  .col
+                    select.type-parameter.form-select.btn-dark(name="selectpicker")
+                        option(value="1") Выберите тип параметра
+                        option(value="number") Число
+                        option(value="line") Строка
+                .row.parameter-number
+                  .col
+                    label.form-label() Минимальное значение
+                    input.form-control.param-num-min(type="text"  name = 'parameter[0][numbur][min]' pattern="[0-9]+" onInput="checkNumberInput(this)")
+                  .col
+                    label.form-label() Максимальное значение
+                    input.form-control.param-num-max(type="text" name = 'parameter[0][numbur][max]' pattern="[0-9]+" onInput="checkNumberInput(this)")
+                .row.parameter-string
+                  .col
+                    label.form-label() Минимальная длинна
+                    input.form-control.param-line-min(type="text" name = 'parameter[0][line][min]' pattern="[0-9]+" onInput="checkNumberInput(this)")
+                  .col
+                    label.form-label() Максимальная длинна
+                    input.form-control.param-line-min(type="text" name = 'parameter[0][line][max]' pattern="[0-9]+" onInput="checkNumberInput(this)")
+            input.btn.btn-dark.btn-block(type="button" value=" + Добавить параметр" onclick="addParam();")
+            input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Удалить параметр" onclick="deleteParam();")
+            
+        
+        .col
+          input.submit-button.btn.btn-dark.btn-block(type="submit" value="Отправить")
   script(src="/scripts/root-contract-form.js")
       
       

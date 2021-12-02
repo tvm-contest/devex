@@ -30,3 +30,9 @@
     height: 30px;
     text-align: center;
 }
+.row.parameter-number {
+    display: none;
+}
+.row.parameter-string {
+    display: none;
+}
