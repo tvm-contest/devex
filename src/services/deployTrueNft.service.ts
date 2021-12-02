@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { DeployService } from './deploy.service';
 import { Account } from '@tonclient/appkit';
+import { Collection } from '../models/collection';
 import { globals } from '../config/globals';
 import { Parametr } from '../models/parametr';
 
@@ -32,15 +33,17 @@ export class DeployTrueNftService {
         }
     }
     
-    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, initInputParameters?: Parametr[]) : Promise<void> {
+    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, initInputParameters?: Parametr[]) : Promise<string> {
         let initInput = await this.createInitInputByParameters(indexAccount, dataAccount, initInputParameters);
         try {
             await this.deployService.deploy(
                 rootNftAccount,
                 initInput
             );
+            return rootNftAccount.getAddress();
         } catch(err) {
             console.log(err);
+            return "0";
         }
     }
 
@@ -132,5 +135,29 @@ export class DeployTrueNftService {
             }
         );
         return walletAcc;
+    }
+
+    private async buildInitInput(indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<object> {
+
+        let _nftTypes : string[] = [];
+        let _limit : number[] = [];
+        for (let index = 0; index < collection.getRarities().length; index++) {
+            _nftTypes.push(collection.getRarities()[index].getName())
+            _limit.push(collection.getRarities()[index].getLimit())
+        }
+        let _name = collection.getDescription().getName()
+        let _icon = collection.getDescription().getIcon() ?? ""
+
+        let initInput = {
+            codeIndex: (await this.deployService.getDecodeTVC(indexAccount)).code,
+            codeData: (await this.deployService.getDecodeTVC(dataAccount)).code,
+            nftTypes: _nftTypes,
+            limit: _limit,
+            name: _name,
+            icon: _icon
+        }
+
+        console.log(initInput)
+        return initInput
     }
 }

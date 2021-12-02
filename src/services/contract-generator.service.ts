@@ -52,6 +52,8 @@ class ContractGenerator {
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), dataFile, dataFileTepm);
     }
 
+    return tempDir;
+
   }
 
   deleteContractDirTemp(collectionSettings : Collection){

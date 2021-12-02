@@ -1,16 +1,24 @@
 import express from 'express';
+import path from 'path';
+import { globals } from '../config/globals';
+import { Collection } from '../models/collection';
+import { deleteContractDirTemp, generateContract } from '../services/contract-generator.service';
+import { ContractObjectCreator } from '../services/contract-object-creator.service';
+import { DeployTrueNftService } from '../services/deployTrueNft.service';
 const router = express.Router();
 
 import { RootContractForm } from "../services/root-contract-form-handler.sevice"
 import { TypeCollection } from "../services/root-contract-form-handler.sevice"
 import { rootContractFormHandler } from "../services/root-contract-form-handler.sevice"
 import { ParamCollection } from "../services/root-contract-form-handler.sevice"
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('root-contract-form');
 });
 
-router.post('/', function(req, res, next) {
+  
+router.post('/', async function(req, res, next) {
 
     // let rootContractForm : RootContractForm = {
     //     nameContract: req.body.nameContract,
@@ -54,7 +62,6 @@ router.post('/', function(req, res, next) {
     //             }
     //             rootContractForm.parameters.push(paramCollection)   
     //         }
-             
     //     }
     // } else if(req.body.selectpicker === "2"){
     //     let paramCollection: ParamCollection = {
@@ -73,7 +80,16 @@ router.post('/', function(req, res, next) {
     // }
     // rootContractFormHandler(rootContractForm)
     console.log(req.body)
-    res.send("форма")
+    let contractObjectCreator = new ContractObjectCreator()
+    let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
+    let contractDir = await generateContract(collection)
+
+    let deployTrueNftService = new DeployTrueNftService()
+    let address = await deployTrueNftService.deployTrueNft(contractDir, collection.getParameters())
+
+    // deleteContractDirTemp(collection)
+
+    res.send("Адрес коллекции: " + address)
     
 });
 
