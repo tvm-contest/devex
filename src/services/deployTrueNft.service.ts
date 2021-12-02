@@ -34,7 +34,6 @@ export class DeployTrueNftService {
     
     private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, initInputParameters?: Parametr[]) : Promise<void> {
         let initInput = await this.createInitInputByParameters(indexAccount, dataAccount, initInputParameters);
-        console.log(initInput);
         try {
             await this.deployService.deploy(
                 rootNftAccount,
