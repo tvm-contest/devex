@@ -62,21 +62,6 @@ router.post('/', async function(req, res, next) {
     //             }
     //             rootContractForm.parameters.push(paramCollection)   
     //         }
-             
-<<<<<<< src/routes/root-contract-form.ts
-
-    let contractObjectCreator = new ContractObjectCreator()
-    let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
-    let contractDir = await generateContract(collection)
-
-    let deployTrueNftService = new DeployTrueNftService()
-    let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
-
-    // deleteContractDirTemp(collection)
-
-    res.send("Адрес коллекции: " + address)
-
-=======
     //     }
     // } else if(req.body.selectpicker === "2"){
     //     let paramCollection: ParamCollection = {
@@ -95,7 +80,16 @@ router.post('/', async function(req, res, next) {
     // }
     // rootContractFormHandler(rootContractForm)
     console.log(req.body)
->>>>>>> src/routes/root-contract-form.ts
+    let contractObjectCreator = new ContractObjectCreator()
+    let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
+    let contractDir = await generateContract(collection)
+
+    let deployTrueNftService = new DeployTrueNftService()
+    let address = await deployTrueNftService.deployTrueNft(contractDir, collection.getParameters())
+
+    // deleteContractDirTemp(collection)
+
+    res.send("Адрес коллекции: " + address)
     
 });
 
