@@ -34,6 +34,13 @@ export default function CreateNFT() {
     }
   }, [account.isReady, navigate]);
 
+  const uploadImageToIpfs = async (file) => {
+    // TODO implement upload to IPFS
+    // file is data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAA…SjVDpQJfhcdt/3Hrt7ev+H+rDD13H5jEOAAAAAElFTkSuQmCC
+    console.log('uploadImageTiIpfs', file);
+    return file;
+  };
+
   // console.log(fileRejections);
 
   const handleAddMultiImage = (files) => {
@@ -147,7 +154,7 @@ export default function CreateNFT() {
       });
     }
     setNftData(andFinalImages);
-    console.log('generate images2', layerData, imagesToGenerate, finalImagesList, img);
+    console.log(andFinalImages);
   };
 
   const handleTraitNameChange = (val, currentId) => {
