@@ -61,6 +61,22 @@ export default function CreateNFT() {
     setLayerData(newArr);
   };
 
+  const getDataForBlockchain = async () => {
+    const uploadArrayPromise = [];
+    for (const d of nftData) {
+      uploadArrayPromise.push(uploadImageToIpfs(d.image));
+    }
+    const uploadedData = await Promise.all(uploadArrayPromise);
+
+    const returnData = [];
+
+    for (const [key, data] of Object.entries(nftData)) {
+      returnData.push({ ...data, image: uploadedData[key] });
+    }
+
+    return returnData;
+  };
+
   useEffect(() => {
     handleAddMultiImage(acceptedFiles);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -350,6 +366,9 @@ export default function CreateNFT() {
         <Button onClick={handleAddLayer}>Add another layer</Button>
         <Button onClick={handleGenerateImages}>Generate images</Button>
         <NFTList nfts={nftData} />
+        {nftData.length && (
+          <Button onClick={getDataForBlockchain}> TODO getDataForBlockchain</Button>
+        )}
       </Container>
     </Page>
   );
