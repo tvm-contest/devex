@@ -79,17 +79,17 @@ router.post('/', async function(req, res, next) {
     //     rootContractForm.parameters.push(paramCollection)   
     // }
     // rootContractFormHandler(rootContractForm)
-    console.log(req.body)
-    let contractObjectCreator = new ContractObjectCreator()
-    let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
-    let contractDir = await generateContract(collection)
+    // console.log(req.body)
+    // let contractObjectCreator = new ContractObjectCreator()
+    // let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
+    // let contractDir = await generateContract(collection)
 
-    let deployTrueNftService = new DeployTrueNftService()
-    let address = await deployTrueNftService.deployTrueNft(contractDir, collection.getParameters())
+    // let deployTrueNftService = new DeployTrueNftService()
+    // let address = await deployTrueNftService.deployTrueNft(contractDir, collection.getParameters())
 
     // deleteContractDirTemp(collection)
 
-    res.send("Адрес коллекции: " + address)
+    // res.send("Адрес коллекции: " + address)
     
 });
 
