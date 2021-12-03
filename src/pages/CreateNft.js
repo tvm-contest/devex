@@ -17,7 +17,7 @@ export default function CreateNFT() {
   const navigate = useNavigate();
   const [layerData, setLayerData] = useState([]);
   const [totalImages, setTotalImages] = useState(0);
-  const [nftData, setNFTData] = useState([
+  const [nftData] = useState([
     {
       name: 123,
       traits: [
@@ -33,7 +33,7 @@ export default function CreateNFT() {
     state: { account }
   } = useContext(StoreContext);
 
-  const { getRootProps, getInputProps, acceptedFiles, fileRejections } = useDropzone();
+  const { getRootProps, getInputProps, acceptedFiles } = useDropzone();
 
   useEffect(() => {
     if (!account.isReady) {
@@ -41,13 +41,13 @@ export default function CreateNFT() {
     }
   }, [account.isReady, navigate]);
 
-  console.log(fileRejections);
+  // console.log(fileRejections);
 
   const handleAddMultiImage = (files) => {
     const newArr = layerData.filter((elem) => {
       if (elem.id === currentLayer) {
         Object.entries(files).forEach(([key, value]) => {
-          // console.log(key);
+          console.log(key);
           elem.imagArr.push({
             id: Math.floor(Math.random() * 100000),
             traitVal: '',
@@ -63,6 +63,7 @@ export default function CreateNFT() {
 
   useEffect(() => {
     handleAddMultiImage(acceptedFiles);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [acceptedFiles]);
 
   const handleAddLayer = () => {
