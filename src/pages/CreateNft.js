@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 // material
 import { Container, Typography, Button, Input, Stack, Card, CardMedia, Box } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
+import mergeImages from 'merge-images';
 // components
 import Page from '../components/Page';
 import NFTList from '../components/_dashboard/nft/NFTList';
@@ -18,16 +19,7 @@ export default function CreateNFT() {
   const navigate = useNavigate();
   const [layerData, setLayerData] = useState([]);
   const [totalImages, setTotalImages] = useState(0);
-  const [nftData] = useState([
-    {
-      name: 123,
-      traits: [
-        { trait_type: 'trait_type', trait_value: 'trait_value' },
-        { trait_type: 'trait_type2', trait_value: 'trait_value2' }
-      ],
-      status: 'new'
-    }
-  ]);
+  const [nftData, setNftData] = useState([]);
   const [currentLayer, setCurrentLayer] = useState();
   const [over, setOver] = useState([]);
   const {
@@ -78,7 +70,7 @@ export default function CreateNFT() {
     ]);
   };
 
-  const handleGenerateImages = () => {
+  const handleGenerateImages = async () => {
     if (!totalImages) {
       // TODO set errors
       alert('TODO set totel images');
@@ -96,7 +88,7 @@ export default function CreateNFT() {
       // eslint-disable-next-line no-restricted-syntax
       for (const image of layer.imagArr) {
         // TODO errors
-        totalRarity += parseInt(image.traitRar, 10) || 0;
+        totalRarity += parseInt(image.traitRar, 10) || 1;
       }
 
       const coeefficient = totalImages / totalRarity;
@@ -126,7 +118,36 @@ export default function CreateNFT() {
       finalImagesList.push(layers);
     }
 
-    console.log('generate images2', layerData, imagesToGenerate, finalImagesList);
+    const mergePromise = [];
+    for (const image of finalImagesList) {
+      const images = [];
+      for (const layer of image) {
+        images.push(layer.image);
+      }
+      mergePromise.push(mergeImages(images));
+    }
+
+    const img = await Promise.all(mergePromise);
+
+    const andFinalImages = [];
+    for (const [key, image] of Object.entries(finalImagesList)) {
+      const traits = [];
+      for (const i of image) {
+        traits.push({
+          trait_type: i.traitName,
+          value: i.traitValue
+        });
+      }
+      andFinalImages.push({
+        name: `TODO_NAME#${key}`,
+        description: `TODO_DESCRIPTION`,
+        image: img[key],
+        traits,
+        status: 'new'
+      });
+    }
+    setNftData(andFinalImages);
+    console.log('generate images2', layerData, imagesToGenerate, finalImagesList, img);
   };
 
   const handleTraitNameChange = (val, currentId) => {

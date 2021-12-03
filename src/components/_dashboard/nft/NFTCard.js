@@ -22,7 +22,7 @@ NFTCard.propTypes = {
 };
 
 export default function NFTCard({ nft }) {
-  const { name, cover, status, traits } = nft;
+  const { name, image, status, traits } = nft;
 
   return (
     <Card>
@@ -42,7 +42,7 @@ export default function NFTCard({ nft }) {
             {status}
           </Label>
         )}
-        <NFTCardImage alt={name} src={cover} />
+        <NFTCardImage alt={name} src={image} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -54,7 +54,7 @@ export default function NFTCard({ nft }) {
           {traits.map((trait) => (
             <div key={`${name}_${trait.trait_type}`}>
               <Typography variant="subtitle1">{trait.trait_type}</Typography>
-              <Typography variant="subtitle1">{trait.trait_value}</Typography>
+              <Typography variant="subtitle1">{trait.value}</Typography>
             </div>
           ))}
         </Stack>
