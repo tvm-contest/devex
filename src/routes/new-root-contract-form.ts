@@ -9,101 +9,91 @@ import { Rarity } from "../models/rarity";
 import { DeployTrueNftService } from "../services/deployTrueNft.service"
 
 /* GET home page. */
-/*
 router.get('/', function(req, res, next) {
     res.render('root-contract-form');
 });
-*/
 
-router.get('/', async function(req, res, next) {
-    let params : Parametr[] = [new Parametr("param1", "int", 1), new Parametr("param2", "int", 23)];
-    let rariry : Rarity[] = [new Rarity("rare", 10), new Rarity("norare", 90)];
-    let description : DescriptCollection = new DescriptCollection("Collect1", 100);
-    let collection : Collection = new Collection(description, rariry, params);
-    await generateContract(collection);
-    let deployTrueNftService = new DeployTrueNftService();
-    await deployTrueNftService.deployTrueNft(getTempDir(collection), params);
-});
-
-/*
-необходимые данные из формы:
-    DescriptionCollection:
-        - descriptCollectionName
-        - descriptCollectionLimit
-    Rarities (для этих параметров в форме может быть как одно окно ввода, так и несколько):
-        - rarityName
-        - rarityLimit
-    Parameters (для этих параметров в форме может быть как одно окно ввода, так и несколько):
-        - parametrName
-        - parametrType
-        - parametrValue
-*/
-
-/*
-router.post('/', function(req, res, next) {
+router.post('/', async function(req, res, next) {
     let descriptCollection = getDescriptCollection(
-        req.body.descriptCollectionName, 
-        req.body.descriptCollectionLimit
+        req.body.nameToken, 
+        req.body.tokenLimit
     );
     let rarities = getRarities(
-        req.body.rarityName, 
-        req.body.rarityLimit
+        req.body.type, 
+
     );
     let parameters = getParameters(
-        req.body.parametrName,
-        req.body.parametrType,
-        req.body.parametrValue
+        req.body.selectpicker,
+        req.body.parameter
     );
     let collectionSettings = new Collection(descriptCollection, rarities, parameters);
     await generateContract(collectionSettings);
     let deployTrueNftService = new DeployTrueNftService();
-    await deployTrueNftService.deployTrueNft(createTempDir(collectionSettings), parameters);
+    await deployTrueNftService.deployTrueNft(getTempDir(collectionSettings), collectionSettings);
 });
-*/
 
-function getDescriptCollection(descriptCollectionName, descriptCollectionLimit) : DescriptCollection {
+function getDescriptCollection(nameToken, tokenLimit) : DescriptCollection {
     return new DescriptCollection(
-        descriptCollectionName, 
-        descriptCollectionLimit
+        nameToken, 
+        tokenLimit
     );
 }
 
-function getRarities(rarityName, rarityLimit) : Rarity[] {
+function getRarities(type) : Rarity[] {
     let rarities = new Array<Rarity>();
-    if (typeof rarityName === 'object') {
-        for (let index = 0; index < rarityName.length; index++) {
-            let rarity = new Rarity(
-                rarityName[index], 
-                rarityLimit[index]
-            );
-            rarities.push(rarity);
-        }
-    } else {
-        let rarity = new Rarity(rarityName, rarityLimit);
+    for (let index = 0; index < type.length; index++) {
+        let rarity = new Rarity(
+            type[index].name, 
+            type[index].limit
+        );
         rarities.push(rarity);
     }
     return rarities.reverse();
 }
 
-function getParameters(parametrName, parametrType, parametrValue) : Parametr[] {
+function getParameters(selectpicker, parameter) : Parametr[] {
     let parameters = new Array<Parametr>();
-    if (typeof parametrName === 'object') {
-        for (let index = 0; index < parametrName.length; index++) {
-            let parametr = new Parametr(
-                parametrName[index],
-                parametrType[index],
-                parametrValue[index]
-            )
+
+    if (typeof selectpicker === 'object') {
+        for (let i = 0; i < selectpicker.length; i++) {
+            let name;
+            let type;
+            let minValue;
+            let maxValue;
+            if (selectpicker[i] === "line") {
+                name = "line" + i;
+                type = "string";
+                minValue = parameter[i].line.min;
+                maxValue = parameter[i].line.max;
+            } else {
+                name = "number" + i;
+                type = "int";
+                minValue = parameter[i].number.min;
+                maxValue = parameter[i].number.max;
+            }
+            let parametr = new Parametr(name, type, minValue, maxValue)
             parameters.push(parametr);
         }
     } else {
-        let parametr = new Parametr(
-            parametrName,
-            parametrType,
-            parametrValue
-        )
+        let name;
+        let type;
+        let minValue;
+        let maxValue;
+        if (selectpicker === "line") {
+            name = "line";
+            type = "string";
+            minValue = parameter.line.min;
+            maxValue = parameter.line.max;
+        } else {
+            name = "number";
+            type = "int";
+            minValue = parameter.number.min;
+            maxValue = parameter.number.max;
+        }
+        let parametr = new Parametr(name, type, minValue, maxValue);
         parameters.push(parametr);
     }
+    
     return parameters.reverse();
 }
 

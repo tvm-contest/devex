@@ -2,10 +2,12 @@ import { TonClient } from "@tonclient/core";
 import { everscale_settings } from "../config/everscale-settings";
 import { libNode } from '@tonclient/lib-node';
 import { Account } from "@tonclient/appkit";
+import * as fs from 'fs';
+import { globals } from '../config/globals'
+import path from 'path';
 
 // Для получения списка data нам необходим abi рут контракта для вызова метода resolveCodeHashData
 // Не знаю куда его лучше запихнуть
-import rootNftAbi from "../sample-data/trueNftSample/NftRoot.abi.json";
 
 export class TokensData {
     private readonly client: TonClient;
@@ -31,6 +33,7 @@ export class TokensData {
     }
 
     private async getAccountByAddress(rootNftAddress: string) : Promise<Account> {
+        let rootNftAbi = await JSON.parse(fs.readFileSync(path.resolve(globals.SAMPLE_DATA_PATH, "trueNftSample", "NftRoot.abi.json")).toString());
         return new Account(
             {
                 abi: rootNftAbi
