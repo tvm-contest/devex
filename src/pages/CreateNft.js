@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Typography, Button, Input, Stack, Card, CardMedia, Box } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
+import * as IPFS from 'ipfs-core';
 // components
 import Page from '../components/Page';
 import NFTList from '../components/_dashboard/nft/NFTList';
@@ -17,6 +18,9 @@ import StoreContext from '../store/StoreContext';
 
 export default function CreateNFT() {
   const navigate = useNavigate();
+  const [collectionName, setCollectionName] = useState('');
+  const [collectionDesc, setCollectionDesc] = useState('');
+  const [isSubmitClick, setIsSubmitClick] = useState(false);
   const [layerData, setLayerData] = useState([]);
   const [totalImages, setTotalImages] = useState(0);
   const [nftData, setNftData] = useState([]);
@@ -30,15 +34,18 @@ export default function CreateNFT() {
 
   useEffect(() => {
     if (!account.isReady) {
-      navigate('/dashboard/login');
+      // navigate('/dashboard/login');
     }
   }, [account.isReady, navigate]);
 
   const uploadImageToIpfs = async (file) => {
     // TODO implement upload to IPFS
     // file is data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAA…SjVDpQJfhcdt/3Hrt7ev+H+rDD13H5jEOAAAAAElFTkSuQmCC
-    console.log('uploadImageTiIpfs', file);
-    return file;
+    // console.log('uploadImageTiIpfs', file);
+    const ipfs = await IPFS.create();
+    const fileInfo = await ipfs.add(file);
+    console.log(fileInfo.path);
+    return fileInfo.path;
   };
 
   // console.log(fileRejections);
@@ -94,6 +101,7 @@ export default function CreateNFT() {
   };
 
   const handleGenerateImages = async () => {
+    setIsSubmitClick(true);
     if (!totalImages) {
       // TODO set errors
       alert('TODO set totel images');
@@ -229,10 +237,20 @@ export default function CreateNFT() {
       </Container>
       <Container>
         <div>
-          <Input placeholder="Collection Name" />
+          <Input
+            placeholder="Collection Name"
+            value={collectionName}
+            onChange={(e) => setCollectionName(e.target.value)}
+            error={isSubmitClick && !collectionName}
+          />
         </div>
         <div>
-          <Input placeholder="Collection Description" />
+          <Input
+            placeholder="Collection Description"
+            value={collectionDesc}
+            onChange={(e) => setCollectionDesc(e.target.value)}
+            error={isSubmitClick && !collectionDesc}
+          />
         </div>
         <div>
           <Input
@@ -242,6 +260,7 @@ export default function CreateNFT() {
             onChange={(e) => {
               setTotalImages(e.target.value);
             }}
+            error={isSubmitClick && !totalImages}
           />
         </div>
         <Typography variant="h6" sx={{ marginTop: 1 }}>
@@ -262,6 +281,7 @@ export default function CreateNFT() {
                   placeholder="Trait Name"
                   value={data.traitName}
                   onChange={(e) => handleTraitNameChange(e.target.value, data.id)}
+                  error={isSubmitClick && !data.traitName}
                 />
                 <Button
                   variant="contained"
@@ -336,6 +356,7 @@ export default function CreateNFT() {
                           onChange={(e) =>
                             handleImageUpdate(e.target.value, 'name', index, data.id)
                           }
+                          error={isSubmitClick && !file.traitVal}
                         />
                         <CardMedia
                           component="img"
@@ -351,6 +372,7 @@ export default function CreateNFT() {
                           onChange={(e) =>
                             handleImageUpdate(e.target.value, 'rarity', index, data.id)
                           }
+                          error={isSubmitClick && !file.traitRar}
                         />
                       </Card>
                     ))

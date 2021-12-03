@@ -53,6 +53,7 @@
     "formik": "^2.2.9",
     "framer-motion": "^4.1.17",
     "history": "^5.0.1",
+    "ipfs-core": "^0.12.2",
     "lodash": "^4.17.21",
     "merge-images": "^2.0.0",
     "numeral": "^2.0.6",
