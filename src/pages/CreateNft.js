@@ -34,7 +34,7 @@ export default function CreateNFT() {
 
   useEffect(() => {
     if (!account.isReady) {
-      // navigate('/dashboard/login');
+      navigate('/dashboard/login');
     }
   }, [account.isReady, navigate]);
 
@@ -42,9 +42,13 @@ export default function CreateNFT() {
     // TODO implement upload to IPFS
     // file is data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAA…SjVDpQJfhcdt/3Hrt7ev+H+rDD13H5jEOAAAAAElFTkSuQmCC
     // console.log('uploadImageTiIpfs', file);
-    const ipfs = await IPFS.create();
+    let ipfs = window.IPFSNode;
+    if (!ipfs) {
+      ipfs = await IPFS.create();
+      window.IPFSNode = ipfs;
+    }
     const fileInfo = await ipfs.add(file);
-    console.log(fileInfo.path);
+    // console.log(fileInfo.path);
     return fileInfo.path;
   };
 
