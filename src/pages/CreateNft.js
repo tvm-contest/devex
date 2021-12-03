@@ -16,6 +16,7 @@ import StoreContext from '../store/StoreContext';
 export default function CreateNFT() {
   const navigate = useNavigate();
   const [layerData, setLayerData] = useState([]);
+  const [totalImages, setTotalImages] = useState(0);
   const [nftData, setNFTData] = useState([
     {
       name: 123,
@@ -76,6 +77,11 @@ export default function CreateNFT() {
   };
 
   const handleGenerateImages = () => {
+    if (!totalImages) {
+      // TODO set errors
+      alert('TODO set totel images');
+      return;
+    }
     console.log('generate images', layerData);
   };
 
@@ -141,7 +147,14 @@ export default function CreateNFT() {
           <Input placeholder="Collection Description" />
         </div>
         <div>
-          <Input placeholder="Number of NFTs" />
+          <Input
+            placeholder="Number of NFTs"
+            type="number"
+            value={totalImages}
+            onChange={(e) => {
+              setTotalImages(e.target.value);
+            }}
+          />
         </div>
         <Typography variant="h6" sx={{ marginTop: 1 }}>
           Layers
