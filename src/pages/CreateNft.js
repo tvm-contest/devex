@@ -5,8 +5,10 @@ import { Container, Typography, Button, Input, Stack, Card, CardMedia, Box } fro
 import { useDropzone } from 'react-dropzone';
 // components
 import Page from '../components/Page';
+import NFTList from '../components/_dashboard/nft/NFTList';
 
 import StoreContext from '../store/StoreContext';
+
 //
 
 // ----------------------------------------------------------------------
@@ -14,6 +16,16 @@ import StoreContext from '../store/StoreContext';
 export default function CreateNFT() {
   const navigate = useNavigate();
   const [layerData, setLayerData] = useState([]);
+  const [nftData, setNFTData] = useState([
+    {
+      name: 123,
+      traits: [
+        { trait_type: 'trait_type', trait_value: 'trait_value' },
+        { trait_type: 'trait_type2', trait_value: 'trait_value2' }
+      ],
+      status: 'new'
+    }
+  ]);
   const [currentLayer, setCurrentLayer] = useState();
   const [over, setOver] = useState([]);
   const {
@@ -61,6 +73,10 @@ export default function CreateNFT() {
         imagArr: []
       }
     ]);
+  };
+
+  const handleGenerateImages = () => {
+    console.log('generate images', layerData);
   };
 
   const handleTraitNameChange = (val, currentId) => {
@@ -123,6 +139,9 @@ export default function CreateNFT() {
         </div>
         <div>
           <Input placeholder="Collection Description" />
+        </div>
+        <div>
+          <Input placeholder="Number of NFTs" />
         </div>
         <Typography variant="h6" sx={{ marginTop: 1 }}>
           Layers
@@ -244,6 +263,8 @@ export default function CreateNFT() {
             </Stack>
           ))}
         <Button onClick={handleAddLayer}>Add another layer</Button>
+        <Button onClick={handleGenerateImages}>Generate images</Button>
+        <NFTList nfts={nftData} />
       </Container>
     </Page>
   );

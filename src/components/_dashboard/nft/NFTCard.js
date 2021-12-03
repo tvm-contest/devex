@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 // material
-import { Box, Card, Link, Typography, Stack } from '@mui/material';
+import { Box, Card, Link, Typography, Stack, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import Label from '../../Label';
 
 // ----------------------------------------------------------------------
 
-const ProductImgStyle = styled('img')({
+const NFTCardImage = styled('img')({
   top: 0,
   width: '100%',
   height: '100%',
@@ -18,12 +18,12 @@ const ProductImgStyle = styled('img')({
 
 // ----------------------------------------------------------------------
 
-ShopProductCard.propTypes = {
-  product: PropTypes.object
+NFTCard.propTypes = {
+  nft: PropTypes.object
 };
 
-export default function ShopProductCard({ product }) {
-  const { name, cover, status } = product;
+export default function NFTCard({ nft }) {
+  const { name, cover, status, traits } = nft;
 
   return (
     <Card>
@@ -43,27 +43,21 @@ export default function ShopProductCard({ product }) {
             {status}
           </Label>
         )}
-        <ProductImgStyle alt={name} src={cover} />
+        <NFTCardImage alt={name} src={cover} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link to="#" color="inherit" underline="hover" component={RouterLink}>
-          <Typography variant="subtitle2" noWrap>
-            {name}
-          </Typography>
-        </Link>
+        <Typography variant="subtitle2" noWrap>
+          {name}
+        </Typography>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Typography variant="subtitle1">
-            <Typography
-              component="span"
-              variant="body1"
-              sx={{
-                color: 'text.disabled',
-                textDecoration: 'line-through'
-              }}
-            />
-          </Typography>
+          {traits.map((trait) => (
+            <div key={`${name}_${trait.trait_type}`}>
+              <Typography variant="subtitle1">{trait.trait_type}</Typography>
+              <Typography variant="subtitle1">{trait.trait_value}</Typography>
+            </div>
+          ))}
         </Stack>
       </Stack>
     </Card>
