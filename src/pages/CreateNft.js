@@ -37,6 +37,10 @@ export default function CreateNFT() {
     ]);
   };
 
+  const handleGenerateImages = () => {
+    console.log('generate images', layerData);
+  };
+
   const handleTraitNameChange = (val, currentId) => {
     const newArr = layerData.filter((elem) =>
       elem.id === currentId ? (elem.traitName = val) : elem
@@ -117,6 +121,9 @@ export default function CreateNFT() {
         </div>
         <div>
           <Input placeholder="Collection Description" />
+        </div>
+        <div>
+          <Input placeholder="Number of NFTs" />
         </div>
         <Typography variant="h6" sx={{ marginTop: 1 }}>
           Layers
@@ -229,6 +236,7 @@ export default function CreateNFT() {
             </Stack>
           ))}
         <Button onClick={handleAddLayer}>Add another layer</Button>
+        <Button onClick={handleGenerateImages}>Generate images</Button>
       </Container>
     </Page>
   );
