@@ -12,8 +12,8 @@ NFTList.propTypes = {
 export default function NFTList({ nfts, ...other }) {
   return (
     <Grid container spacing={3} {...other}>
-      {nfts.map((nft) => (
-        <Grid key={nft.id} item xs={12} sm={6} md={3}>
+      {nfts.map((nft, id) => (
+        <Grid key={id} item xs={12} sm={6} md={3}>
           <NFTCard nft={nft} />
         </Grid>
       ))}

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // material
@@ -83,7 +84,34 @@ export default function CreateNFT() {
       alert('TODO set totel images');
       return;
     }
-    console.log('generate images', layerData);
+    const imagesToGenerate = [];
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const layer of layerData) {
+      let totalRarity = 0;
+      const newLayer = {
+        traintName: layer.traitName,
+        images: []
+      };
+      // eslint-disable-next-line no-restricted-syntax
+      for (const image of layer.imagArr) {
+        // TODO errors
+        totalRarity += parseInt(image.traitRar, 10) || 0;
+      }
+
+      const coeefficient = totalImages / totalRarity;
+      console.log(totalRarity, coeefficient);
+      for (const image of layer.imagArr) {
+        const images = new Array(Math.ceil(coeefficient * parseInt(image.traitRar, 10))).fill({
+          traint_value: image.traitVal,
+          src: image.src
+        });
+        newLayer.images = [...newLayer.images, ...images];
+      }
+      imagesToGenerate.push(newLayer);
+    }
+
+    console.log('generate images2', layerData, imagesToGenerate);
   };
 
   const handleTraitNameChange = (val, currentId) => {
