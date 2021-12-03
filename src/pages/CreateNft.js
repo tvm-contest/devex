@@ -20,29 +20,15 @@ export default function CreateNFT() {
     state: { account }
   } = useContext(StoreContext);
 
+  const { getRootProps, getInputProps, acceptedFiles, fileRejections } = useDropzone();
+
   useEffect(() => {
     if (!account.isReady) {
       navigate('/dashboard/login');
     }
   }, [account.isReady, navigate]);
 
-  const handleAddLayer = () => {
-    setLayerData([
-      ...layerData,
-      {
-        id: Math.floor(Math.random() * 1000),
-        traitName: '',
-        imagArr: []
-      }
-    ]);
-  };
-
-  const handleTraitNameChange = (val, currentId) => {
-    const newArr = layerData.filter((elem) =>
-      elem.id === currentId ? (elem.traitName = val) : elem
-    );
-    setLayerData(newArr);
-  };
+  console.log(fileRejections);
 
   const handleAddMultiImage = (files) => {
     const newArr = layerData.filter((elem) => {
@@ -59,6 +45,28 @@ export default function CreateNFT() {
       }
       return elem;
     });
+    setLayerData(newArr);
+  };
+
+  useEffect(() => {
+    handleAddMultiImage(acceptedFiles);
+  }, [acceptedFiles]);
+
+  const handleAddLayer = () => {
+    setLayerData([
+      ...layerData,
+      {
+        id: Math.floor(Math.random() * 1000),
+        traitName: '',
+        imagArr: []
+      }
+    ]);
+  };
+
+  const handleTraitNameChange = (val, currentId) => {
+    const newArr = layerData.filter((elem) =>
+      elem.id === currentId ? (elem.traitName = val) : elem
+    );
     setLayerData(newArr);
   };
 
@@ -101,8 +109,6 @@ export default function CreateNFT() {
       setOver([...over, dataId]);
     }
   };
-
-  const { getRootProps, getInputProps } = useDropzone();
 
   return (
     <Page title="Create you new Nft">
@@ -152,15 +158,22 @@ export default function CreateNFT() {
                     hidden
                   />
                 </Button>
-                <Button variant="contained" component="label" onClick={handleDeleteLayer}>
+                <Button
+                  variant="contained"
+                  component="label"
+                  onClick={() => handleDeleteLayer(data.id)}
+                >
                   Delete Layer
                 </Button>
               </Stack>
               <div
-                {...getRootProps({ className: 'dropzone' })}
+                {...getRootProps({
+                  className: 'dropzone',
+                  onDragEnter: () => setCurrentLayer(data.id)
+                })}
                 style={{ width: '100%', paddingLeft: 25 }}
               >
-                <input {...getInputProps()} onChange={(e) => handleAddMultiImage(e.target.files)} />
+                <input {...getInputProps()} />
                 <Stack direction="row" alignItems="center" sx={{ marginTop: 2 }}>
                   {data.imagArr.length ? (
                     data.imagArr.map((file, index) => (
@@ -222,7 +235,9 @@ export default function CreateNFT() {
                       </Card>
                     ))
                   ) : (
-                    <p>Drag 'n' drop some files here, or click to select files</p>
+                    <p style={{ width: '100%', marginBlockStart: 0, height: 80 }}>
+                      Drag 'n' drop some files here, or click to select files
+                    </p>
                   )}
                 </Stack>
               </div>
