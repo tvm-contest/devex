@@ -90,7 +90,7 @@ export default function CreateNFT() {
     for (const layer of layerData) {
       let totalRarity = 0;
       const newLayer = {
-        traintName: layer.traitName,
+        traitName: layer.traitName,
         images: []
       };
       // eslint-disable-next-line no-restricted-syntax
@@ -100,10 +100,9 @@ export default function CreateNFT() {
       }
 
       const coeefficient = totalImages / totalRarity;
-      console.log(totalRarity, coeefficient);
       for (const image of layer.imagArr) {
         const images = new Array(Math.ceil(coeefficient * parseInt(image.traitRar, 10))).fill({
-          traint_value: image.traitVal,
+          traitValue: image.traitVal,
           src: image.src
         });
         newLayer.images = [...newLayer.images, ...images];
@@ -111,7 +110,23 @@ export default function CreateNFT() {
       imagesToGenerate.push(newLayer);
     }
 
-    console.log('generate images2', layerData, imagesToGenerate);
+    const finalImagesList = [];
+
+    for (let i = 0; i < totalImages; i += 1) {
+      const layers = [];
+      for (const layer of imagesToGenerate) {
+        const randomIndex = Math.floor(Math.random() * layer.images.length);
+        layers.push({
+          image: layer.images[randomIndex].src,
+          traitName: layer.traitName,
+          traitValue: layer.images[randomIndex].traitValue
+        });
+        layer.images.splice(randomIndex, 1);
+      }
+      finalImagesList.push(layers);
+    }
+
+    console.log('generate images2', layerData, imagesToGenerate, finalImagesList);
   };
 
   const handleTraitNameChange = (val, currentId) => {
