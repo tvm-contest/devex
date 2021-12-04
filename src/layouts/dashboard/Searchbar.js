@@ -66,7 +66,7 @@ export default function Searchbar() {
               autoFocus
               fullWidth
               disableUnderline
-              placeholder="Search…"
+              placeholder="Search… (soon)"
               startAdornment={
                 <InputAdornment position="start">
                   <Box
@@ -79,7 +79,7 @@ export default function Searchbar() {
               sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
             />
             <Button variant="contained" onClick={handleClose}>
-              Search
+              Search (soon)
             </Button>
           </SearchbarStyle>
         </Slide>
