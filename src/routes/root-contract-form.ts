@@ -79,11 +79,12 @@ router.post('/', async function(req, res, next) {
     //     rootContractForm.parameters.push(paramCollection)   
     // }
     // rootContractFormHandler(rootContractForm)
-    console.log(req.body)
+    // console.log(req.body)
     let contractObjectCreator = new ContractObjectCreator()
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let contractDir = await generateContract(collection)
 
+    //Зачем коментирвать весь метод?
     let deployTrueNftService = new DeployTrueNftService()
     let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
 
