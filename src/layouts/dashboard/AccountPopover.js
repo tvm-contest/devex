@@ -20,15 +20,15 @@ const MENU_OPTIONS = [
   {
     label: 'Home',
     icon: homeFill,
-    linkTo: '/'
+    linkTo: '/dashboard'
   },
   {
-    label: 'Profile',
+    label: 'Profile (soon)',
     icon: personFill,
     linkTo: '#'
   },
   {
-    label: 'Settings',
+    label: 'Settings (soon)',
     icon: settings2Fill,
     linkTo: '#'
   }
