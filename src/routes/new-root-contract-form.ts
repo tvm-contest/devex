@@ -27,7 +27,11 @@ router.post('/', async function(req, res, next) {
         req.body.parameter
     );
     let collectionSettings = new Collection(descriptCollection, rarities, parameters);
-    await generateContract(collectionSettings);
+    try {
+        await generateContract(collectionSettings);
+    } catch(err) {
+        console.log(err);
+    }
     let deployTrueNftService = new DeployTrueNftService();
     await deployTrueNftService.deployTrueNft(getTempDir(collectionSettings), collectionSettings);
 });
