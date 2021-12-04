@@ -47,14 +47,7 @@ export class DeployTrueNftService {
             return "0";
         }
     }
-    /*
-        TvmCell codeIndex,
-        TvmCell codeData,
-        string[] nftTypes,
-        uint[] limit,
-        string name,
-        string icon
-    */
+    
     private async createInitInput(indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<object> {
         let initInputMap = new Map<any, any>();
         initInputMap.set("codeIndex", (await this.deployService.getDecodeTVC(indexAccount)).code);
