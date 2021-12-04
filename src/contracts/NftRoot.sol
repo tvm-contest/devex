@@ -21,6 +21,8 @@ contract NftRoot is DataResolver, IndexResolver {
     string _name;
     bytes _icon;
 
+    int del;
+
     mapping(string=>uint) _limitByTypes; 
     mapping(string=>uint) _mintedByTypes; 
 
@@ -51,9 +53,12 @@ contract NftRoot is DataResolver, IndexResolver {
         TvmCell codeData = _buildDataCode(address(this));
         TvmCell stateData = _buildDataState(codeData, _totalMinted);
 
+        tvm.accept();
+
         new Data {
             stateInit: stateData,
-            value: 1.1 ton
+            value: 1.1 ton,
+            bounce: false
         } (msg.sender, _codeIndex, nftType, color/*%PARAM_TO_DATA%*/);
 
         _mintedByTypes[nftType]++;
