@@ -22,7 +22,7 @@ const sidebarConfig = [
   //   icon: getIcon(peopleFill)
   // },
   {
-    title: 'All NFTs',
+    title: 'All NFTs (soon)',
     path: '/dashboard/nfts',
     icon: getIcon(imageFill)
   },
@@ -32,7 +32,7 @@ const sidebarConfig = [
     icon: getIcon(buldFill)
   },
   {
-    title: 'My NFTs',
+    title: 'My NFTs (soon)',
     path: '/dashboard/mynfts',
     icon: getIcon(colorFill)
   }
