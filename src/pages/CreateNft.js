@@ -1,8 +1,18 @@
 /* eslint-disable no-restricted-syntax */
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 // material
-import { Container, Typography, Button, Input, Stack, Card, CardMedia, Box } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Button,
+  Input,
+  Stack,
+  Card,
+  CardMedia,
+  Box,
+  Link
+} from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
 import * as IPFS from 'ipfs-core';
@@ -17,7 +27,6 @@ import StoreContext from '../store/StoreContext';
 // ----------------------------------------------------------------------
 
 export default function CreateNFT() {
-  const navigate = useNavigate();
   const [collectionName, setCollectionName] = useState('');
   const [collectionDesc, setCollectionDesc] = useState('');
   const [isSubmitClick, setIsSubmitClick] = useState(false);
@@ -32,12 +41,6 @@ export default function CreateNFT() {
   } = useContext(StoreContext);
 
   const { getRootProps, getInputProps, acceptedFiles } = useDropzone();
-
-  useEffect(() => {
-    if (!account.isReady) {
-      navigate('/dashboard/login');
-    }
-  }, [account.isReady, navigate]);
 
   useEffect(() => {
     async function fetchIpfs() {
@@ -236,13 +239,33 @@ export default function CreateNFT() {
     }
   };
 
+  if (!account.isReady) {
+    return (
+      <Page title="Create you new Nft">
+        <Container>
+          <Typography variant="h4" sx={{ mb: 5 }}>
+            <Link underline="none" component={RouterLink} to="/dashboard/login">
+              <Button fullWidth variant="contained">
+                Login first
+              </Button>
+            </Link>
+          </Typography>
+        </Container>
+      </Page>
+    );
+  }
+
   return (
     <Page title="Create you new Nft">
       <Container>
         <Typography variant="h4" sx={{ mb: 5 }}>
           Create a new NFTs
         </Typography>
+        <Typography variant="h4" sx={{ mb: 5 }}>
+          TODO Alex to provide detailed description here
+        </Typography>
       </Container>
+
       <Container>
         <div>
           <Input
