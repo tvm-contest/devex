@@ -22,6 +22,11 @@ import NFTList from '../components/_dashboard/nft/NFTList';
 
 import StoreContext from '../store/StoreContext';
 
+let ipfs;
+IPFS.create().then(async (node) => {
+  ipfs = node;
+});
+
 //
 
 // ----------------------------------------------------------------------
@@ -35,31 +40,20 @@ export default function CreateNFT() {
   const [nftData, setNftData] = useState([]);
   const [currentLayer, setCurrentLayer] = useState();
   const [over, setOver] = useState([]);
-  const [ipfsVal, setIpfsVal] = useState();
   const {
     state: { account }
   } = useContext(StoreContext);
 
   const { getRootProps, getInputProps, acceptedFiles } = useDropzone();
 
-  useEffect(() => {
-    async function fetchIpfs() {
-      const val = await IPFS.create();
-      setIpfsVal(val);
-    }
-    fetchIpfs();
-  }, []);
-
   const uploadImageToIpfs = async (file) => {
     // TODO implement upload to IPFS
     // file is data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAA…SjVDpQJfhcdt/3Hrt7ev+H+rDD13H5jEOAAAAAElFTkSuQmCC
     // console.log('uploadImageTiIpfs', file);
-    const fileInfo = await ipfsVal.add(file);
+    const fileInfo = await ipfs.add(file);
     // console.log(fileInfo.path);
     return fileInfo.path;
   };
-
-  // console.log(fileRejections);
 
   const handleAddMultiImage = (files) => {
     const newArr = layerData.filter((elem) => {
