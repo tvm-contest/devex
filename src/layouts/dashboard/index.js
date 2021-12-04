@@ -41,6 +41,7 @@ export default function DashboardLayout() {
       <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
       <MainStyle>
         <Outlet />
+        ffff
       </MainStyle>
     </RootStyle>
   );
