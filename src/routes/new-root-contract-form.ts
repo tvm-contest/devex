@@ -1,12 +1,13 @@
 import express from 'express';
 const router = express.Router();
 
-import { generateContract, getTempDir } from "../services/contract-generator.service";
+import { generateContract, getTempDir, deleteContractDirTemp } from "../services/contract-generator.service";
 import { Collection } from "../models/collection";
 import { DescriptCollection } from "../models/descript-collection";
 import { Parametr } from "../models/parametr";
 import { Rarity } from "../models/rarity";
-import { DeployTrueNftService } from "../services/deployTrueNft.service"
+import { DeployTrueNftService } from "../services/deployTrueNft.service";
+import { DeployDebotService } from '../services/deployDebot.service';
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -15,7 +16,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/', async function(req, res, next) {
     let descriptCollection = getDescriptCollection(
-        req.body.nameToken, 
+        req.body.nameContract, 
         req.body.tokenLimit
     );
     let rarities = getRarities(
@@ -27,9 +28,16 @@ router.post('/', async function(req, res, next) {
         req.body.parameter
     );
     let collectionSettings = new Collection(descriptCollection, rarities, parameters);
-    await generateContract(collectionSettings);
+    try {
+        await generateContract(collectionSettings);
+    } catch(err) {
+        console.log(err);
+    }
     let deployTrueNftService = new DeployTrueNftService();
     await deployTrueNftService.deployTrueNft(getTempDir(collectionSettings), collectionSettings);
+    let deployDebotService = new DeployDebotService();
+    await deployDebotService.deployDebot(getTempDir(collectionSettings));
+    deleteContractDirTemp(collectionSettings);
 });
 
 function getDescriptCollection(nameToken, tokenLimit) : DescriptCollection {
@@ -67,7 +75,7 @@ function getParameters(selectpicker, parameter) : Parametr[] {
                 maxValue = parameter[i].line.max;
             } else {
                 name = "number" + i;
-                type = "int";
+                type = "uint";
                 minValue = parameter[i].number.min;
                 maxValue = parameter[i].number.max;
             }
@@ -82,13 +90,13 @@ function getParameters(selectpicker, parameter) : Parametr[] {
         if (selectpicker === "line") {
             name = "line";
             type = "string";
-            minValue = parameter.line.min;
-            maxValue = parameter.line.max;
+            minValue = parameter[0].line.min;
+            maxValue = parameter[0].line.max;
         } else {
             name = "number";
-            type = "int";
-            minValue = parameter.number.min;
-            maxValue = parameter.number.max;
+            type = "uint";
+            minValue = parameter[0].number.min;
+            maxValue = parameter[0].number.max;
         }
         let parametr = new Parametr(name, type, minValue, maxValue);
         parameters.push(parametr);

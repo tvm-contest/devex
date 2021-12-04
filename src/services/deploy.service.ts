@@ -77,7 +77,6 @@ export class DeployService {
                 initInput: initInput,
                 useGiver: true
             });
-            console.log(`Сontract was deployed at address: ${address}`);
         } catch(err) {
             console.error(err);
         }
