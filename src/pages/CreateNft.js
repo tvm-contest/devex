@@ -26,6 +26,7 @@ export default function CreateNFT() {
   const [nftData, setNftData] = useState([]);
   const [currentLayer, setCurrentLayer] = useState();
   const [over, setOver] = useState([]);
+  const [ipfsVal, setIpfsVal] = useState();
   const {
     state: { account }
   } = useContext(StoreContext);
@@ -38,16 +39,19 @@ export default function CreateNFT() {
     }
   }, [account.isReady, navigate]);
 
+  useEffect(() => {
+    async function fetchIpfs() {
+      const val = await IPFS.create();
+      setIpfsVal(val);
+    }
+    fetchIpfs();
+  }, []);
+
   const uploadImageToIpfs = async (file) => {
     // TODO implement upload to IPFS
     // file is data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAA…SjVDpQJfhcdt/3Hrt7ev+H+rDD13H5jEOAAAAAElFTkSuQmCC
     // console.log('uploadImageTiIpfs', file);
-    let ipfs = window.IPFSNode;
-    if (!ipfs) {
-      ipfs = await IPFS.create();
-      window.IPFSNode = ipfs;
-    }
-    const fileInfo = await ipfs.add(file);
+    const fileInfo = await ipfsVal.add(file);
     // console.log(fileInfo.path);
     return fileInfo.path;
   };
