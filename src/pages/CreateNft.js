@@ -16,6 +16,7 @@ import {
 import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
 import * as IPFS from 'ipfs-core';
+import web3Utils from 'web3-utils';
 // components
 import Page from '../components/Page';
 import NFTList from '../components/_dashboard/nft/NFTList';
@@ -184,6 +185,28 @@ export default function CreateNFT() {
     }
     setNftData(andFinalImages);
     console.log(andFinalImages);
+
+    // Not Sure
+    const readerPromise = new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.readAsDataURL(andFinalImages);
+    });
+
+    const fileAsString = await readerPromise;
+    const fileStringAsHex = web3Utils.hexToUtf8(`0x${fileAsString}`);
+    console.log('File: ', andFinalImages);
+    console.log('File length as string: ', fileAsString.length);
+    console.log('File length as bytes(hex): ', fileStringAsHex.length);
+    const chunks = [];
+    for (let start = 0; start < fileStringAsHex.length; start += 15000) {
+      const chunk = fileStringAsHex.slice(start, start + 15000);
+      chunks.push(chunk);
+    }
+
+    //  TODO add method to upload chunks
   };
 
   const handleTraitNameChange = (val, currentId) => {

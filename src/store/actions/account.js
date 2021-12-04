@@ -20,6 +20,10 @@ export const login = async (state, dispatch, isInit) => {
   });
 };
 
+export const uploadFile = async (state, dispatch) => {
+  const accountAddress = await state.account.address;
+};
+
 export const logout = async (state, dispatch) => {
   await state.ton.provider.disconnect();
   dispatch({
