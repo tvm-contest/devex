@@ -1,7 +1,6 @@
 export const nft_setting = {
     INFO_DATA_ABI: {
         "ABI version": 2,
-        "version": "2.2",
         "header": ["time", "expire"],
         "functions": [
             {
@@ -16,12 +15,6 @@ export const nft_setting = {
                     {"name":"color","type":"uint8"}
                 ]
             }
-        ],
-        "data": [
-        ],
-        "events": [
-        ],
-        "fields": [
         ]
     }    
 }

@@ -3,7 +3,7 @@ extends layout
 block content
   .container
       each collection in collectionList
-        .collection-container
+        .collection-container(onClick="fromCollectionListToTokenList(this);")
           .row
             .col
               p Название коллекции:
@@ -13,4 +13,5 @@ block content
             .col
               p Адрес:
             .col
-              p= collection.address
+              p.collection-address= collection.address
+  script(src="/scripts/collection-to-token.js") 
