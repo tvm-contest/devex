@@ -4,9 +4,8 @@ import { DeployService } from './deploy.service';
 import { Account } from '@tonclient/appkit';
 import { Collection } from '../models/collection';
 import { globals } from '../config/globals';
-import { Parametr } from '../models/parametr';
-import { DescriptCollection } from '../models/descript-collection';
-import { Rarity } from '../models/rarity';
+const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
+const utf8ToHex = convert("utf8", "hex");
 
 export class DeployTrueNftService {
     private deployService : DeployService;
@@ -48,23 +47,32 @@ export class DeployTrueNftService {
             return "0";
         }
     }
-
+    /*
+        TvmCell codeIndex,
+        TvmCell codeData,
+        string[] nftTypes,
+        uint[] limit,
+        string name,
+        string icon
+    */
     private async createInitInput(indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<object> {
         let initInputMap = new Map<any, any>();
         initInputMap.set("codeIndex", (await this.deployService.getDecodeTVC(indexAccount)).code);
         initInputMap.set("codeData", (await this.deployService.getDecodeTVC(dataAccount)).code);
-        let nftTypes = new Array<string>();
+        let nftTypes = new Array<any>();
         let limit = new Array<number>();
-        if (collection.getRarities !== undefined) {
-            for (let i = 0; i < collection.getRarities.length; i++) {
-                nftTypes.push(collection.getRarities[i].getName());
-                limit.push(collection.getRarities[i].getLimit());
-            }
+        for (let i = 0; i < collection.getRarities().length; i++) {
+            nftTypes.push(utf8ToHex(collection.getRarities()[i].getName()));
+            limit.push(collection.getRarities()[i].getLimit());
         }
-        initInputMap.set("nftTypes", nftTypes);
-        initInputMap.set("limit", limit);
-        initInputMap.set("name", collection.getDescription().getName());
-        initInputMap.set("icon", collection.getDescription().getIcon());
+        initInputMap.set("nftTypes", nftTypes.reverse());
+        initInputMap.set("limit", limit.reverse());
+        initInputMap.set("name", utf8ToHex(collection.getDescription().getName()));
+        if (collection.getDescription().getIcon() === null) {
+            initInputMap.set("icon", utf8ToHex(" "));
+        } else {
+            initInputMap.set("icon", utf8ToHex(collection.getDescription().getIcon()));
+        }
         return await Object.fromEntries(initInputMap);
     }
     
@@ -145,7 +153,7 @@ export class DeployTrueNftService {
         );
         return walletAcc;
     }
-
+    
     private async buildInitInput(indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<object> {
 
         let _nftTypes : string[] = [];
