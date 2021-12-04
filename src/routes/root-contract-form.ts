@@ -16,7 +16,18 @@ import { ParamCollection } from "../services/root-contract-form-handler.sevice"
 router.get('/', function(req, res, next) {
     res.render('root-contract-form');
 });
-
+router.post('/save-data', function(req, res, next) {
+    console.log(req.body)
+    res.send("save-data")
+});
+router.post('/form-contracts', function(req, res, next) {
+    console.log(req.body)
+    res.send("form-contracts")
+});
+router.post('/deploy-contracts', function(req, res, next) {
+    console.log(req.body)
+    res.send("deploy-contracts")
+});
   
 router.post('/', async function(req, res, next) {
 
@@ -90,6 +101,7 @@ router.post('/', async function(req, res, next) {
     // deleteContractDirTemp(collection)
 
     // res.send("Адрес коллекции: " + address)
+    res.send("root")
     
 });
 
