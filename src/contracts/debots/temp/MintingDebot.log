@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: ../contracts/MintingDebot.tvc
+      wc: None
+    keys: ../temp/MintingDebot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "supreme craft end library rose bomb exotic story obtain bracket cactus stick"
+Raw address: 0:82daef611a4064c3ffbd06ecaf7656ce1effe7798a941dd746455922461d5409
+testnet:
+Non-bounceable address (for init): 0QCC2u9hGkBkw_-9BuyvdlbOHv_neYqUHddGRVkiRh1UCRPg
+Bounceable address (for later access): kQCC2u9hGkBkw_-9BuyvdlbOHv_neYqUHddGRVkiRh1UCU4l
+mainnet:
+Non-bounceable address (for init): UQCC2u9hGkBkw_-9BuyvdlbOHv_neYqUHddGRVkiRh1UCahq
+Bounceable address (for later access): EQCC2u9hGkBkw_-9BuyvdlbOHv_neYqUHddGRVkiRh1UCfWv
+Succeeded

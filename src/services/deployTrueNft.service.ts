@@ -28,6 +28,7 @@ export class DeployTrueNftService {
 
         try {
             await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection);
+            console.log("RootNft address: " + await rootNftAccount.getAddress());
             await this.deployBasis(rootNftAccount, indexBasisAccount);
         } catch(err) {
             console.log(err);
@@ -74,8 +75,7 @@ export class DeployTrueNftService {
         let walletAcc = await this.getWalletAcc(rootNftAccount);
         let rootNftAddress = await rootNftAccount.getAddress();
         let transaction = await this.getTransaction(walletAcc, rootNftAddress, body);
-        const result = this.getResult(rootNftAccount, rootNftAddress, transaction);
-        console.log(result);
+        const result = await this.getResult(rootNftAccount, rootNftAddress, transaction);
     }
 
     private async getBody(rootNftAccount: Account, indexBasisAccount: Account) : Promise<string> {

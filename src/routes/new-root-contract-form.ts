@@ -1,12 +1,13 @@
 import express from 'express';
 const router = express.Router();
 
-import { generateContract, getTempDir } from "../services/contract-generator.service";
+import { generateContract, getTempDir, deleteContractDirTemp } from "../services/contract-generator.service";
 import { Collection } from "../models/collection";
 import { DescriptCollection } from "../models/descript-collection";
 import { Parametr } from "../models/parametr";
 import { Rarity } from "../models/rarity";
-import { DeployTrueNftService } from "../services/deployTrueNft.service"
+import { DeployTrueNftService } from "../services/deployTrueNft.service";
+import { DeployDebotService } from '../services/deployDebot.service';
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -34,6 +35,9 @@ router.post('/', async function(req, res, next) {
     }
     let deployTrueNftService = new DeployTrueNftService();
     await deployTrueNftService.deployTrueNft(getTempDir(collectionSettings), collectionSettings);
+    let deployDebotService = new DeployDebotService();
+    await deployDebotService.deployDebot(getTempDir(collectionSettings));
+    deleteContractDirTemp(collectionSettings);
 });
 
 function getDescriptCollection(nameToken, tokenLimit) : DescriptCollection {
