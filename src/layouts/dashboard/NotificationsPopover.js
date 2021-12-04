@@ -36,8 +36,8 @@ import MenuPopover from '../../components/MenuPopover';
 const NOTIFICATIONS = [
   {
     id: faker.datatype.uuid(),
-    title: 'Your order is placed',
-    description: 'waiting for shipping',
+    title: 'Your NFT collection is ready!',
+    description: 'waiting for blockchain confimation',
     avatar: null,
     type: 'order_placed',
     createdAt: set(new Date(), { hours: 10, minutes: 30 }),
@@ -73,7 +73,7 @@ const NOTIFICATIONS = [
   {
     id: faker.datatype.uuid(),
     title: 'Delivery processing',
-    description: 'Your order is being shipped',
+    description: 'Your NFTs is being sold and shipped to user address',
     avatar: null,
     type: 'order_shipped',
     createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
@@ -215,7 +215,7 @@ export default function NotificationsPopover() {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="subtitle1">Notifications</Typography>
+            <Typography variant="subtitle1">Notifications (soon)</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               You have {totalUnRead} unread messages
             </Typography>
@@ -264,7 +264,7 @@ export default function NotificationsPopover() {
 
         <Box sx={{ p: 1 }}>
           <Button fullWidth disableRipple component={RouterLink} to="#">
-            View All
+            View All (soon)
           </Button>
         </Box>
       </MenuPopover>
