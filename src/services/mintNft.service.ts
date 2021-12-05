@@ -14,18 +14,26 @@ const utf8ToHex = convert("utf8", "hex");
 export class MintNftService {
     private deployService: DeployService;
     private client: TonClient;
+    private collectionFolderPath: string;
 
-    constructor() {
+    constructor(collectionFolderPath: string) {
         this.deployService = new DeployService();
         this.client = new TonClient({
-            network: {
+            network: {  
                 endpoints: [everscale_settings.ENDPOINTS]
             }
         });
+
+        this.collectionFolderPath = '';
+        this.setCollectionFolderPath(collectionFolderPath);
+    }
+
+    private setCollectionFolderPath(collectionFolderPath: string) {
+        this.collectionFolderPath = collectionFolderPath;
     }
 
     async mintNft(mintParams: TestTokenModel) {
-        let rootNftContract = fs.readFileSync(path.resolve(globals.CONTRACTS_ROOT, "NftRoot.sol")).toString();
+        let rootNftContract = fs.readFileSync(path.resolve(this.collectionFolderPath, "NftRoot.sol")).toString();
         let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, globals.CONTRACTS_ROOT);
 
         //
@@ -42,6 +50,10 @@ export class MintNftService {
         );
 
         await this.sendMessageToMint(mintMessage.message);
+    }
+
+    getCollectionSourceFolder() {
+        return 
     }
 
     private async getMintMessage(account: Account, func: string, input: object) {

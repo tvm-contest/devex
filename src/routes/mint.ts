@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+import { globals } from '../config/globals';
 import { MintNftService } from '../services/mintNft.service';
 
 export type TestTokenModel = {
@@ -17,7 +18,7 @@ router.get('/', async function (req, res, next) {
             image: 2
         }
 
-        const mintService = new MintNftService();
+        const mintService = new MintNftService(globals.CONTRACTS_ROOT);
         await mintService.mintNft(testToken);
 
         res.send("MINTED!");
