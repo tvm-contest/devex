@@ -16,7 +16,7 @@ import { oneTokenInfoRouter } from './routes/one-token-info';
 import {newRootContractForm} from './routes/new-root-contract-form';
 import { parameterForm } from './routes/parameter-form'
 import { collectionListRouter } from './routes/collection-list'
-
+import { mintRouter } from './routes/mint';
 
 const app = express();
 
@@ -45,6 +45,7 @@ app.use('/generate-contract', generateContractRouter);
 app.use('/new-root-contract-form', newRootContractForm);
 app.use('/parameter-form', parameterForm);
 app.use('/collection-list', collectionListRouter);
+app.use('/mint', mintRouter);
 
 app.use((req: Request, res: Response) => {
     res.status(404);
