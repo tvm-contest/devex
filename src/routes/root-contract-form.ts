@@ -36,7 +36,7 @@ router.post('/form-contracts', async function(req, res, next) {
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let contractDir = await generateContract(collection)
 
-    res.render('success-page', { pageText: "Файлы сгенерированный  в директорию: " + path.basename(contractDir) })
+    res.render('success-page', { pageText: "Файлы сгенерированы в директорию: " + path.basename(contractDir) })
 });
 
 router.post('/deploy-contracts', async function(req, res, next) {
