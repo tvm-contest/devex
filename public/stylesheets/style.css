@@ -87,6 +87,12 @@
 .param-label {
     display: block;
 }
+.buttons{
+    padding: 10px 0 0 0;
+}
+#nameParam{
+    padding: 2.5px 0 0 0;
+}
 
 .collection-container{
     margin-top: 10px;
