@@ -16,7 +16,18 @@ import { ParamCollection } from "../services/root-contract-form-handler.sevice"
 router.get('/', function(req, res, next) {
     res.render('root-contract-form');
 });
-
+router.post('/save-data', function(req, res, next) {
+    console.log(req.body)
+    res.send("save-data")
+});
+router.post('/form-contracts', function(req, res, next) {
+    console.log(req.body)
+    res.send("form-contracts")
+});
+router.post('/deploy-contracts', function(req, res, next) {
+    console.log(req.body)
+    res.send("deploy-contracts")
+});
   
 router.post('/', async function(req, res, next) {
 
@@ -79,17 +90,19 @@ router.post('/', async function(req, res, next) {
     //     rootContractForm.parameters.push(paramCollection)   
     // }
     // rootContractFormHandler(rootContractForm)
-    console.log(req.body)
+    // console.log(req.body)
     let contractObjectCreator = new ContractObjectCreator()
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let contractDir = await generateContract(collection)
 
+    //Зачем коментирвать весь метод?
     let deployTrueNftService = new DeployTrueNftService()
-    let address = await deployTrueNftService.deployTrueNft(contractDir, collection.getParameters())
+    let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
 
     // deleteContractDirTemp(collection)
 
-    res.send("Адрес коллекции: " + address)
+    // res.send("Адрес коллекции: " + address)
+    res.send("root")
     
 });
 

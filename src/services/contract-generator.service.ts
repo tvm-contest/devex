@@ -13,6 +13,8 @@ const nftRootFile = path.join(globals.CONTRACTS_ROOT, 'NftRoot.sol');
 const interfacesDir = path.join(globals.CONTRACTS_ROOT, 'interfaces');
 const librariesDir = path.join(globals.CONTRACTS_ROOT, 'libraries');
 const resolversDir = path.join(globals.CONTRACTS_ROOT, 'resolvers');
+const debotLibDir = path.join(globals.CONTRACTS_ROOT, 'debotLib')
+const debotsDir = path.join(globals.CONTRACTS_ROOT, 'debots');
 
 class ContractGenerator {
 
@@ -33,12 +35,16 @@ class ContractGenerator {
     const interfacesDirTepm = path.join(tempDir, 'interfaces');
     const librariesDirTepm = path.join(tempDir, 'libraries');
     const resolversDirTepm = path.join(tempDir, 'resolvers');
+    const debotLibDirTepm = path.join(tempDir, 'debotLib');
+    const debotsDirTepm = path.join(tempDir, 'debots');
     
     fs.mkdirSync(tempDir);
 
     fs.cpSync(interfacesDir, interfacesDirTepm, {recursive: true});
     fs.cpSync(librariesDir, librariesDirTepm, {recursive: true});
     fs.cpSync(resolversDir, resolversDirTepm, {recursive: true});
+    fs.cpSync(debotLibDir, debotLibDirTepm, {recursive: true});
+    fs.cpSync(debotsDir, debotsDirTepm, {recursive: true});
     fs.copyFileSync(indexFile, indexFileTepm);
     fs.copyFileSync(indexBasisFile, indexBasisFileTepm);
 

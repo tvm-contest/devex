@@ -6,23 +6,19 @@ import { TonClient, signerKeys, BocModule, ResultOfDecodeTvc } from '@tonclient/
 import { libNode } from '@tonclient/lib-node';
 import * as fs from 'fs';
 import { globals } from '../config/globals'
+import { everscale_settings } from '../config/everscale-settings';
 
 const ROOT_TEST = globals.APP_ROOT + '/src/services/temp';
-const KEYS  = {
-    secret: "f6d2b219db1bcccd8ed38c82a5037cfe41db08b4cca1832b52de8fda33a22dca",
-    public: "24379d4a9d8f16b292bc814f492762e43de69c5d472435e68753cd22f1f50eee"     
-}
 
 export class DeployFromString {
     private client: TonClient;
-    private readonly endpoints = "http://localhost";
 
      constructor(){
         TonClient.useBinaryLibrary(libNode);
 
         this.client = new TonClient({
             network: {
-                endpoints: [this.endpoints]
+                endpoints: [everscale_settings.ENDPOINTS]
             }
         });
 
@@ -66,7 +62,7 @@ export class DeployFromString {
         //поменять при необходимости на this.keys
         //const keys = await this.client.crypto.generate_random_sign_keys();
 
-        const signer = signerKeys(KEYS);
+        const signer = signerKeys(everscale_settings.KEYS);
         const client = this.client;
 
         //формируем контракт

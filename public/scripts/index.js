@@ -1,9 +1,8 @@
-import ParamForm from 'ParamForm';
+import MainForm from "MainForm";
 
 ReactDOM.render(
   <React.StrictMode>
-    <ParamForm />
+    <MainForm />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
-

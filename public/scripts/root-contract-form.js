@@ -2,6 +2,22 @@ var arr_collection_type = []
 var arr_collection_param = []
 value_id = 1
 param_id = 0
+
+$(".submit-button").on("click",(function(event){
+    event.preventDefault()
+    console.log($(this).attr("id"))
+    if ($(this).attr("id") === "save-data"){
+        $('#form-contract').attr("action","/root-contract-form/save-data")
+    } else if ($(this).attr("id") === "form-contracts"){
+        $('#form-contract').attr("action","/root-contract-form/form-contracts")
+    } else if ($(this).attr("id") === "deploy-contracts"){
+        $('#form-contract').attr("action","/root-contract-form")
+    }
+    $('#form-contract').submit()
+    
+}))
+
+
 $('form').on("change", ".type-parameter",function(){
     var curentSelectedVal = $(this).find('option:selected').val();
     if (curentSelectedVal === "number") {
@@ -26,6 +42,8 @@ const addParam = () => {
     $(`.block-for-col-param-choice#${param_id}`).find(".row.parameter-string").css('display','none');
     $(`.block-for-col-param-choice#${param_id}`).find(".row.parameter-number").css('display','none');
 
+    $(`#p${param_id}.block-for-col-param-choice`).find(".nameParam").attr('name', `parameter[${param_id}][name]`);
+    
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-min").attr('name', `parameter[${param_id}][number][min]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-max").attr('name', `parameter[${param_id}][number][max]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-string").find(".param-line-min").attr('name', `parameter[${param_id}][line][min]`);
