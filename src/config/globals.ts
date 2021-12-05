@@ -1,11 +1,14 @@
 const path = require('path');
 
 const APP_ROOT = __dirname + '/../..';
+const TEMP_ROOT =  path.join(APP_ROOT, 'temp');
 
 export const globals = {
     APP_PORT: process.env.PORT || 3001,
     APP_ROOT,
-    TEMP_ROOT:  path.join(APP_ROOT, 'temp'),
+    TEMP_ROOT,
+    TEMP_COLLECTION: path.join(TEMP_ROOT, 'collections'),
+    TEMP_JSON: path.join(TEMP_ROOT, 'json'),
     CONTRACTS_ROOT: path.join(APP_ROOT, 'src', 'contracts'),
     PUBLIC_ROOT: path.join(APP_ROOT, 'public'),
     BASE_PATH: process.env.BASE_PATH || '',

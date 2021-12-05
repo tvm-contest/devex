@@ -17,31 +17,44 @@ export class ContractObjectCreator {
     let rarities : Rarity[] = [];
     let parametrs : Parametr[] = [];
 
-    req.body.type.forEach(one_type => {
+    req.body.type.forEach(req_type => {
       let rarity = new Rarity(
-        one_type.name,
-        one_type.limit
+        req_type.name,
+        req_type.limit
       )
       rarities.push(rarity)
     });
 
-    //Предполагалось что параметры будут передаваться через paramName, paramType , но так как
-    //еще есть ограничения на параметры то код ниже не работает так как надо
-    // if (typeof req.body.paramName === 'object') {
-    //   for (let index = 0; index < req.body.paramName.length; index++) {
-    //     let parametr : Parametr = new Parametr(
-    //       req.body.paramName[index],
-    //       req.body.paramType[index],
-    //     )
-    //     parametrs.push(parametr)    
-    //   }
-    // } else if (req.body.paramName) {
-    //   let parametr : Parametr = new Parametr(
-    //     req.body.paramName,
-    //     req.body.paramType,
-    //   )
-    //   parametrs.push(parametr) 
-    // }
+    if (req.body.selectpicker != 'none'){
+      for (let index = 0; index < req.body.selectpicker.length; index++){
+        let parameter : Parametr;
+
+        if (req.body.selectpicker[index] == 'line'){
+          parameter = new Parametr(
+            req.body.parameter[index].name,
+            'string',
+            req.body.parameter[index].line.min,
+            req.body.parameter[index].line.max
+          );
+
+        } else if (req.body.selectpicker[index] == 'number') {
+          parameter = new Parametr(
+            req.body.parameter[index].name,
+            'int',
+            req.body.parameter[index].number.min,
+            req.body.parameter[index].number.max
+          );
+          
+        } else {
+          parameter = new Parametr(
+            req.body.parameter[index].name,
+            'string' //Нужен тип по умолчанию если пользователь не выбрал
+          );
+        }
+
+        parametrs.push(parameter)
+      }
+    }
 
     let collection : Collection = new Collection(descriptCollection, rarities, parametrs);
 

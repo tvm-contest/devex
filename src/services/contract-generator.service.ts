@@ -20,13 +20,13 @@ class ContractGenerator {
 
   getTempDir(collectionSettings : Collection) {
     const hashContract = sha256(JSON.stringify(collectionSettings));
-    const tempDir = path.resolve(globals.TEMP_ROOT, hashContract);
+    const tempDir = path.resolve(globals.TEMP_COLLECTION, hashContract);
     return tempDir;
   }
 
   async generateContract(collectionSettings : Collection){
     const hashContract = sha256(JSON.stringify(collectionSettings));
-    const tempDir = path.join(globals.TEMP_ROOT, hashContract);
+    const tempDir = path.join(globals.TEMP_COLLECTION, hashContract);
 
     const dataFileTepm = path.join(tempDir, 'Data.sol');
     const indexFileTepm = path.join(tempDir, 'Index.sol');
@@ -64,7 +64,7 @@ class ContractGenerator {
 
   deleteContractDirTemp(collectionSettings : Collection){
     const hashContract = sha256(JSON.stringify(collectionSettings));
-    const tempDir = path.join(globals.TEMP_ROOT, hashContract)
+    const tempDir = path.join(globals.TEMP_COLLECTION, hashContract)
 
     fs.access(tempDir, fs.constants.F_OK, (err) => {
       if (err){
