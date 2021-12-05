@@ -26,6 +26,9 @@ export class ContractObjectCreator {
     });
 
     if (req.body.selectpicker != 'none'){
+      if (typeof(req.body.selectpicker) == 'string') {
+        req.body.selectpicker = [req.body.selectpicker]
+      }
       for (let index = 0; index < req.body.selectpicker.length; index++){
         let parameter : Parametr;
 
