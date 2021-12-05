@@ -2,12 +2,14 @@
 export class Parametr {
     private name : string;
     private type : string;
-    private value : any | null;
+    private minValue : any | null;
+    private maxValue : any | null;
 
-    constructor(name: string, type: string, value?:any) {
+    constructor(name: string, type: string, minValue?:any, maxValue?:any) {
         this.name = name;
         this.type = type;
-        this.value = value ? value : null;
+        this.minValue = minValue ? minValue : null;
+        this.maxValue = maxValue ? maxValue : null;
     }
 
     /******************
@@ -22,8 +24,12 @@ export class Parametr {
         return this.type;
     }
 
-    getValue() : any | null {
-        return this.value;
+    getMinValue() : any | null {
+        return this.minValue;
+    }
+
+    getMaxValue() : any | null {
+        return this.maxValue;
     }
     
     /******************
@@ -38,7 +44,11 @@ export class Parametr {
         this.type = type;
     }
 
-    setValue(value: any) {
-        this.value = value;
+    setMinValue(value: any) {
+        this.minValue = value;
+    }
+
+    setMaxValue(value: any) {
+        this.maxValue = value;
     }
 }

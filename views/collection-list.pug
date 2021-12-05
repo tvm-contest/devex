@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  .container
+      each collection in collectionList
+        .collection-container(onClick="fromCollectionListToTokenList(this);")
+          .row
+            .col
+              p Название коллекции:
+            .col
+              p= collection.name
+          .row
+            .col
+              p Адрес:
+            .col
+              p.collection-address= collection.address
+  script(src="/scripts/collection-to-token.js") 

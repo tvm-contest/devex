@@ -37,7 +37,7 @@ export class TokenInfoBuilder {
       signer: signerKeys(everscale_settings.KEYS),
       client: this.client
     });
-
+    console.log(address)
     let getInfo = await tokenAccount.runLocal("getInfo", {});
     
     let tokenInfo : TokenInfo = {

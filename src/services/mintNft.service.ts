@@ -54,6 +54,7 @@ export class MintNftService {
         );
 
         await this.sendMessageToMint(mintMessage.message);
+        this.client.close();
     }
 
     private async getMintMessage(account: Account, func: string, input: object) {

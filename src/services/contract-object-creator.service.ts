@@ -17,38 +17,31 @@ export class ContractObjectCreator {
     let rarities : Rarity[] = [];
     let parametrs : Parametr[] = [];
 
-    //если был только один тип то в req будет строка, если несколько,то массив
-    if (typeof req.body.typeName === 'object') {
-      for (let index = 0; index < req.body.typeName.length; index++) {
-        let rarity : Rarity = new Rarity(
-          req.body.typeName[index],
-          Number(req.body.typeLimit[index]),
-        )
-        rarities.push(rarity)    
-      }
-    } else if (req.body.typeName) {
-      let rarity : Rarity = new Rarity(
-        req.body.typeName,
-        Number(req.body.typeLimit),
+    req.body.type.forEach(one_type => {
+      let rarity = new Rarity(
+        one_type.name,
+        one_type.limit
       )
-      rarities.push(rarity) 
-    }
-    //Хотелось бы избавиться от повтерения кода, но идей как это сделать нет
-    if (typeof req.body.paramName === 'object') {
-      for (let index = 0; index < req.body.paramName.length; index++) {
-        let parametr : Parametr = new Parametr(
-          req.body.paramName[index],
-          req.body.paramType[index],
-        )
-        parametrs.push(parametr)    
-      }
-    } else if (req.body.paramName) {
-      let parametr : Parametr = new Parametr(
-        req.body.paramName,
-        req.body.paramType,
-      )
-      parametrs.push(parametr) 
-    }
+      rarities.push(rarity)
+    });
+
+    //Предполагалось что параметры будут передаваться через paramName, paramType , но так как
+    //еще есть ограничения на параметры то код ниже не работает так как надо
+    // if (typeof req.body.paramName === 'object') {
+    //   for (let index = 0; index < req.body.paramName.length; index++) {
+    //     let parametr : Parametr = new Parametr(
+    //       req.body.paramName[index],
+    //       req.body.paramType[index],
+    //     )
+    //     parametrs.push(parametr)    
+    //   }
+    // } else if (req.body.paramName) {
+    //   let parametr : Parametr = new Parametr(
+    //     req.body.paramName,
+    //     req.body.paramType,
+    //   )
+    //   parametrs.push(parametr) 
+    // }
 
     let collection : Collection = new Collection(descriptCollection, rarities, parametrs);
 
