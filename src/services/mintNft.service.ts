@@ -14,9 +14,9 @@ const utf8ToHex = convert("utf8", "hex");
 export class MintNftService {
     private deployService: DeployService;
     private client: TonClient;
-    private collectionFolderPath: string;
+    private collectionSrcFolder: string;
 
-    constructor(collectionFolderPath: string) {
+    constructor(collectionSrcFolder: string) {
         this.deployService = new DeployService();
         this.client = new TonClient({
             network: {  
@@ -24,18 +24,22 @@ export class MintNftService {
             }
         });
 
-        this.collectionFolderPath = '';
-        this.setCollectionFolderPath(collectionFolderPath);
+        this.collectionSrcFolder = '';
+        this.setCollectionSourceFolder(collectionSrcFolder);
     }
 
-    private setCollectionFolderPath(collectionFolderPath: string) {
-        this.collectionFolderPath = collectionFolderPath;
+    private setCollectionSourceFolder(collectionSrcFolder: string) {
+        this.collectionSrcFolder = collectionSrcFolder;
+    }
+
+    private getCollectionSourceFolder() {
+        return this.collectionSrcFolder;
     }
 
     async mintNft(mintParams: TestTokenModel) {
-        let rootNftContract = fs.readFileSync(path.resolve(this.collectionFolderPath, "NftRoot.sol")).toString();
+        let rootNftContract = fs.readFileSync(path.resolve(this.getCollectionSourceFolder(), "NftRoot.sol")).toString();
         let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, globals.CONTRACTS_ROOT);
-
+        
         //
         // Нужнен уже задеплоиный аккаунт рута
         //
@@ -50,10 +54,6 @@ export class MintNftService {
         );
 
         await this.sendMessageToMint(mintMessage.message);
-    }
-
-    getCollectionSourceFolder() {
-        return 
     }
 
     private async getMintMessage(account: Account, func: string, input: object) {
