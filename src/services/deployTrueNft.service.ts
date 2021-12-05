@@ -14,7 +14,7 @@ export class DeployTrueNftService {
         this.deployService = new DeployService();
     }
     
-    async deployTrueNft(pathWithContracts : string, collection: Collection) : Promise<void> {
+    async deployTrueNft(pathWithContracts : string, collection: Collection) : Promise<string> {
         
         let indexBasisContract = fs.readFileSync(path.resolve(pathWithContracts, "IndexBasis.sol")).toString();
         let dataContract = fs.readFileSync(path.resolve(pathWithContracts, "Data.sol")).toString();
@@ -25,17 +25,24 @@ export class DeployTrueNftService {
         let indexAccount = await this.deployService.createContractAccount(indexContract, pathWithContracts);
         let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, pathWithContracts);
         let indexBasisAccount = await this.deployService.createContractAccount(indexBasisContract, pathWithContracts);
-
+        let address = "0";
         try {
-            await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection);
+            address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection);
+            console.log("RootNft address: " + await rootNftAccount.getAddress());
             await this.deployBasis(rootNftAccount, indexBasisAccount);
         } catch(err) {
+
             console.log(err);
         }
+
+        return address;
     }
     
     private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<string> {
-        let initInput = await this.createInitInput(indexAccount, dataAccount, collection);
+        //Первый мой метод переводит строки в hex формат
+        let initInput = await this.buildInitInput(indexAccount, dataAccount, collection)
+        //Incomig change не переводит строки в hex формат, скорее всего не работает на версиях ниже 0.48
+        //let initInput = await this.createInitInput(indexAccount, dataAccount, collection);
         try {
             await this.deployService.deploy(
                 rootNftAccount,
@@ -74,8 +81,7 @@ export class DeployTrueNftService {
         let walletAcc = await this.getWalletAcc(rootNftAccount);
         let rootNftAddress = await rootNftAccount.getAddress();
         let transaction = await this.getTransaction(walletAcc, rootNftAddress, body);
-        const result = this.getResult(rootNftAccount, rootNftAddress, transaction);
-        console.log(result);
+        const result = await this.getResult(rootNftAccount, rootNftAddress, transaction);
     }
 
     private async getBody(rootNftAccount: Account, indexBasisAccount: Account) : Promise<string> {
@@ -152,11 +158,15 @@ export class DeployTrueNftService {
         let _nftTypes : string[] = [];
         let _limit : number[] = [];
         for (let index = 0; index < collection.getRarities().length; index++) {
-            _nftTypes.push(collection.getRarities()[index].getName())
+            let typeName = collection.getRarities()[index].getName()
+            _nftTypes.push(Buffer.from(typeName).toString("hex"))
             _limit.push(collection.getRarities()[index].getLimit())
         }
+
         let _name = collection.getDescription().getName()
         let _icon = collection.getDescription().getIcon() ?? ""
+        _name = Buffer.from(_name).toString("hex")
+        _icon = Buffer.from(_icon).toString("hex")
 
         let initInput = {
             codeIndex: (await this.deployService.getDecodeTVC(indexAccount)).code,

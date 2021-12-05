@@ -91,12 +91,13 @@ router.post('/', async function(req, res, next) {
     // }
     // rootContractFormHandler(rootContractForm)
     // console.log(req.body)
-    // let contractObjectCreator = new ContractObjectCreator()
-    // let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
-    // let contractDir = await generateContract(collection)
+    let contractObjectCreator = new ContractObjectCreator()
+    let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
+    let contractDir = await generateContract(collection)
 
-    // let deployTrueNftService = new DeployTrueNftService()
-    // let address = await deployTrueNftService.deployTrueNft(contractDir, collection.getParameters())
+    //Зачем коментирвать весь метод?
+    let deployTrueNftService = new DeployTrueNftService()
+    let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
 
     // deleteContractDirTemp(collection)
 
