@@ -1,6 +1,5 @@
 {
 	"ABI version": 2,
-	"version": "2.2",
 	"header": ["time", "expire"],
 	"functions": [
 		{
@@ -33,13 +32,5 @@
 		{"key":1,"name":"_addrData","type":"address"}
 	],
 	"events": [
-	],
-	"fields": [
-		{"name":"_pubkey","type":"uint256"},
-		{"name":"_timestamp","type":"uint64"},
-		{"name":"_constructorFlag","type":"bool"},
-		{"name":"_addrRoot","type":"address"},
-		{"name":"_addrOwner","type":"address"},
-		{"name":"_addrData","type":"address"}
 	]
 }

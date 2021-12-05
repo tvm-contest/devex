@@ -1,6 +1,5 @@
 {
 	"ABI version": 2,
-	"version": "2.2",
 	"header": ["time", "expire"],
 	"functions": [
 		{
@@ -8,8 +7,11 @@
 			"inputs": [
 				{"name":"addrOwner","type":"address"},
 				{"name":"codeIndex","type":"cell"},
-				{"name":"nftType","type":"string"},
-				{"name":"color","type":"int256"}
+				{"name":"nftType","type":"bytes"},
+				{"name":"additionalEnumParameter","type":"int256"},
+				{"name":"additionalStrParameter","type":"bytes"},
+				{"name":"additionalIntParameter","type":"uint256"},
+				{"name":"additionalBoolParameter","type":"bool"}
 			],
 			"outputs": [
 			]
@@ -68,7 +70,10 @@
 				{"name":"addrRoot","type":"address"},
 				{"name":"addrOwner","type":"address"},
 				{"name":"addrTrusted","type":"address"},
-				{"name":"color","type":"uint8"}
+				{"name":"color","type":"uint8"},
+				{"name":"additionalStrParameter","type":"bytes"},
+				{"name":"additionalIntParameter","type":"uint256"},
+				{"name":"additionalBoolParameter","type":"bool"}
 			]
 		},
 		{
@@ -82,7 +87,7 @@
 		{
 			"name": "getTradabilityInfo",
 			"inputs": [
-				{"name":"answerId","type":"uint32"}
+				{"name":"_answer_id","type":"uint32"}
 			],
 			"outputs": [
 				{"name":"addrNftOwner","type":"address"},
@@ -115,20 +120,5 @@
 		{"key":1,"name":"_id","type":"uint256"}
 	],
 	"events": [
-	],
-	"fields": [
-		{"name":"_pubkey","type":"uint256"},
-		{"name":"_timestamp","type":"uint64"},
-		{"name":"_constructorFlag","type":"bool"},
-		{"name":"_codeIndex","type":"cell"},
-		{"name":"_id","type":"uint256"},
-		{"name":"_addrRoot","type":"address"},
-		{"name":"_addrAuthor","type":"address"},
-		{"name":"_addrOwner","type":"address"},
-		{"name":"_addrTrusted","type":"address"},
-		{"name":"_isRightsTransferable","type":"bool"},
-		{"name":"_nftType","type":"string"},
-		{"name":"_color","type":"uint8"},
-		{"name":"_defColor","type":"uint8"}
 	]
 }

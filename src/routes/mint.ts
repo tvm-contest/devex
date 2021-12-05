@@ -6,7 +6,7 @@ import { MintNftService } from '../services/mintNft.service';
 export type TestTokenModel = {
     tokenName: string,
     tokenRarity: string,
-    image: string
+    image: number
 }
 
 router.get('/', async function (req, res, next) {
@@ -14,7 +14,7 @@ router.get('/', async function (req, res, next) {
         let testToken: TestTokenModel = {
             tokenName: req.query.name,
             tokenRarity: req.query.rarity,
-            image: 'img'
+            image: 2
         }
 
         const mintService = new MintNftService();
@@ -26,4 +26,4 @@ router.get('/', async function (req, res, next) {
     }
 })
 
-export { router as mintRoter };
+export { router as mintRouter };
