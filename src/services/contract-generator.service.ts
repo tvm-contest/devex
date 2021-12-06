@@ -15,6 +15,11 @@ const librariesDir = path.join(globals.CONTRACTS_ROOT, 'libraries');
 const resolversDir = path.join(globals.CONTRACTS_ROOT, 'resolvers');
 const debotLibDir = path.join(globals.CONTRACTS_ROOT, 'debotLib')
 const debotsDir = path.join(globals.CONTRACTS_ROOT, 'debots');
+const directSaleRootFile = path.join(globals.CONTRACTS_ROOT, 'DirectSaleRoot.sol');
+const directSaleFile = path.join(globals.CONTRACTS_ROOT, 'DirectSale.sol');
+const auctionRootFile = path.join(globals.CONTRACTS_ROOT, 'AuctionRoot.sol');
+const auctionFile = path.join(globals.CONTRACTS_ROOT, 'Auction.sol');
+const aDataCoreFile = path.join(globals.CONTRACTS_ROOT, 'ADataCore.sol');
 
 class ContractGenerator {
 
@@ -37,7 +42,12 @@ class ContractGenerator {
     const resolversDirTepm = path.join(tempDir, 'resolvers');
     const debotLibDirTepm = path.join(tempDir, 'debotLib');
     const debotsDirTepm = path.join(tempDir, 'debots');
-    
+    const directSaleRootFileTemp = path.join(tempDir, 'DirectSaleRoot.sol');
+    const directSaleFileTemp = path.join(tempDir, 'DirectSale.sol');
+    const auctionRootFileTemp = path.join(tempDir, 'AuctionRoot.sol');
+    const auctionFileTemp = path.join(tempDir, 'Auction.sol');
+    const aDataCoreFileTemp = path.join(tempDir, 'ADataCore.sol');
+
     fs.mkdirSync(tempDir);
 
     fs.cpSync(interfacesDir, interfacesDirTepm, {recursive: true});
@@ -47,6 +57,11 @@ class ContractGenerator {
     fs.cpSync(debotsDir, debotsDirTepm, {recursive: true});
     fs.copyFileSync(indexFile, indexFileTepm);
     fs.copyFileSync(indexBasisFile, indexBasisFileTepm);
+    fs.copyFileSync(directSaleRootFile, directSaleRootFileTemp);
+    fs.copyFileSync(directSaleFile, directSaleFileTemp);
+    fs.copyFileSync(auctionRootFile, auctionRootFileTemp);
+    fs.copyFileSync(auctionFile, auctionFileTemp);
+    fs.copyFileSync(aDataCoreFile, aDataCoreFileTemp);
 
     let addParamsService = new AddParamsService();
 

@@ -30,7 +30,7 @@ contract NftRoot is DataResolver, IndexResolver {
         string[] nftTypes,
         uint[] limit,
         string name,
-        string icon
+        bytes icon
         ) public {
         tvm.accept();
 
@@ -45,7 +45,23 @@ contract NftRoot is DataResolver, IndexResolver {
         }
     }
 
-    function mintNft(string nftType, int color/*%PARAM_TO_MINT%*/) public {
+    function mintNft(
+        bytes name,
+        bytes url,
+        uint8 editionNumber,
+        uint8 editionAmount,
+        address[] managersList,
+        uint8 royalty,
+
+        string nftType,
+        int additionalEnumParameter,
+        string additionalStrParameter,
+        uint256 additionalIntParameter,
+        bool additionalBoolParameter
+    )
+        public
+        enoughValueToDeployData
+    {
         require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
         require(_mintedByTypes[nftType] < _limitByTypes[nftType], LIMIT_REACHED, "Limit reached");
         TvmCell codeData = _buildDataCode(address(this));
@@ -53,15 +69,29 @@ contract NftRoot is DataResolver, IndexResolver {
 
         new Data {
             stateInit: stateData,
-            value: 1.1 ton
-        } (msg.sender, _codeIndex, nftType, color/*%PARAM_TO_DATA%*/);
+            value: Fees.MIN_FOR_DATA_DEPLOY
+        } (
+            msg.sender,
+            _codeIndex,
+            name,
+            url,
+            editionNumber,
+            editionAmount,
+            managersList,
+            royalty,
+            nftType,
+            //color,
+            additionalStrParameter,
+            additionalIntParameter,
+            additionalBoolParameter
+        );
 
         _mintedByTypes[nftType]++;
         _totalMinted++;
     }
 
     function deployBasis(TvmCell codeIndexBasis) public {
-        require(msg.value > 0.5 ton, 104);
+        require(msg.value > Fees.MIN_FOR_INDEX_BASIS_DEPLOY + Fees.MIN_FOR_MESSAGE, 104);
         uint256 codeHasData = resolveCodeHashData();
         TvmCell state = tvm.buildStateInit({
             contr: IndexBasis,
@@ -71,7 +101,10 @@ contract NftRoot is DataResolver, IndexResolver {
             },
             code: codeIndexBasis
         });
-        _addrBasis = new IndexBasis{stateInit: state, value: 0.4 ton}();
+        _addrBasis = new IndexBasis{
+            stateInit: state,
+            value: Fees.MIN_FOR_INDEX_BASIS_DEPLOY
+        }();
     }
 
     function destructBasis() public view {
@@ -84,5 +117,14 @@ contract NftRoot is DataResolver, IndexResolver {
 
     function getIcon() public view returns(bytes icon) {
         icon = _icon;
+    }
+
+    // MODIFIERS
+
+    modifier enoughValueToDeployData {
+        require(msg.value >= Fees.MIN_FOR_DATA_DEPLOY + Fees.MIN_FOR_MESSAGE,
+               DataErr.NOT_ENOUGH_VALUE_TO_DEPLOY_DATA,
+               "Message balance is not enough for Data deployment");       
+        _;
     }
 }
