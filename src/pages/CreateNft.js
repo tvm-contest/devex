@@ -11,7 +11,9 @@ import {
   Card,
   CardMedia,
   Box,
-  Link
+  Link,
+  TextField,
+  Grid
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
@@ -261,33 +263,38 @@ export default function CreateNFT() {
       </Container>
 
       <Container>
-        <div>
-          <Input
-            placeholder="Collection Name"
-            value={collectionName}
-            onChange={(e) => setCollectionName(e.target.value)}
-            error={isSubmitClick && !collectionName}
-          />
-        </div>
-        <div>
-          <Input
-            placeholder="Collection Description"
-            value={collectionDesc}
-            onChange={(e) => setCollectionDesc(e.target.value)}
-            error={isSubmitClick && !collectionDesc}
-          />
-        </div>
-        <div>
-          <Input
-            placeholder="Number of NFTs"
-            type="number"
-            value={totalImages}
-            onChange={(e) => {
-              setTotalImages(e.target.value);
-            }}
-            error={isSubmitClick && !totalImages}
-          />
-        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <TextField
+              label="Collection Name"
+              value={collectionName}
+              onChange={(e) => setCollectionName(e.target.value)}
+              helperText={isSubmitClick && !collectionName}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Number of NFTs"
+              type="number"
+              value={totalImages}
+              onChange={(e) => {
+                setTotalImages(e.target.value);
+              }}
+              helperText={isSubmitClick && !totalImages}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Collection Description"
+              value={collectionDesc}
+              onChange={(e) => setCollectionDesc(e.target.value)}
+              helperText={isSubmitClick && !collectionDesc}
+              fullWidth
+            />
+          </Grid>
+        </Grid>
         <Typography variant="h6" sx={{ marginTop: 1 }}>
           Layers
         </Typography>
@@ -413,7 +420,7 @@ export default function CreateNFT() {
         <Button onClick={handleAddLayer}>Add another layer</Button>
         <Button onClick={handleGenerateImages}>Generate images</Button>
         <NFTList nfts={nftData} />
-        {nftData.length && (
+        {!!nftData.length && (
           <Button onClick={getDataForBlockchain}> TODO getDataForBlockchain</Button>
         )}
       </Container>
