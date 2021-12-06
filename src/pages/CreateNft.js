@@ -175,8 +175,8 @@ export default function CreateNFT() {
         });
       }
       andFinalImages.push({
-        name: `TODO_NAME#${key}`,
-        description: `TODO_DESCRIPTION`,
+        name: `${collectionName}#${key}`,
+        description: collectionDesc,
         image: img[key],
         traits,
         status: 'new'
