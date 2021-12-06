@@ -13,8 +13,8 @@ export default class MainForm extends React.Component {
     async handleSubmit(event) {
         event.preventDefault();
   
-        let select_values = document.querySelectorAll(".select")
-        let elems = Array.from(select_values, el => el.value);
+        let parameter_names_values = document.querySelectorAll(".parameter-name")
+        let elems = Array.from(parameter_names_values, el => el.value);
   
         function checkUnique(arr) {
             return arr.length === new Set(arr).size;
@@ -66,15 +66,34 @@ export default class MainForm extends React.Component {
                         break;
                     case 'Целочисленное значение':
                         paramType = 'integer';
+                    case 'Перечисление':
+                        paramType = 'enum';
                         break;
                 }
   
                 let paramValues = document.querySelectorAll(".parameter")[index].querySelectorAll(".param_value")
+
+
+
+                var checkValues = []
+
+                  for (let index = 0; index < paramValues.length; index++) {
+                    checkValues.push(paramValues[index].value)
+                  }
                 
+                if (paramType == 'enum' && (checkUnique(checkValues) == false)){
+                    event.preventDefault();
+                    alert('Все значения перечислений (enum) должны быть уникальными')
+                }
+
+                else {
+
                 var values = {}
   
                 for (let index = 0; index < paramValues.length; index++) {
-                    values[paramValues[index].name] = paramValues[index].value
+                  let paramValueName = paramValues[index].name
+                  let paramValueValue = paramValues[index].value
+                  values[index] = {[paramValueName]: [paramValueValue]}
                 }
   
                 let isMandatory = document.querySelectorAll(".parameter")[index].querySelectorAll(".isMandatory")[0].checked
@@ -94,6 +113,7 @@ export default class MainForm extends React.Component {
                 }
                 
                   paramObj[index] = param
+            }
   
             }
   
@@ -115,7 +135,7 @@ export default class MainForm extends React.Component {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            });
+            })
   
         } else {
             event.preventDefault();
