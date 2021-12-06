@@ -1,5 +1,64 @@
 import '/stylesheets/styles';
 
+class EnumOptions extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            enumVariants: [
+            ]
+        };
+    
+    this.handleAddEnumVariant = this.handleAddEnumVariant.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    }
+
+    handleAddEnumVariant(e){
+        e.preventDefault();
+        let uid = Math.random(); 
+            this.setState( prevState => ({
+                enumVariants: [...prevState.enumVariants, {id:uid}]
+            }));      
+        
+    }
+
+    componentWillMount(){
+        let uid = Math.random(); 
+        this.setState( prevState => ({
+            enumVariants: [...prevState.enumVariants, {id:uid}]
+        })); 
+    }
+
+    handleDelete(parameter, event){
+        event.preventDefault();
+        this.setState(prevState => ({ enumVariants: prevState.enumVariants.filter(item => item.id !== parameter)     }));
+    }
+
+    render(){ 
+
+        var rendered = []
+
+        for (let i=0; i < this.state.enumVariants.length; i++) {
+            rendered.push(
+            <div>
+            <label className='param-label'>Вариант перечисления:<input type="text" name="enumVairant" className="param_value" />
+            <button onClick={(e) => this.handleDelete(this.state.enumVariants[i].id, e)}> {'\u2718'} </button></label>
+            </div>
+            )
+          }
+
+    return ( 
+        <div>
+        {rendered}
+        <button onClick={this.handleAddEnumVariant} className="button"> Добавить вариант перечисления </button>
+        <label className='param-label'><input name="isMandatory" type="checkbox" className="isMandatory"/> Обязательный параметр</label>
+        <label className='param-label'><input name="isOnChain" type="checkbox" className="isOnChain"/> Хранить он-чейн</label>
+        </div>
+        );
+
+}
+}
+
 export default class ParameterForm extends React.Component {
 
         constructor(props) {
@@ -35,6 +94,11 @@ export default class ParameterForm extends React.Component {
                         <label className='param-label'><input name="isOnChain" type="checkbox" className="isOnChain"/> Хранить он-чейн</label>
                         </div>
                     );
+                    break;
+                case 'Перечисление':
+                    return ( 
+                        <EnumOptions />
+                        );
                     break;
                 case 'Не выбрано':
                     return (<div> </div>);
@@ -88,6 +152,7 @@ export default class ParameterForm extends React.Component {
                     <select value={this.state.defaultParamState} className='select' id='select' onChange={this.handleChange} >
                     <option>Строка</option>
                     <option>Целочисленное значение</option>
+                    <option>Перечисление</option>
                     <option>Не выбрано</option>
                     </select>
                     {this.state.parametersValues}

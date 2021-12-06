@@ -6,7 +6,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  console.log(req.body)
+  console.log(JSON.stringify(req.body, null, 4));
 });
 
 export {router as parameterForm};
