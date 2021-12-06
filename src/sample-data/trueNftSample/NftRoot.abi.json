@@ -72,6 +72,22 @@
 			"outputs": [
 				{"name":"addrData","type":"address"}
 			]
+		},
+		{
+			"name": "getName",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"}
+			]
+		},
+		{
+			"name": "getIcon",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"icon","type":"bytes"}
+			]
 		}
 	],
 	"data": [

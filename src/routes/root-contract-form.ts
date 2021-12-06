@@ -47,7 +47,7 @@ router.post('/deploy-contracts', async function(req, res, next) {
     let deployTrueNftService = new DeployTrueNftService()
     let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
 
-    res.render('success-page', { pageText: "Адрес коллекции: " + address })
+    res.redirect('/tokens-data-info?rootNftAddress=' + address)
 });
   
 router.post('/', async function(req, res, next) {

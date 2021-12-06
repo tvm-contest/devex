@@ -3,6 +3,9 @@ extends layout
 block content
   form(id="tokens-data-info" action="", method="get", options="tokens")
     p Root address: #{rootAddress}
+    p Collection name: #{rootNftName}
+    p Debot address: #{debotAddress}
+    p Debot on tonSurf: #{tonSurfDebot}
     p List of data tokens on this root address:
     each id in tokensData
       ul

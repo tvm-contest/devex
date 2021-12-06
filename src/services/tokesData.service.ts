@@ -9,6 +9,11 @@ import path from 'path';
 // Для получения списка data нам необходим abi рут контракта для вызова метода resolveCodeHashData
 // Не знаю куда его лучше запихнуть
 
+type RootNtfInfo = {
+    name: string,
+    icon: string
+}
+
 export class TokensData {
     private readonly client: TonClient;
 
@@ -19,6 +24,19 @@ export class TokensData {
                 endpoints: [everscale_settings.ENDPOINTS]
             }
         })
+    }
+
+    async getRootNftInfo(rootNftAddress: string) : Promise<RootNtfInfo> {
+        try{
+            let rootNftAccount = await this.getAccountByAddress(rootNftAddress);
+            let rootNftIcon = (await rootNftAccount.runLocal("getIcon", {})).decoded?.output.icon;
+            let rootNftName = (await rootNftAccount.runLocal("getName", {})).decoded?.output.name;
+            rootNftName = Buffer.from(rootNftName, 'hex').toString()
+            return {name: rootNftName, icon: rootNftIcon}
+        } catch(err) {
+            console.log(err);
+            return {name: '', icon: ''};
+        }
     }
     
     async getTokensData(rootNftAddress: string) : Promise<any[]>{

@@ -37,11 +37,6 @@ export class CollectionListService {
 
     for (const collectionDir of collectionDirList) {
       let collectionAccount = await this.getCollectionAccount(collectionDir.name);
-      try{
-        let collectionIcon = (await collectionAccount.runLocal("getIcon", {})).decoded?.output.icon;
-      } catch(err){
-        console.log(err)
-      }
       
       let collectionIcon = (await collectionAccount.runLocal("getIcon", {})).decoded?.output.icon;
       let collectionName = (await collectionAccount.runLocal("getName", {})).decoded?.output.name;
