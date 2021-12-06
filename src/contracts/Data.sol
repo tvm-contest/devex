@@ -91,7 +91,7 @@ contract Data is IData, DataCore {
         bytes url,
         uint8 number,
         uint8 amount,
-        ColorEnum color,
+        //ColorEnum color,
         string additionalStrParameter,
         uint256 additionalIntParameter,
         bool additionalBoolParameter
