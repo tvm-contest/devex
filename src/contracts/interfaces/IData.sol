@@ -1,25 +1,41 @@
 pragma ton-solidity >= 0.43.0;
 
-interface IData {
+import 'IDataCore.sol';
+
+interface IData is IDataCore {
     enum ColorEnum{white, red, blue, green, lastEnum}
 
-    function transferOwnership(address addrTo) external;
-
-    function giveRightsTo(address addrTrusted) external;
-
-    function returnRightsBack() external;
-
-    function getOwner() external view returns (address addrOwner);
-
     function getInfo() external view returns (
-        address addrData,
         address addrRoot,
         address addrOwner,
-        address addrTrusted,
-        ColorEnum color
+        address addrAuthor,
+        address addrData,
+        uint256 id,
+        bytes name,
+        bytes url,
+        uint8 number,
+        uint8 amount,
+
+        //ColorEnum color,
+        string additionalStrParameter,
+        uint256 additionalIntParameter,
+        bool additionalBoolParameter
     );
 
-    function rightsTransferabilityStatus() external view returns(bool status);
+    function getInfoResponsible() external view responsible returns (
+        address addrRoot,
+        address addrOwner,
+        address addrAuthor,
+        address addrData,
+        uint256 id,
+        bytes name,
+        bytes url,
+        uint8 number,
+        uint8 amount,
 
-    function getTradabilityInfo() external view responsible returns (address addrNftOwner, address addrTrusted);
+        //ColorEnum color,
+        string additionalStrParameter,
+        uint256 additionalIntParameter,
+        bool additionalBoolParameter
+    );
 }

@@ -5,8 +5,6 @@ import { Account } from '@tonclient/appkit';
 import { Collection } from '../models/collection';
 import { globals } from '../config/globals';
 import { everscale_settings } from '../config/everscale-settings';
-const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
-const utf8ToHex = convert("utf8", "hex");
 
 export class DeployTrueNftService {
     private deployService : DeployService;
@@ -40,10 +38,7 @@ export class DeployTrueNftService {
     }
     
     private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<string> {
-        //Первый мой метод переводит строки в hex формат
         let initInput = await this.buildInitInput(indexAccount, dataAccount, collection)
-        //Incomig change не переводит строки в hex формат, скорее всего не работает на версиях ниже 0.48
-        //let initInput = await this.createInitInput(indexAccount, dataAccount, collection);
         try {
             await this.deployService.deploy(
                 rootNftAccount,
@@ -54,27 +49,6 @@ export class DeployTrueNftService {
             console.log(err);
             return "0";
         }
-    }
-    
-    private async createInitInput(indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<object> {
-        let initInputMap = new Map<any, any>();
-        initInputMap.set("codeIndex", (await this.deployService.getDecodeTVC(indexAccount)).code);
-        initInputMap.set("codeData", (await this.deployService.getDecodeTVC(dataAccount)).code);
-        let nftTypes = new Array<any>();
-        let limit = new Array<number>();
-        for (let i = 0; i < collection.getRarities().length; i++) {
-            nftTypes.push(utf8ToHex(collection.getRarities()[i].getName()));
-            limit.push(collection.getRarities()[i].getLimit());
-        }
-        initInputMap.set("nftTypes", nftTypes.reverse());
-        initInputMap.set("limit", limit.reverse());
-        initInputMap.set("name", utf8ToHex(collection.getDescription().getName()));
-        if (collection.getDescription().getIcon() === null) {
-            initInputMap.set("icon", utf8ToHex(" "));
-        } else {
-            initInputMap.set("icon", utf8ToHex(collection.getDescription().getIcon()));
-        }
-        return await Object.fromEntries(initInputMap);
     }
     
     private async deployBasis(rootNftAccount: Account, indexBasisAccount: Account) : Promise<void> {
@@ -105,7 +79,7 @@ export class DeployTrueNftService {
             "sendTransaction",
             {
                 dest: rootNftAddress,
-                value: 600_000_000,
+                value: 730_000_000,
                 flags: 3,
                 bounce: true,
                 payload: body,
