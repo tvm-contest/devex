@@ -1,32 +1,53 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs'
+
 import { globals } from '../config/globals';
 import { Collection } from '../models/collection';
 import { deleteContractDirTemp, generateContract } from '../services/contract-generator.service';
 import { ContractObjectCreator } from '../services/contract-object-creator.service';
 import { DeployTrueNftService } from '../services/deployTrueNft.service';
+
 const router = express.Router();
 
-import { RootContractForm } from "../services/root-contract-form-handler.sevice"
-import { TypeCollection } from "../services/root-contract-form-handler.sevice"
-import { rootContractFormHandler } from "../services/root-contract-form-handler.sevice"
-import { ParamCollection } from "../services/root-contract-form-handler.sevice"
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('root-contract-form');
 });
+
 router.post('/save-data', function(req, res, next) {
-    console.log(req.body)
-    res.send("save-data")
+    let contractObjectCreator = new ContractObjectCreator();
+    let collection = contractObjectCreator.makeRootContractObjectFromReq(req);
+
+    let jsonCollection : string = JSON.stringify(collection, null, '\t');
+    let tepmDir = fs.mkdtempSync(path.join(globals.TEMP_JSON, 'json-'));
+    let jsonFileCollection = path.join(tepmDir, 'collection.json');
+
+    fs.writeFileSync(jsonFileCollection, jsonCollection, {flag: 'w'});
+
+    res.download(jsonFileCollection, () => {
+        fs.rmSync(tepmDir, {recursive: true, force: true});
+    });
 });
-router.post('/form-contracts', function(req, res, next) {
-    console.log(req.body)
-    res.send("form-contracts")
+
+router.post('/form-contracts', async function(req, res, next) {
+    let contractObjectCreator = new ContractObjectCreator()
+    let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
+    let contractDir = await generateContract(collection)
+
+    res.render('success-page', { pageText: "Файлы сгенерированы в директорию: " + path.basename(contractDir) })
 });
-router.post('/deploy-contracts', function(req, res, next) {
-    console.log(req.body)
-    res.send("deploy-contracts")
+
+router.post('/deploy-contracts', async function(req, res, next) {
+    let contractObjectCreator = new ContractObjectCreator()
+    let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
+    let contractDir = await generateContract(collection)
+
+    let deployTrueNftService = new DeployTrueNftService()
+    let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
+
+    res.render('success-page', { pageText: "Адрес коллекции: " + address })
 });
   
 router.post('/', async function(req, res, next) {
