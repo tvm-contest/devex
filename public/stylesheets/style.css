@@ -61,12 +61,10 @@
     margin-bottom: 10px;
 }
 
-.row.parameter-number {
+.row.parameter-number, .row.parameter-string, .parameter-enum  {
     display: none;
 }
-.row.parameter-string {
-    display: none;
-}
+
 
 .parameterForm {
     padding: 20px;
@@ -93,7 +91,13 @@
 #nameParam{
     padding: 2.5px 0 0 0;
 }
+.button-addVariant{
 
+    padding: 32px 0 5px 0;
+}
+.col-12.parameter-enum-variant,.row.button-enum{
+    padding: 0 0 10px 0 ;
+}
 .collection-container{
     margin-top: 10px;
     padding: 5px;

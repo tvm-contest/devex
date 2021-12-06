@@ -2,6 +2,10 @@ var arr_collection_type = []
 var arr_collection_param = []
 value_id = 1
 param_id = 0
+enum_id = 0
+var typeConteinerParams = document.createElement('div');
+typeConteinerParams.innerHTML = $(".block-for-col-param-choice")[0].innerHTML
+typeConteinerParams.className = "block-for-col-param-choice"
 
 $(".submit-button").on("click",(function(event){
     event.preventDefault()
@@ -23,15 +27,32 @@ $('form').on("change", ".type-parameter",function(){
     if (curentSelectedVal === "number") {
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
     } else if(curentSelectedVal === "line"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
+    } else if(curentSelectedVal === "enum"){
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','block');
     }
-});
 
-const addParam = () => {
+});
+const addVariant = (e) => {
+    enum_id+=1
     let typeConteiner = document.createElement('div');
-    typeConteiner.innerHTML = $(".block-for-col-param-choice")[0].innerHTML
+    typeConteiner.innerHTML = $(".col-12.parameter-enum-variant")[0].innerHTML
+    typeConteiner.className = "col-12 parameter-enum-variant"
+    typeConteiner.id = "e" + enum_id
+    $(`.block-for-col-param-choice#${$(e).parent().parent().parent().parent().attr("id")}`).find(".param-enum-field")[0].append(typeConteiner)
+    
+    $(`#p${param_id}.block-for-col-param-choice`).find(`#e${enum_id}`).attr('name', `parameter[${param_id}][enum][${enum_id}]`);
+    
+}
+const addParam = () => {
+    var typeConteiner = document.createElement('div');
+    typeConteiner.innerHTML = typeConteinerParams.innerHTML
     typeConteiner.className = "block-for-col-param-choice"
     param_id=param_id+1
     typeConteiner.id="p"+param_id
@@ -39,11 +60,11 @@ const addParam = () => {
     $(".content-param")[0].append(typeConteiner)
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-number").css('display','none');
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-string").css('display','none');
-    $(`.block-for-col-param-choice#${param_id}`).find(".row.parameter-string").css('display','none');
-    $(`.block-for-col-param-choice#${param_id}`).find(".row.parameter-number").css('display','none');
-
-    $(`#p${param_id}.block-for-col-param-choice`).find(".nameParam").attr('name', `parameter[${param_id}][name]`);
+    $(`.block-for-col-param-choice#p${param_id}`).find(".parameter-enum").css('display','none');
     
+    $(`#p${param_id}.block-for-col-param-choice`).find(".param-enum").attr('name', `parameter[${param_id}][enum][0]`);
+    $(`#p${param_id}.block-for-col-param-choice`).find(".nameParam").attr('name', `parameter[${param_id}][name]`);
+
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-min").attr('name', `parameter[${param_id}][number][min]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-max").attr('name', `parameter[${param_id}][number][max]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-string").find(".param-line-min").attr('name', `parameter[${param_id}][line][min]`);

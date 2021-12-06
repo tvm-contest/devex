@@ -45,13 +45,14 @@ block content
                         option(value="none") Выберите тип параметра
                         option(value="number") Число
                         option(value="line") Строка
+                        option(value="enum") Enum
                 .row.parameter-number
                   .col
                     label.form-label() Минимальное значение
                     input.form-control.param-num-min(type="text"  name = 'parameter[0][number][min]' pattern="[0-9]+" onInput="checkNumberInput(this)")
                   .col
                     label.form-label() Максимальное значение
-                    input.form-control.param-num-max(type="text" name = 'parameter[0][number][max]' pattern="[0-9]+" onInput="checkNumberInput(this)")
+                    input.form-control.param-num-max(type="Stext" name = 'parameter[0][number][max]' pattern="[0-9]+" onInput="checkNumberInput(this)")
                 .row.parameter-string
                   .col
                     label.form-label() Минимальная длинна
@@ -59,6 +60,19 @@ block content
                   .col
                     label.form-label() Максимальная длинна
                     input.form-control.param-line-min(type="text" name = 'parameter[0][line][max]' pattern="[0-9]+" onInput="checkNumberInput(this)")
+                .parameter-enum
+                  .param-enum-field
+                    .col-12.parameter-enum-variant
+                      label.form-label() Вариант
+                      input.form-control.param-enum#e0(name="parameter[0][enum][0]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Вариант")
+                  .row.button-enum
+                    .col-6.button-addVariant
+                      input.btn.btn-dark.btn-block(type="button" value=" + Добавить вариант" onclick="addVariant(this);")
+                    .col-6.button-addVariant
+                      input.btn.btn-dark.btn-block(type="button" value=" + Удалить вариант" onclick="addVariant();")
+                  
+
+
             .buttons
               input.btn.btn-dark.btn-block(type="button" value=" + Добавить параметр" onclick="addParam();")
               input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Удалить параметр" onclick="deleteParam();")
