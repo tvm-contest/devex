@@ -10,6 +10,7 @@ import {
   Stack,
   Card,
   CardContent,
+  CardActions,
   CardMedia,
   Box,
   Link,
@@ -302,6 +303,25 @@ export default function CreateNFT() {
         {layerData &&
           layerData.map((data) => (
             <Card variant="outlined" key={data.id} sx={{ margin: '10px 0' }}>
+              <CardActions>
+                <TextField
+                  sx={{ marginRight: 1 }}
+                  label="Trait Name"
+                  size="small"
+                  fullWidth
+                  value={data.traitName}
+                  onChange={(e) => handleTraitNameChange(e.target.value, data.id)}
+                  helperText={isSubmitClick && !data.traitName}
+                />
+                <Button
+                  variant="contained"
+                  sx={{ whiteSpace: 'nowrap' }}
+                  color="error"
+                  onClick={() => handleDeleteLayer(data.id)}
+                >
+                  Delete Layer
+                </Button>
+              </CardActions>
               <CardContent>
                 <Stack
                   direction="row"
@@ -311,12 +331,6 @@ export default function CreateNFT() {
                   onClick={() => setCurrentLayer(data.id)}
                 >
                   <Stack direction="column">
-                    <Input
-                      placeholder="Trait Name"
-                      value={data.traitName}
-                      onChange={(e) => handleTraitNameChange(e.target.value, data.id)}
-                      error={isSubmitClick && !data.traitName}
-                    />
                     <Button
                       variant="contained"
                       component="label"
@@ -337,13 +351,6 @@ export default function CreateNFT() {
                         onChange={(e) => handleAddMultiImage(e.target.files)}
                         hidden
                       />
-                    </Button>
-                    <Button
-                      variant="contained"
-                      component="label"
-                      onClick={() => handleDeleteLayer(data.id)}
-                    >
-                      Delete Layer
                     </Button>
                   </Stack>
                   <div
@@ -427,14 +434,18 @@ export default function CreateNFT() {
               </CardContent>
             </Card>
           ))}
-        <Button onClick={handleAddLayer} variant="contained">
-          Add another layer
-        </Button>
-        {!!layerData.length && <Button onClick={handleGenerateImages}>Generate images</Button>}
-        <NFTList nfts={nftData} />
-        {!!nftData.length && (
-          <Button onClick={getDataForBlockchain}> TODO getDataForBlockchain</Button>
-        )}
+        <Box sx={{ marginTop: 5 }}>
+          <Button onClick={handleAddLayer} variant="contained" fullWidth>
+            Add another layer
+          </Button>
+          {!!layerData.length && <Button onClick={handleGenerateImages}>Generate images</Button>}
+          <NFTList nfts={nftData} />
+          {!!nftData.length && (
+            <Button onClick={getDataForBlockchain} variant="contained" fullWidth>
+              TODO getDataForBlockchain
+            </Button>
+          )}
+        </Box>
       </Container>
     </Page>
   );
