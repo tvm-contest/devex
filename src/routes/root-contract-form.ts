@@ -50,6 +50,8 @@ router.post('/deploy-contracts', async function(req, res, next) {
 
     let deployTrueNftService = new DeployTrueNftService()
     let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
+    contractDir = path.join(globals.TEMP_COLLECTION, address)
+
     let deployDebotService = new DeployDebotService();
     await deployDebotService.deployDebot(contractDir);
 

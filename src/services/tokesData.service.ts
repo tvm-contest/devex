@@ -1,4 +1,4 @@
-import { TonClient } from "@tonclient/core";
+import { signerKeys, TonClient } from "@tonclient/core";
 import { everscale_settings } from "../config/everscale-settings";
 import { libNode } from '@tonclient/lib-node';
 import { Account } from "@tonclient/appkit";
@@ -38,6 +38,20 @@ export class TokensData {
             return {name: '', icon: ''};
         }
     }
+
+    async getDebotAddress(rootNftAddress: string) : Promise<string>{
+        let debotAbi = await JSON.parse(fs.readFileSync(path.join(globals.TEMP_COLLECTION, rootNftAddress, 'debots', "contracts", 'MintingDebot.abi.json')).toString());
+        let debotTvc = fs.readFileSync(path.join(globals.TEMP_COLLECTION, rootNftAddress, 'debots', "contracts", 'MintingDebot.tvc'), {encoding: 'base64'});
+        const debotAccount = new Account({
+            abi: debotAbi,
+            tvc: debotTvc
+        }, {
+            signer: signerKeys(everscale_settings.KEYS),
+            client: this.client
+        });
+
+        return debotAccount.getAddress()
+    }
     
     async getTokensData(rootNftAddress: string) : Promise<any[]>{
         try{
@@ -51,7 +65,7 @@ export class TokensData {
     }
 
     private async getAccountByAddress(rootNftAddress: string) : Promise<Account> {
-        let rootNftAbi = await JSON.parse(fs.readFileSync(path.resolve(globals.SAMPLE_DATA_PATH, "trueNftSample", "NftRoot.abi.json")).toString());
+        let rootNftAbi = await JSON.parse(fs.readFileSync(path.resolve(globals.TEMP_COLLECTION, rootNftAddress, "NftRoot.abi.json")).toString());
         return new Account(
             {
                 abi: rootNftAbi

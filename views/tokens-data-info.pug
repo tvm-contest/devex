@@ -5,7 +5,8 @@ block content
     p Root address: #{rootAddress}
     p Collection name: #{rootNftName}
     p Debot address: #{debotAddress}
-    p Debot on tonSurf: #{tonSurfDebot}
+    span Debot on tonSurf: 
+    a(href=tonSurfDebot target="_blank")=tonSurfDebot
     p List of data tokens on this root address:
     each id in tokensData
       ul
