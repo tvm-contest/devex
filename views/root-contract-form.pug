@@ -7,74 +7,74 @@ block content
       form.row.g-3#form-contract(action="", method="post")
         ul.nav.nav-tabs.justify-content-center#myTab(role="tablist" )
           li.nav-item(role="presentation")
-            button.nav-link.active#home-tab(data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true") Тип
+            button.nav-link.active#home-tab(data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true") Type
           li.nav-item(role="presentation")
-            button.nav-link#profile-tab(data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false") Параметры
+            button.nav-link#profile-tab(data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false") Parameters
         .tab-content#myTabContent
           .tab-pane.fade.show.active#home(role="tabpanel" aria-labelledby="home-tab") 
             .content-type
               .row.row_init
                 .col
-                  label.form-label() Название контракта
-                  input.form-control(name="nameContract" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Название контракта" aria-label="Название контракта")
+                  label.form-label() Contract name
+                  input.form-control(name="nameContract" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Contract name" aria-label="Contract Name")
                 .col
-                  label.form-label() Максимальное количество токенов
-                  input.form-control(name="tokenLimit" onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Максимальное количество токенов" aria-label="Максимальное количество токенов")
+                  label.form-label() Maximum number of tokenes
+                  input.form-control(name="tokenLimit" onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Maximum number of tokenes" aria-label="Maximum number of tokenes")
               .form-check.for-type 
                   input.form-check-input#type-rarity(type="checkbox" value="" name="checkbox-type-rarity")
-                  label.form-check-label(for="type-rarity") Требуются типы редкости
+                  label.form-check-label(for="type-rarity") Rarity types are required
               .complete-block-collections-types
                 .block-for-col-types
                   .row.collection-type-#c0
                       .col.name
-                        label.form-label() Тип коллекции
-                        input.form-control.col-name(name="type[0][name]" type="text" pattern="[A-Za-z0-9_]+" onInput="checkLatinInput(this)" placeholder="Тип коллекции" aria-label="Тип коллекции")
+                        label.form-label() Collection types
+                        input.form-control.col-name(name="type[0][name]" type="text" pattern="[A-Za-z0-9_]+" onInput="checkLatinInput(this)" placeholder="Collection type" aria-label="Collection types")
                       .col.limit
-                        label.form-label() Количество токенов
-                        input.form-control.col-limit(name="type[0][limit]" type="text" pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Количество токенов" aria-label="Количество токенов")                            
+                        label.form-label() Number of tokens
+                        input.form-control.col-limit(name="type[0][limit]" type="text" pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Number of tokens" aria-label="Number of tokens")                            
                 .buttons
-                  input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Удалить тип" onclick="deleteType();")
-                  input.btn.btn-dark.btn-block(type="button" value=" + Добавить тип" onclick="addType();")
+                  input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Delete type" onclick="deleteType();")
+                  input.btn.btn-dark.btn-block(type="button" value=" + Add type" onclick="addType();")
           .tab-pane.fade#profile(role="tabpanel" aria-labelledby="profile-tab")
             .content-param
               .block-for-col-param-choice#p0
                 .row.parameter-choice    
                   .col
-                    label.form-label() Название параметра
+                    label.form-label() Parameter name
                     #nameParam
-                      input.form-control.nameParam(name="parameter[0][name]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Название параметра")
+                      input.form-control.nameParam(name="parameter[0][name]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Parameter name")
                   .col
-                    label.form-label() Тип параметра
+                    label.form-label() Parameter type
                     select.type-parameter.form-select.btn-dark(name="selectpicker")
-                        option(value="none") Выберите тип параметра
-                        option(value="number") Число
-                        option(value="line") Строка
+                        option(value="none") Choose parameter type
+                        option(value="number") Number
+                        option(value="line") String
                         option(value="enum") Enum
                         option(value="mediafile") Mediafile
                 .row.parameter-number
                   .col
-                    label.form-label() Минимальное значение
-                    input.form-control.param-num-min(type="text"  name = 'parameter[0][number][min]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Минимальное значение")
+                    label.form-label() Minimum value
+                    input.form-control.param-num-min(type="text"  name = 'parameter[0][number][min]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Manimum value")
                   .col
-                    label.form-label() Максимальное значение
-                    input.form-control.param-num-max(type="Stext" name = 'parameter[0][number][max]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Максимальное значение")
+                    label.form-label() Maximum value
+                    input.form-control.param-num-max(type="Stext" name = 'parameter[0][number][max]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Maximum value")
                 .row.parameter-string
                   .col
-                    label.form-label() Минимальная длинна
-                    input.form-control.param-line-min(type="text" name = 'parameter[0][line][min]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Минимальная длинна")
+                    label.form-label() Minimum length
+                    input.form-control.param-line-min(type="text" name = 'parameter[0][line][min]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minimum length")
                   .col
-                    label.form-label() Максимальная длинна
-                    input.form-control.param-line-min(type="text" name = 'parameter[0][line][max]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Минимальная длинна")
+                    label.form-label() Maximum length
+                    input.form-control.param-line-min(type="text" name = 'parameter[0][line][max]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Maximum length")
                 .parameter-enum
                   .param-enum-field
                     .col-12.parameter-enum-variant
-                      label.form-label() Вариант
-                      input.form-control.param-enum#e0(name="parameter[0][enum][0]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Вариант")
+                      label.form-label() Variant
+                      input.form-control.param-enum#e0(name="parameter[0][enum][0]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Variant")
                   .row.button-enum
                     .col-6.button-addVariant
-                      input.btn.btn-dark.btn-block(type="button" value=" + Добавить вариант" onclick="addVariant(this);")
+                      input.btn.btn-dark.btn-block(type="button" value=" + Add variant" onclick="addVariant(this);")
                     .col-6.button-addVariant
-                      input.btn.btn-dark.btn-block(type="button" value=" - Удалить вариант" onclick="deleteVariant(this);")
+                      input.btn.btn-dark.btn-block(type="button" value=" - Delete variant" onclick="deleteVariant(this);")
                 .parameter-media-file 
                   .col-12
                     label.form-label() Media file
@@ -84,39 +84,39 @@ block content
 
 
             .buttons
-              input.btn.btn-dark.btn-block(type="button" value=" + Добавить параметр" onclick="addParam();")
-              input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Удалить параметр" onclick="deleteParam();")
+              input.btn.btn-dark.btn-block(type="button" value=" + Add paremeter" onclick="addParam();")
+              input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Delete parameter" onclick="deleteParam();")
   
         
         .checkbox-for-commissions
           .form-check 
             input.form-check-input#use-author(type="checkbox" value="" name="check-use-author")
-            label.form-check-label(for="use-author") Использовать автора
+            label.form-check-label(for="use-author") Use the author
           .col-6.input-commission.use-author
-            label.form-label() Комиссия(%)
+            label.form-label() Commision(%)
             input.form-control.commission(type="text" name = 'commission-author' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
           .form-check 
             input.form-check-input#commission-favor-owner(type="checkbox" value="" name="check-commission-favor-owner")
-            label.form-check-label(for="commission-favor-owner") Комиссия в пользу владельца коллекции
+            label.form-check-label(for="commission-favor-owner") Commision to owner
           .col-6.input-commission.commission-favor-owner
-            label.form-label() Комиссия(%)
+            label.form-label() Commision(%)
             input.form-control(type="text" name = 'commission-favor-owner' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
           .form-check 
             input.form-check-input#commission-author-generator(type="checkbox" value="" name="check-commission-author-generator")
-            label.form-check-label(for="commission-author-generator") Комиссия автору генератора
+            label.form-check-label(for="commission-author-generator") Commision to the author of the generator
           .col-6.input-commission.commission-author-generator
-            label.form-label() Комиссия(%)
+            label.form-label() Commision(%)
             input.form-control(type="text" name = 'commission-author-generator' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
         .col-6.MintingPriceUsers
           label.form-label() Minting price for users
           input.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users")
         .row.button-main-3
           .col.button-main
-            input.submit-button.btn.btn-dark.btn-block#save-data(type="submit" value="Cохранить данные")
+            input.submit-button.btn.btn-dark.btn-block#save-data(type="submit" value="Save data")
           .col.button-main
-            input.submit-button.btn.btn-dark.btn-block#form-contracts(type="submit" value="Сформировать контракты")
+            input.submit-button.btn.btn-dark.btn-block#form-contracts(type="submit" value="Form contracts")
           .col.button-main
-            input.submit-button.btn.btn-dark.btn-block#deploy-contracts(type="submit" value="Задеплоить контракты")
+            input.submit-button.btn.btn-dark.btn-block#deploy-contracts(type="submit" value="Deploy contracts")
   script(src="/scripts/root-contract-form.js")
       
       

@@ -6,35 +6,35 @@ block content
       .search
         .row.row_init
           .col
-            label.form-label() Адрес токена
-            input.form-control(name="tokenAddress" onInput="checkAddressInput(this)" type="text" pattern="[A-Za-z0-9:]+" placeholder="Адрес токена" aria-label="Адрес токена")
-      input.btn.btn-dark(type="submit" value="Найти")
+            label.form-label() Token address
+            input.form-control(name="tokenAddress" onInput="checkAddressInput(this)" type="text" pattern="[A-Za-z0-9:]+" placeholder="Token address" aria-label="Token address")
+      input.btn.btn-dark(type="submit" value="Find")
 
     .token-info-container
       if tokenInfo
         .row
           .col
-            p Адрес токена:
+            p Token address:
           .col 
             p= tokenInfo.addrData
         .row
           .col
-            p Адрес коллекции:
+            p Collection address:
           .col 
             p= tokenInfo.addrRoot
         .row
           .col
-            p Адрес владельца:
+            p Owner Address:
           .col 
             p= tokenInfo.addrOwner
         .row
           .col
-            p Адрес доверенного кошелька:
+            p Trusted wallet address:
           .col 
             p= tokenInfo.addrTrusted
         .row
           .col
-            p Цвет:
+            p Color:
           .col 
             p= tokenInfo.color
     

@@ -1,32 +1,33 @@
-.forms{
+.forms {
     padding: 50px 0;
 }
 
-#root-contract-form{
+#root-contract-form {
     padding: 10px;
     max-width: 300px;
     display: flex;
     flex-direction: column;
-    margin: 0 auto;;
+    margin: 0 auto;
 }
 
-.main-form{
+.main-form {
     padding: 10px;
     max-width: 400px;
     display: flex;
     flex-direction: column;
-    margin: 0 auto;;
+    margin: 0 auto;
 }
 
-.form-button{
+.form-button {
     align-self: self-end;
     padding: 5px;
 }
-.form-button:hover{
+
+.form-button:hover {
     background-color: #474646;
 }
 
-.col{
+.col {
     padding: 12px;
 }
 
@@ -38,7 +39,7 @@
     box-shadow: 2px 2px 5px #ccc;
 }
 
-.button-delete{
+.button-delete {
     width: 30px;
     height: 30px;
     text-align: center;
@@ -58,10 +59,18 @@
     margin-bottom: 10px;
 }
 
-.row.parameter-number, .row.parameter-string, .parameter-enum,.complete-block-collections-types,.col-6.use-author,.commission-favor-owner,.commission-author-generator,.parameter-media-file   {
+.row.parameter-number,
+.row.parameter-string,
+.parameter-enum,
+.complete-block-collections-types,
+.col-6.use-author,
+.commission-favor-owner,
+.commission-author-generator,
+.parameter-media-file {
     display: none;
 }
-.MintingPriceUsers{
+
+.MintingPriceUsers {
     padding-bottom: 20px;
 }
 
@@ -84,33 +93,44 @@
 .param-label {
     display: block;
 }
-.buttons{
+
+.buttons {
     padding: 10px 0 0 0;
 }
-#nameParam{
+
+#nameParam {
     padding: 2.5px 0 0 0;
 }
-.button-addVariant{
+
+.button-addVariant {
     padding: 15px 10px 5px 10px;
 }
-.col-12.parameter-enum-variant,.row.button-enum{
-    padding: 0 0 10px 0 ;
+
+.col-12.parameter-enum-variant,
+.row.button-enum {
+    padding: 0 0 10px 0;
 }
-.col.button-main{
+
+.col.button-main {
     padding: 6px;
 }
-.form-check.for-type{
+
+.form-check.for-type {
     padding: 20px 0 15px 29px;
 }
-.form-check{
+
+.form-check {
     padding: 10px;
 }
-.checkbox-for-commissions{
+
+.checkbox-for-commissions {
     padding-left: 27px;
 }
-.input-commission{
+
+.input-commission {
     padding: 0 0 15px 0;
 }
+
 /* .form-control:focus {
     border-color: #303030;
     box-shadow: inset 0 1px 1px rgba(129, 129, 129, 0.075), 0 0 8px rgba(255, 255, 255, 0.6);
@@ -120,7 +140,7 @@
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 95, 13, 0.6);
 } */
 
-.collection-container{
+.collection-container {
     margin-top: 10px;
     padding: 5px;
     border-radius: 10px;
@@ -131,4 +151,3 @@
 .token-list.address {
     cursor: pointer;
 }
-
