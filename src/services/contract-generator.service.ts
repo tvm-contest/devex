@@ -49,6 +49,7 @@ class ContractGenerator {
     const auctionFileTemp = path.join(tempDir, 'Auction.sol');
     const aDataCoreFileTemp = path.join(tempDir, 'ADataCore.sol');
     const enumsFileTemp = path.join(tempDir, 'libraries', 'Enums.sol');
+    const debotFileTemp = path.join(tempDir, 'debots', 'MintingDebot.sol');
 
     fs.mkdirSync(tempDir);
 
@@ -73,8 +74,10 @@ class ContractGenerator {
     } else {
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), nftRootFile, nftRootFileTepm);
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), dataFile, dataFileTepm);
+      await addParamsService.addSeveralParams(collectionSettings.getParameters(), debotFileTemp, debotFileTemp);
       if (enums !== undefined) {
         await addParamsService.addEnums(enums, enumsFileTemp, enumsFileTemp);
+        await addParamsService.addEnums(enums, debotFileTemp, debotFileTemp);
       }
     }
 
