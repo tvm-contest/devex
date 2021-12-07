@@ -20,7 +20,6 @@ const InitTon = async (dispatch) => {
     }
   }
   const ton = new ProviderRpcClient();
-  window.ourTon = ton; // TODO remove
 
   await ton.ensureInitialized();
   dispatch({ type: 'TON_READY', provider: ton });
