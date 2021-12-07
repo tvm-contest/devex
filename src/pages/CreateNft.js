@@ -325,7 +325,9 @@ export default function CreateNFT() {
               <CardContent
                 onClick={() => setCurrentLayer(data.id)}
                 sx={{
-                  '> div:hover': { cursor: 'pointer' }
+                  '> div:hover': { cursor: 'pointer' },
+                  transition: 'all 0.3s ease',
+                  backgroundColor: isDragActive ? '#d5d5d5' : 'initial'
                 }}
               >
                 <div
@@ -411,7 +413,9 @@ export default function CreateNFT() {
                           justifyContent: 'center'
                         }}
                       >
-                        Drag 'n' drop some files here, or click to select files
+                        {isDragActive
+                          ? 'Drop the files here ...'
+                          : "Drag 'n' drop some files here, or click to select files"}
                       </p>
                     )}
                   </Stack>
