@@ -1,0 +1,8 @@
+Config: default
+Input arguments:
+     tvc: ../debots/NftRoot.tvc
+      wc: None
+    keys: debot/NftRoot.keys.json
+init_data: None
+is_update_tvc: None
+Error: failed to read smart contract file: No such file or directory (os error 2)

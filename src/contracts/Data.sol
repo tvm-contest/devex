@@ -5,20 +5,13 @@ pragma AbiHeader time;
 
 import 'ADataCore.sol';
 import './interfaces/IData.sol';
+import './libraries/Enums.sol';
 
 contract Data is IData, DataCore {
 
     string _nftType;
-    //ColorEnum _additionalEnumParameter;//to make the parameter optional, uncomment line 53
-    //ColorEnum _defColor = ColorEnum.white; 
 
-    string _additionalStrParameter; // to make the parameter required, uncomment line 50
-    // Если нужно расширить контракт на минимальную длину строки, то раскомментируем строки 29 69
-    // Если нужно расширить контракт на максмальную длину строки, то раскомментируем строки 30 70
-    // uint constant _minLength = 5;
-    // uint constant _maxLength = 50;
-    uint256 _additionalIntParameter; //to make the parameter required, uncomment line 51
-    bool _additionalBoolParameter;
+    /*%PARAM_DEFENITION%*/
 
     constructor(
         address addrOwner,
@@ -30,11 +23,8 @@ contract Data is IData, DataCore {
         address[] _managersList,
         uint8 _royalty,
 
-        string nftType,
-        //int additionalEnumParameter,
-        string additionalStrParameter,
-        uint256 additionalIntParameter,
-        bool additionalBoolParameter
+        string nftType
+        /*%PARAM_CONSTRUCTOR%*/
     )
         public
     {
@@ -61,15 +51,17 @@ contract Data is IData, DataCore {
         for (uint8 i; i < _managersList.length; i++) {
             managersList[_managersList[i]] = i;
         }
+        /*%PARAM_SET%*/
+
         /* 
-        if((color < int(ColorEnum.lastEnum)) && (color >= 0)){
-            _color = ColorEnum(color);
+        if((additionalEnumParameter < int(ColorEnum.lastEnum)) && (additionalEnumParameter >= 0)){
+            _additionalEnumParameter = ColorEnum(additionalEnumParameter);
         } 
         else{
             //require(false == true,102,"Color ID not found");
             _additionalEnumParameter = _defColor;
         }    
-        */
+
         if(additionalStrParameter != '') {
         //    require(additionalStrParameter.byteLength() >= _minLength, 121);
         //    require(additionalStrParameter.byteLength() <= _maxLength, 122);
@@ -77,7 +69,7 @@ contract Data is IData, DataCore {
         _additionalStrParameter = additionalStrParameter;
         _additionalBoolParameter = additionalBoolParameter;
         _additionalIntParameter = additionalIntParameter;
-
+        */
         deployIndex(addrOwner);
     }
 
@@ -91,10 +83,7 @@ contract Data is IData, DataCore {
         bytes url,
         uint8 number,
         uint8 amount,
-        //ColorEnum color,
-        string additionalStrParameter,
-        uint256 additionalIntParameter,
-        bool additionalBoolParameter
+        string nftType
     ) {
         addrRoot = _addrRoot;
         addrOwner = _addrOwner;
@@ -105,10 +94,7 @@ contract Data is IData, DataCore {
         url = dataUrl;
         number = editionNumber;
         amount = editionAmount;
-        //color = _color;
-        additionalStrParameter = _additionalStrParameter;
-        additionalIntParameter = _additionalIntParameter;
-        additionalBoolParameter = _additionalBoolParameter;
+        nftType = _nftType;
     }
 
     function getInfoResponsible() external view override responsible returns (
@@ -120,11 +106,7 @@ contract Data is IData, DataCore {
         bytes name,
         bytes url,
         uint8 number,
-        uint8 amount,
-        //ColorEnum color,
-        string additionalStrParameter,
-        uint256 additionalIntParameter,
-        bool additionalBoolParameter
+        uint8 amount
     ) {
         return { value: 0 ton, flag: 64 } (
         _addrRoot,
@@ -135,10 +117,6 @@ contract Data is IData, DataCore {
         dataName,
         dataUrl,
         editionNumber,
-        editionAmount,
-        //_color,
-        _additionalStrParameter,
-        _additionalIntParameter,
-        _additionalBoolParameter);
+        editionAmount);
     }
 }

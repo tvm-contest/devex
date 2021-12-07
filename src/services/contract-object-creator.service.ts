@@ -3,6 +3,7 @@ import { Collection } from "../models/collection";
 import { DescriptCollection } from "../models/descript-collection";
 import { Parametr } from "../models/parametr";
 import { Rarity } from "../models/rarity";
+import { EnumParameter } from "../models/enum";
 
 export class ContractObjectCreator {
 
@@ -48,6 +49,11 @@ export class ContractObjectCreator {
             req.body.parameter[index].number.max
           );
           
+        } else if (req.body.selectpicker[index] == 'enum') {
+          parameter = new Parametr(
+            'enum' + req.body.parameter[index].name + index,
+            req.body.parameter[index].name
+          )
         } else {
           parameter = new Parametr(
             req.body.parameter[index].name,
@@ -62,6 +68,33 @@ export class ContractObjectCreator {
     let collection : Collection = new Collection(descriptCollection, rarities, parametrs);
 
     return collection;
+  }
+
+  makeEnumsFromReq(req: Request) : EnumParameter[] {
+    let enumParameters : EnumParameter[] = [];
+    if (req.body.selectpicker != 'none') {
+      if (typeof(req.body.selectpicker) == 'string') {
+        req.body.selectpicker = [req.body.selectpicker]
+      }
+      for (let index = 0; index < req.body.selectpicker.length; index++) { 
+        let enumParameter : EnumParameter;
+        if (req.body.selectpicker[index] == 'enum') {
+          let enumVariants : string[] = [];
+          if (typeof(req.body.parameter[index].enum) == 'string') {
+            req.body.parameter[index].enum = [req.body.parameter[index].enum]
+          }
+          for (let i = 0; i < req.body.parameter[index].enum.length; i++) {
+            enumVariants.push(req.body.parameter[index].enum[i]);
+          }
+          enumParameter = new EnumParameter(
+            req.body.parameter[index].name,
+            enumVariants
+          )
+          enumParameters.push(enumParameter);
+        }
+      }
+    }
+    return enumParameters;
   }
 
 }

@@ -10,6 +10,7 @@ import './IndexBasis.sol';
 
 import './interfaces/IData.sol';
 import './interfaces/IIndexBasis.sol';
+import './libraries/Enums.sol';
 
 contract NftRoot is DataResolver, IndexResolver {
 
@@ -44,7 +45,7 @@ contract NftRoot is DataResolver, IndexResolver {
             _limitByTypes[nftTypes[i]] = limit[i];
         }
     }
-
+    
     function mintNft(
         bytes name,
         bytes url,
@@ -53,20 +54,17 @@ contract NftRoot is DataResolver, IndexResolver {
         address[] managersList,
         uint8 royalty,
 
-        string nftType,
-        int additionalEnumParameter,
-        string additionalStrParameter,
-        uint256 additionalIntParameter,
-        bool additionalBoolParameter
+        string nftType
+        /*%PARAM_TO_MINT%*/
     )
         public
         enoughValueToDeployData
     {
         require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
         require(_mintedByTypes[nftType] < _limitByTypes[nftType], LIMIT_REACHED, "Limit reached");
+        tvm.accept();
         TvmCell codeData = _buildDataCode(address(this));
         TvmCell stateData = _buildDataState(codeData, _totalMinted);
-
         new Data {
             stateInit: stateData,
             value: Fees.MIN_FOR_DATA_DEPLOY
@@ -79,15 +77,17 @@ contract NftRoot is DataResolver, IndexResolver {
             editionAmount,
             managersList,
             royalty,
-            nftType,
-            //color,
-            additionalStrParameter,
-            additionalIntParameter,
-            additionalBoolParameter
+            nftType
+            /*%PARAM_TO_DATA%*/
         );
 
         _mintedByTypes[nftType]++;
         _totalMinted++;
+    }
+    function getTokenData() public view returns(TvmCell code, uint totalMinted) {
+        tvm.accept();
+        totalMinted = _totalMinted;
+        code = _codeData;
     }
 
     function deployBasis(TvmCell codeIndexBasis) public {

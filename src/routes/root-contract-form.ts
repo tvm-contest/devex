@@ -7,6 +7,8 @@ import { Collection } from '../models/collection';
 import { deleteContractDirTemp, generateContract } from '../services/contract-generator.service';
 import { ContractObjectCreator } from '../services/contract-object-creator.service';
 import { DeployTrueNftService } from '../services/deployTrueNft.service';
+import { EnumParameter } from '../models/enum';
+import { DeployDebotService } from '../services/deployDebot.service';
 
 const router = express.Router();
 
@@ -34,7 +36,8 @@ router.post('/save-data', function(req, res, next) {
 router.post('/form-contracts', async function(req, res, next) {
     let contractObjectCreator = new ContractObjectCreator()
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
-    let contractDir = await generateContract(collection)
+    let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
+    let contractDir = await generateContract(collection, enums)
 
     res.render('success-page', { pageText: "Файлы сгенерированы в директорию: " + path.basename(contractDir) })
 });
@@ -42,10 +45,13 @@ router.post('/form-contracts', async function(req, res, next) {
 router.post('/deploy-contracts', async function(req, res, next) {
     let contractObjectCreator = new ContractObjectCreator()
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
-    let contractDir = await generateContract(collection)
+    let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
+    let contractDir = await generateContract(collection, enums)
 
     let deployTrueNftService = new DeployTrueNftService()
     let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
+    let deployDebotService = new DeployDebotService();
+    await deployDebotService.deployDebot(contractDir);
 
     res.redirect('/tokens-data-info?rootNftAddress=' + address)
 });
