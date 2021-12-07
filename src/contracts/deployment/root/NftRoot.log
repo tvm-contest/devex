@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: ../NftRoot.tvc
+      wc: None
+    keys: root/NftRoot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "build ocean sentence cancel shiver before core stumble old proof away slender"
+Raw address: 0:3a7f33cabbcb21a1e8ab6527ce800c7b5096d2fac59d75422a41b2446613f40e
+testnet:
+Non-bounceable address (for init): 0QA6fzPKu8shoeirZSfOgAx7UJbS-sWddUIqQbJEZhP0DlCy
+Bounceable address (for later access): kQA6fzPKu8shoeirZSfOgAx7UJbS-sWddUIqQbJEZhP0Dg13
+mainnet:
+Non-bounceable address (for init): UQA6fzPKu8shoeirZSfOgAx7UJbS-sWddUIqQbJEZhP0Dus4
+Bounceable address (for later access): EQA6fzPKu8shoeirZSfOgAx7UJbS-sWddUIqQbJEZhP0Drb9
+Succeeded

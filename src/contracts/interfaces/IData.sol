@@ -1,5 +1,7 @@
 pragma ton-solidity >= 0.43.0;
 
+import '../libraries/Enums.sol';
+
 import 'IDataCore.sol';
 
 interface IData is IDataCore {
@@ -15,11 +17,7 @@ interface IData is IDataCore {
         bytes url,
         uint8 number,
         uint8 amount,
-
-        //ColorEnum color,
-        string additionalStrParameter,
-        uint256 additionalIntParameter,
-        bool additionalBoolParameter
+        string nftType
     );
 
     function getInfoResponsible() external view responsible returns (
@@ -31,11 +29,6 @@ interface IData is IDataCore {
         bytes name,
         bytes url,
         uint8 number,
-        uint8 amount,
-
-        //ColorEnum color,
-        string additionalStrParameter,
-        uint256 additionalIntParameter,
-        bool additionalBoolParameter
+        uint8 amount
     );
 }
