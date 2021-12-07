@@ -107,12 +107,16 @@ block content
           .col-6.input-commission.commission-author-generator
             label.form-label() Комиссия(%)
             input.form-control(type="text" name = 'commission-author-generator' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
-        .col.button-main
-          input.submit-button.btn.btn-dark.btn-block#save-data(type="submit" value="Cохранить данные")
-        .col.button-main
-          input.submit-button.btn.btn-dark.btn-block#form-contracts(type="submit" value="Сформировать контракты")
-        .col.button-main
-          input.submit-button.btn.btn-dark.btn-block#deploy-contracts(type="submit" value="Задеплоить контракты")
+        .col-6.MintingPriceUsers
+          label.form-label() Minting price for users
+          input.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users")
+        .row.button-main-3
+          .col.button-main
+            input.submit-button.btn.btn-dark.btn-block#save-data(type="submit" value="Cохранить данные")
+          .col.button-main
+            input.submit-button.btn.btn-dark.btn-block#form-contracts(type="submit" value="Сформировать контракты")
+          .col.button-main
+            input.submit-button.btn.btn-dark.btn-block#deploy-contracts(type="submit" value="Задеплоить контракты")
   script(src="/scripts/root-contract-form.js")
       
       

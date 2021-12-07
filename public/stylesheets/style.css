@@ -61,7 +61,9 @@
 .row.parameter-number, .row.parameter-string, .parameter-enum,.complete-block-collections-types,.col-6.use-author,.commission-favor-owner,.commission-author-generator,.parameter-media-file   {
     display: none;
 }
-
+.MintingPriceUsers{
+    padding-bottom: 20px;
+}
 
 .parameterForm {
     padding: 20px;
