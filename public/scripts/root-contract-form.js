@@ -8,9 +8,38 @@ var typeConteinerParams = document.createElement('div');
 typeConteinerParams.innerHTML = $(".block-for-col-param-choice")[0].innerHTML
 typeConteinerParams.className = "block-for-col-param-choice"
 
+
+$("#type-rarity").on("click", function(){
+    if($(this).prop('checked')){
+        $(`.complete-block-collections-types`).css('display','block');
+    } else{
+        $(`.complete-block-collections-types`).css('display','none');
+    }
+})
+$("#use-author").on("click", function(){
+    if($(this).prop('checked')){
+        $(`.col-6.use-author`).css('display','block');
+    } else{
+        $(`.col-6.use-author`).css('display','none');
+    }
+})
+$("#commission-favor-owner").on("click", function(){
+    if($(this).prop('checked')){
+        $(`.commission-favor-owner`).css('display','block');
+    } else{
+        $(`.commission-favor-owner`).css('display','none');
+    }
+})
+$("#commission-author-generator").on("click", function(){
+    if($(this).prop('checked')){
+        $(`.commission-author-generator`).css('display','block');
+    } else{
+        $(`.commission-author-generator`).css('display','none');
+    }
+})
+
 $(".submit-button").on("click",(function(event){
     event.preventDefault()
-    console.log($(this).attr("id"))
     if ($(this).attr("id") === "save-data"){
         $('#form-contract').attr("action","/root-contract-form/save-data")
     } else if ($(this).attr("id") === "form-contracts"){
