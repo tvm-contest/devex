@@ -9,6 +9,7 @@ import {
   Input,
   Stack,
   Card,
+  CardContent,
   CardMedia,
   Box,
   Link,
@@ -295,130 +296,141 @@ export default function CreateNFT() {
             />
           </Grid>
         </Grid>
-        <Typography variant="h6" sx={{ marginTop: 1 }}>
+        <Typography variant="h6" sx={{ marginTop: 5 }}>
           Layers
         </Typography>
         {layerData &&
           layerData.map((data) => (
-            <Stack
-              key={data.id}
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              sx={{ px: 1, py: 2 }}
-              onClick={() => setCurrentLayer(data.id)}
-            >
-              <Stack direction="column">
-                <Input
-                  placeholder="Trait Name"
-                  value={data.traitName}
-                  onChange={(e) => handleTraitNameChange(e.target.value, data.id)}
-                  error={isSubmitClick && !data.traitName}
-                />
-                <Button
-                  variant="contained"
-                  component="label"
-                  style={{ position: 'relative', marginTop: 10, marginBottom: 10 }}
+            <Card variant="outlined" key={data.id} sx={{ margin: '10px 0' }}>
+              <CardContent>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{ px: 1, py: 2 }}
+                  onClick={() => setCurrentLayer(data.id)}
                 >
-                  Upload image
-                  <input
-                    type="file"
-                    accept="image/*"
-                    style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%' }}
-                    multiple
-                    onChange={(e) => handleAddMultiImage(e.target.files)}
-                    hidden
-                  />
-                </Button>
-                <Button
-                  variant="contained"
-                  component="label"
-                  onClick={() => handleDeleteLayer(data.id)}
-                >
-                  Delete Layer
-                </Button>
-              </Stack>
-              <div
-                {...getRootProps({
-                  className: 'dropzone',
-                  onDragEnter: () => setCurrentLayer(data.id)
-                })}
-                style={{ width: '100%', paddingLeft: 25 }}
-              >
-                <input {...getInputProps()} />
-                <Stack direction="row" alignItems="center" sx={{ marginTop: 2 }}>
-                  {data.imagArr.length ? (
-                    data.imagArr.map((file, index) => (
-                      <Card
-                        key={file.id}
-                        variant="outlined"
-                        sx={{
-                          maxWidth: 200,
-                          maxHeight: 150,
-                          padding: 1,
-                          marginRight: 2,
-                          position: 'relative'
+                  <Stack direction="column">
+                    <Input
+                      placeholder="Trait Name"
+                      value={data.traitName}
+                      onChange={(e) => handleTraitNameChange(e.target.value, data.id)}
+                      error={isSubmitClick && !data.traitName}
+                    />
+                    <Button
+                      variant="contained"
+                      component="label"
+                      style={{ position: 'relative', marginTop: 10, marginBottom: 10 }}
+                    >
+                      Upload image
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          width: '100%',
+                          height: '100%'
                         }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          handleClick(file.id);
-                        }}
-                      >
-                        {over.includes(file.id) && (
-                          <Box
+                        multiple
+                        onChange={(e) => handleAddMultiImage(e.target.files)}
+                        hidden
+                      />
+                    </Button>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      onClick={() => handleDeleteLayer(data.id)}
+                    >
+                      Delete Layer
+                    </Button>
+                  </Stack>
+                  <div
+                    {...getRootProps({
+                      className: 'dropzone',
+                      onDragEnter: () => setCurrentLayer(data.id)
+                    })}
+                    style={{ width: '100%', paddingLeft: 25 }}
+                  >
+                    <input {...getInputProps()} />
+                    <Stack direction="row" alignItems="center" sx={{ marginTop: 2 }}>
+                      {data.imagArr.length ? (
+                        data.imagArr.map((file, index) => (
+                          <Card
+                            key={file.id}
+                            variant="outlined"
                             sx={{
-                              position: 'absolute',
-                              right: 1,
+                              maxWidth: 200,
+                              maxHeight: 150,
                               padding: 1,
-                              border: '1px solid #000',
-                              margin: '35px 0 0',
-                              borderRadius: 1,
-                              background: '#fff',
-                              cursor: 'pointer'
+                              marginRight: 2,
+                              position: 'relative'
                             }}
-                            onClick={() => handleImageDelete(index, data.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              handleClick(file.id);
+                            }}
                           >
-                            Delete Image
-                          </Box>
-                        )}
-                        <Input
-                          placeholder="Trait Value"
-                          value={file.traitVal}
-                          onChange={(e) =>
-                            handleImageUpdate(e.target.value, 'name', index, data.id)
-                          }
-                          error={isSubmitClick && !file.traitVal}
-                        />
-                        <CardMedia
-                          component="img"
-                          height="50"
-                          width="10"
-                          image={file.src}
-                          alt="Drop Pic"
-                          style={{ marginTop: 5, marginBottom: 5 }}
-                        />
-                        <Input
-                          placeholder="Trait Rarity"
-                          value={file.traitRar}
-                          onChange={(e) =>
-                            handleImageUpdate(e.target.value, 'rarity', index, data.id)
-                          }
-                          error={isSubmitClick && !file.traitRar}
-                        />
-                      </Card>
-                    ))
-                  ) : (
-                    <p style={{ width: '100%', marginBlockStart: 0, height: 80 }}>
-                      Drag 'n' drop some files here, or click to select files
-                    </p>
-                  )}
+                            {over.includes(file.id) && (
+                              <Box
+                                sx={{
+                                  position: 'absolute',
+                                  right: 1,
+                                  padding: 1,
+                                  border: '1px solid #000',
+                                  margin: '35px 0 0',
+                                  borderRadius: 1,
+                                  background: '#fff',
+                                  cursor: 'pointer'
+                                }}
+                                onClick={() => handleImageDelete(index, data.id)}
+                              >
+                                Delete Image
+                              </Box>
+                            )}
+                            <Input
+                              placeholder="Trait Value"
+                              value={file.traitVal}
+                              onChange={(e) =>
+                                handleImageUpdate(e.target.value, 'name', index, data.id)
+                              }
+                              error={isSubmitClick && !file.traitVal}
+                            />
+                            <CardMedia
+                              component="img"
+                              height="50"
+                              width="10"
+                              image={file.src}
+                              alt="Drop Pic"
+                              style={{ marginTop: 5, marginBottom: 5 }}
+                            />
+                            <Input
+                              placeholder="Trait Rarity"
+                              value={file.traitRar}
+                              onChange={(e) =>
+                                handleImageUpdate(e.target.value, 'rarity', index, data.id)
+                              }
+                              error={isSubmitClick && !file.traitRar}
+                            />
+                          </Card>
+                        ))
+                      ) : (
+                        <p style={{ width: '100%', marginBlockStart: 0, height: 80 }}>
+                          Drag 'n' drop some files here, or click to select files
+                        </p>
+                      )}
+                    </Stack>
+                  </div>
                 </Stack>
-              </div>
-            </Stack>
+              </CardContent>
+            </Card>
           ))}
-        <Button onClick={handleAddLayer}>Add another layer</Button>
-        <Button onClick={handleGenerateImages}>Generate images</Button>
+        <Button onClick={handleAddLayer} variant="contained">
+          Add another layer
+        </Button>
+        {!!layerData.length && <Button onClick={handleGenerateImages}>Generate images</Button>}
         <NFTList nfts={nftData} />
         {!!nftData.length && (
           <Button onClick={getDataForBlockchain}> TODO getDataForBlockchain</Button>
