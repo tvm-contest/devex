@@ -8,6 +8,7 @@ import { deleteContractDirTemp, generateContract } from '../services/contract-ge
 import { ContractObjectCreator } from '../services/contract-object-creator.service';
 import { DeployTrueNftService } from '../services/deployTrueNft.service';
 import { EnumParameter } from '../models/enum';
+import { DeployDebotService } from '../services/deployDebot.service';
 
 const router = express.Router();
 
@@ -49,6 +50,8 @@ router.post('/deploy-contracts', async function(req, res, next) {
 
     let deployTrueNftService = new DeployTrueNftService()
     let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
+    let deployDebotService = new DeployDebotService();
+    await deployDebotService.deployDebot(contractDir);
 
     res.render('success-page', { pageText: "Адрес коллекции: " + address })
 });
