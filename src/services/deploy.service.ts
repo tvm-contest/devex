@@ -38,7 +38,7 @@ export class DeployService {
                 outputDir: relative_path
             });
         } else if (relative_path !== undefined) {
-            hash = this.getHashName(relative_path);
+            hash = this.getHashName(contractDotSolCode); //возможно была опечатка, но с прошлым вариантом не работало 
             await runCommand(consoleTerminal, "sol compile", {
                 file: path.resolve(relative_path, hash + '.sol'),
                 outputDir: relative_path
