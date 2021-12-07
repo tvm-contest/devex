@@ -5,6 +5,7 @@ import { sha256 } from 'js-sha256';
 import { globals } from '../config/globals'
 import { Collection } from "../models/collection";
 import { AddParamsService } from './add-params.service';
+import { EnumParameter } from '../models/enum';
 
 const dataFile = path.join(globals.CONTRACTS_ROOT, 'Data.sol');
 const indexFile = path.join(globals.CONTRACTS_ROOT, 'Index.sol');
@@ -29,7 +30,7 @@ class ContractGenerator {
     return tempDir;
   }
 
-  async generateContract(collectionSettings : Collection){
+  async generateContract(collectionSettings : Collection, enums?: EnumParameter[]){
     const hashContract = sha256(JSON.stringify(collectionSettings));
     const tempDir = path.join(globals.TEMP_COLLECTION, hashContract);
 
@@ -47,6 +48,7 @@ class ContractGenerator {
     const auctionRootFileTemp = path.join(tempDir, 'AuctionRoot.sol');
     const auctionFileTemp = path.join(tempDir, 'Auction.sol');
     const aDataCoreFileTemp = path.join(tempDir, 'ADataCore.sol');
+    const enumsFileTemp = path.join(tempDir, 'libraries', 'Enums.sol');
 
     fs.mkdirSync(tempDir);
 
@@ -71,6 +73,9 @@ class ContractGenerator {
     } else {
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), nftRootFile, nftRootFileTepm);
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), dataFile, dataFileTepm);
+      if (enums !== undefined) {
+        await addParamsService.addEnums(enums, enumsFileTemp, enumsFileTemp);
+      }
     }
 
     return tempDir;
