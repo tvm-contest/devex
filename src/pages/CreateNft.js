@@ -324,7 +324,9 @@ export default function CreateNFT() {
               </CardActions>
               <CardContent
                 onClick={() => setCurrentLayer(data.id)}
-                sx={{ '> div:hover': { cursor: 'pointer' } }}
+                sx={{
+                  '> div:hover': { cursor: 'pointer' }
+                }}
               >
                 <div
                   style={{
@@ -399,7 +401,16 @@ export default function CreateNFT() {
                         </Card>
                       ))
                     ) : (
-                      <p style={{ width: '100%', marginBlockStart: 0, height: 80 }}>
+                      <p
+                        style={{
+                          width: '100%',
+                          marginBlockStart: 0,
+                          height: 80,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
                         Drag 'n' drop some files here, or click to select files
                       </p>
                     )}
