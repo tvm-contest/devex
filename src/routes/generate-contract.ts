@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get('/',  function(req, res, next) {
     
-  let params : Parametr[] = [new Parametr("param1", "int"), new Parametr("param2", "string")];
+  let params : Parametr[] = [new Parametr("param1", "uint"), new Parametr("param2", "string")];
   let rariry : Rarity[] = [new Rarity("rare", 10), new Rarity("norare", 90)];
   let description : DescriptCollection = new DescriptCollection("Collect1", 100);
   let collection : Collection = new Collection(description, rariry, params);

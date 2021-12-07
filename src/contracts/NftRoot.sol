@@ -54,8 +54,7 @@ contract NftRoot is DataResolver, IndexResolver {
         address[] managersList,
         uint8 royalty,
 
-        string nftType
-        /*%PARAM_TO_MINT%*/
+        string nftType/*%PARAM_TO_MINT%*/
     )
         public
         enoughValueToDeployData

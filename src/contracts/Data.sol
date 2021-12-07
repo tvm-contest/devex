@@ -23,8 +23,7 @@ contract Data is IData, DataCore {
         address[] _managersList,
         uint8 _royalty,
 
-        string nftType
-        /*%PARAM_CONSTRUCTOR%*/
+        string nftType/*%PARAM_CONSTRUCTOR%*/
     )
         public
     {
@@ -83,7 +82,7 @@ contract Data is IData, DataCore {
         bytes url,
         uint8 number,
         uint8 amount,
-        string nftType
+        string nftType/*%PARAM_CONSTRUCTOR%*/
     ) {
         addrRoot = _addrRoot;
         addrOwner = _addrOwner;
