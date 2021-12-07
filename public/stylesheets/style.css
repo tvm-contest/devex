@@ -151,3 +151,11 @@
 .token-list.address {
     cursor: pointer;
 }
+
+.home-header {
+    padding: 2em 0 0;
+}
+
+.btn-block+.btn-block {
+    margin-top: 1rem;
+}
