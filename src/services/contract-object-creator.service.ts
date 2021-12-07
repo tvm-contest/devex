@@ -44,14 +44,14 @@ export class ContractObjectCreator {
         } else if (req.body.selectpicker[index] == 'number') {
           parameter = new Parametr(
             req.body.parameter[index].name,
-            'int',
+            'uint',
             req.body.parameter[index].number.min,
             req.body.parameter[index].number.max
           );
           
         } else if (req.body.selectpicker[index] == 'enum') {
           parameter = new Parametr(
-            'enum' + req.body.parameter[index].name + index,
+            'enum' + req.body.parameter[index].name,
             req.body.parameter[index].name
           )
         } else {
