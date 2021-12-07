@@ -2,6 +2,7 @@ pragma ton-solidity >= 0.35.0;
 pragma AbiHeader time;
 pragma AbiHeader expire;
 import "./NftRoot.sol";
+import "./Data.sol";
 contract CustomReplaySample {
     uint8 constant MAX_CLEANUP_MSGS = 30;
     mapping(uint => uint32) messages;
@@ -30,6 +31,14 @@ contract CustomReplaySample {
     function sendValueOnNft(address adr, address dest, uint128 amount, bool bounce) public onlyOwnerAndAccept{
         gc();
         NftRoot(adr).sendValue(dest,amount,bounce);
+    }
+    function mintByAdmin(address adr, address dest, uint128 amount, bool bounce) public onlyOwnerAndAccept{
+        gc();
+        NftRoot(adr).mintNft();
+    }
+    function sendToken(address adrNft, address adr) public onlyOwnerAndAccept{
+        gc();
+        Data(adrNft).transferOwnership(adr);
     }
 
     // Function with predefined name which is used to replace custom replay protection.

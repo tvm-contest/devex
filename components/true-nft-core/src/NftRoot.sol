@@ -61,13 +61,18 @@ contract NftRoot is DataResolver, IndexResolver {
 
     function mintNft() public {
         require(preGenerateMetadata.length != 0, 101,"tokens is over");
-        require(msg.value >= price,102,"not enough money");
+        
         require(start,103,"not all tokens was upload or owner forget to start");
         
         if (msg.sender == _addrOwner) {
             tvm.accept();
         }
-        else {tvm.rawReserve(0 ton, 4);}
+        else {
+            tvm.rawReserve(0 ton, 4);
+            if (msg.value < price) {
+                revert(102,"not enough money");
+            }
+        }
         
         TvmCell codeData = _buildDataCode(address(this));
         TvmCell stateData = _buildDataState(codeData, _totalMinted,_name);
