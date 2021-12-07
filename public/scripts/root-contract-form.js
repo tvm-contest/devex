@@ -8,9 +8,38 @@ var typeConteinerParams = document.createElement('div');
 typeConteinerParams.innerHTML = $(".block-for-col-param-choice")[0].innerHTML
 typeConteinerParams.className = "block-for-col-param-choice"
 
+
+$("#type-rarity").on("click", function(){
+    if($(this).prop('checked')){
+        $(`.complete-block-collections-types`).css('display','block');
+    } else{
+        $(`.complete-block-collections-types`).css('display','none');
+    }
+})
+$("#use-author").on("click", function(){
+    if($(this).prop('checked')){
+        $(`.col-6.use-author`).css('display','block');
+    } else{
+        $(`.col-6.use-author`).css('display','none');
+    }
+})
+$("#commission-favor-owner").on("click", function(){
+    if($(this).prop('checked')){
+        $(`.commission-favor-owner`).css('display','block');
+    } else{
+        $(`.commission-favor-owner`).css('display','none');
+    }
+})
+$("#commission-author-generator").on("click", function(){
+    if($(this).prop('checked')){
+        $(`.commission-author-generator`).css('display','block');
+    } else{
+        $(`.commission-author-generator`).css('display','none');
+    }
+})
+
 $(".submit-button").on("click",(function(event){
     event.preventDefault()
-    console.log($(this).attr("id"))
     if ($(this).attr("id") === "save-data"){
         $('#form-contract').attr("action","/root-contract-form/save-data")
     } else if ($(this).attr("id") === "form-contracts"){
@@ -29,16 +58,24 @@ $('form').on("change", ".type-parameter",function(){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
     } else if(curentSelectedVal === "line"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
+
     } else if(curentSelectedVal === "enum"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','block');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
+    } else if(curentSelectedVal === "mediafile"){
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','flex');
     }
-
 });
 const addVariant = (e) => {
     enum_id+=1
@@ -65,9 +102,14 @@ const addParam = () => {
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-number").css('display','none');
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-string").css('display','none');
     $(`.block-for-col-param-choice#p${param_id}`).find(".parameter-enum").css('display','none');
+    $(`.block-for-col-param-choice#p${param_id}`).find(".parameter-media-file").css('display','none');
+
+
     
     $(`#p${param_id}.block-for-col-param-choice`).find(".param-enum").attr('name', `parameter[${param_id}][enum][0]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".nameParam").attr('name', `parameter[${param_id}][name]`);
+    $(`#p${param_id}.block-for-col-param-choice`).find(".media-file").attr('name', `parameter[${param_id}][mediafile]`);
+
 
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-min").attr('name', `parameter[${param_id}][number][min]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-max").attr('name', `parameter[${param_id}][number][max]`);
