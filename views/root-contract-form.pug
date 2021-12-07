@@ -50,6 +50,7 @@ block content
                         option(value="number") Число
                         option(value="line") Строка
                         option(value="enum") Enum
+                        option(value="mediafile") Mediafile
                 .row.parameter-number
                   .col
                     label.form-label() Минимальное значение
@@ -74,12 +75,19 @@ block content
                       input.btn.btn-dark.btn-block(type="button" value=" + Добавить вариант" onclick="addVariant(this);")
                     .col-6.button-addVariant
                       input.btn.btn-dark.btn-block(type="button" value=" - Удалить вариант" onclick="deleteVariant(this);")
+                .parameter-media-file 
+                  .col-12
+                    label.form-label() Media file
+                    input.form-control.media-file(name="parameter[0][mediafile]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Media file")
+
                   
 
 
             .buttons
               input.btn.btn-dark.btn-block(type="button" value=" + Добавить параметр" onclick="addParam();")
               input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Удалить параметр" onclick="deleteParam();")
+  
+        
         .checkbox-for-commissions
           .form-check 
             input.form-check-input#use-author(type="checkbox" value="" name="check-use-author")
