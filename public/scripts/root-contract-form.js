@@ -58,16 +58,24 @@ $('form').on("change", ".type-parameter",function(){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
     } else if(curentSelectedVal === "line"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
+
     } else if(curentSelectedVal === "enum"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','block');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
+    } else if(curentSelectedVal === "mediafile"){
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
+        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','flex');
     }
-
 });
 const addVariant = (e) => {
     enum_id+=1
@@ -94,9 +102,14 @@ const addParam = () => {
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-number").css('display','none');
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-string").css('display','none');
     $(`.block-for-col-param-choice#p${param_id}`).find(".parameter-enum").css('display','none');
+    $(`.block-for-col-param-choice#p${param_id}`).find(".parameter-media-file").css('display','none');
+
+
     
     $(`#p${param_id}.block-for-col-param-choice`).find(".param-enum").attr('name', `parameter[${param_id}][enum][0]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".nameParam").attr('name', `parameter[${param_id}][name]`);
+    $(`#p${param_id}.block-for-col-param-choice`).find(".media-file").attr('name', `parameter[${param_id}][mediafile]`);
+
 
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-min").attr('name', `parameter[${param_id}][number][min]`);
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-number").find(".param-num-max").attr('name', `parameter[${param_id}][number][max]`);
