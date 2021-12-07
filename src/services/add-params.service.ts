@@ -1,12 +1,14 @@
 import fs from 'fs'
 
 import { Parametr } from '../models/parametr'
+import { EnumParameter } from '../models/enum'
 
 const markForParamDefenition = '/*%PARAM_DEFENITION%*/'
 const markForParamConstructor = '/*%PARAM_CONSTRUCTOR%*/'
 const markForParamSet = '/*%PARAM_SET%*/'
 const markForParamToData = '/*%PARAM_TO_DATA%*/'
 const markForParamToMint = '/*%PARAM_TO_MINT%*/'
+const markForEnums = '/*ENUMS*/'
 
 export class AddParamsService {
 
@@ -34,6 +36,22 @@ export class AddParamsService {
         
     fs.writeFileSync(outputContractFile, codeSource, 'utf8')
 
+  }
+
+  async addEnums(enums: EnumParameter[], inputContractFile: string, outputContractFile?: string) : Promise<void> {
+    if (!outputContractFile) outputContractFile = inputContractFile;
+
+    let codeSource = fs.readFileSync(inputContractFile, 'utf8');
+    for (let enumParam of enums) {
+      codeSource = await this.addEnum(enumParam, codeSource);
+    }
+        
+    fs.writeFileSync(outputContractFile, codeSource, 'utf8')
+  }
+
+  private async addEnum(enumParam: EnumParameter, codeSource: string) : Promise<string> {
+    let enumParameter = "enum " + enumParam.getName() + ' { ' + enumParam.getEnumVariants().toString() + ' } ' + '\n' + markForEnums;
+    return codeSource.replace(markForEnums, enumParameter);
   }
 
   private async addParam(param: Parametr, codeSource: string)  : Promise<string>{
