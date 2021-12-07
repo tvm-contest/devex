@@ -21,9 +21,13 @@ import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
 import * as IPFS from 'ipfs-core';
 import web3Utils from 'web3-utils';
+import { styled } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 // components
 import Page from '../components/Page';
 import NFTList from '../components/_dashboard/nft/NFTList';
+import DeleteCardDialog from '../components/_dashboard/nft/DeleteCardDialog';
+import { validateForm } from '../components/_dashboard/nft/validateForm';
 
 import StoreContext from '../store/StoreContext';
 import { call } from '../blockchain/TonSDK';
@@ -31,6 +35,14 @@ import { call } from '../blockchain/TonSDK';
 let ipfs;
 IPFS.create().then(async (node) => {
   ipfs = node;
+});
+
+const ProductImgStyle = styled('img')({
+  top: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'contain',
+  position: 'absolute'
 });
 
 //
@@ -45,7 +57,9 @@ export default function CreateNFT() {
   const [totalImages, setTotalImages] = useState(0);
   const [nftData, setNftData] = useState([]);
   const [currentLayer, setCurrentLayer] = useState();
-  const [over, setOver] = useState([]);
+  const [currentDeletedIndex, setCurrentDeletedIndex] = useState();
+  const [open, setOpen] = useState(false);
+  const [currentDeleting, setCurrentDeleting] = useState('');
   const {
     state: { account }
   } = useContext(StoreContext);
@@ -118,6 +132,12 @@ export default function CreateNFT() {
       alert('TODO set totel images');
       return;
     }
+    // validation
+    if (!collectionName || !collectionDesc) return;
+
+    const validate = await validateForm(layerData);
+    if (validate) return;
+
     const imagesToGenerate = [];
 
     // eslint-disable-next-line no-restricted-syntax
@@ -208,9 +228,10 @@ export default function CreateNFT() {
     setLayerData(newArr);
   };
 
-  const handleDeleteLayer = (currentLayer) => {
+  const handleDeleteLayer = () => {
     const newArr = layerData.filter((elem) => elem.id !== currentLayer);
     setLayerData(newArr);
+    setOpen(false);
   };
 
   const handleImageUpdate = (val, type, index, currentId) => {
@@ -227,25 +248,26 @@ export default function CreateNFT() {
     setLayerData(newArr);
   };
 
-  const handleImageDelete = (index, currentId) => {
+  const handleClickOpen = (id, name, index) => {
+    setCurrentDeleting(name);
+    setCurrentLayer(id);
+    setCurrentDeletedIndex(index);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleImageDelete = () => {
     const newArr = layerData.filter((elem) => {
-      if (elem.id === currentId) {
-        elem.imagArr.splice(index, 1);
+      if (elem.id === currentLayer) {
+        elem.imagArr.splice(currentDeletedIndex, 1);
       }
       return elem;
     });
     setLayerData(newArr);
-  };
-
-  const handleClick = (dataId) => {
-    if (over.includes(dataId)) {
-      if (window.confirm('Are you want to delete this Image?')) {
-        const newArr = over.filter((x) => x !== dataId);
-        setOver(newArr);
-      }
-    } else {
-      setOver([...over, dataId]);
-    }
+    setOpen(false);
   };
 
   if (!account.isReady) {
@@ -282,7 +304,7 @@ export default function CreateNFT() {
               label="Collection Name"
               value={collectionName}
               onChange={(e) => setCollectionName(e.target.value)}
-              helperText={isSubmitClick && !collectionName}
+              error={isSubmitClick && !collectionName}
               fullWidth
             />
           </Grid>
@@ -294,7 +316,7 @@ export default function CreateNFT() {
               onChange={(e) => {
                 setTotalImages(e.target.value);
               }}
-              helperText={isSubmitClick && !totalImages}
+              error={isSubmitClick && !totalImages}
               fullWidth
             />
           </Grid>
@@ -303,7 +325,7 @@ export default function CreateNFT() {
               label="Collection Description"
               value={collectionDesc}
               onChange={(e) => setCollectionDesc(e.target.value)}
-              helperText={isSubmitClick && !collectionDesc}
+              error={isSubmitClick && !collectionDesc}
               fullWidth
             />
           </Grid>
@@ -322,13 +344,13 @@ export default function CreateNFT() {
                   fullWidth
                   value={data.traitName}
                   onChange={(e) => handleTraitNameChange(e.target.value, data.id)}
-                  helperText={isSubmitClick && !data.traitName}
+                  error={isSubmitClick && !data.traitName}
                 />
                 <Button
                   variant="contained"
                   sx={{ whiteSpace: 'nowrap' }}
                   color="error"
-                  onClick={() => handleDeleteLayer(data.id)}
+                  onClick={() => handleClickOpen(data.id, 'layer')}
                 >
                   Delete Layer
                 </Button>
@@ -350,67 +372,53 @@ export default function CreateNFT() {
                   })}
                 >
                   <input {...getInputProps()} accept="image/*" />
-                  <Stack direction="row" alignItems="center" sx={{ margin: 0 }}>
+                  <Stack direction="row" alignItems="center" spacing={1}>
                     {data.imagArr.length ? (
                       data.imagArr.map((file, index) => (
                         <Card
                           key={file.id}
                           variant="outlined"
-                          sx={{
-                            maxWidth: 200,
-                            maxHeight: 150,
-                            padding: 1,
-                            marginRight: 2,
-                            position: 'relative',
-                            '&:hover': { cursor: 'default' }
-                          }}
                           onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            handleClick(file.id);
                           }}
                         >
-                          {over.includes(file.id) && (
-                            <Box
-                              sx={{
-                                position: 'absolute',
-                                right: 1,
-                                padding: 1,
-                                border: '1px solid #000',
-                                margin: '35px 0 0',
-                                borderRadius: 1,
-                                background: '#fff',
-                                cursor: 'pointer'
-                              }}
-                              onClick={() => handleImageDelete(index, data.id)}
-                            >
-                              Delete Image
-                            </Box>
-                          )}
-                          <Input
-                            placeholder="Trait Value"
-                            value={file.traitVal}
-                            onChange={(e) =>
-                              handleImageUpdate(e.target.value, 'name', index, data.id)
-                            }
-                            error={isSubmitClick && !file.traitVal}
-                          />
-                          <CardMedia
-                            component="img"
-                            height="50"
-                            width="10"
-                            image={file.src}
-                            alt="Drop Pic"
-                            style={{ marginTop: 5, marginBottom: 5 }}
-                          />
-                          <Input
-                            placeholder="Trait Rarity"
-                            value={file.traitRar}
-                            onChange={(e) =>
-                              handleImageUpdate(e.target.value, 'rarity', index, data.id)
-                            }
-                            error={isSubmitClick && !file.traitRar}
-                          />
+                          <Box sx={{ pt: '100%', position: 'relative' }}>
+                            <ProductImgStyle alt={file.src} src={file.src} />
+                          </Box>
+                          <Stack
+                            drection="row"
+                            justifyContent="space-between"
+                            style={{ flexDirection: 'row' }}
+                            sx={{ padding: 2 }}
+                            spacing={1}
+                          >
+                            <Stack direction="column" spacing={1}>
+                              <TextField
+                                label="Trait Value"
+                                value={file.traitVal}
+                                onChange={(e) =>
+                                  handleImageUpdate(e.target.value, 'name', index, data.id)
+                                }
+                                error={isSubmitClick && !file.traitVal}
+                                size="small"
+                              />
+                              <TextField
+                                label="Trait Rarity"
+                                value={file.traitRar}
+                                onChange={(e) =>
+                                  handleImageUpdate(e.target.value, 'rarity', index, data.id)
+                                }
+                                error={isSubmitClick && !file.traitRar}
+                                type="number"
+                                size="small"
+                              />
+                            </Stack>
+                            <DeleteIcon
+                              style={{ marginLeft: 5, color: '#00AB55' }}
+                              onClick={() => handleClickOpen(data.id, 'card', index)}
+                            />
+                          </Stack>
                         </Card>
                       ))
                     ) : (
@@ -447,6 +455,12 @@ export default function CreateNFT() {
           )}
         </Box>
       </Container>
+      <DeleteCardDialog
+        open={open}
+        handleClose={handleClose}
+        handleDelete={currentDeleting === 'card' ? handleImageDelete : handleDeleteLayer}
+        currentDeleting={currentDeleting}
+      />
     </Page>
   );
 }
