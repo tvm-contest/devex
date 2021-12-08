@@ -52,7 +52,11 @@ router.post('/deploy-contracts', async function(req, res, next) {
     let contractDir = await generateContract(collection, enums, mediafiles)
 
     let deployTrueNftService = new DeployTrueNftService()
-    let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
+    let commissionAuthorGenerator = 0;
+    if (req.body.checkCommissionAuthorGenerator == '') {
+        commissionAuthorGenerator = req.body.commissionAuthorGenerator;
+    }
+    let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
     let deployDebotService = new DeployDebotService();
     await deployDebotService.deployDebot(contractDir, address);
 
@@ -127,7 +131,7 @@ router.post('/', async function(req, res, next) {
 
     //Зачем коментирвать весь метод?
     let deployTrueNftService = new DeployTrueNftService()
-    let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
+    let address = await deployTrueNftService.deployTrueNft(contractDir, collection, 0)
 
     // deleteContractDirTemp(collection)
 
