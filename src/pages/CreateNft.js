@@ -330,8 +330,8 @@ export default function CreateNFT() {
                 if (number > 10) {
                   number = 10;
                 }
-                if (e.target.value >= 0) {
-                  setTotalImages(e.target.value);
+                if (number >= 0) {
+                  setTotalImages(number);
                 }
               }}
               error={isSubmitClick && !totalImages}
