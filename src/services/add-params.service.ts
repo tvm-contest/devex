@@ -8,6 +8,7 @@ const markForParamDefenition = '/*%PARAM_DEFENITION%*/';
 const markForParamConstructor = '/*%PARAM_CONSTRUCTOR%*/';
 const markForParamSet = '/*%PARAM_SET%*/';
 const markForParamToData = '/*%PARAM_TO_DATA%*/';
+const markForParamToDataInfo = '/*%PARAM_DATA_INFO%*/';
 const markForParamToMint = '/*%PARAM_TO_MINT%*/';
 const markForEnums = '/*ENUMS*/';
 const markForDebotMint = '/*PARAM_TO_DEBOT_MINT*/';
@@ -88,6 +89,7 @@ export class AddParamsService {
     let paramConstructor = ', \n\t\t' + param.getType() + ' _' + param.getName() + markForParamConstructor;
     let paramSet = param.getName() + ' = _' + param.getName() + ';\n\t\t' + markForParamSet;
     let paramToData = ', \n\t\t\t' + param.getName() + markForParamToData;
+    let paramToDataInfo = ', \n\t\t' + param.getType() + ' _' + param.getName() + markForParamToDataInfo;
     let paramToMint = ', \n\t\t' + param.getType() + ' ' + param.getName() + markForParamToMint;
     let paramToDebotMint = ', \n\t\t\t' + '_nftParams.' + param.getName() + markForDebotMint;
     let paramForDebotCheckResult = 'Terminal.print(0, format("' + param.getName() + ': {}",' + param.getName() + '));\n\t\t' + markForDebotCheckResult;
@@ -111,6 +113,7 @@ export class AddParamsService {
     codeSource = codeSource.replace(markForParamConstructor, paramConstructor);
     codeSource = codeSource.replace(markForParamSet, paramSet);
     codeSource = codeSource.replace(markForParamToData, paramToData);
+    codeSource = codeSource.replace(markForParamToDataInfo, paramToDataInfo);
     codeSource = codeSource.replace(markForParamToMint, paramToMint);
     codeSource = codeSource.replace(markForDebotMint, paramToDebotMint);
     if ((param.getType() == "string" || param.getType() == "uint") && !(param instanceof MediaFile)) {

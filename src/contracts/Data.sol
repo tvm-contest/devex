@@ -82,7 +82,7 @@ contract Data is IData, DataCore {
         bytes url,
         uint8 number,
         uint8 amount,
-        string nftType/*%PARAM_CONSTRUCTOR%*/
+        string nftType/*%PARAM_DATA_INFO%*/
     ) {
         addrRoot = _addrRoot;
         addrOwner = _addrOwner;

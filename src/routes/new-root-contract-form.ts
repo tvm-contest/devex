@@ -34,7 +34,7 @@ router.post('/', async function(req, res, next) {
         console.log(err);
     }
     let deployTrueNftService = new DeployTrueNftService();
-    let address = await deployTrueNftService.deployTrueNft(getTempDir(collectionSettings), collectionSettings);
+    let address = await deployTrueNftService.deployTrueNft(getTempDir(collectionSettings), collectionSettings, 0);
     let deployDebotService = new DeployDebotService();
     await deployDebotService.deployDebot(getTempDir(collectionSettings), address);
     deleteContractDirTemp(collectionSettings);
