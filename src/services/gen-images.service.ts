@@ -1,4 +1,5 @@
 import { addFileToIPFS } from './add-ipfs.service';
+const fs = require('fs');
 // const ipfServer = require('./add-ipfs.service');
 
 type Image = {
@@ -30,6 +31,41 @@ enum Rarity {
     ULTRA_RARITY
 }
 
+const helmetsArray: string[] = [
+    'helmet1.png',
+    'helmet2.png',
+    'helmet3.png',
+];
+
+const armsArray: string[] = [
+    'arm1.png',
+    'arm2.png',
+    'arm3.png'
+];
+
+const shielsdArray: string[] = [
+    'shield1.png',
+    'shield2.png',
+    'shield3.png'
+];
+
+const personsArray: string[] = [
+    'person1.png',
+    'person2.png',
+    'person3.png'
+];
+
+const bgArray: string[] = [
+    'bg1.png',
+    'bg2.png',
+    'bg3.png'
+];
+
+// Фон
+// Человек
+// Щит 
+// Шлем
+// Оружие
 export class TokenImagesCreator {
     // To check whether all images is unique
     private nameAndRarityArray: string[] = [''];
@@ -46,7 +82,21 @@ export class TokenImagesCreator {
     }
 
     async createImage(): Promise<Image> {
-        // To create unique image
+        // For creating image by mergeImages
+        let imagesFiles: string[] = [];
+
+        const bgFile: string = this.getPartFile(bgArray);
+        const personFile: string = this.getPartFile(personsArray);
+        const shieldFile: string = this.getPartFile(shielsdArray);
+        const helmetFile: string = this.getPartFile(helmetsArray);
+        const armFile: string = this.getPartFile(armsArray);
+
+        imagesFiles.push(bgFile);
+        imagesFiles.push(personFile);
+        imagesFiles.push(shieldFile);
+        imagesFiles.push(helmetFile);
+        imagesFiles.push(armFile);
+
         while (true) {
             const imageColor: string = this.getColor();
             const imageSize: string = this.getSize();
@@ -73,6 +123,11 @@ export class TokenImagesCreator {
         return image;
     }
 
+    getPartFile(array: string[]): string{
+        let key: number = this.getRandomKey(array);
+        return array[key];
+    }
+    
     getColor(): string {
         let key: number = this.getRandomKey(Colors);
         return Colors[key];
