@@ -27,10 +27,6 @@ const InitTon = async (dispatch) => {
 
 const CreateReducer = () => {
   const [state, dispatch] = useReducer(reducer, {
-    ipfs: {
-      provider: null,
-      isReady: false
-    },
     ton: {
       provider: null,
       isReady: false
