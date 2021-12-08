@@ -92,6 +92,7 @@ const addVariant = (e) => {
 const addParam = () => {
     enum_id = 0
 
+
     var typeConteiner = document.createElement('div');
     typeConteiner.innerHTML = typeConteinerParams.innerHTML
     typeConteiner.className = "block-for-col-param-choice"
@@ -99,6 +100,11 @@ const addParam = () => {
     typeConteiner.id="p"+param_id
     arr_collection_param.push(param_id)
     $(".content-param")[0].append(typeConteiner)
+
+    var line = document.createElement('div');
+    line.className = "line"
+    $(`.block-for-col-param-choice#p${param_id}`)[0].prepend(line)
+
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-number").css('display','none');
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-string").css('display','none');
     $(`.block-for-col-param-choice#p${param_id}`).find(".parameter-enum").css('display','none');
