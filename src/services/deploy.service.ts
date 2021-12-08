@@ -29,9 +29,16 @@ export class DeployService {
         this.client.close();
     }
 
-    async compileContract(contractDotSolCode: string, relative_path?) : Promise<string>  {
+    async compileContract(contractDotSolCode: string, relative_path?, fileName?: string) : Promise<string>  {
         let hash;
-        if (relative_path !== undefined) {
+        if (fileName !== undefined) {
+            hash = fileName;
+            await runCommand(consoleTerminal, "sol compile", {
+                file: path.resolve(relative_path, hash + '.sol'),
+                outputDir: relative_path
+            });
+        } else if (relative_path !== undefined) {
+
             hash = this.getHashName(contractDotSolCode);
             await runCommand(consoleTerminal, "sol compile", {
                 file: path.resolve(relative_path, hash + '.sol'),
@@ -49,8 +56,8 @@ export class DeployService {
         return hash;
     }
 
-    async createContractAccount(contractDotSolCode: string, relative_path?) : Promise<Account> {
-        const hash = await this.compileContract(contractDotSolCode, relative_path);
+    async createContractAccount(contractDotSolCode: string, relative_path?, fileName?:string) : Promise<Account> {
+        const hash = await this.compileContract(contractDotSolCode, relative_path, fileName);
 
         let abi = await JSON.parse(fs.readFileSync(path.resolve(relative_path || globals.TEMP_ROOT, hash + ".abi.json")).toString());
         let tvc = fs.readFileSync(path.resolve(relative_path || globals.TEMP_ROOT, hash + ".tvc"), {encoding: 'base64'});
@@ -113,7 +120,7 @@ export class DeployService {
         return hash.toString();
     }
     
-    private getHashName(solString: string) : string {
+    private getHashName(solString: string) : string { 
         let contractName = solString.substring(solString.indexOf("contract ") + 9, solString.indexOf("{")).split(" ")[0];
         contractName = contractName.charAt(0).toUpperCase() + contractName.slice(1);
         return contractName;

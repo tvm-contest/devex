@@ -21,6 +21,7 @@ import "../NftRoot.sol";
 import "../IndexBasis.sol";
 import "../Data.sol";
 import "../Index.sol";
+import "../libraries/Enums.sol";
 
 
 interface IMultisig {
@@ -35,24 +36,21 @@ interface IMultisig {
 
 struct NftParams {
     string nftType;
-    int additionalEnumParameter;
-    string additionalStrParameter;
-    uint256 additionalIntParameter;
-    bool additionalBoolParameter;
+    
+    /*%PARAM_DEFENITION%*/
 }
 
 contract NftDebot is Debot, Upgradable {
 
     address _tokenFutureAddress;
 
-    address _addrNFTRoot;
+    address static _addrNFTRoot;
 
     address _addrMultisig;
 
     uint32 _keyHandle;
 
     NftParams _nftParams;
-    string _enumString;
 
     modifier accept {
         tvm.accept();
@@ -114,52 +112,19 @@ contract NftDebot is Debot, Upgradable {
     }
     function nftParamsSetType(string value) public {
         _nftParams.nftType = value;
-        Terminal.input(tvm.functionId(nftParamsSetEnum), "Enter enum\nAvailable: white(default if misprint), red, blue, green:", false);
-    }
-    function nftParamsSetEnum(string value) public {
-        if(value == "red") {
-            _nftParams.additionalEnumParameter = int(1);
-            _enumString = "red";
-        } else if(value == "blue") {
-            _nftParams.additionalEnumParameter = int(2);
-            _enumString = "blue";
-        } else if(value == "green") {
-            _nftParams.additionalEnumParameter = int(3);
-            _enumString = "green";
-        } else {
-            _nftParams.additionalEnumParameter = int(0);
-            _enumString = "white";
-        }        
-        Terminal.input(tvm.functionId(nftParamsSetStr), "Enter string:", false);
-    }
-    function nftParamsSetStr(string value) public {
-        _nftParams.additionalStrParameter = value;
-        Terminal.input(tvm.functionId(nftParamsSetInt), "Enter integer:", false);
-    }
-    function nftParamsSetInt(string value) public {
-        (_nftParams.additionalIntParameter,) = stoi(value);
-        ConfirmInput.get(tvm.functionId(nftParamsSetBool), "Choose bool value: ");
-    }
-    function nftParamsSetBool(bool value) public {
-        _nftParams.additionalBoolParameter = value;
+        /*TERMINAL_FOR_DEBOT_SET_TYPES*/
         this.deployNftStep1();
     }
+
+    /*FUNCTION_FOR_DEBOT_SET_TYPES*/
 
     function deployNftStep1() public {
         this.deployNftStep2();
     }
-
     function deployNftStep2() public {
         Terminal.print(0, 'Let`s check data.');
         Terminal.print(0, format("Type: {}", _nftParams.nftType));
-        Terminal.print(0, format("Enum: {}\n", _enumString));
-        Terminal.print(0, format("Str: {}\n", _nftParams.additionalStrParameter));
-        Terminal.print(0, format("Int: {}\n", _nftParams.additionalIntParameter));
-        if (_nftParams.additionalBoolParameter) {
-            Terminal.print(0, "Bool: true\n");
-        } else {
-            Terminal.print(0, "Bool: false\n");
-        }
+        /*TERMINAL_TO_DEPLOY_NFT_STEP_2*/
         Terminal.print(0, format("Owner of Nft: {}\n", _addrMultisig));
         resolveNftDataAddr();
         ConfirmInput.get(tvm.functionId(deployNftStep3), "Sign and mint Token?");
@@ -184,11 +149,7 @@ contract NftDebot is Debot, Upgradable {
             uint8(0),
             emptyAddrs,
             uint8(0),
-            _nftParams.nftType,
-            _nftParams.additionalEnumParameter,
-            _nftParams.additionalStrParameter,
-            _nftParams.additionalIntParameter,
-            _nftParams.additionalBoolParameter
+            _nftParams.nftType/*PARAM_TO_DEBOT_MINT*/
         );
         optional(uint256) none;
         IMultisig(_addrMultisig).sendTransaction {
@@ -226,25 +187,16 @@ contract NftDebot is Debot, Upgradable {
         bytes url,
         uint8 number,
         uint8 amount,
-        ColorEnum color,
-        string additionalStrParameter,
-        uint256 additionalIntParameter,
-        bool additionalBoolParameter,
-        string nftType
+        string nftType/*%PARAM_TO_MINT%*/
     ) public {
         Terminal.print(0, 'Check actual data of deployed token: ');
         Terminal.print(0, format("Token address: {}", addrData));
         Terminal.print(0, format("Nft type: {}", nftType));
         Terminal.print(0, format("Root: {}", addrRoot));
         Terminal.print(0, format("Owner: {}", addrOwner));
-        Terminal.print(0, format("Enum: {}", int(color)));
-        Terminal.print(0, format("Str: {}", additionalStrParameter));
-        Terminal.print(0, format("Int: {}", additionalIntParameter));
-        if (additionalBoolParameter) {
-            Terminal.print(0, "Bool: true");
-        } else {
-            Terminal.print(0, "Bool: false");
-        }
+        Terminal.print(0, format("Author: {}", addrAuthor));
+        
+        /*TERMINAL_CHECK_RESULT*/
         menu();
     }
     //=========================================================================

@@ -5,10 +5,12 @@ import { TonClient } from '@tonclient/core';
 import { libNode } from '@tonclient/lib-node';
 import { globals } from '../config/globals'
 import { everscale_settings } from '../config/everscale-settings';
+import { DeployService } from './deploy.service';
 
 
 export class DeployDebotService {
     private client: TonClient;
+    private deployService: DeployService;
 
     constructor() {
         TonClient.useBinaryLibrary(libNode);
@@ -18,21 +20,15 @@ export class DeployDebotService {
                 endpoints: [everscale_settings.ENDPOINTS]
             }
         });
+
+        this.deployService = new DeployService();
     }
 
-    async deployDebot(contactsDir) {
+    async deployDebot(contractsDir, rootNftAddress: string) {
+        let debotCode = fs.readFileSync(path.resolve(contractsDir, "debots", "MintingDebot.sol")).toString();
+        let debotAcc = await this.deployService.createContractAccount(debotCode, path.resolve(contractsDir, "debots"), "MintingDebot");
         let walletAcc = await this.getWalletAcc();
-        let debotAbi = await JSON.parse(fs.readFileSync(path.resolve(contactsDir, "debots", "contracts", "MintingDebot.abi.json")).toString());
-        let debotTvc = fs.readFileSync(path.resolve(contactsDir, "debots", "contracts", "MintingDebot.tvc"), {encoding: 'base64'});
-        let debotAcc = new Account({
-            abi: debotAbi,
-            tvc: debotTvc
-        }, {
-            signer: {
-                type: "Keys",
-                keys: everscale_settings.KEYS
-            }
-        });
+        let debotTvc = fs.readFileSync(path.resolve(contractsDir, "debots", "MintingDebot.tvc"), {encoding: 'base64'});
         let debotAddress = await debotAcc.getAddress();
         await walletAcc.run(
             "sendTransaction",
@@ -57,7 +53,8 @@ export class DeployDebotService {
                         tvc: debotTvc
                     },
                     call_set: {
-                        function_name: "constructor"
+                        function_name: "constructor",
+                        input: {_addrNFTRoot: rootNftAddress}
                     },
                 },
                 send_events: false,

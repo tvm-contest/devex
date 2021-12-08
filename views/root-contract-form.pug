@@ -21,8 +21,8 @@ block content
                   label.form-label() Maximum number of tokenes
                   input.form-control(name="tokenLimit" onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Maximum number of tokenes" aria-label="Maximum number of tokenes")
               .form-check.for-type 
-                  input.form-check-input#type-rarity(type="checkbox" value="" name="checkbox-type-rarity")
-                  label.form-check-label(for="type-rarity") Rarity types are required
+                  input.form-check-input#type-rarity(type="checkbox" value="" name="checkboxTypeRarity")
+                  label.form-check-label(for="type-rarity") Требуются типы редкости
               .complete-block-collections-types
                 .block-for-col-types
                   .row.collection-type-#c0
@@ -78,7 +78,6 @@ block content
                 .parameter-media-file 
                   .col-12
                     label.form-label() Media file
-                    input.form-control.media-file(name="parameter[0][mediafile]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Media file")
 
                   
 
@@ -90,23 +89,23 @@ block content
         
         .checkbox-for-commissions
           .form-check 
-            input.form-check-input#use-author(type="checkbox" value="" name="check-use-author")
-            label.form-check-label(for="use-author") Use the author
+            input.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor")
+            label.form-check-label(for="use-author") Использовать автора
           .col-6.input-commission.use-author
-            label.form-label() Commision(%)
-            input.form-control.commission(type="text" name = 'commission-author' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
+            label.form-label() Комиссия(%)
+            input.form-control.commission(type="text" name = 'commissionAuthor' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
           .form-check 
-            input.form-check-input#commission-favor-owner(type="checkbox" value="" name="check-commission-favor-owner")
-            label.form-check-label(for="commission-favor-owner") Commision to owner
+            input.form-check-input#commission-favor-owner(type="checkbox" value="" name="checkCommissionFavorOwner")
+            label.form-check-label(for="commission-favor-owner") Комиссия в пользу владельца коллекции
           .col-6.input-commission.commission-favor-owner
-            label.form-label() Commision(%)
-            input.form-control(type="text" name = 'commission-favor-owner' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
+            label.form-label() Комиссия(%)
+            input.form-control(type="text" name = 'commissionFavorOwner' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
           .form-check 
-            input.form-check-input#commission-author-generator(type="checkbox" value="" name="check-commission-author-generator")
-            label.form-check-label(for="commission-author-generator") Commision to the author of the generator
+            input.form-check-input#commission-author-generator(type="checkbox" value="" name="checkCommissionAuthorGenerator")
+            label.form-check-label(for="commission-author-generator") Комиссия автору генератора
           .col-6.input-commission.commission-author-generator
-            label.form-label() Commision(%)
-            input.form-control(type="text" name = 'commission-author-generator' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
+            label.form-label() Комиссия(%)
+            input.form-control(type="text" name = 'commissionAuthorGenerator' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
         .col-6.MintingPriceUsers
           label.form-label() Minting price for users
           input.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users")

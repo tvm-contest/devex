@@ -6,6 +6,7 @@ import { globals } from '../config/globals'
 import { Collection } from "../models/collection";
 import { AddParamsService } from './add-params.service';
 import { EnumParameter } from '../models/enum';
+import { MediaFile } from '../models/mediafile';
 
 const dataFile = path.join(globals.CONTRACTS_ROOT, 'Data.sol');
 const indexFile = path.join(globals.CONTRACTS_ROOT, 'Index.sol');
@@ -30,7 +31,7 @@ class ContractGenerator {
     return tempDir;
   }
 
-  async generateContract(collectionSettings : Collection, enums?: EnumParameter[]){
+  async generateContract(collectionSettings : Collection, enums?: EnumParameter[], mediafiles?: MediaFile[]){
     const hashContract = sha256(JSON.stringify(collectionSettings));
     const tempDir = path.join(globals.TEMP_COLLECTION, hashContract);
 
@@ -49,6 +50,7 @@ class ContractGenerator {
     const auctionFileTemp = path.join(tempDir, 'Auction.sol');
     const aDataCoreFileTemp = path.join(tempDir, 'ADataCore.sol');
     const enumsFileTemp = path.join(tempDir, 'libraries', 'Enums.sol');
+    const debotFileTemp = path.join(tempDir, 'debots', 'MintingDebot.sol');
 
     fs.mkdirSync(tempDir);
 
@@ -73,8 +75,13 @@ class ContractGenerator {
     } else {
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), nftRootFile, nftRootFileTepm);
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), dataFile, dataFileTepm);
+      await addParamsService.addSeveralParams(collectionSettings.getParameters(), debotFileTemp, debotFileTemp);
       if (enums !== undefined) {
         await addParamsService.addEnums(enums, enumsFileTemp, enumsFileTemp);
+        await addParamsService.addEnums(enums, debotFileTemp, debotFileTemp);
+      }
+      if (mediafiles !== undefined) {
+        await addParamsService.addMediaFiles(mediafiles, debotFileTemp, debotFileTemp);
       }
     }
 
