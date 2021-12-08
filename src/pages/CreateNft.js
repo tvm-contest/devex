@@ -1,6 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 import { useContext, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { create } from 'ipfs-http-client';
+
 // material
 import {
   Container,
@@ -18,7 +20,7 @@ import {
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
-import * as IPFS from 'ipfs-core';
+// import * as IPFS from 'ipfs-core';
 // import web3Utils from 'web3-utils';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -30,10 +32,11 @@ import { validateForm } from '../components/_dashboard/nft/validateForm';
 
 import StoreContext from '../store/StoreContext';
 
-let ipfs;
-IPFS.create().then(async (node) => {
-  ipfs = node;
-});
+// let ipfs;
+// IPFS.create().then(async (node) => {
+//   ipfs = node;
+// });
+const ipfsClient = create('https://ipfs.infura.io:5001/api/v0');
 
 const ProductImgStyle = styled('img')({
   top: 0,
@@ -64,12 +67,16 @@ export default function CreateNFT() {
 
   const { getRootProps, getInputProps, acceptedFiles, isDragActive } = useDropzone();
 
-  const uploadImageToIpfs = async (file) => {
+  const uploadImageToIpfs = async (base64) => {
     // TODO implement upload to IPFS
     // file is data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAA…SjVDpQJfhcdt/3Hrt7ev+H+rDD13H5jEOAAAAAElFTkSuQmCC
     // console.log('uploadImageTiIpfs', file);
-    const fileInfo = await ipfs.add(file);
-    // console.log(fileInfo.path);
+    const file = await fetch(base64)
+      .then((res) => res.blob())
+      .then((blob) => new File([blob], 'File name', { type: 'image/png' }));
+
+    const fileInfo = await ipfsClient.add(file);
+    console.log(fileInfo);
     return fileInfo.path;
   };
 
