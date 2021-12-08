@@ -1,5 +1,5 @@
 :root {
-    --main-color: rgb(0, 136, 204);
+    --main-color: rgb(0, 125, 187);
     --title-color: rgb(32, 38, 42);
 }
 
@@ -12,7 +12,7 @@ body {
 }
 
 #form-contract {
-    padding: 10px;
+    padding: 0 20px 20px 20px;
     display: flex;
     margin: 0 auto;
     border-radius: 50px;
@@ -149,9 +149,14 @@ label {
     border-radius: 50px;
     box-shadow: none !important;
 }
-
+.btn-additionally{
+    color: #fff;
+    background-color: rgb(54, 163, 218);;
+    border-radius: 50px;
+    box-shadow: none !important;
+}
 .button-main-3 {
-    margin: 20px 0;
+    margin: 20px 0 0 0;
 }
 
 /* INPUTS */
