@@ -48,7 +48,6 @@ export class DeployDebotService {
                         type: "Keys",
                         keys: everscale_settings.KEYS
                     },
-                    address: debotAddress,
                     deploy_set: {
                         tvc: debotTvc
                     },
@@ -57,8 +56,29 @@ export class DeployDebotService {
                         input: {_addrNFTRoot: rootNftAddress}
                     },
                 },
-                send_events: false,
+                send_events: false
             });
+            let abi = fs.readFileSync(path.join(contractsDir, 'debots', 'MintingDebot.abi.json'), "utf8");
+            const buf = Buffer.from(abi, "ascii");
+            const hexvalue = buf.toString("hex");
+            await this.client.processing.process_message({
+                message_encode_params: {
+                    abi: debotAcc.abi,
+                    address: debotAddress,
+                    signer: {
+                        type: "Keys",
+                        keys: everscale_settings.KEYS
+                    },
+                    call_set: {
+                        function_name: "setABI",
+                        input: {
+                            dabi: hexvalue
+                        }
+                    },
+                },
+                send_events: true,
+            });
+            
             console.log("Debot address: " + debotAddress);
         } catch(err) {
             console.log(err);
