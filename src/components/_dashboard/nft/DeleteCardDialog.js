@@ -7,6 +7,14 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
+import PropTypes from 'prop-types';
+
+DeleteCardDialog.propTypes = {
+  open: PropTypes.string,
+  currentDeleting: PropTypes.string,
+  handleClose: PropTypes.func,
+  handleDelete: PropTypes.func
+};
 
 export default function DeleteCardDialog({ open, handleClose, handleDelete, currentDeleting }) {
   return (
