@@ -78,7 +78,6 @@ export default function CreateNFT() {
       .then((blob) => new File([blob], 'File name', { type: 'image/png' }));
 
     const fileInfo = await ipfsClient.add(file);
-    console.log(fileInfo);
     return fileInfo.path;
   };
 
