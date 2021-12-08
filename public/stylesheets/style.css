@@ -1,5 +1,5 @@
 :root {
-    --main-color: rgb(0, 136, 204);
+    --main-color: rgb(0, 125, 187);
     --title-color: rgb(32, 38, 42);
 }
 
@@ -12,42 +12,17 @@ body {
 }
 
 #form-contract {
-    padding: 10px;
+    padding: 0 20px 20px 20px;
     display: flex;
     margin: 0 auto;
     border-radius: 50px;
     background-color: #fff;
-    max-width: 670px;
-    min-height: 700px;
-}
-
-.main-form {
-    padding: 10px;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-}
-
-.form-button {
-    align-self: self-end;
-    padding: 5px;
-}
-
-.form-button:hover {
-    background-color: #474646;
+    /*max-width: 670px;
+    min-height: 700px;*/
 }
 
 .col {
     padding: 12px;
-}
-
-.collectionType {
-    padding: 7px;
-    position: relative;
-    border: 1px solid white;
-    margin-bottom: 10px;
-    box-shadow: 2px 2px 5px #ccc;
 }
 
 .button-delete {
@@ -64,11 +39,6 @@ body {
     z-index: 100;
 }
 
-.form-title {
-    font-size: 1.3em;
-    align-self: center;
-    margin-bottom: 10px;
-}
 
 .row.parameter-number,
 .row.parameter-string,
@@ -89,13 +59,6 @@ body {
     margin: auto;
 }
 
-.parameter {
-    padding: 7px;
-    position: relative;
-    border: 1px solid white;
-    margin-bottom: 10px;
-    box-shadow: 2px 2px 5px #ccc;
-}
 
 .param-label {
     display: block;
@@ -154,8 +117,24 @@ label {
     cursor: pointer;
 }
 
-.home-header {
+/* INDEX PAGE */
+.home {
     padding: 2em 0 0;
+    height: 92vh;
+}
+
+.home__header {
+    animation: slideInFromLeft 1.2s ease-in-out;
+    font-weight: 700;
+    font-size: 60px;
+    text-align: center;
+    padding: 40px 0;
+}
+
+.home-content__subtitle {
+    animation: slideInFromRight 1.3s ease-in-out;
+    text-align: center;
+    font-size: 30px;
 }
 
 /* NAVBAR */
@@ -186,9 +165,14 @@ label {
     border-radius: 50px;
     box-shadow: none !important;
 }
-
+.btn-additionally{
+    color: #fff;
+    background-color: rgb(54, 163, 218);;
+    border-radius: 50px;
+    box-shadow: none !important;
+}
 .button-main-3 {
-    margin: 20px 0;
+    margin: 20px 0 0 0;
 }
 
 /* INPUTS */
@@ -200,4 +184,95 @@ input {
 /* CHECKS */
 .form-check-input {
     border-color: var(--main-color);
+}
+
+/* FUTUTRES */
+.home-features {
+    margin: 120px 0 0;
+}
+
+.flex-3 {
+    display: flex;
+}
+
+.feature-item {
+    position: relative;
+    color: #000;
+    flex: 1;
+    padding: 0 10px;
+    margin: 0 10px;
+}
+
+.feature-item:first-child {
+    animation: slideInFromLeft 1s ease-in-out;
+}
+
+.feature-item:nth-child(2) {
+    animation: slideInFromBottom 1s ease-in-out;
+}
+
+.feature-item:last-child {
+    animation: slideInFromRight 1s ease-in-out;
+}
+
+.feature__title {
+    animation: appeareText 1s ease-in-out;
+    font-weight: 700;
+    font-size: 30px;
+}
+
+.feature__text {
+    animation: appeareText 1s ease-in-out;
+    color: #fff;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+/* Animation */
+@keyframes slideInFromLeft{
+    0% {
+        transform: translateX(-100%);
+        color: transparent;
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight{
+    0% {
+        transform: translateX(100%);
+        color: transparent;
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromTop{
+    0% {
+        transform: translateY(-100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromBottom{
+    0% {
+        transform: translateY(100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes appeareText{
+    0% {
+        color: transparent;
+    }
 }

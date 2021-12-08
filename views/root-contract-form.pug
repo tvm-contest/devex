@@ -7,12 +7,16 @@ block content
       form.row.g-3#form-contract(action="", method="post")
         ul.nav.nav-tabs.justify-content-center#myTab(role="tablist" )
           li.nav-item(role="presentation")
-            button.nav-link.active#home-tab(data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true") Type
+            button.nav-link.active#home-tab(data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true") Main
           li.nav-item(role="presentation")
-            button.nav-link#profile-tab(data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false") Parameters
+            button.nav-link#rarity-tab(data-bs-toggle="tab" data-bs-target="#rarity" type="button" role="tab" aria-controls="rarity" aria-selected="false") Rarity
+          li.nav-item(role="presentation")
+            button.nav-link#comissions-tab(data-bs-toggle="tab" data-bs-target="#comissions" type="button" role="tab" aria-controls="comissions" aria-selected="false") Comissions
+          li.nav-item(role="presentation")
+            button.nav-link#profile-tab(data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false") Token Parameters
         .tab-content#myTabContent
           .tab-pane.fade.show.active#home(role="tabpanel" aria-labelledby="home-tab") 
-            .content-type
+            .content-name
               .row.row_init
                 .col
                   label.form-label() Contract name
@@ -20,21 +24,27 @@ block content
                 .col
                   label.form-label() Maximum number of tokenes
                   input.form-control(name="tokenLimit" onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Maximum number of tokenes" aria-label="Maximum number of tokenes")
+              
+            
+          .tab-pane.fade#rarity(role="tabpanel" aria-labelledby="rarity-tab") 
+            .content-type  
               .form-check.for-type 
                   input.form-check-input#type-rarity(type="checkbox" value="" name="checkboxTypeRarity")
-                  label.form-check-label(for="type-rarity") Требуются типы редкости
+                  label.form-check-label(for="type-rarity") Use Rarity Types for tokens
               .complete-block-collections-types
                 .block-for-col-types
                   .row.collection-type-#c0
                       .col.name
-                        label.form-label() Collection types
+                        label.form-label() Rarity Type For Token
                         input.form-control.col-name(name="type[0][name]" type="text" pattern="[A-Za-z0-9_]+" onInput="checkLatinInput(this)" placeholder="Collection type" aria-label="Collection types")
                       .col.limit
-                        label.form-label() Number of tokens
+                        label.form-label() Maximum tokens number for type
                         input.form-control.col-limit(name="type[0][limit]" type="text" pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Number of tokens" aria-label="Number of tokens")                            
-                .buttons
-                  input.btn.btn-block.btn-blue(type="button" value="- Delete type" onclick="deleteType();")
-                  input.btn.btn-block.btn-blue(type="button" value=" + Add type" onclick="addType();")
+                .row.buttons
+                  .col
+                    input.btn.btn-block.btn-blue.btn-additionally(type="button" value="- Delete type" onclick="deleteType();")
+                  .col
+                    input.btn.btn-block.btn-blue.btn-additionally(type="button" value=" + Add type" onclick="addType();")
           .tab-pane.fade#profile(role="tabpanel" aria-labelledby="profile-tab")
             .content-param
               .block-for-col-param-choice#p0
@@ -45,7 +55,7 @@ block content
                       input.form-control.nameParam(name="parameter[0][name]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Parameter name")
                   .col
                     label.form-label() Parameter type
-                    select.type-parameter.form-select.btn-blue(name="selectpicker")
+                    select.type-parameter.form-select.btn-blue.btn-additionally(name="selectpicker")
                         option(value="none") Choose parameter type
                         option(value="number") Number
                         option(value="line") String
@@ -72,48 +82,47 @@ block content
                       input.form-control.param-enum#e0(name="parameter[0][enum][0]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Variant")
                   .row.button-enum
                     .col-6.button-addVariant
-                      input.btn.btn-blue.btn-block(type="button" value=" + Add variant" onclick="addVariant(this);")
+                      input.btn.btn-blue.btn-block.btn-additionally(type="button" value=" + Add variant" onclick="addVariant(this);")
                     .col-6.button-addVariant
-                      input.btn.btn-blue.btn-block(type="button" value=" - Delete variant" onclick="deleteVariant(this);")
+                      input.btn.btn-blue.btn-block.btn-additionally(type="button" value=" - Delete variant" onclick="deleteVariant(this);")
                 .parameter-media-file 
                   .col-12
                     label.form-label() Media file
-
-                  
-
-
-            .buttons
-              input.btn.btn-blue.btn-block(type="button" value=" + Add paremeter" onclick="addParam();")
-              input.btn.btn-blue.btn-block(class="btn btn-blue" type="button" value="- Delete parameter" onclick="deleteParam();")
-  
-        
-        .checkbox-for-commissions
-          .form-check 
-            input.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor")
-            label.form-check-label(for="use-author") Использовать автора
-          .col-6.input-commission.use-author
-            label.form-label() Комиссия(%)
-            input.form-control.commission(type="text" name = 'commissionAuthor' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
-          .form-check 
-            input.form-check-input#commission-favor-owner(type="checkbox" value="" name="checkCommissionFavorOwner")
-            label.form-check-label(for="commission-favor-owner") Комиссия в пользу владельца коллекции
-          .col-6.input-commission.commission-favor-owner
-            label.form-label() Комиссия(%)
-            input.form-control(type="text" name = 'commissionFavorOwner' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
-          .form-check 
-            input.form-check-input#commission-author-generator(type="checkbox" value="" name="checkCommissionAuthorGenerator")
-            label.form-check-label(for="commission-author-generator") Комиссия автору генератора
-          .col-6.input-commission.commission-author-generator
-            label.form-label() Комиссия(%)
-            input.form-control(type="text" name = 'commissionAuthorGenerator' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
-        .col-6.MintingPriceUsers
-          label.form-label() Minting price for users
-          input.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users")
+                    input.form-control.media-file(name="parameter[0][mediafile]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Media file")
+                    
+            .row.buttons
+              .col
+                input.btn.btn-blue.btn-block.btn-additionally(type="button" value=" + Add paremeter" onclick="addParam();")
+              .col
+                input.btn.btn-blue.btn-block.btn-additionally(class="btn btn-blue" type="button" value="- Delete parameter" onclick="deleteParam();")
+          .tab-pane.fade#comissions(role="tabpanel" aria-labelledby="comissions-tab")
+            .checkbox-for-commissions
+              .form-check 
+                input.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor")
+                label.form-check-label(for="use-author") Add token author and his comission
+              .col-6.input-commission.use-author
+                label.form-label() Commission (%)
+                input.form-control.commission(type="text" name = 'commissionAuthor' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
+              .form-check 
+                input.form-check-input#commission-favor-owner(type="checkbox" value="" name="checkCommissionFavorOwner")
+                label.form-check-label(for="commission-favor-owner") Commission to Collection Owner
+              .col-6.input-commission.commission-favor-owner
+                label.form-label() Commission (%)
+                input.form-control(type="text" name = 'commissionFavorOwner' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
+              .form-check 
+                input.form-check-input#commission-author-generator(type="checkbox" value="" name="checkCommissionAuthorGenerator")
+                label.form-check-label(for="commission-author-generator") Commission to Service Creator
+              .col-6.input-commission.commission-author-generator
+                label.form-label() Commission (%)
+                input.form-control(type="text" name = 'commissionAuthorGenerator' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
+            .col-6.MintingPriceUsers
+              label.form-label() Minting price for users
+              input.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users")
         .row.button-main-3
           .col.button-main
             input.submit-button.btn.btn-blue.btn-block#save-data(type="submit" value="Save data")
           .col.button-main
-            input.submit-button.btn.btn-blue.btn-block#form-contracts(type="submit" value="Form contracts")
+            input.submit-button.btn.btn-blue.btn-block#form-contracts(type="submit" value="Generate Contracts Code")
           .col.button-main
             input.submit-button.btn.btn-blue.btn-block#deploy-contracts(type="submit" value="Deploy contracts")
   script(src="/scripts/root-contract-form.js")
