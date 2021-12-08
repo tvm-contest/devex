@@ -62,8 +62,10 @@ export default function CreateNFT() {
   const [open, setOpen] = useState(false);
   const [currentDeleting, setCurrentDeleting] = useState('');
   const {
-    state: { account }
+    state: { account, ton }
   } = useContext(StoreContext);
+
+  window.ttt = ton;
 
   const { getRootProps, getInputProps, acceptedFiles, isDragActive } = useDropzone();
 
@@ -320,11 +322,17 @@ export default function CreateNFT() {
           </Grid>
           <Grid item xs={6}>
             <TextField
-              label="Number of NFTs"
+              label="Number of NFTs (max 10 for now)"
               type="number"
               value={totalImages}
               onChange={(e) => {
-                if (e.target.value >= 0) setTotalImages(e.target.value);
+                let number = e.target.value;
+                if (number > 10) {
+                  number = 10;
+                }
+                if (e.target.value >= 0) {
+                  setTotalImages(e.target.value);
+                }
               }}
               error={isSubmitClick && !totalImages}
               fullWidth
