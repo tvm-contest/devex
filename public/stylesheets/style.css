@@ -25,6 +25,10 @@ body {
     padding: 12px;
 }
 
+.line{
+    padding: 10px;
+    border-bottom: 1px solid rgb(0, 125, 187);
+}
 .button-delete {
     width: 30px;
     height: 30px;
