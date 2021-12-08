@@ -58,23 +58,18 @@ $('form').on("change", ".type-parameter",function(){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
-        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
     } else if(curentSelectedVal === "line"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
-        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
-
     } else if(curentSelectedVal === "enum"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','block');
-        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
     } else if(curentSelectedVal === "mediafile"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
-        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','flex');
     }
 });
 const addVariant = (e) => {
