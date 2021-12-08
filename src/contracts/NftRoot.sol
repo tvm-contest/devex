@@ -76,8 +76,7 @@ contract NftRoot is DataResolver, IndexResolver {
             editionAmount,
             managersList,
             royalty,
-            nftType
-            /*%PARAM_TO_DATA%*/
+            nftType/*%PARAM_TO_DATA%*/
         );
 
         _mintedByTypes[nftType]++;
