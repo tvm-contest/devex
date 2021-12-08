@@ -1,6 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 import { useContext, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { create } from 'ipfs-http-client';
+
 // material
 import {
   Container,
@@ -18,7 +20,7 @@ import {
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
-import * as IPFS from 'ipfs-core';
+// import * as IPFS from 'ipfs-core';
 // import web3Utils from 'web3-utils';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -30,10 +32,11 @@ import { validateForm } from '../components/_dashboard/nft/validateForm';
 
 import StoreContext from '../store/StoreContext';
 
-let ipfs;
-IPFS.create().then(async (node) => {
-  ipfs = node;
-});
+// let ipfs;
+// IPFS.create().then(async (node) => {
+//   ipfs = node;
+// });
+const ipfsClient = create('https://ipfs.infura.io:5001/api/v0');
 
 const ProductImgStyle = styled('img')({
   top: 0,
@@ -52,32 +55,36 @@ export default function CreateNFT() {
   const [collectionDesc, setCollectionDesc] = useState('');
   const [isSubmitClick, setIsSubmitClick] = useState(false);
   const [layerData, setLayerData] = useState([]);
-  const [totalImages, setTotalImages] = useState(0);
+  const [totalImages, setTotalImages] = useState();
   const [nftData, setNftData] = useState([]);
   const [currentLayer, setCurrentLayer] = useState();
   const [currentDeletedIndex, setCurrentDeletedIndex] = useState();
   const [open, setOpen] = useState(false);
   const [currentDeleting, setCurrentDeleting] = useState('');
   const {
-    state: { account }
+    state: { account, ton }
   } = useContext(StoreContext);
+
+  window.ttt = ton;
 
   const { getRootProps, getInputProps, acceptedFiles, isDragActive } = useDropzone();
 
-  const uploadImageToIpfs = async (file) => {
+  const uploadImageToIpfs = async (base64) => {
     // TODO implement upload to IPFS
     // file is data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAA…SjVDpQJfhcdt/3Hrt7ev+H+rDD13H5jEOAAAAAElFTkSuQmCC
     // console.log('uploadImageTiIpfs', file);
-    const fileInfo = await ipfs.add(file);
-    // console.log(fileInfo.path);
+    const file = await fetch(base64)
+      .then((res) => res.blob())
+      .then((blob) => new File([blob], 'File name', { type: 'image/png' }));
+
+    const fileInfo = await ipfsClient.add(file);
     return fileInfo.path;
   };
 
   const handleAddMultiImage = (files) => {
     const newArr = layerData.filter((elem) => {
       if (elem.id === currentLayer) {
-        Object.entries(files).forEach(([key, value]) => {
-          console.log(key);
+        Object.entries(files).forEach(([, value]) => {
           elem.imagArr.push({
             id: Math.floor(Math.random() * 100000),
             traitVal: '',
@@ -101,8 +108,9 @@ export default function CreateNFT() {
     const returnData = [];
 
     for (const [key, data] of Object.entries(nftData)) {
-      returnData.push({ ...data, image: uploadedData[key] });
+      returnData.push({ ...data, image: `ipfs://${uploadedData[key]}` });
     }
+    console.log(returnData);
 
     return returnData;
   };
@@ -125,16 +133,16 @@ export default function CreateNFT() {
 
   const handleGenerateImages = async () => {
     setIsSubmitClick(true);
-    if (!totalImages) {
-      // TODO set errors
-      alert('TODO set totel images');
+
+    // validation
+    if (!totalImages || !collectionName || !collectionDesc) {
       return;
     }
-    // validation
-    if (!collectionName || !collectionDesc) return;
 
     const validate = await validateForm(layerData);
-    if (validate) return;
+    if (validate) {
+      return;
+    }
 
     const imagesToGenerate = [];
 
@@ -321,11 +329,17 @@ export default function CreateNFT() {
           </Grid>
           <Grid item xs={6}>
             <TextField
-              label="Number of NFTs"
+              label="Number of NFTs (max 10 for now)"
               type="number"
               value={totalImages}
               onChange={(e) => {
-                if (e.target.value >= 0) setTotalImages(e.target.value);
+                let number = e.target.value;
+                if (number > 10) {
+                  number = 10;
+                }
+                if (number >= 0) {
+                  setTotalImages(number);
+                }
               }}
               error={isSubmitClick && !totalImages}
               fullWidth
@@ -502,7 +516,17 @@ export default function CreateNFT() {
           <Button onClick={handleAddLayer} variant="contained" fullWidth>
             Add another layer
           </Button>
-          {!!layerData.length && <Button onClick={handleGenerateImages}>Generate images</Button>}
+          {!!layerData.length && (
+            <Button
+              onClick={handleGenerateImages}
+              variant="contained"
+              fullWidth
+              color="warning"
+              sx={{ marginTop: 5, marginBottom: 5 }}
+            >
+              Generate images
+            </Button>
+          )}
           <NFTList nfts={nftData} />
           {!!nftData.length && (
             <Button onClick={getDataForBlockchain} variant="contained" fullWidth>

@@ -10,7 +10,7 @@ import {
 import PropTypes from 'prop-types';
 
 DeleteCardDialog.propTypes = {
-  open: PropTypes.string,
+  open: PropTypes.bool,
   currentDeleting: PropTypes.string,
   handleClose: PropTypes.func,
   handleDelete: PropTypes.func
