@@ -52,7 +52,7 @@ export default function CreateNFT() {
   const [collectionDesc, setCollectionDesc] = useState('');
   const [isSubmitClick, setIsSubmitClick] = useState(false);
   const [layerData, setLayerData] = useState([]);
-  const [totalImages, setTotalImages] = useState(0);
+  const [totalImages, setTotalImages] = useState();
   const [nftData, setNftData] = useState([]);
   const [currentLayer, setCurrentLayer] = useState();
   const [currentDeletedIndex, setCurrentDeletedIndex] = useState();
@@ -76,8 +76,7 @@ export default function CreateNFT() {
   const handleAddMultiImage = (files) => {
     const newArr = layerData.filter((elem) => {
       if (elem.id === currentLayer) {
-        Object.entries(files).forEach(([key, value]) => {
-          console.log(key);
+        Object.entries(files).forEach(([, value]) => {
           elem.imagArr.push({
             id: Math.floor(Math.random() * 100000),
             traitVal: '',
@@ -101,8 +100,9 @@ export default function CreateNFT() {
     const returnData = [];
 
     for (const [key, data] of Object.entries(nftData)) {
-      returnData.push({ ...data, image: uploadedData[key] });
+      returnData.push({ ...data, image: `ipfs://${uploadedData[key]}` });
     }
+    console.log(returnData);
 
     return returnData;
   };
@@ -125,16 +125,16 @@ export default function CreateNFT() {
 
   const handleGenerateImages = async () => {
     setIsSubmitClick(true);
-    if (!totalImages) {
-      // TODO set errors
-      alert('TODO set totel images');
+
+    // validation
+    if (!totalImages || !collectionName || !collectionDesc) {
       return;
     }
-    // validation
-    if (!collectionName || !collectionDesc) return;
 
     const validate = await validateForm(layerData);
-    if (validate) return;
+    if (validate) {
+      return;
+    }
 
     const imagesToGenerate = [];
 
@@ -494,7 +494,17 @@ export default function CreateNFT() {
           <Button onClick={handleAddLayer} variant="contained" fullWidth>
             Add another layer
           </Button>
-          {!!layerData.length && <Button onClick={handleGenerateImages}>Generate images</Button>}
+          {!!layerData.length && (
+            <Button
+              onClick={handleGenerateImages}
+              variant="contained"
+              fullWidth
+              color="warning"
+              sx={{ marginTop: 5, marginBottom: 5 }}
+            >
+              Generate images
+            </Button>
+          )}
           <NFTList nfts={nftData} />
           {!!nftData.length && (
             <Button onClick={getDataForBlockchain} variant="contained" fullWidth>
