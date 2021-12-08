@@ -6,21 +6,20 @@ import {
   Container,
   Typography,
   Button,
-  Input,
   Stack,
   Card,
   CardContent,
   CardActions,
-  CardMedia,
   Box,
   Link,
   TextField,
-  Grid
+  Grid,
+  FormHelperText
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
 import * as IPFS from 'ipfs-core';
-import web3Utils from 'web3-utils';
+// import web3Utils from 'web3-utils';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 // components
@@ -30,7 +29,6 @@ import DeleteCardDialog from '../components/_dashboard/nft/DeleteCardDialog';
 import { validateForm } from '../components/_dashboard/nft/validateForm';
 
 import StoreContext from '../store/StoreContext';
-import { call } from '../blockchain/TonSDK';
 
 let ipfs;
 IPFS.create().then(async (node) => {
@@ -211,14 +209,6 @@ export default function CreateNFT() {
     setNftData(andFinalImages);
 
     //  TODO add method to upload chunks
-    call(
-      'sendMetadata',
-      {
-        adr: account.address,
-        metadata: web3Utils.utf8ToHex(JSON.stringify(andFinalImages)).replace('0x', '')
-      },
-      account.address
-    );
   };
 
   const handleTraitNameChange = (val, currentId) => {
@@ -292,8 +282,16 @@ export default function CreateNFT() {
         <Typography variant="h4" sx={{ mb: 5 }}>
           Create a new NFTs
         </Typography>
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          TODO Alex to provide detailed description here
+        <Typography variant="h4" sx={{ mb: 0 }}>
+          Welcome!
+        </Typography>
+        <Typography variant="h6" sx={{ mb: 0 }}>
+          Here you can create your own NFT collection. Upload and edit layers, adjust the parameters
+          of the collection and traits, and enjoy the result!
+        </Typography>
+        <Typography variant="h6" sx={{ mb: 5 }}>
+          The process is described in detail in the WhitePaper in the "User flow" section. Please
+          keep in mind that NeFerTiti is still working in test mode.
         </Typography>
       </Container>
 
@@ -307,6 +305,11 @@ export default function CreateNFT() {
               error={isSubmitClick && !collectionName}
               fullWidth
             />
+            {isSubmitClick && !collectionName ? (
+              <FormHelperText error>Please Enter Collection Name</FormHelperText>
+            ) : (
+              ''
+            )}
           </Grid>
           <Grid item xs={6}>
             <TextField
@@ -319,6 +322,11 @@ export default function CreateNFT() {
               error={isSubmitClick && !totalImages}
               fullWidth
             />
+            {isSubmitClick && !totalImages ? (
+              <FormHelperText error>Please Enter Number of NFTs greater than 0</FormHelperText>
+            ) : (
+              ''
+            )}
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -328,6 +336,11 @@ export default function CreateNFT() {
               error={isSubmitClick && !collectionDesc}
               fullWidth
             />
+            {isSubmitClick && !collectionDesc ? (
+              <FormHelperText error>Please Enter Collection Name</FormHelperText>
+            ) : (
+              ''
+            )}
           </Grid>
         </Grid>
         <Typography variant="h6" sx={{ marginTop: 5 }}>
@@ -355,6 +368,13 @@ export default function CreateNFT() {
                   Delete Layer
                 </Button>
               </CardActions>
+              <CardActions sx={{ mt: -2 }}>
+                {isSubmitClick && !data.traitName ? (
+                  <FormHelperText error>Please Enter Trait Name</FormHelperText>
+                ) : (
+                  ''
+                )}
+              </CardActions>
               <CardContent
                 onClick={() => setCurrentLayer(data.id)}
                 sx={{
@@ -372,7 +392,12 @@ export default function CreateNFT() {
                   })}
                 >
                   <input {...getInputProps()} accept="image/*" />
-                  <Stack direction="row" alignItems="center" spacing={1}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    style={{ flexWrap: 'wrap' }}
+                  >
                     {data.imagArr.length ? (
                       data.imagArr.map((file, index) => (
                         <Card
@@ -382,8 +407,21 @@ export default function CreateNFT() {
                             e.stopPropagation();
                             e.preventDefault();
                           }}
+                          sx={{ mb: 2 }}
                         >
                           <Box sx={{ pt: '100%', position: 'relative' }}>
+                            <DeleteIcon
+                              variant="filled"
+                              color="error"
+                              sx={{
+                                zIndex: 9,
+                                top: 16,
+                                right: 16,
+                                position: 'absolute',
+                                textTransform: 'uppercase'
+                              }}
+                              onClick={() => handleClickOpen(data.id, 'card', index)}
+                            />
                             <ProductImgStyle alt={file.src} src={file.src} />
                           </Box>
                           <Stack
@@ -403,6 +441,11 @@ export default function CreateNFT() {
                                 error={isSubmitClick && !file.traitVal}
                                 size="small"
                               />
+                              {isSubmitClick && !file.traitVal ? (
+                                <FormHelperText error>Please Enter Trait Value</FormHelperText>
+                              ) : (
+                                ''
+                              )}
                               <TextField
                                 label="Trait Rarity"
                                 value={file.traitRar}
@@ -413,11 +456,14 @@ export default function CreateNFT() {
                                 type="number"
                                 size="small"
                               />
+                              {isSubmitClick && !file.traitRar ? (
+                                <FormHelperText error>
+                                  Please Enter Trait Rarity Number
+                                </FormHelperText>
+                              ) : (
+                                ''
+                              )}
                             </Stack>
-                            <DeleteIcon
-                              style={{ marginLeft: 5, color: '#00AB55' }}
-                              onClick={() => handleClickOpen(data.id, 'card', index)}
-                            />
                           </Stack>
                         </Card>
                       ))

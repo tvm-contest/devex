@@ -2,7 +2,6 @@ import { TonClient, signerNone, signerKeys, accountForExecutorUninit } from '@to
 
 import { libWeb } from '@tonclient/lib-web';
 import { Account } from '@tonclient/appkit';
-import * as jsonData from './contracts.json';
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 TonClient.useBinaryLibrary(libWeb);
