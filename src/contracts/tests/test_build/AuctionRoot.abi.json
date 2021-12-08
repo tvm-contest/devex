@@ -1,0 +1,40 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"codeAuction","type":"cell"},
+				{"name":"addrRoyaltyRecipient","type":"address"},
+				{"name":"royaltyPercent","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "createAuction",
+			"inputs": [
+				{"name":"addrNft","type":"address"},
+				{"name":"initialPrice","type":"uint128"},
+				{"name":"minBidStep","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getAuctionAddress",
+			"inputs": [
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrNft","type":"address"}
+			],
+			"outputs": [
+				{"name":"addrAuction","type":"address"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

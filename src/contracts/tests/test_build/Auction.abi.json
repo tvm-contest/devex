@@ -1,0 +1,87 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"initialPrice","type":"uint128"},
+				{"name":"minBidStep","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "start",
+			"inputs": [
+				{"name":"auctionDuration","type":"uint64"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "approveTradability",
+			"inputs": [
+				{"name":"addrNftOwner","type":"address"},
+				{"name":"addrTrusted","type":"address"},
+				{"name":"addrRoyaltyAuthor","type":"address"},
+				{"name":"royaltyPercent","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "placeBid",
+			"inputs": [
+				{"name":"bidValue","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finish",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "cancel",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getHighestBid",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"highestBidValue","type":"uint128"}
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"addrRoot","type":"address"},
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrNft","type":"address"},
+				{"name":"initialPrice","type":"uint128"},
+				{"name":"minBidStep","type":"uint128"},
+				{"name":"auctionStartTime","type":"uint64"},
+				{"name":"auctionDuration","type":"uint64"},
+				{"name":"addrHighestBidder","type":"address"},
+				{"name":"highestBidValue","type":"uint128"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"_addrRoot","type":"address"},
+		{"key":2,"name":"_addrOwner","type":"address"},
+		{"key":3,"name":"_addrNft","type":"address"}
+	],
+	"events": [
+	]
+}
