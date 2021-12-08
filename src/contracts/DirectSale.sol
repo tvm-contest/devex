@@ -118,7 +118,7 @@ contract DirectSale {
     {
         tvm.accept();
         _isDurationLimited = false;
-        if (_saleDuration > 0) { _saleDuration = 0; } // проверить на избыточность
+        if (_saleDuration > 0) { _saleDuration = 0; }
     }
 
     function getNftPrice() external view returns (uint128 nftPrice) {
