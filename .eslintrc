@@ -63,9 +63,12 @@
       }
     ],
     "prettier/prettier": [
-      "error",
+      2,
       {
-        "endOfLine": "auto"
+        "printWidth": 100,
+        "singleQuote": true,
+        "trailingComma": "none",
+        "tabWidth": 2
       }
     ]
   }
