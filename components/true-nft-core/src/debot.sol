@@ -101,7 +101,8 @@ contract HelloDebot is Debot {
 
     function preprepare(address value) public {
         m_nftroot = value;
-        _price(tvm.functionId(prepare),value);
+        uint128 p = NftRoot(m_nftroot).price();
+        Terminal.print(0, format("{}",p));
     }
 
     function prepare(uint128 price) public {
@@ -111,15 +112,7 @@ contract HelloDebot is Debot {
     function mintNft(address adr, uint128 value) public {
         optional(uint256) none;
         optional(uint256) pubkey = 0;
-        IMultisig(m_wallet).submitTransaction{
-                abiVer: 2,
-                sign: true,
-                pubkey: pubkey,
-                time: uint64(now),
-                expire: 0,
-                callbackId: tvm.functionId(onSuccess),
-                onErrorId: tvm.functionId(onSuccess)
-            }(adr, value + 2 ton, true, false, tvm.encodeBody(NftRoot.mintNft));
+        IMultisig(m_wallet).submitTransaction(adr, value + 2 ton, true, false, tvm.encodeBody(NftRoot.mintNft));
     }
 
     function onSuccess() public {
@@ -128,18 +121,10 @@ contract HelloDebot is Debot {
     }
 
 
-    function _price(uint32 answerId,address nftroot) private view {
-        optional(uint256) none;
-        NftRoot(nftroot).price{
-            abiVer: 2,
-            sign: false,
-            pubkey: none,
-            time: uint64(now),
-            expire: 0,
-            callbackId: answerId,
-            onErrorId: 0
-        }();
-    }
+    // function _price(uint32 answerId,address nftroot) private view {
+    //     optional(uint256) none;
+    //     return NftRoot(nftroot).price();
+    // }
 
 
     
