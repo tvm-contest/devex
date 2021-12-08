@@ -1,6 +1,23 @@
 extends layout
 
 block content
-  .home-header
-    h1= title
-    p Welcome to #{title}
+  section.home
+    .home__conteiner
+      .home-title 
+        h1.home__header #{title}
+      .home-content
+        .home-content__subtitle This is NFT Collection Generator
+        .home-content__subtitle with it you can create any collections
+        .home-features
+          .home-features.flex-3
+            .feature-item
+              .feature__title Secure
+              .feature__text You cannot worry about the safety your collections of the tokens
+            .feature-item
+              .feature__title Сomfortable
+              .feature__text Did you think that creating your collection is difficult? With our generator, you can create your first collection easily without knowing any additional information.
+            .feature-item
+              .feature__title Private
+              .feature__text You can greate your NFT collection and another user can create tokens of this collection. They can buy, exchange, and sell their tokes
+
+
