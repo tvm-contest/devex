@@ -33,8 +33,8 @@ block content
                         label.form-label() Number of tokens
                         input.form-control.col-limit(name="type[0][limit]" type="text" pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Number of tokens" aria-label="Number of tokens")                            
                 .buttons
-                  input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Delete type" onclick="deleteType();")
-                  input.btn.btn-dark.btn-block(type="button" value=" + Add type" onclick="addType();")
+                  input.btn.btn-block.btn-blue(type="button" value="- Delete type" onclick="deleteType();")
+                  input.btn.btn-block.btn-blue(type="button" value=" + Add type" onclick="addType();")
           .tab-pane.fade#profile(role="tabpanel" aria-labelledby="profile-tab")
             .content-param
               .block-for-col-param-choice#p0
@@ -45,7 +45,7 @@ block content
                       input.form-control.nameParam(name="parameter[0][name]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Parameter name")
                   .col
                     label.form-label() Parameter type
-                    select.type-parameter.form-select.btn-dark(name="selectpicker")
+                    select.type-parameter.form-select.btn-blue(name="selectpicker")
                         option(value="none") Choose parameter type
                         option(value="number") Number
                         option(value="line") String
@@ -72,9 +72,9 @@ block content
                       input.form-control.param-enum#e0(name="parameter[0][enum][0]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Variant")
                   .row.button-enum
                     .col-6.button-addVariant
-                      input.btn.btn-dark.btn-block(type="button" value=" + Add variant" onclick="addVariant(this);")
+                      input.btn.btn-blue.btn-block(type="button" value=" + Add variant" onclick="addVariant(this);")
                     .col-6.button-addVariant
-                      input.btn.btn-dark.btn-block(type="button" value=" - Delete variant" onclick="deleteVariant(this);")
+                      input.btn.btn-blue.btn-block(type="button" value=" - Delete variant" onclick="deleteVariant(this);")
                 .parameter-media-file 
                   .col-12
                     label.form-label() Media file
@@ -84,8 +84,8 @@ block content
 
 
             .buttons
-              input.btn.btn-dark.btn-block(type="button" value=" + Add paremeter" onclick="addParam();")
-              input.btn.btn-dark.btn-block(class="btn btn-dark" type="button" value="- Delete parameter" onclick="deleteParam();")
+              input.btn.btn-blue.btn-block(type="button" value=" + Add paremeter" onclick="addParam();")
+              input.btn.btn-blue.btn-block(class="btn btn-blue" type="button" value="- Delete parameter" onclick="deleteParam();")
   
         
         .checkbox-for-commissions
@@ -112,11 +112,11 @@ block content
           input.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users")
         .row.button-main-3
           .col.button-main
-            input.submit-button.btn.btn-dark.btn-block#save-data(type="submit" value="Save data")
+            input.submit-button.btn.btn-blue.btn-block#save-data(type="submit" value="Save data")
           .col.button-main
-            input.submit-button.btn.btn-dark.btn-block#form-contracts(type="submit" value="Form contracts")
+            input.submit-button.btn.btn-blue.btn-block#form-contracts(type="submit" value="Form contracts")
           .col.button-main
-            input.submit-button.btn.btn-dark.btn-block#deploy-contracts(type="submit" value="Deploy contracts")
+            input.submit-button.btn.btn-blue.btn-block#deploy-contracts(type="submit" value="Deploy contracts")
   script(src="/scripts/root-contract-form.js")
       
       
