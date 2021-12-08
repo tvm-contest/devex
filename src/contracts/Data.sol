@@ -94,6 +94,7 @@ contract Data is IData, DataCore {
         number = editionNumber;
         amount = editionAmount;
         nftType = _nftType;
+        /*PARAM_SET_DATA_INFO*/
     }
 
     function getInfoResponsible() external view override responsible returns (

@@ -1,3 +1,4 @@
+/*
 import express from 'express';
 const router = express.Router();
 
@@ -8,8 +9,9 @@ import { Parametr } from "../models/parametr";
 import { Rarity } from "../models/rarity";
 import { DeployTrueNftService } from "../services/deployTrueNft.service";
 import { DeployDebotService } from '../services/deployDebot.service';
-
+*/
 /* GET home page. */
+/*
 router.get('/', function(req, res, next) {
     res.render('root-contract-form');
 });
@@ -106,3 +108,4 @@ function getParameters(selectpicker, parameter) : Parametr[] {
 }
 
 export {router as newRootContractForm};
+*/
