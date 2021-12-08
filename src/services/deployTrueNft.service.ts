@@ -27,7 +27,7 @@ export class DeployTrueNftService {
         let address = "0";
         try {
             address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection, commissionAuthorGenerator);
-            fs.renameSync(pathWithContracts, path.join(globals.RESULT_COLLECTION, address))
+            fs.renameSync(pathWithContracts, path.join(globals.RESULT_COLLECTION, address.slice(2)))
             console.log("RootNft address: " + await rootNftAccount.getAddress());
             await this.deployBasis(rootNftAccount, indexBasisAccount);
         } catch(err) {

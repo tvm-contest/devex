@@ -56,7 +56,7 @@ router.post('/deploy-contracts', async function(req, res, next) {
         commissionAuthorGenerator = req.body.commissionAuthorGenerator;
     }
     let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
-    contractDir = path.join(globals.RESULT_COLLECTION, address)
+    contractDir = path.join(globals.RESULT_COLLECTION, address.slice(2))
     let deployDebotService = new DeployDebotService();
     await deployDebotService.deployDebot(contractDir, address);
     
