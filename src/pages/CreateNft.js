@@ -290,8 +290,16 @@ export default function CreateNFT() {
           of the collection and traits, and enjoy the result!
         </Typography>
         <Typography variant="h6" sx={{ mb: 5 }}>
-          The process is described in detail in the WhitePaper in the "User flow" section. Please
-          keep in mind that NeFerTiti is still working in test mode.
+          The process is described in detail in the
+          <Link
+            href="https://drive.google.com/file/d/1mXScyRSkHIfHR_J3KExNLa4bL0da483j/view?usp=sharing"
+            target="_blank"
+            underline="none"
+          >
+            {` WhitePaper `}
+          </Link>
+          in the "User flow" section. Please keep in mind that NeFerTiti is still working in test
+          mode.
         </Typography>
       </Container>
 
