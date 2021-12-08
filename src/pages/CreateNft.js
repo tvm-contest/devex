@@ -317,7 +317,7 @@ export default function CreateNFT() {
               type="number"
               value={totalImages}
               onChange={(e) => {
-                setTotalImages(e.target.value);
+                if (e.target.value >= 0) setTotalImages(e.target.value);
               }}
               error={isSubmitClick && !totalImages}
               fullWidth
@@ -447,11 +447,13 @@ export default function CreateNFT() {
                                 ''
                               )}
                               <TextField
-                                label="Trait Rarity"
+                                label="Trait Rarity (number)"
                                 value={file.traitRar}
-                                onChange={(e) =>
-                                  handleImageUpdate(e.target.value, 'rarity', index, data.id)
-                                }
+                                onChange={(e) => {
+                                  if (e.target.value > 0) {
+                                    handleImageUpdate(e.target.value, 'rarity', index, data.id);
+                                  }
+                                }}
                                 error={isSubmitClick && !file.traitRar}
                                 type="number"
                                 size="small"
