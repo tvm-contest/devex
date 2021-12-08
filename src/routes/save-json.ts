@@ -23,7 +23,7 @@ router.get('/', function(req, res, next) {
     let token : Token = new Token(collection, tokenParams, rariry[0]);
     let jsonToken : string = JSON.stringify(token, null, '\t');
 
-    let tepmDir = fs.mkdtempSync(path.join(globals.TEMP_JSON, 'json-'));
+    let tepmDir = fs.mkdtempSync(path.join(globals.RESULT_JSON, 'json-'));
     let jsonFileCollection = path.join(tepmDir, 'collection.json');
     let jsonFileToken = path.join(tepmDir, 'token.json');
 

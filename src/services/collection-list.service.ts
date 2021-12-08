@@ -31,7 +31,7 @@ export class CollectionListService {
   async getCollectionList() : Promise<CollectionInfo[]> {
     let collectionsInfo : CollectionInfo[] = []
      
-    let collectionDirList = fs.readdirSync(globals.TEMP_COLLECTION, {withFileTypes: true}).filter((fileOrDir) => {
+    let collectionDirList = fs.readdirSync(globals.RESULT_COLLECTION, {withFileTypes: true}).filter((fileOrDir) => {
       return fileOrDir.isDirectory()
     })
 
@@ -53,8 +53,8 @@ export class CollectionListService {
   }
 
   private async getCollectionAccount(tempCollectionDir : string) : Promise<Account> {
-    let abi = await JSON.parse(fs.readFileSync(path.join(globals.TEMP_COLLECTION, tempCollectionDir, 'NftRoot.abi.json')).toString());
-    let tvc = fs.readFileSync(path.join(globals.TEMP_COLLECTION, tempCollectionDir, 'NftRoot.tvc'), {encoding: 'base64'});
+    let abi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, tempCollectionDir, 'NftRoot.abi.json')).toString());
+    let tvc = fs.readFileSync(path.join(globals.RESULT_COLLECTION, tempCollectionDir, 'NftRoot.tvc'), {encoding: 'base64'});
     const collectionAccount = new Account({
       abi: abi,
       tvc: tvc

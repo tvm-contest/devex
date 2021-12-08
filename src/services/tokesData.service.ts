@@ -40,8 +40,8 @@ export class TokensData {
     }
 
     async getDebotAddress(rootNftAddress: string) : Promise<string>{
-        let debotAbi = await JSON.parse(fs.readFileSync(path.join(globals.TEMP_COLLECTION, rootNftAddress, 'debots', "contracts", 'MintingDebot.abi.json')).toString());
-        let debotTvc = fs.readFileSync(path.join(globals.TEMP_COLLECTION, rootNftAddress, 'debots', "contracts", 'MintingDebot.tvc'), {encoding: 'base64'});
+        let debotAbi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress, 'debots', 'MintingDebot.abi.json')).toString());
+        let debotTvc = fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress, 'debots', 'MintingDebot.tvc'), {encoding: 'base64'});
         const debotAccount = new Account({
             abi: debotAbi,
             tvc: debotTvc
@@ -65,7 +65,7 @@ export class TokensData {
     }
 
     private async getAccountByAddress(rootNftAddress: string) : Promise<Account> {
-        let rootNftAbi = await JSON.parse(fs.readFileSync(path.resolve(globals.TEMP_COLLECTION, rootNftAddress, "NftRoot.abi.json")).toString());
+        let rootNftAbi = await JSON.parse(fs.readFileSync(path.resolve(globals.RESULT_COLLECTION, rootNftAddress, "NftRoot.abi.json")).toString());
         return new Account(
             {
                 abi: rootNftAbi

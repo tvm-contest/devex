@@ -24,7 +24,7 @@ router.post('/save-data', function(req, res, next) {
     let collection = contractObjectCreator.makeRootContractObjectFromReq(req);
 
     let jsonCollection : string = JSON.stringify(collection, null, '\t');
-    let tepmDir = fs.mkdtempSync(path.join(globals.TEMP_JSON, 'json-'));
+    let tepmDir = fs.mkdtempSync(path.join(globals.RESULT_JSON, 'json-'));
     let jsonFileCollection = path.join(tepmDir, 'collection.json');
 
     fs.writeFileSync(jsonFileCollection, jsonCollection, {flag: 'w'});
@@ -57,7 +57,7 @@ router.post('/deploy-contracts', async function(req, res, next) {
         commissionAuthorGenerator = req.body.commissionAuthorGenerator;
     }
     let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
-    contractDir = path.join(globals.TEMP_COLLECTION, address)
+    contractDir = path.join(globals.RESULT_COLLECTION, address)
     let deployDebotService = new DeployDebotService();
     await deployDebotService.deployDebot(contractDir, address);
 
