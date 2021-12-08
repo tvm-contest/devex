@@ -17,37 +17,12 @@ body {
     margin: 0 auto;
     border-radius: 50px;
     background-color: #fff;
-    max-width: 670px;
-    min-height: 700px;
-}
-
-.main-form {
-    padding: 10px;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    margin: 0 auto;
-}
-
-.form-button {
-    align-self: self-end;
-    padding: 5px;
-}
-
-.form-button:hover {
-    background-color: #474646;
+    /*max-width: 670px;
+    min-height: 700px;*/
 }
 
 .col {
     padding: 12px;
-}
-
-.collectionType {
-    padding: 7px;
-    position: relative;
-    border: 1px solid white;
-    margin-bottom: 10px;
-    box-shadow: 2px 2px 5px #ccc;
 }
 
 .button-delete {
@@ -64,11 +39,6 @@ body {
     z-index: 100;
 }
 
-.form-title {
-    font-size: 1.3em;
-    align-self: center;
-    margin-bottom: 10px;
-}
 
 .row.parameter-number,
 .row.parameter-string,
@@ -89,13 +59,6 @@ body {
     margin: auto;
 }
 
-.parameter {
-    padding: 7px;
-    position: relative;
-    border: 1px solid white;
-    margin-bottom: 10px;
-    box-shadow: 2px 2px 5px #ccc;
-}
 
 .param-label {
     display: block;
