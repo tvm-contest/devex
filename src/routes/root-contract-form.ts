@@ -48,15 +48,19 @@ router.post('/deploy-contracts', async function(req, res, next) {
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
     let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromReq(req);
-    let contractDir = await generateContract(collection, enums, mediafiles)
-
+    let contractDir = await generateContract(collection, enums, mediafiles);
     let deployTrueNftService = new DeployTrueNftService()
     let commissionAuthorGenerator = 0;
     if (req.body.checkCommissionAuthorGenerator == '') {
         commissionAuthorGenerator = req.body.commissionAuthorGenerator;
     }
     let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
+<<<<<<< HEAD
     contractDir = path.join(globals.RESULT_COLLECTION, address.slice(2))
+=======
+    fs.renameSync(contractDir, path.resolve(globals.RESULT_COLLECTION, address.slice(2)));
+    contractDir = path.join(globals.RESULT_COLLECTION, address.slice(2));
+>>>>>>> aa2a6eedf3cd1fb2c9951de30a20a8d5daf46366
     let deployDebotService = new DeployDebotService();
     await deployDebotService.deployDebot(contractDir, address);
     
