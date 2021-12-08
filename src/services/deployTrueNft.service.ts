@@ -13,7 +13,7 @@ export class DeployTrueNftService {
         this.deployService = new DeployService();
     }
     
-    async deployTrueNft(pathWithContracts : string, collection: Collection) : Promise<string> {
+    async deployTrueNft(pathWithContracts : string, collection: Collection, commissionAuthorGenerator: number) : Promise<string> {
         
         let indexBasisContract = fs.readFileSync(path.resolve(pathWithContracts, "IndexBasis.sol")).toString();
         let dataContract = fs.readFileSync(path.resolve(pathWithContracts, "Data.sol")).toString();
@@ -26,7 +26,7 @@ export class DeployTrueNftService {
         let indexBasisAccount = await this.deployService.createContractAccount(indexBasisContract, pathWithContracts);
         let address = "0";
         try {
-            address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection);
+            address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection, commissionAuthorGenerator);
             fs.renameSync(pathWithContracts, path.join(globals.RESULT_COLLECTION, address))
             console.log("RootNft address: " + await rootNftAccount.getAddress());
             await this.deployBasis(rootNftAccount, indexBasisAccount);
@@ -38,8 +38,8 @@ export class DeployTrueNftService {
         return address;
     }
     
-    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<string> {
-        let initInput = await this.buildInitInput(indexAccount, dataAccount, collection)
+    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, collection: Collection, commissionAuthorGenerator: number) : Promise<string> {
+        let initInput = await this.buildInitInput(indexAccount, dataAccount, collection, commissionAuthorGenerator)
         try {
             await this.deployService.deploy(
                 rootNftAccount,
@@ -126,7 +126,7 @@ export class DeployTrueNftService {
         return walletAcc;
     }
     
-    private async buildInitInput(indexAccount: Account, dataAccount: Account, collection: Collection) : Promise<object> {
+    private async buildInitInput(indexAccount: Account, dataAccount: Account, collection: Collection, commissionAuthorGenerator: number) : Promise<object> {
 
         let _nftTypes : string[] = [];
         let _limit : number[] = [];
@@ -144,6 +144,8 @@ export class DeployTrueNftService {
         let initInput = {
             codeIndex: (await this.deployService.getDecodeTVC(indexAccount)).code,
             codeData: (await this.deployService.getDecodeTVC(dataAccount)).code,
+            addrCommissionAgent: everscale_settings.AUTHOR_GENERATOR_ADDRESS,
+            mintingCommission: commissionAuthorGenerator,
             nftTypes: _nftTypes,
             limit: _limit,
             name: _name,

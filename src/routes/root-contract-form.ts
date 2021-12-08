@@ -9,6 +9,7 @@ import { ContractObjectCreator } from '../services/contract-object-creator.servi
 import { DeployTrueNftService } from '../services/deployTrueNft.service';
 import { EnumParameter } from '../models/enum';
 import { DeployDebotService } from '../services/deployDebot.service';
+import { MediaFile } from '../models/mediafile';
 
 const router = express.Router();
 
@@ -37,7 +38,8 @@ router.post('/form-contracts', async function(req, res, next) {
     let contractObjectCreator = new ContractObjectCreator()
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
-    let contractDir = await generateContract(collection, enums)
+    let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromReq(req)
+    let contractDir = await generateContract(collection, enums, mediafiles)
 
     res.render('success-page', { pageText: "Файлы сгенерированы в директорию: " + path.basename(contractDir) })
 });
@@ -46,14 +48,18 @@ router.post('/deploy-contracts', async function(req, res, next) {
     let contractObjectCreator = new ContractObjectCreator()
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
-    let contractDir = await generateContract(collection, enums)
+    let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromReq(req);
+    let contractDir = await generateContract(collection, enums, mediafiles)
 
     let deployTrueNftService = new DeployTrueNftService()
-    let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
+    let commissionAuthorGenerator = 0;
+    if (req.body.checkCommissionAuthorGenerator == '') {
+        commissionAuthorGenerator = req.body.commissionAuthorGenerator;
+    }
+    let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
     contractDir = path.join(globals.RESULT_COLLECTION, address)
-
     let deployDebotService = new DeployDebotService();
-    await deployDebotService.deployDebot(contractDir);
+    await deployDebotService.deployDebot(contractDir, address);
 
     res.redirect('/tokens-data-info?rootNftAddress=' + address)
 });
@@ -126,7 +132,7 @@ router.post('/', async function(req, res, next) {
 
     //Зачем коментирвать весь метод?
     let deployTrueNftService = new DeployTrueNftService()
-    let address = await deployTrueNftService.deployTrueNft(contractDir, collection)
+    let address = await deployTrueNftService.deployTrueNft(contractDir, collection, 0)
 
     // deleteContractDirTemp(collection)
 

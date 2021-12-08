@@ -24,7 +24,7 @@ export class DeployDebotService {
         this.deployService = new DeployService();
     }
 
-    async deployDebot(contractsDir) {
+    async deployDebot(contractsDir, rootNftAddress: string) {
         let debotCode = fs.readFileSync(path.resolve(contractsDir, "debots", "MintingDebot.sol")).toString();
         let debotAcc = await this.deployService.createContractAccount(debotCode, path.resolve(contractsDir, "debots"), "MintingDebot");
         let walletAcc = await this.getWalletAcc();
@@ -53,7 +53,8 @@ export class DeployDebotService {
                         tvc: debotTvc
                     },
                     call_set: {
-                        function_name: "constructor"
+                        function_name: "constructor",
+                        input: {_addrNFTRoot: rootNftAddress}
                     },
                 },
                 send_events: false,
