@@ -44,7 +44,7 @@ contract NftDebot is Debot, Upgradable {
 
     address _tokenFutureAddress;
 
-    address _addrNFTRoot;
+    address static _addrNFTRoot;
 
     address _addrMultisig;
 

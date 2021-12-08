@@ -2,6 +2,7 @@ import fs from 'fs'
 
 import { Parametr } from '../models/parametr';
 import { EnumParameter } from '../models/enum';
+import { MediaFile } from '../models/mediafile';
 
 const markForParamDefenition = '/*%PARAM_DEFENITION%*/';
 const markForParamConstructor = '/*%PARAM_CONSTRUCTOR%*/';
@@ -84,16 +85,19 @@ export class AddParamsService {
   private async addParam(param: Parametr, codeSource: string)  : Promise<string>{
 
     let paramDefenition = param.getType() + ' ' + param.getName() + ';\n\t' + markForParamDefenition;
-    let paramConstructor = ', \n' + param.getType() + ' _' + param.getName() + markForParamConstructor;
+    let paramConstructor = ', \n\t\t' + param.getType() + ' _' + param.getName() + markForParamConstructor;
     let paramSet = param.getName() + ' = _' + param.getName() + ';\n\t\t' + markForParamSet;
-    let paramToData = ', \n' + param.getName() + markForParamToData;
+    let paramToData = ', \n\t\t\t' + param.getName() + markForParamToData;
     let paramToMint = ', \n\t\t' + param.getType() + ' ' + param.getName() + markForParamToMint;
-    let paramToDebotMint = ', \n\t\t' + '_nftParams.' + param.getName() + markForDebotMint;
+    let paramToDebotMint = ', \n\t\t\t' + '_nftParams.' + param.getName() + markForDebotMint;
     let paramForDebotCheckResult = 'Terminal.print(0, format("' + param.getName() + ': {}",' + param.getName() + '));\n\t\t' + markForDebotCheckResult;
     let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("' + param.getName() + ': {}", _nftParams.' + param.getName() + '));\n\t\t' + markForDebotDeployNftStep2;
-    let paramForDebotSetTypes = 'Terminal.input(' + 
-    'tvm.functionId(nftParamsSet' + param.getName() +  '), ' + 
-    '"Enter ' + param.getName() + ' (' + param.getType() + '):", false);\n\t\t' + markForDebotSetTypes;
+    let paramForDebotSetTypes;
+    if (!(param instanceof MediaFile)) {
+      paramForDebotSetTypes = 'Terminal.input(' + 
+        'tvm.functionId(nftParamsSet' + param.getName() +  '), ' + 
+        '"Enter ' + param.getName() + ' (' + param.getType() + '):", false);\n\t\t' + markForDebotSetTypes;
+    }
     let functionForDebotSetTypes;
     if (param.getType() == 'string') {
       functionForDebotSetTypes = 'function nftParamsSet' + param.getName() + '(string value) public { _nftParams.' + param.getName() + ' = value;}\n\t' + markForDebotFunctionSetTypes;
@@ -109,7 +113,7 @@ export class AddParamsService {
     codeSource = codeSource.replace(markForParamToData, paramToData);
     codeSource = codeSource.replace(markForParamToMint, paramToMint);
     codeSource = codeSource.replace(markForDebotMint, paramToDebotMint);
-    if (param.getType() == "string" || param.getType() == "uint") {
+    if ((param.getType() == "string" || param.getType() == "uint") && !(param instanceof MediaFile)) {
       codeSource = codeSource.replace(markForDebotCheckResult, paramForDebotCheckResult);
       codeSource = codeSource.replace(markForDebotDeployNftStep2, paramForDebotDeployNftStep2);
       codeSource = codeSource.replace(markForDebotSetTypes, paramForDebotSetTypes);
@@ -117,7 +121,19 @@ export class AddParamsService {
     codeSource = codeSource.replace(markForDebotFunctionSetTypes, functionForDebotSetTypes);
 
     return codeSource;
-
   }
 
+  async addMediaFiles(mediafiles: MediaFile[], inputContractFile: string, outputContractFile?: string) {
+    if (!outputContractFile) outputContractFile = inputContractFile;
+
+    let codeSource = fs.readFileSync(inputContractFile, 'utf8');
+    for (let mediafile of mediafiles) {
+      let paramForDebotSetTypes = 'Terminal.input(' + 
+        'tvm.functionId(nftParamsSet' + mediafile.getName() +  '), ' + 
+        '"Enter ' + mediafile.getName() + '(link to the IPFS where the media file is stored):", false);\n\t\t' + markForDebotSetTypes;
+      codeSource = codeSource.replace(markForDebotSetTypes, paramForDebotSetTypes);
+    }
+        
+    fs.writeFileSync(outputContractFile, codeSource, 'utf8');
+  }
 }

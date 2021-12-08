@@ -4,6 +4,7 @@ import { DescriptCollection } from "../models/descript-collection";
 import { Parametr } from "../models/parametr";
 import { Rarity } from "../models/rarity";
 import { EnumParameter } from "../models/enum";
+import { MediaFile } from "../models/mediafile";
 
 export class ContractObjectCreator {
 
@@ -17,14 +18,16 @@ export class ContractObjectCreator {
 
     let rarities : Rarity[] = [];
     let parametrs : Parametr[] = [];
-
-    req.body.type.forEach(req_type => {
-      let rarity = new Rarity(
-        req_type.name,
-        req_type.limit
-      )
-      rarities.push(rarity)
-    });
+    
+    if (req.body.checkboxTypeRarity == '') {
+      req.body.type.forEach(req_type => {
+        let rarity = new Rarity(
+          req_type.name,
+          req_type.limit
+        )
+        rarities.push(rarity)
+      });
+    }
 
     if (req.body.selectpicker != 'none'){
       if (typeof(req.body.selectpicker) == 'string') {
@@ -49,6 +52,11 @@ export class ContractObjectCreator {
             req.body.parameter[index].number.max
           );
           
+        } else if (req.body.selectpicker[index] == 'mediafile') {
+          parameter = new MediaFile(
+            req.body.parameter[index].name,
+            'string'
+          )
         } else if (req.body.selectpicker[index] == 'enum') {
           parameter = new Parametr(
             'enum' + req.body.parameter[index].name,
@@ -76,8 +84,7 @@ export class ContractObjectCreator {
       if (typeof(req.body.selectpicker) == 'string') {
         req.body.selectpicker = [req.body.selectpicker]
       }
-      for (let index = 0; index < req.body.selectpicker.length; index++) { 
-        let enumParameter : EnumParameter;
+      for (let index = 0; index < req.body.selectpicker.length; index++) {
         if (req.body.selectpicker[index] == 'enum') {
           let enumVariants : string[] = [];
           if (typeof(req.body.parameter[index].enum) == 'string') {
@@ -86,7 +93,7 @@ export class ContractObjectCreator {
           for (let i = 0; i < req.body.parameter[index].enum.length; i++) {
             enumVariants.push(req.body.parameter[index].enum[i]);
           }
-          enumParameter = new EnumParameter(
+          let enumParameter = new EnumParameter(
             req.body.parameter[index].name,
             enumVariants
           )
@@ -95,6 +102,25 @@ export class ContractObjectCreator {
       }
     }
     return enumParameters;
+  }
+
+  makeMediaFilesFromReq(req: Request) : MediaFile[] {
+    let mediafiles : MediaFile[] = [];
+    if (req.body.selectpicker != 'none') {
+      if (typeof(req.body.selectpicker) == 'string') {
+        req.body.selectpicker = [req.body.selectpicker]
+      }
+      for (let index = 0; index < req.body.selectpicker.length; index++) { 
+        if (req.body.selectpicker[index] == 'mediafile') {
+          let mediafile = new MediaFile(
+            req.body.parameter[index].name,
+            'string'
+          )
+          mediafiles.push(mediafile);
+        }
+      }
+    }
+    return mediafiles;
   }
 
 }
