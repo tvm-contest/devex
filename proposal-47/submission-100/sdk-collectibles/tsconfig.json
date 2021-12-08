@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "plugins": [
+      {
+        "transform": "typescript-is/lib/transform-inline/transformer",
+      }
+    ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "esModuleInterop": true,
+    "lib": [
+      "ES2020"
+    ],
+    "module": "commonjs",
+    "target": "ES2017",
+    "outDir": "dist",
+    "rootDir": "src",
+    "allowJs": false,
+    "alwaysStrict": true,
+    "baseUrl": "./src",
+    "paths": {
+      "*": [
+        "../node_modules/*"
+      ]
+    },
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "./src"
+  ]
+}
