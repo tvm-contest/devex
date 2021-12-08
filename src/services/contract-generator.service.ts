@@ -36,6 +36,7 @@ class ContractGenerator {
     const tempDir = path.join(globals.RESULT_COLLECTION, hashContract);
 
     const dataFileTepm = path.join(tempDir, 'Data.sol');
+    const iDataFileTemp = path.join(tempDir, 'interfaces', 'IData.sol')
     const indexFileTepm = path.join(tempDir, 'Index.sol');
     const indexBasisFileTepm = path.join(tempDir, 'IndexBasis.sol');
     const nftRootFileTepm = path.join(tempDir, 'NftRoot.sol');
@@ -75,6 +76,7 @@ class ContractGenerator {
     } else {
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), nftRootFile, nftRootFileTepm);
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), dataFile, dataFileTepm);
+      await addParamsService.addSeveralParams(collectionSettings.getParameters(), iDataFileTemp, iDataFileTemp);
       await addParamsService.addSeveralParams(collectionSettings.getParameters(), debotFileTemp, debotFileTemp);
       if (enums !== undefined) {
         await addParamsService.addEnums(enums, enumsFileTemp, enumsFileTemp);
