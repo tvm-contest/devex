@@ -3,6 +3,7 @@ node_modules
 package-lock.json
 src/module/test/*
 src/services/temp/*
+src/contracts/tests/utils/__pycache__
 !src/services/temp/.gitkeep
 .idea
 .env

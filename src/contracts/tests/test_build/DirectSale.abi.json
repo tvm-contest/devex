@@ -1,0 +1,93 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"nftPrice","type":"uint128"},
+				{"name":"isDurationLimited","type":"bool"},
+				{"name":"addrRoyaltyRecipient","type":"address"},
+				{"name":"royaltyPercent","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "start",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "approveTradability",
+			"inputs": [
+				{"name":"addrNftOwner","type":"address"},
+				{"name":"addrTrusted","type":"address"},
+				{"name":"addrRoyaltyAuthor","type":"address"},
+				{"name":"royaltyPercent","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "buy",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "cancel",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDuration",
+			"inputs": [
+				{"name":"saleDuration","type":"uint64"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "makeDurationUnlimited",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getNftPrice",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"nftPrice","type":"uint128"}
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"addrRoot","type":"address"},
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrNft","type":"address"},
+				{"name":"nftPrice","type":"uint128"},
+				{"name":"isDurationLimited","type":"bool"},
+				{"name":"saleStartTime","type":"uint64"},
+				{"name":"saleDuration","type":"uint64"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"_addrRoot","type":"address"},
+		{"key":2,"name":"_addrOwner","type":"address"},
+		{"key":3,"name":"_addrNft","type":"address"}
+	],
+	"events": [
+	]
+}
