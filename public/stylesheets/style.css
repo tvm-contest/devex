@@ -17,8 +17,8 @@ body {
     margin: 0 auto;
     border-radius: 50px;
     background-color: #fff;
-    /*max-width: 670px;
-    min-height: 700px;*/
+    /* max-width: 670px;
+    min-height: 700px; */
 }
 
 .col {
@@ -121,8 +121,24 @@ label {
     cursor: pointer;
 }
 
-.home-header {
+/* INDEX PAGE */
+.home {
     padding: 2em 0 0;
+    height: 92vh;
+}
+
+.home__header {
+    animation: slideInFromLeft 1.2s ease-in-out;
+    font-weight: 700;
+    font-size: 60px;
+    text-align: center;
+    padding: 40px 0;
+}
+
+.home-content__subtitle {
+    animation: slideInFromRight 1.3s ease-in-out;
+    text-align: center;
+    font-size: 30px;
 }
 
 /* NAVBAR */
@@ -172,4 +188,121 @@ input {
 /* CHECKS */
 .form-check-input {
     border-color: var(--main-color);
+}
+
+/* FUTUTRES */
+.home-features {
+    margin: 120px 0 0;
+}
+
+.flex-3 {
+    display: flex;
+}
+
+.feature-item {
+    position: relative;
+    color: #000;
+    flex: 1;
+    padding: 0 10px;
+    margin: 0 10px;
+}
+
+.feature-item:first-child {
+    animation: slideInFromLeft 1s ease-in-out;
+}
+
+.feature-item:nth-child(2) {
+    animation: slideInFromBottom 1s ease-in-out;
+}
+
+.feature-item:last-child {
+    animation: slideInFromRight 1s ease-in-out;
+}
+
+.feature__title {
+    animation: appeareText 1s ease-in-out;
+    font-weight: 700;
+    font-size: 30px;
+}
+
+.feature__text {
+    animation: appeareText 1s ease-in-out;
+    color: #fff;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.deploy-from-file{
+    animation: appearance 1s ease-in-out;
+    position: relative;
+    /* top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
+    padding: 10px 30px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    max-width: 300px;
+    margin: 0 auto;
+    border-radius: 20px;
+    background-color: #fff;
+}
+
+/* Animation */
+@keyframes appearance{
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInFromLeft{
+    0% {
+        transform: translateX(-100%);
+        color: transparent;
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight{
+    0% {
+        transform: translateX(100%);
+        color: transparent;
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromTop{
+    0% {
+        transform: translateY(-100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromBottom{
+    0% {
+        transform: translateY(100%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes appeareText{
+    0% {
+        color: transparent;
+    }
 }

@@ -123,4 +123,65 @@ export class ContractObjectCreator {
     return mediafiles;
   }
 
+  makeRootContractObjectFromJson(json) : Collection{
+
+    let nameContract = json.description.name;
+    let tokenLimit = json.description.name;
+    let icon = json.description.name;
+
+    let descriptCollection = new DescriptCollection(nameContract, tokenLimit, icon);
+
+    let rarities : Rarity[] = [];
+    let parametrs : Parametr[] = [];
+    
+    json.rarities.forEach(req_type => {
+        let rarity = new Rarity(
+          req_type.name,
+          req_type.limit
+        )
+        rarities.push(rarity)
+      });
+
+    json.parameters.forEach(param => {
+      let one_param = new Parametr(
+        param.name,
+        param.type,
+        param.minValue,
+        param.maxValue
+      )
+      parametrs.push(one_param)
+    });
+    
+    let collection : Collection = new Collection(descriptCollection, rarities, parametrs);
+
+    return collection;
+  }
+
+  makeEnumsFromJson(json) : EnumParameter[] {
+
+    let enumParameters : EnumParameter[] = [];
+
+    json.forEach(one_enum => {
+
+      let enumVariants : string[] = [];
+
+      one_enum.enumVariants.forEach(variant => {
+        enumVariants.push(variant)
+      })
+      enumParameters.push(new EnumParameter(one_enum.name, enumVariants))
+    });
+
+    return enumParameters;
+  }
+
+  makeMediaFilesFromJson(json) : MediaFile[] {
+    let mediafiles : MediaFile[] = [];
+    
+    json.forEach(mediafile => {
+      mediafiles.push(new MediaFile(mediafile.name, mediafile.type))
+    });
+    
+    return mediafiles;
+  }
+
 }

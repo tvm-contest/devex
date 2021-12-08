@@ -10,20 +10,19 @@ import { DeployTrueNftService } from '../services/deployTrueNft.service';
 import { EnumParameter } from '../models/enum';
 import { DeployDebotService } from '../services/deployDebot.service';
 import { MediaFile } from '../models/mediafile';
+import { JsonCollectionSevice } from '../services/json-collection.service';
 
 const router = express.Router();
-
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('root-contract-form');
 });
 
-router.post('/save-data', function(req, res, next) {
-    let contractObjectCreator = new ContractObjectCreator();
-    let collection = contractObjectCreator.makeRootContractObjectFromReq(req);
+router.post('/save-data', async function(req, res, next) {
+    let jsonCollectionService = new JsonCollectionSevice()
+    let jsonCollection = await jsonCollectionService.makeJsonCollection(req);
 
-    let jsonCollection : string = JSON.stringify(collection, null, '\t');
     let tepmDir = fs.mkdtempSync(path.join(globals.RESULT_JSON, 'json-'));
     let jsonFileCollection = path.join(tepmDir, 'collection.json');
 
@@ -49,18 +48,17 @@ router.post('/deploy-contracts', async function(req, res, next) {
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
     let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromReq(req);
-    let contractDir = await generateContract(collection, enums, mediafiles)
-
+    let contractDir = await generateContract(collection, enums, mediafiles);
     let deployTrueNftService = new DeployTrueNftService()
     let commissionAuthorGenerator = 0;
     if (req.body.checkCommissionAuthorGenerator == '') {
         commissionAuthorGenerator = req.body.commissionAuthorGenerator;
     }
     let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
-    contractDir = path.join(globals.RESULT_COLLECTION, address)
+    contractDir = path.join(globals.RESULT_COLLECTION, address.slice(2))
     let deployDebotService = new DeployDebotService();
     await deployDebotService.deployDebot(contractDir, address);
-
+    
     res.redirect('/tokens-data-info?rootNftAddress=' + address)
 });
   
