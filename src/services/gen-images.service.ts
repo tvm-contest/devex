@@ -1,29 +1,12 @@
 import { addFileToIPFS } from './add-ipfs.service';
 const fs = require('fs');
-// const ipfServer = require('./add-ipfs.service');
+const path = require('path');
 
 type Image = {
     name: string,
     rarity: string,
     ipfsRef: string
 }
-
-enum Colors {
-    RED,
-    GREEN,
-    ORANGE
-};
-
-enum Size {
-    SMALL,
-    MIDDLE,
-    BIG
-};
-
-enum Glass {
-    GLASS,
-    NO_GLASS
-};
 
 enum Rarity {
     USUAL,
@@ -61,11 +44,6 @@ const bgArray: string[] = [
     'bg3.png'
 ];
 
-// Фон
-// Человек
-// Щит 
-// Шлем
-// Оружие
 export class TokenImagesCreator {
     // To check whether all images is unique
     private nameAndRarityArray: string[] = [''];
@@ -84,32 +62,31 @@ export class TokenImagesCreator {
     async createImage(): Promise<Image> {
         // For creating image by mergeImages
         let imagesFiles: string[] = [];
-
-        const bgFile: string = this.getPartFile(bgArray);
-        const personFile: string = this.getPartFile(personsArray);
-        const shieldFile: string = this.getPartFile(shielsdArray);
-        const helmetFile: string = this.getPartFile(helmetsArray);
-        const armFile: string = this.getPartFile(armsArray);
-
-        imagesFiles.push(bgFile);
-        imagesFiles.push(personFile);
-        imagesFiles.push(shieldFile);
-        imagesFiles.push(helmetFile);
-        imagesFiles.push(armFile);
-
         while (true) {
-            const imageColor: string = this.getColor();
-            const imageSize: string = this.getSize();
-            const imageGlass: string = this.getGlass();
+            const bgFile: string = this.getPartFile(bgArray);
+            const personFile: string = this.getPartFile(personsArray);
+            const shieldFile: string = this.getPartFile(shielsdArray);
+            const helmetFile: string = this.getPartFile(helmetsArray);
+            const armFile: string = this.getPartFile(armsArray);
 
-            var imageName = `${imageColor} ${imageSize} ${imageGlass}`;
+            imagesFiles.push(bgFile);
+            imagesFiles.push(personFile);
+            imagesFiles.push(shieldFile);
+            imagesFiles.push(helmetFile);
+            imagesFiles.push(armFile);
+
             var imageRarity = this.getRarity();
-            const nameAndRarity: string = imageName + imageRarity;
+            var imageName = imagesFiles.reduce((prev, current) => prev + current) + imageRarity;
+            var imageIPFS = await addFileToIPFS(imageName);
+            const imageIPFSToString = imageIPFS.toString();
+            // Путь куда будут записывать картинки
+            const outDir = path.resolve('src', 'sample-data', 'out-images', imageIPFSToString);
 
-            var imageIPFS = await addFileToIPFS(nameAndRarity);
-            if (!this.nameAndRarityArray.includes(nameAndRarity)) {
-                // Push if nameAndRarity(image) is unique
-                this.nameAndRarityArray.push(nameAndRarity);
+            if (!fs.existsSync(imageIPFSToString)) {
+                fs.writeFileSync(outDir, imageIPFSToString);
+                //
+                // Тут нужно создавать изображение, но нужно скачать canvas
+                //
                 break;
             }
         }
@@ -123,24 +100,9 @@ export class TokenImagesCreator {
         return image;
     }
 
-    getPartFile(array: string[]): string{
+    getPartFile(array: string[]): string {
         let key: number = this.getRandomKey(array);
         return array[key];
-    }
-    
-    getColor(): string {
-        let key: number = this.getRandomKey(Colors);
-        return Colors[key];
-    }
-
-    getSize(): string {
-        let key: number = this.getRandomKey(Size);
-        return Size[key];
-    }
-
-    getGlass(): string {
-        let key: number = this.getRandomKey(Glass);
-        return Glass[key];
     }
 
     getRarity(): string {
