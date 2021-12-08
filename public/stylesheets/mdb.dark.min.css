@@ -3294,7 +3294,7 @@ textarea.form-control.is-invalid {
   -webkit-transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, -webkit-box-shadow .15s ease-in-out;
   transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, -webkit-box-shadow .15s ease-in-out;
   transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out, -webkit-box-shadow .15s ease-in-out
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out, -webkit-box-shadow .15s ease-in-out, transfrom 0.3s ease-in-out;
 }
 
 @media(prefers-reduced-motion:reduce) {
@@ -3305,7 +3305,7 @@ textarea.form-control.is-invalid {
 }
 
 .btn:hover {
-  color: #4f4f4f
+  transform: scale(1.01);
 }
 
 .btn.disabled,
@@ -16106,7 +16106,8 @@ input[type=file].form-control.is-invalid:focus-within~.form-file-label .form-fil
 .btn:focus,
 .btn:hover {
   -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2), 0 4px 20px 0 rgba(0, 0, 0, .1);
-  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2), 0 4px 20px 0 rgba(0, 0, 0, .1)
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2), 0 4px 20px 0 rgba(0, 0, 0, .1);
+  transition: transform 0.3s ease;
 }
 
 .btn.disabled,
