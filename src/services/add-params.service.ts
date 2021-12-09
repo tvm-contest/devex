@@ -18,7 +18,24 @@ const markForDebotDeployNftStep2 = '/*TERMINAL_TO_DEPLOY_NFT_STEP_2*/';
 const markForDebotSetTypes = '/*TERMINAL_FOR_DEBOT_SET_TYPES*/';
 const markForDebotFunctionSetTypes = '/*FUNCTION_FOR_DEBOT_SET_TYPES*/';
 
+const markForRequireType = '/*%REQUIRE_TYPE%*/';
+const markForRequireTypeLimit = '/*%REQUIRE_TYPE_LIMIT%*/';
+const markForTypePrint = '/*%TYPE_PRINT%*/';
+const markForTypeInput = '/*%TYPE_INPUT%*/';
+
 export class AddParamsService {
+  async removeNftTypeChecking(rootContractPath : string, debotContractPath : string) : Promise<any> {
+    let codeSourceRoot = fs.readFileSync(rootContractPath, 'utf8');
+    let codeSourceDebot = fs.readFileSync(debotContractPath, 'utf8');
+
+    codeSourceRoot = codeSourceRoot.replace(markForRequireType, "//");
+    codeSourceRoot = codeSourceRoot.replace(markForRequireTypeLimit, "//");
+    codeSourceDebot = codeSourceDebot.replace(markForTypePrint, "//");
+    codeSourceDebot = codeSourceDebot.replace(markForTypeInput, "//");
+
+    fs.writeFileSync(rootContractPath, codeSourceRoot, 'utf8');
+    fs.writeFileSync(debotContractPath, codeSourceDebot, 'utf8');
+  }
 
   async addSingleParam(param: Parametr, inputContractFile: string, outputContractFile?: string) : Promise<void>{
 

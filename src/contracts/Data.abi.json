@@ -13,11 +13,7 @@
 				{"name":"_editionAmount","type":"uint8"},
 				{"name":"_managersList","type":"address[]"},
 				{"name":"_royalty","type":"uint8"},
-				{"name":"nftType","type":"bytes"},
-				{"name":"additionalEnumParameter","type":"int256"},
-				{"name":"additionalStrParameter","type":"bytes"},
-				{"name":"additionalIntParameter","type":"uint256"},
-				{"name":"additionalBoolParameter","type":"bool"}
+				{"name":"nftType","type":"bytes"}
 			],
 			"outputs": [
 			]
@@ -36,10 +32,6 @@
 				{"name":"url","type":"bytes"},
 				{"name":"number","type":"uint8"},
 				{"name":"amount","type":"uint8"},
-				{"name":"color","type":"uint8"},
-				{"name":"additionalStrParameter","type":"bytes"},
-				{"name":"additionalIntParameter","type":"uint256"},
-				{"name":"additionalBoolParameter","type":"bool"},
 				{"name":"nftType","type":"bytes"}
 			]
 		},
@@ -57,11 +49,7 @@
 				{"name":"name","type":"bytes"},
 				{"name":"url","type":"bytes"},
 				{"name":"number","type":"uint8"},
-				{"name":"amount","type":"uint8"},
-				{"name":"color","type":"uint8"},
-				{"name":"additionalStrParameter","type":"bytes"},
-				{"name":"additionalIntParameter","type":"uint256"},
-				{"name":"additionalBoolParameter","type":"bool"}
+				{"name":"amount","type":"uint8"}
 			]
 		},
 		{

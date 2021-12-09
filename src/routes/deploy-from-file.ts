@@ -1,13 +1,11 @@
 import express from 'express';
 import path from 'path';
-import fs from 'fs'
 
-import fileUpload, { UploadedFile } from 'express-fileupload';
+import { UploadedFile } from 'express-fileupload';
 import { DeployTrueNftService } from '../services/deployTrueNft.service';
 import { generateContract } from '../services/contract-generator.service';
 import { Collection } from '../models/collection';
 import { EnumParameter } from '../models/enum';
-import * as mediafile from '../models/mediafile';
 import { DeployDebotService } from '../services/deployDebot.service';
 import { globals } from '../config/globals';
 import { MediaFile } from '../models/mediafile';

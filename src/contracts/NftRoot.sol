@@ -70,8 +70,8 @@ contract NftRoot is DataResolver, IndexResolver {
         enoughValueToDeployData
     {
         require(isEnoughValueToMint(msg.value) || isCommissionAgent(msg.sender), NOT_ENOUGH_VALUE_TO_MINT);
-        require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
-        require(_mintedByTypes[nftType] < _limitByTypes[nftType], LIMIT_REACHED, "Limit reached");
+        /*%REQUIRE_TYPE%*/require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
+        /*%REQUIRE_TYPE_LIMIT%*/require(_mintedByTypes[nftType] < _limitByTypes[nftType], LIMIT_REACHED, "Limit reached");
 
         if (isEnoughValueToMint(msg.value)) {
             tvm.rawReserve(address(this).balance - msg.value, 0);
@@ -99,7 +99,7 @@ contract NftRoot is DataResolver, IndexResolver {
             nftType/*%PARAM_TO_DATA%*/
         );
 
-         _mintedByTypes[nftType]++;
+        _mintedByTypes[nftType]++;
         _totalMinted++;
 
         if (isEnoughValueToMint(msg.value)) {

@@ -108,12 +108,12 @@ contract NftDebot is Debot, Upgradable {
     //=========================================================================
     function deployNft(uint32 index) public {
         index = index;
-        Terminal.input(tvm.functionId(nftParamsSetType), "Enter NFT type: ", false);
+        /*%TYPE_INPUT%*/Terminal.input(tvm.functionId(nftParamsSetType), "Enter NFT type: ", false);
+        /*TERMINAL_FOR_DEBOT_SET_TYPES*/
+        this.deployNftStep1();
     }
     function nftParamsSetType(string value) public {
         _nftParams.nftType = value;
-        /*TERMINAL_FOR_DEBOT_SET_TYPES*/
-        this.deployNftStep1();
     }
 
     /*FUNCTION_FOR_DEBOT_SET_TYPES*/
@@ -123,7 +123,7 @@ contract NftDebot is Debot, Upgradable {
     }
     function deployNftStep2() public {
         Terminal.print(0, 'Let`s check data.');
-        Terminal.print(0, format("Type: {}", _nftParams.nftType));
+        /*%TYPE_PRINT%*/Terminal.print(0, format("Type: {}", _nftParams.nftType));
         /*TERMINAL_TO_DEPLOY_NFT_STEP_2*/
         Terminal.print(0, format("Owner of Nft: {}\n", _addrMultisig));
         resolveNftDataAddr();
@@ -171,7 +171,7 @@ contract NftDebot is Debot, Upgradable {
                 abiVer: 2,
                 extMsg: true,
                 callbackId: tvm.functionId(checkResult),
-                onErrorId: 0,
+                onErrorId: tvm.functionId(onError),
                 time: 0,
                 expire: 0,
                 sign: false
@@ -191,7 +191,7 @@ contract NftDebot is Debot, Upgradable {
     ) public {
         Terminal.print(0, 'Check actual data of deployed token: ');
         Terminal.print(0, format("Token address: {}", addrData));
-        Terminal.print(0, format("Nft type: {}", nftType));
+        /*%TYPE_PRINT_RESULT%*/Terminal.print(0, format("Nft type: {}", nftType));
         Terminal.print(0, format("Root: {}", addrRoot));
         Terminal.print(0, format("Owner: {}", addrOwner));
         Terminal.print(0, format("Author: {}", addrAuthor));

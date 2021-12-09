@@ -31,8 +31,6 @@ contract Data is IData, DataCore {
         require(optSalt.hasValue(), 101);
         (address addrRoot) = optSalt.get().toSlice().decode(address);
         require(msg.sender == addrRoot);
-        //require(additionalStrParameter != '', 123);
-        //require(additionalIntParameter != 0, 123);
         tvm.accept();
 
         _addrRoot = addrRoot;
@@ -52,23 +50,6 @@ contract Data is IData, DataCore {
         }
         /*%PARAM_SET%*/
 
-        /* 
-        if((additionalEnumParameter < int(ColorEnum.lastEnum)) && (additionalEnumParameter >= 0)){
-            _additionalEnumParameter = ColorEnum(additionalEnumParameter);
-        } 
-        else{
-            //require(false == true,102,"Color ID not found");
-            _additionalEnumParameter = _defColor;
-        }    
-
-        if(additionalStrParameter != '') {
-        //    require(additionalStrParameter.byteLength() >= _minLength, 121);
-        //    require(additionalStrParameter.byteLength() <= _maxLength, 122);
-        }
-        _additionalStrParameter = additionalStrParameter;
-        _additionalBoolParameter = additionalBoolParameter;
-        _additionalIntParameter = additionalIntParameter;
-        */
         deployIndex(addrOwner);
     }
 
