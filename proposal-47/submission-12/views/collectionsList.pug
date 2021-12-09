@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  link(rel="stylesheet" href="/stylesheets/displayCollections.css")
+  div.container
+      each collection in collections
+        div.collection-container
+          p.text-dark Collection name: #{collection.rootName}
+          p.text-dark Icon: #{collection.rootIcon}
+          p.text-dark Tokens list:
+
+          each token in collection.raritiesList
+            div.token-container
+              p Token name: #{token.rarityName}
+              p Max amount: #{token.amount}
+
+
+
+

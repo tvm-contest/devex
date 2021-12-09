@@ -1,0 +1,17 @@
+p {
+    margin: 0px;
+}
+
+.container {
+    margin: 0 auto;
+    width: 700px;
+    margin-top: 15px;
+}
+
+.token-container {
+    width: 100%;
+    margin: 15px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 5px grey;
+    padding: 25px;
+}
