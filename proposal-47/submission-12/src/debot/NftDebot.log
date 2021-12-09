@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: NftDebot.tvc
+      wc: None
+    keys: NftDebot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "grant hurry cute distance comfort extend winner anger version essence chronic humble"
+Raw address: 0:b8716bbb76f8e328164949e13695637879331e4d499127d8c2adf74bbfcbcd91
+testnet:
+Non-bounceable address (for init): 0QC4cWu7dvjjKBZJSeE2lWN4eTMeTUmRJ9jCrfdLv8vNkaTw
+Bounceable address (for later access): kQC4cWu7dvjjKBZJSeE2lWN4eTMeTUmRJ9jCrfdLv8vNkfk1
+mainnet:
+Non-bounceable address (for init): UQC4cWu7dvjjKBZJSeE2lWN4eTMeTUmRJ9jCrfdLv8vNkR96
+Bounceable address (for later access): EQC4cWu7dvjjKBZJSeE2lWN4eTMeTUmRJ9jCrfdLv8vNkUK_
+Succeeded

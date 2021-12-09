@@ -1,0 +1,21 @@
+.container {
+    margin: 0 auto;
+    width: 300px;
+    margin-top: 50px;
+}
+
+button {
+    width: 100%;
+}
+
+input {
+    display: none;
+}
+
+#url-div {
+    margin-top: 10px;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0px 0px 5px grey;
+    border-radius: 10px;
+}

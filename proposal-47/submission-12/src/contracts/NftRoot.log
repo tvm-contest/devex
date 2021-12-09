@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: NftRoot.tvc
+      wc: None
+    keys: NftRoot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "engage float south index tenant area burger chapter gadget upper stock void"
+Raw address: 0:4de52efe97e4333b56536f2b216c02d7ae3326cdc02364a3c3ab7e2d420629da
+testnet:
+Non-bounceable address (for init): 0QBN5S7-l-QzO1ZTbyshbALXrjMmzcAjZKPDq34tQgYp2olT
+Bounceable address (for later access): kQBN5S7-l-QzO1ZTbyshbALXrjMmzcAjZKPDq34tQgYp2tSW
+mainnet:
+Non-bounceable address (for init): UQBN5S7-l-QzO1ZTbyshbALXrjMmzcAjZKPDq34tQgYp2jLZ
+Bounceable address (for later access): EQBN5S7-l-QzO1ZTbyshbALXrjMmzcAjZKPDq34tQgYp2m8c
+Succeeded

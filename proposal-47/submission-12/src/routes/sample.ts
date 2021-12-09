@@ -98,14 +98,4 @@ router.get("/generate-contract", async function(req, res, next) {
   res.send('Файлы сгенерированы');
 })
 
-router.get("/create-collection", function(req, res, next) {
-  res.render("createCollectionForm")
-})
-
-router.post("/create-collection", function(req, res, next) {
-  console.log(req.body)
-  NFTCollectionJSON.deploy(req.body);
-  //deployForm.generate(req.body);
-})
-
 export {router as sampleRouter};

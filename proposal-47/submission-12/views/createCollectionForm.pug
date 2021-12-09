@@ -5,6 +5,8 @@ block content
     div.container-div
         input#collectionNameInput.collectionNameInput(name="Collection name", type="text", value="Collection Name" pattern="[A-Za-z0-9_]+")
 
+        input#model-input(type="file")
+
         form#collection-form
             div.collection-settings-div.buttons-div
                 button.btn.btn-outline-dark.shadow-none.collection-settings(type="button" onClick="addToken()") Add token
@@ -15,6 +17,8 @@ block content
                 div.collections-settings.param-container
                 
             button.btn.btn-outline-dark.shadow-none.submitButton(type="submit" onClick="onSubmit()") Create collection
+            button.btn.btn-outline-dark.importButton(type="button", onClick="importModel()") Import collection settings
+            button.btn.btn-outline-dark.saveButton(type="button", onClick="save()") Save collection settings
 
         script(src="http://code.jquery.com/jquery-latest.min.js")
         script(src="/scripts/keywords.js")

@@ -1,36 +1,18 @@
 import express from 'express';
 import fs from 'fs'
+import path from "path"
 
 const router = express.Router();
 
-router.get('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
 
-    let collectionJson  = {
-        collectionName: "MyFirstTokensCollection",
-        nftTokens: [ 
-            { 
-                name: 'legend',
-                limit: 5
-            },
-            { 
-                name: 'usual',
-                limit: 10000
-            },
-            { 
-                name: 'squid',
-                limit: 20
-            }  
-        ]
-    };
+    let collectionJson = req.body
 
     let collectionParams = JSON.stringify(collectionJson, null, '\t');
     
     let filename = "collectionParams.json";
-    fs.writeFileSync(filename, collectionParams);
-    res.download(filename, () => {
-        fs.rmSync("", {recursive: true, force: true});
-    });
-    
+    fs.writeFileSync(path.join("public", filename), collectionParams);
+    res.json({ filename })
 });
 
 export {router as saveCollectionParams};

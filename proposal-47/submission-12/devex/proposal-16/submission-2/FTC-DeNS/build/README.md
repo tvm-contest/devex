@@ -1,1 +1,0 @@
-Output artifacts are stored here.

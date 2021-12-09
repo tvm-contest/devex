@@ -5,29 +5,33 @@ pragma AbiHeader time;
 
 import './resolvers/IndexResolver.sol';
 import './resolvers/DataResolver.sol';
-
 import './IndexBasis.sol';
-
 import './interfaces/IData.sol';
 import './interfaces/IIndexBasis.sol';
+import "./libraries/Common.sol";
+import "./libraries/Constants.sol";
 
 contract NftRoot is DataResolver, IndexResolver {
-    //Errors
+
+    //ERRORS
     uint8 constant NOT_OWNER_ERROR = 110;
     uint8 constant RARITY_AMOUNT_MISMATCH = 111;
     uint8 constant NON_EXISTENT_RARITY = 112;
     uint8 constant RARITY_OVERFLOW = 113;
+    uint8 constant ONLY_ADMIN = 114;
+    uint8 constant MESSAGE_WITHOUT_MONEY = 115;
 
     string abiString;
     
     uint _totalMinted;
     address _addrBasis;
 
-    // Variable to deploy the IndexBasis 
-    TvmCell _codeIndexBasis;
+    mapping (address => bool) m_admins;
+    uint128 _mintingFee = 0.4 ton;
 
     // To limit the tokens amount
     uint _tokensLimit;
+
     mapping (string => uint) _rarityTypes;
     // To count when tokens are created
     mapping (string => uint) _rarityMintedCounter;
@@ -40,20 +44,6 @@ contract NftRoot is DataResolver, IndexResolver {
         uint amount;
     }
 
-    modifier onlyOwner() {
-        require(msg.pubkey() == tvm.pubkey(), NOT_OWNER_ERROR, "Only owner can do this operation");
-        tvm.accept();
-        _;
-    }
-
-    function setName(string rootName) public onlyOwner{
-        _rootName = rootName;
-    }
-
-    function setIcon(bytes icon) public onlyOwner{
-        _rootIcon = icon;
-    }
- 
     constructor(
         string rootName,
         bytes rootIcon,
@@ -71,15 +61,66 @@ contract NftRoot is DataResolver, IndexResolver {
 
         abiString =  '/*ABI*/';
 
-
         createRarityTypes(raritiesList);
-        setName(rootName);
-        setIcon(rootIcon);
 
+        _rootName = rootName;
+        _rootIcon = rootIcon;
         _codeIndex = codeIndex;
         _codeData = codeData;
         _tokensLimit = tokensLimit;
+    }
 
+    function mintNft(string rarityName, string url/*PARAM_MINT_FUNCTION*/) public {
+        require(
+            _rarityTypes.exists(rarityName), 
+            NON_EXISTENT_RARITY, 
+            "Such tokens there isn't in this collection"
+        );
+        require(
+            _rarityMintedCounter[rarityName] < _rarityTypes[rarityName],
+            RARITY_OVERFLOW,
+            "Tokens of this type can no longer be created"
+        );
+
+        TvmCell codeData = _buildDataCode(address(this));
+        TvmCell stateData = _buildDataState(codeData, _totalMinted);
+
+        uint8 flag = 0;
+        if (isAdmin(msg.sender)) flag = 1;
+
+        if (isAdmin(msg.sender)) {
+            new Data{
+                stateInit: stateData, 
+                value: 1.5 ton,
+                flag: flag
+            }(msg.sender, _codeIndex, rarityName, url/*PARAM_MINT*/);
+        }
+        
+
+        _totalMinted++;
+        _rarityMintedCounter[rarityName]++;
+    }
+
+    function deployBasis(TvmCell codeIndexBasis) public {
+        require(msg.value > 0.5 ton, MESSAGE_WITHOUT_MONEY);
+        uint256 codeHashData = resolveCodeHashData();
+        TvmCell state = tvm.buildStateInit({
+            contr: IndexBasis,
+            varInit: {
+                _codeHashData: codeHashData,
+                _addrRoot: address(this)
+            },
+            code: codeIndexBasis
+        });
+        
+        _addrBasis = new IndexBasis{
+            stateInit: state,
+             value: 0.5 ton
+        }();
+    }
+
+    function destructBasis() public view {
+        IIndexBasis(_addrBasis).destruct();
     }
 
     function createRarityTypes(Rarity[] listOfRarities) private{
@@ -88,65 +129,65 @@ contract NftRoot is DataResolver, IndexResolver {
         }
     }
 
-    function checkRaritiesCorrectness(Rarity[] listOfRarities, uint tokensLimit) private returns (bool) {
+    function checkRaritiesCorrectness(Rarity[] listOfRarities, uint tokensLimit) private pure returns (bool) {
         // Checks if the sum of the entered rarity is equal to the total number of tokens
         uint raritySumm = 0;
         for (uint256 i = 0; i < listOfRarities.length; i++) {
             raritySumm += listOfRarities[i].amount;
         }
 
-        return raritySumm == tokensLimit;
+        return raritySumm <= tokensLimit;
     }
 
-    function mintNft(string rarity, string image/*PARAM_MINT_FUNCTION*/) public {
-        require(
-            _rarityTypes.exists(rarity), 
-            NON_EXISTENT_RARITY, 
-            "Such tokens there isn't in this collection"
-        );
-        require(
-            _rarityMintedCounter[rarity] < _rarityTypes[rarity],
-            RARITY_OVERFLOW,
-            "Tokens of this type can no longer be created"
-        );
-
-        TvmCell codeData = _buildDataCode(address(this));
-        TvmCell stateData = _buildDataState(codeData, _totalMinted);
-
-        new Data{
-            stateInit: stateData, 
-            value: 1.1 ton, 
-            bounce: false
-        }(msg.sender, _codeIndex, rarity, image/*PARAM_MINT*/);
-
-        _totalMinted++;
-        _rarityMintedCounter[rarity]++;
+    function isAdmin(address addrAdmin) private view returns (bool) {
+        if (m_admins.exists(addrAdmin)) {
+            return true;
+        } 
     }
 
-    function deployBasis(TvmCell codeIndexBasis) public {
-        require(msg.value > 0.5 ton, 104);
-
-        uint256 codeHasData = resolveCodeHashData();
-        TvmCell state = tvm.buildStateInit({
-            contr: IndexBasis,
-            varInit: {
-                _codeHashData: codeHasData,
-                _addrRoot: address(this)
-            },
-            code: codeIndexBasis
-        });
-        
-        _addrBasis = new IndexBasis{
-            stateInit: state,
-             value: 0.4 ton
-        }();
+    function addAdmin(address newAddrAdmin) public onlyOwner {
+        m_admins[newAddrAdmin] = true;
     }
 
-    function destructBasis() public view {
-        IIndexBasis(_addrBasis).destruct();
+    function removeAdmin(address addrAdmin) public onlyAdmin {
+        if (m_admins.exists(addrAdmin)) {
+            delete m_admins[addrAdmin];
+        }
     }
-    
-    function getAddrBasis() public view returns (address addrBasis) {
-       addrBasis = _addrBasis;
+
+    function getTokenData() public returns(TvmCell code, uint totalMinted) {
+        tvm.accept();
+        totalMinted = _totalMinted;
+        code = _codeData;
     }
+
+    function getRaritiesList() public returns(string[] raritiesArray) {
+        tvm.accept();
+        for((string name, uint amount) : _rarityTypes){
+            raritiesArray.push(name);
+        }
+        return raritiesArray;
+    }
+
+    function addRarity(string rarityName, uint amount) public onlyOwner {
+        require(amount <= _tokensLimit, RARITY_OVERFLOW, "Tokens of this type can no longer be created");
+        _rarityTypes[rarityName] = amount;
+    } 
+
+    function setMintingFee(uint128 newMintingFee) public onlyOwner{
+        _mintingFee = newMintingFee;
+    }
+
+    modifier onlyOwner() {
+        require(msg.pubkey() == tvm.pubkey(), NOT_OWNER_ERROR, "Only owner can do this operation");
+        tvm.accept();
+        _;
+    }
+
+    modifier onlyAdmin {
+        require(isAdmin(msg.sender), ONLY_ADMIN, "Only administrator allowed");
+        tvm.accept();
+        _;
+    }
+
 }

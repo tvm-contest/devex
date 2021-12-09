@@ -1,0 +1,30 @@
+{
+	"rootName": "Collection Name",
+	"raritiesList": [
+		{
+			"rarityName": "name",
+			"amount": 10
+		},
+		{
+			"rarityName": "Name1",
+			"amount": 10
+		},
+		{
+			"rarityName": "Name2",
+			"amount": 10
+		}
+	],
+	"paramsData": [
+		{
+			"name": "name1",
+			"type": "int",
+			"minValue": 0,
+			"maxValue": 100,
+			"isRequired": true
+		},
+		{
+			"type": "enum",
+			"name": "_name2{variant}"
+		}
+	]
+}

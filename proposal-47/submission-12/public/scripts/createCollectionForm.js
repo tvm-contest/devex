@@ -322,7 +322,8 @@ const onSubmit = async () => {
 
         if (param.type === "enum") {
             const enumParam = {
-                name: `_${param.name}` + "{" + param.variantList.toString() + "}"
+                name: `_${param.name}` + "{" + param.variantList.toString() + "}",
+                type: 'enum'
             }
             paramsToSend.push(enumParam)
         } else if (param && Object.keys(param).length) {
@@ -339,7 +340,7 @@ const onSubmit = async () => {
         paramsData: paramsToSend
     }
     
-    await fetch("/my-sample/create-collection", {
+    await fetch("/createCollection", {
         method: "POST",
         body: JSON.stringify(collection),
         headers: {
@@ -349,3 +350,72 @@ const onSubmit = async () => {
 
     $("#collection-form").trigger("submit")
 }
+
+const save = async () => {
+    const collectionName = $("#collectionNameInput").val()
+    const paramsToSend = []
+
+    for (let param of params) {
+        if (keywords.has(param.name)) {
+            alert("Param has a forbidden word in it's name")
+            $("#collection-form").submit((e) => e.preventDefault())
+            return
+        }
+
+        if (param.type === "enum") {
+            const enumParam = {
+                type: "enum",
+                name: `_${param.name}` + "{" + param.variantList.toString() + "}"
+            }
+            paramsToSend.push(enumParam)
+        } else if (param && Object.keys(param).length) {
+            paramsToSend.push(param)
+        }
+    }
+
+    const collection = {
+        rootName: collectionName,
+        raritiesList: tokens,
+        paramsData: paramsToSend
+    }
+
+    const response = await fetch("/saveCollectionParams", {
+        method: "POST",
+        body: JSON.stringify(collection),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    const data = await response.json()
+    download(`http://localhost:8081/${data.filename}`, "collectionParams")
+}
+
+const importModel = () => {
+    $("#model-input").trigger("click")
+}
+
+function download(fileUrl, fileName) {
+    var a = document.createElement("a");
+    a.href = fileUrl;
+    a.setAttribute("download", fileName);
+    a.click();
+}
+
+$("#model-input").on("change", async (e) => { 
+    const dataFile = e.target.files[0]
+    const reader = new FileReader()
+
+    reader.onload = async () => {
+        const collection = JSON.parse(reader.result)
+        await fetch("/createCollection", {
+            method: "POST",
+            body: JSON.stringify(collection),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
+    reader.readAsText(dataFile)
+})

@@ -12,6 +12,8 @@ import { tokenInfoRouter } from './routes/get-token-info';
 import { tokensListRouter } from './routes/tokensList';
 import { collectionsListRouter } from './routes/collectionsList';
 import { saveCollectionParams } from './routes/saveCollectionParams';
+import { createCollectionRouter } from './routes/createCollection';
+import { loadIPFSRouter } from './routes/loadIPFS';
 
 const app = express();
 
@@ -25,8 +27,8 @@ app.use(fileUpload({
     createParentPath: true,
 }));
 app.use(globals.BASE_PATH, express.static(globals.PUBLIC_ROOT));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000 }));
+app.use(bodyParser.json({limit: "50mb"}));
 
 app.use('/', indexRouter);
 app.use('/my-sample', sampleRouter);
@@ -35,6 +37,8 @@ app.use('/token-info', tokenInfoRouter);
 app.use('/tokensList', tokensListRouter);
 app.use('/collectionsList', collectionsListRouter);
 app.use('/saveCollectionParams', saveCollectionParams);
+app.use('/loadIPFS', loadIPFSRouter);
+app.use("/createCollection", createCollectionRouter);
 
 app.use((req: Request, res: Response) => {
     res.status(404);

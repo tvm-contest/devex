@@ -18,7 +18,7 @@ router.post('/', async function(req, res) {
     for(let token of tokensList) {
 		const info = await infoGetter.getTokenInfo(token)
         const tokenInfo = {
-			rootAddress: info.data._addrRoot,
+			tokenAddress: token,
 			ownerAddress: info.data._addrOwner,
 			rarityType: info.data._rarityType
 		}

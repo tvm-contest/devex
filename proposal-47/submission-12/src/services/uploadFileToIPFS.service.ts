@@ -14,4 +14,9 @@ export class UploadFileToIPFSService {
         const added = await this.ipfsClient.add(file);
         return `https://ipfs.infura.io/ipfs/${added.path}`;
     }
+
+    async uploadContent(content: string): Promise<string> {
+        const added = await this.ipfsClient.add(content);
+        return `https://ipfs.infura.io/ipfs/${added.path}`;
+    }
 }

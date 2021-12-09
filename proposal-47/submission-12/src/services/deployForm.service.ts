@@ -18,7 +18,7 @@ export class NFTCollectionJSON {
         
           const collection: CollectionModel = {
             rootName: input['rootName'],
-            rootIcon: input['rootName'],
+            rootIcon: '7468616e6b20796f75',
             raritiesList: rarity,
             paramsData: params, 
           };

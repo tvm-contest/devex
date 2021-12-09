@@ -8,6 +8,11 @@
     margin-top: 15px;
 }
 
+.saveButton {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
 .collection-settings-div {
     display: flex;
     flex-wrap: wrap;
@@ -30,7 +35,7 @@
 
 .submitButton {
     margin-top: 15px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
     width: 100%;
 }
 
@@ -58,8 +63,17 @@
     margin-bottom: 10px;
 }
 
+.importButton {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .last-in-param {
     border-color: black;
     border-bottom: solid;
+}
+
+#model-input {
+    display: none;
 }
 

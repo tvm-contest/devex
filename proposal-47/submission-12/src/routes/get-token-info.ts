@@ -7,7 +7,7 @@ router.get('/', async function(req, res) {
     try {
         const tokenAddress = req.query.id;
         const tokenInfoGetter = new TokenInfoGetter();
-        const tokenInfoPromise = await tokenInfoGetter.getTokenInfo(tokenAddress);
+        const tokenInfoPromise = await tokenInfoGetter.getTokenInfo("0:dcdd0ae6a6c4e840b90879be5795b3076134152936149165e1493af8b115ebae");
 
         res.render('token-info', {
             root: tokenInfoPromise.data._addrRoot,

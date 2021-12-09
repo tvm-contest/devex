@@ -1,8 +1,8 @@
 import { Account } from '@tonclient/appkit';
 import { DeployContractService } from './deploy-contract.service';
 import { globals } from '../config/globals';
-import { localGiver } from '../config/localGiver';
-import { signerKeys} from '@tonclient/core';
+import { walletSettings } from '../config/walletKey';
+import { signerKeys } from '@tonclient/core';
 import path from "path";
 import { RarityType } from '../models/rarity-model';
 
@@ -84,15 +84,15 @@ export class DeployTrueNFTContractsCollection {
         let indexBasisCode = await this.deployContractService.getContractCode(indexBasisAccount).then(code => {return code.code});
         
         const localGiverContract = {
-            abi: await JSON.parse(localGiver.ABI),
-            tvc: localGiver.TVC,
+            abi: await JSON.parse(walletSettings.ABI),
+            tvc: walletSettings.TVC,
         };
 
         const client = nftRootAccount.client;
-        const signer = signerKeys(localGiver.KEYS); 
+        const signer = signerKeys(walletSettings.KEYS); 
 
         const localGiverAccount = new Account(localGiverContract, {
-            address: localGiver.ADDRESS, 
+            address: walletSettings.ADDRESS, 
             signer,
             client });
  

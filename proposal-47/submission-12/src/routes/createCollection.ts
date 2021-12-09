@@ -1,0 +1,17 @@
+import express from 'express';
+import { NFTCollectionJSON } from '../services/deployForm.service';
+
+const router = express.Router();
+
+router.get("/", function(req, res, next) {
+    res.render("createCollectionForm")
+})
+
+router.post("/", function(req, res, next) {
+    console.log(req.body)
+    NFTCollectionJSON.deploy(req.body);
+    //deployForm.generate(req.body);
+})
+  
+export {router as createCollectionRouter};
+  

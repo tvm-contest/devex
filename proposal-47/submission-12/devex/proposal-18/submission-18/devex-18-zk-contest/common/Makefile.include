@@ -1,5 +1,0 @@
-all:
-	./build.sh
-
-clean:
-	rm -f *.bin *.hex *~ core ${COMMAND} utils.hpp picosha2.hpp

@@ -1,9 +1,0 @@
-*~
-*.out
-_build/
-_drom/
-*.code
-/ton-proof-verification-contest
-core
-/01_sudoku/ml/freeton_sudoku_generator/_opam
-/01_sudoku/cpp/sudoku

@@ -25,7 +25,7 @@ class AddParamsToNftRootConstructor {
 
         //need fix
         if (paramType == 'enum') { 
-            const paramConstant = constant + '\n\t' + paramType + ' _' + paramName + '{a,b}';
+            const paramConstant = constant + '\n\t' + paramType + ' ' +  paramName;
 
             codeSource = codeSource.replace(constant, paramConstant);
 

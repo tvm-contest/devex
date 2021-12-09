@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    link(rel="stylesheet" href="/stylesheets/loadIPFS.css")
+    div.container
+        button.btn.btn-outline-dark.shadow-none(onClick="onUpload()") Select an image
+        input#file-input(type="file" name="file")
+        div#url-div
+
+        script(src="http://code.jquery.com/jquery-latest.min.js")
+        script(src="/scripts/loadIPFS.js")
