@@ -1,0 +1,199 @@
+{
+  "name": "ton-solidity-extension",
+  "displayName": "TON solidity (tsol)",
+  "description": "TON Solidity language (for .tsol file) extension to use together with FreeTON compiler for Visual Studio Code",
+  "keywords": [
+    "solidity",
+    "ton solidity",
+    "freeton",
+    "blockchain",
+    "free ton",
+    "ton",
+    "tvm",
+    "compiler",
+    "solium"
+  ],
+  "version": "1.0.3",
+  "publisher": "mytonwallet",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.50.1"
+  },
+  "contributors": [
+    "My TON wallet team <support@mytonwallet.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/mytonwallet/vscode-tonsolidity-extension/issues"
+  },
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mytonwallet/vscode-tonsolidity-extension"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:tonsolidity",
+    "onCommand:tonsolidity.fixDocument"
+  ],
+  "main": "./out/src/extension",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "watch": "tsc -watch -p ./",
+    "compile": "tsc -p ./",
+    "rebuildparser": "pegjs --cache -o ./src/parser/build/parser.js ./src/parser/tonsolidity.pegjs && pegjs -o ./src/parser/build/imports_parser.js ./src/parser/imports.pegjs",
+    "test": "nyc --require ts-node/register --require source-map-support/register mocha test/**/*.spec.ts",
+    "build": "vsce package"
+  },
+  "dependencies": {
+    "@tonclient/core": "^1.21.2",
+    "@tonclient/lib-node": "^1.21.2",
+    "ajv": "^6.10.2",
+    "ajv-keywords": "^3.4.1",
+    "ast-parents": "0.0.1",
+    "chai": "^4.2.0",
+    "cosmiconfig": "^7.0.1",
+    "find-cache-dir": "^2.1.0",
+    "fs-extra": "^4.0.3",
+    "ignore": "^5.1.8",
+    "lodash": "^4.17.21",
+    "mkdirp": "^0.5.1",
+    "require-from-string": "^2.0.2",
+    "semver": "^7.3.5",
+    "tondev": "^0.9.0",
+    "vsce": "^1.99.0",
+    "vscode-languageclient": "^6.1.4",
+    "vscode-languageserver": "^6.1.1",
+    "vscode-languageserver-textdocument": "^1.0.1",
+    "vscode-uri": "2.1.2",
+    "yaml-js": "0.2.3",
+    "emoji-regex": "^9.2.2",
+    "escape-string-regexp": "^4.0.0",
+    "solidity-comments-extractor": "^0.0.7",
+    "string-width": "^4.2.2",
+    "pegjs": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.4",
+    "@types/node": "^11.15.3",
+    "@types/pegjs": "^0.10.3",
+    "@types/vscode": "^1.50.1",
+    "esbuild": "^0.12.28",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7",
+    "vscode-test": "^1.6.1"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "out",
+      "dist"
+    ],
+    "all": true
+  },
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "TON Solidity configuration",
+      "properties": {
+        "tonsolidity.linter": {
+          "type": "string",
+          "enum": [
+            "",
+            "solhint",
+            "solium"
+          ],
+          "default": "solhint",
+          "description": "Enables linting using either solium (ethlint) or solhint. Possible options 'solhint' and 'solium', the default is solhint"
+        },
+        "tonsolidity.enabledAsYouTypeCompilationErrorCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enables as you type compilation of the document and error highlighting"
+        },
+        "tonsolidity.solhintRules": {
+          "type": [
+            "object"
+          ],
+          "default": null,
+          "description": "Solhint linting validation rules"
+        },
+        "tonsolidity.soliumRules": {
+          "type": [
+            "object"
+          ],
+          "default": {
+            "imports-on-top": 0,
+            "variable-declarations": 0,
+            "indentation": [
+              "off",
+              4
+            ],
+            "quotes": [
+              "off",
+              "double"
+            ]
+          },
+          "description": "Solium linting validation rules"
+        },
+        "tonsolidity.validationDelay": {
+          "type": "number",
+          "default": 1500,
+          "description": "Delay to trigger the validation of the changes of the current document (compilation, solium)"
+        },
+        "tonsolidity.packageDefaultDependenciesDirectory": {
+          "type": "string",
+          "default": "node_modules",
+          "description": "Default directory for Packages Dependencies, i.e: 'node_modules', 'lib'. This is used to avoid typing imports with that path prefix"
+        },
+        "tonsolidity.packageDefaultDependenciesContractsDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "Default directory where the Package Dependency store its contracts, i.e: 'src', 'contracts', or just a blank string '', this is used to avoid typing imports with subfolder paths"
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "tonsolidity",
+        "aliases": [
+          "TON Solidity",
+          "TON solidity"
+        ],
+        "extensions": [
+          ".tsol"
+        ],
+        "configuration": "./tonsolidity.configuration.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "tonsolidity.fixDocument",
+        "title": "TON Solidity: Fix document rules using Solium"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "tonsolidity",
+        "path": "./snippets/tonsolidity.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "tonsolidity",
+        "scopeName": "source.tonsolidity",
+        "path": "./syntaxes/tonsolidity.json"
+      }
+    ]
+  }
+}
