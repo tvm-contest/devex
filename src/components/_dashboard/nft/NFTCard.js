@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 // material
-import { Box, Card, Typography, Stack } from '@mui/material';
+import { Box, Card, Typography, Stack, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import Label from '../../Label';
@@ -22,7 +22,7 @@ NFTCard.propTypes = {
 };
 
 export default function NFTCard({ nft }) {
-  const { name, image, status, traits } = nft;
+  const { name, image, status, traits, ipfs } = nft;
 
   return (
     <Card>
@@ -58,6 +58,11 @@ export default function NFTCard({ nft }) {
             </div>
           ))}
         </Stack>
+        {ipfs && (
+          <Button variant="contained" href={`https://ipfs.io/ipfs/${ipfs}`} target="_blank">
+            View on IPFS
+          </Button>
+        )}
       </Stack>
     </Card>
   );
