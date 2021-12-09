@@ -12,19 +12,31 @@ body {
 }
 
 #form-contract {
+    
     padding: 0 30px 20px 30px;
     display: flex;
     margin: 0 auto;
     border-radius: 50px;
     background-color: #fff;
-    /*max-width: 670px;
-    min-height: 700px;*/
+    /* max-width: 670px;
+    min-height: 700px; */
 }
-
+.container-output{
+    color: #000;
+    margin-top: 40px;
+    padding: 50px;
+    
+    border-radius: 50px;
+    background-color: #fff;
+}
 .col {
     padding: 12px;
 }
 
+.line{
+    padding: 10px;
+    border-bottom: 1px solid rgb(0, 125, 187);
+}
 .button-delete {
     width: 30px;
     height: 30px;
@@ -106,10 +118,12 @@ label {
 }
 
 .collection-container {
-    margin-top: 10px;
-    padding: 5px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 5px black;
+    color: #000;
+    margin-top: 40px;
+    padding: 25px 40px;
+    
+    border-radius: 50px;
+    background-color: #fff;
     cursor: pointer;
 }
 
@@ -228,7 +242,33 @@ input {
     font-weight: 500;
 }
 
+.deploy-from-file{
+    animation: appearance 1s ease-in-out;
+    position: relative;
+    /* top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
+    padding: 10px 30px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    max-width: 300px;
+    margin: 0 auto;
+    border-radius: 20px;
+    background-color: #fff;
+}
+
 /* Animation */
+@keyframes appearance{
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
 @keyframes slideInFromLeft{
     0% {
         transform: translateX(-100%);

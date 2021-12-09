@@ -58,23 +58,18 @@ $('form').on("change", ".type-parameter",function(){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
-        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
     } else if(curentSelectedVal === "line"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','flex');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
-        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
-
     } else if(curentSelectedVal === "enum"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','block');
-        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','none');
     } else if(curentSelectedVal === "mediafile"){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-string").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".row.parameter-number").css('display','none');
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
-        $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-media-file").css('display','flex');
     }
 });
 const addVariant = (e) => {
@@ -86,11 +81,12 @@ const addVariant = (e) => {
     typeConteiner.id = id_perent_block[1]+ "e" + enum_id
     $(`.block-for-col-param-choice#${id_perent_block}`).find(".param-enum-field")[0].append(typeConteiner)
     
-    $(`#p${param_id}.block-for-col-param-choice`).find(`#${param_id}e${enum_id}`).attr('name', `parameter[${param_id}][enum][${enum_id}]`);
+    $(`#p${param_id}.block-for-col-param-choice`).find(`#${param_id}e${enum_id}`).find(`.form-control.param-enum`).attr('name', `parameter[${param_id}][enum][${enum_id}]`);
     arr_enum_variant[id_perent_block[1]] = enum_id
 }
 const addParam = () => {
     enum_id = 0
+
 
     var typeConteiner = document.createElement('div');
     typeConteiner.innerHTML = typeConteinerParams.innerHTML
@@ -99,6 +95,11 @@ const addParam = () => {
     typeConteiner.id="p"+param_id
     arr_collection_param.push(param_id)
     $(".content-param")[0].append(typeConteiner)
+
+    var line = document.createElement('div');
+    line.className = "line"
+    $(`.block-for-col-param-choice#p${param_id}`)[0].prepend(line)
+
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-number").css('display','none');
     $(`.block-for-col-param-choice#p${param_id}`).find(".row.parameter-string").css('display','none');
     $(`.block-for-col-param-choice#p${param_id}`).find(".parameter-enum").css('display','none');

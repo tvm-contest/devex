@@ -61,16 +61,16 @@ export class AddParamsService {
     let enumParameter = "enum " + enumParam.getName() + ' { ' + enumParam.getEnumVariants().toString() + ' } ' + '\n' + markForEnums;
     
 
-    let enumVariants = enumParam.getEnumVariants();
+    let enumVariants = enumParam.getEnumVariants().toString().split(',');
     let enumsNumbers = '';
     for (let i = 0; i < enumVariants.length; i++) {
       enumsNumbers = enumsNumbers + ' ' + (i) + ' - ' + enumVariants[i];
     }
-    let paramForDebotCheckResult = 'Terminal.print(0, format("Available: ' + enumVariants + '\\n enum' + enumParam.getName() + ': {}", uint(enum' + enumParam.getName() + ')));\n\t\t' + markForDebotCheckResult;
-    let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("Available: ' + enumVariants + '\\n enum' + enumParam.getName() + ': {}", uint(_nftParams.enum' + enumParam.getName() + ')));\n\t\t' + markForDebotDeployNftStep2;
+    let paramForDebotCheckResult = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(enum' + enumParam.getName() + ')));\n\t\t' + markForDebotCheckResult;
+    let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(_nftParams.enum' + enumParam.getName() + ')));\n\t\t' + markForDebotDeployNftStep2;
     let paramForDebotSetTypes = 'Terminal.input(' + 
     'tvm.functionId(nftParamsSetenum' + enumParam.getName() +'), ' + 
-    '"Enter ' + enumParam.getName() + '\\nAvailable: ' + enumVariants + ':", false);\n\t\t' + markForDebotSetTypes;
+    '"Enter ' + enumParam.getName() + '\\nAvailable: ' + enumsNumbers + '(enter the number):", false);\n\t\t' + markForDebotSetTypes;
 
     let functionForDebotSetTypes = 'function nftParamsSetenum' + enumParam.getName() + '(string value) public {\n' +
     '\t\t(uint i,) = stoi(value);\n' +
