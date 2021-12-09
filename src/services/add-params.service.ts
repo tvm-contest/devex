@@ -17,6 +17,7 @@ const markForDebotCheckResult = '/*TERMINAL_CHECK_RESULT*/';
 const markForDebotDeployNftStep2 = '/*TERMINAL_TO_DEPLOY_NFT_STEP_2*/';
 const markForDebotSetTypes = '/*TERMINAL_FOR_DEBOT_SET_TYPES*/';
 const markForDebotFunctionSetTypes = '/*FUNCTION_FOR_DEBOT_SET_TYPES*/';
+const markForDebotParamEnumLength = '/*PARAM_ENUM_LENGTH*/';
 
 const markForRequireType = '/*%REQUIRE_TYPE%*/';
 const markForRequireTypeLimit = '/*%REQUIRE_TYPE_LIMIT%*/';
@@ -80,17 +81,21 @@ export class AddParamsService {
 
     let enumVariants = enumParam.getEnumVariants().toString().split(',');
     let enumsNumbers = '';
+    let enumLength = 0;
     for (let i = 0; i < enumVariants.length; i++) {
       enumsNumbers = enumsNumbers + ' ' + (i) + ' - ' + enumVariants[i];
+      enumLength++;
     }
     let paramForDebotCheckResult = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(enum' + enumParam.getName() + ')));\n\t\t' + markForDebotCheckResult;
     let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(_nftParams.enum' + enumParam.getName() + ')));\n\t\t' + markForDebotDeployNftStep2;
     let paramForDebotSetTypes = 'Terminal.input(' + 
     'tvm.functionId(nftParamsSetenum' + enumParam.getName() +'), ' + 
     '"Enter ' + enumParam.getName() + '\\nAvailable: ' + enumsNumbers + '(enter the number):", false);\n\t\t' + markForDebotSetTypes;
+    let paramForDebotEnumLength = 'uint ' + enumParam.getName() + 'Length = ' + enumLength + ';\n' + markForDebotParamEnumLength;
 
     let functionForDebotSetTypes = 'function nftParamsSetenum' + enumParam.getName() + '(string value) public {\n' +
     '\t\t(uint i,) = stoi(value);\n' +
+    '\t\trequire(i >= ' + enumParam.getName() + 'Length || i < 0, 777, i = 0);\n' +
     '\t\t_nftParams.enum' + enumParam.getName() + ' = '+ enumParam.getName() +'(i);\n\t}\n\t' + markForDebotFunctionSetTypes;
     
     codeSource = codeSource.replace(markForEnums, enumParameter);
@@ -98,6 +103,7 @@ export class AddParamsService {
     codeSource = codeSource.replace(markForDebotDeployNftStep2, paramForDebotDeployNftStep2);
     codeSource = codeSource.replace(markForDebotSetTypes, paramForDebotSetTypes);
     codeSource = codeSource.replace(markForDebotFunctionSetTypes, functionForDebotSetTypes);
+    codeSource = codeSource.replace(markForDebotParamEnumLength, paramForDebotEnumLength);
     return codeSource;
   }
 
