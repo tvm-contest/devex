@@ -1,6 +1,6 @@
 import express from 'express';
 import { everscale_settings } from '../config/everscale-settings';
-import { globals } from '../config/globals';
+
 const router = express.Router();
 
 import { TokensData } from "../services/tokesData.service";

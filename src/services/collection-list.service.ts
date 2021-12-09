@@ -5,7 +5,6 @@ import fs from 'fs'
 import path from 'path';
 import { everscale_settings } from '../config/everscale-settings';
 import { globals } from '../config/globals';
-import { Collection } from "../models/collection";
 
 export type CollectionInfo = {
   name : string

@@ -7,6 +7,8 @@
 			"inputs": [
 				{"name":"codeIndex","type":"cell"},
 				{"name":"codeData","type":"cell"},
+				{"name":"addrCommissionAgent","type":"address"},
+				{"name":"mintingCommission","type":"uint128"},
 				{"name":"nftTypes","type":"bytes[]"},
 				{"name":"limit","type":"uint256[]"},
 				{"name":"name","type":"bytes"},
@@ -49,6 +51,14 @@
 		{
 			"name": "destructBasis",
 			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "changeAdmin",
+			"inputs": [
+				{"name":"addrNewAdmin","type":"address"}
 			],
 			"outputs": [
 			]
