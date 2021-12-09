@@ -1,0 +1,162 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"presaleStartDate","type":"uint32"},
+				{"name":"saleStartDate","type":"uint32"},
+				{"name":"price","type":"uint128"},
+				{"name":"collectionMetadataContents","type":"string"},
+				{"name":"tokenPrimarySaleHappened","type":"bool"},
+				{"name":"tokenMetadataIsMutable","type":"bool"},
+				{"name":"tokenMasterEditionMaxSupply","type":"uint256"},
+				{"name":"tokenMasterEditionPrintLocked","type":"bool"},
+				{"name":"tokenCreatorsPercent","type":"uint16"},
+				{"components":[{"name":"creatorAddress","type":"address"},{"name":"creatorShare","type":"uint8"}],"name":"tokenCreatorsShares","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+				{"name":"includeTokens","type":"bool"},
+				{"name":"includeWhitelist","type":"bool"}
+			],
+			"outputs": [
+				{"name":"nonce","type":"uint256"},
+				{"name":"creatorAddress","type":"address"},
+				{"name":"ownerAddress","type":"address"},
+				{"name":"ownerPubkey","type":"uint256"},
+				{"name":"treasuryAddress","type":"address"},
+				{"name":"collectionAddress","type":"address"},
+				{"name":"saleStartDate","type":"uint32"},
+				{"name":"presaleStartDate","type":"uint32"},
+				{"name":"price","type":"uint128"},
+				{"name":"mintedAmount","type":"uint256"},
+				{"name":"tokens","type":"string[]"},
+				{"name":"tokensAmount","type":"uint256"},
+				{"name":"tokensLocked","type":"bool"},
+				{"name":"whitelist","type":"map(address,uint32)"},
+				{"name":"whitelistCount","type":"uint256"},
+				{"name":"whitelistBuyLimit","type":"uint32"}
+			]
+		},
+		{
+			"name": "change",
+			"inputs": [
+				{"name":"saleStartDate","type":"uint32"},
+				{"name":"presaleStartDate","type":"uint32"},
+				{"name":"price","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "mint",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "mintInternal",
+			"inputs": [
+				{"name":"targetOwnerAddress","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deleteWhitelist",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deleteFromWhitelist",
+			"inputs": [
+				{"name":"targetAddresses","type":"address[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addToWhitelist",
+			"inputs": [
+				{"name":"targetAddresses","type":"address[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deleteTokens",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setToken",
+			"inputs": [
+				{"name":"index","type":"uint256"},
+				{"name":"metadata","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addTokens",
+			"inputs": [
+				{"name":"metadatas","type":"string[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "lockTokens",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"_nonce","type":"uint256"},
+		{"key":2,"name":"_creatorAddress","type":"address"},
+		{"key":3,"name":"_ownerAddress","type":"address"},
+		{"key":4,"name":"_ownerPubkey","type":"uint256"},
+		{"key":5,"name":"_treasuryAddress","type":"address"},
+		{"key":6,"name":"_collectionCode","type":"cell"},
+		{"key":7,"name":"_tokenCode","type":"cell"}
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"_gasReserve","type":"uint128"},
+		{"name":"_nonce","type":"uint256"},
+		{"name":"_creatorAddress","type":"address"},
+		{"name":"_ownerAddress","type":"address"},
+		{"name":"_ownerPubkey","type":"uint256"},
+		{"name":"_treasuryAddress","type":"address"},
+		{"name":"_collectionCode","type":"cell"},
+		{"name":"_tokenCode","type":"cell"},
+		{"name":"_collectionAddress","type":"address"},
+		{"name":"_presaleStartDate","type":"uint32"},
+		{"name":"_saleStartDate","type":"uint32"},
+		{"name":"_price","type":"uint128"},
+		{"name":"_mintedAmount","type":"uint256"},
+		{"name":"_tokens","type":"string[]"},
+		{"name":"_tokensLocked","type":"bool"},
+		{"name":"_whitelist","type":"map(address,uint32)"},
+		{"name":"_whitelistCount","type":"uint256"},
+		{"name":"_whitelistBuyLimit","type":"uint32"}
+	]
+}
