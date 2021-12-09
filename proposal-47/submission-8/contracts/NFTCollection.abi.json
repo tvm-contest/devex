@@ -1,0 +1,140 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"owner","type":"address"},
+				{"name":"supply","type":"uint32"},
+				{"name":"imageCode","type":"cell"},
+				{"name":"tokenCode","type":"cell"},
+				{"name":"certCode","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "mint",
+			"inputs": [
+				{"name":"imgIds","type":"uint8[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onExist",
+			"inputs": [
+				{"name":"value0","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "removeQuery",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "undoMint",
+			"inputs": [
+				{"name":"futureAddress","type":"address"},
+				{"name":"imgIds","type":"uint8[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "doMint",
+			"inputs": [
+				{"name":"futureAddress","type":"address"},
+				{"name":"imgIds","type":"uint8[]"},
+				{"name":"price","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addLevel",
+			"inputs": [
+				{"name":"imgCount","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "levelDeploy",
+			"inputs": [
+				{"name":"id","type":"uint8"},
+				{"name":"count","type":"uint8"},
+				{"name":"levelId","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getImageAddress",
+			"inputs": [
+				{"name":"levelId","type":"uint8"},
+				{"name":"id","type":"uint8"}
+			],
+			"outputs": [
+				{"name":"addr","type":"address"}
+			]
+		},
+		{
+			"name": "setComplete",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"owner","type":"address"},
+				{"name":"supply","type":"uint32"},
+				{"name":"minted","type":"uint32"},
+				{"name":"levelCount","type":"uint8"},
+				{"name":"firstLvlImgCount","type":"uint32"},
+				{"name":"complete","type":"bool"}
+			]
+		},
+		{
+			"name": "getTokenAddress",
+			"inputs": [
+				{"name":"imgIds","type":"uint8[]"}
+			],
+			"outputs": [
+				{"name":"addr","type":"address"}
+			]
+		},
+		{
+			"name": "withdraw",
+			"inputs": [
+				{"name":"addr","type":"address"},
+				{"name":"value","type":"uint128"},
+				{"name":"bounce","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getCodes",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"certCode","type":"cell"},
+				{"name":"imageCode","type":"cell"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

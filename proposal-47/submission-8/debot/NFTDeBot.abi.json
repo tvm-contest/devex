@@ -1,0 +1,360 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "setNFTCollection",
+			"inputs": [
+				{"name":"root","type":"address"},
+				{"name":"pubkey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getMethodError",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "start",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getUserAddress",
+			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getUserSb",
+			"inputs": [
+				{"name":"handle","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setColInfo",
+			"inputs": [
+				{"name":"owner","type":"address"},
+				{"name":"supply","type":"uint32"},
+				{"name":"minted","type":"uint32"},
+				{"name":"levelCount","type":"uint8"},
+				{"name":"firstLvlImgCount","type":"uint32"},
+				{"name":"complete","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setCodes",
+			"inputs": [
+				{"name":"certCode","type":"cell"},
+				{"name":"imageCode","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getUserTokens",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "parceCertData",
+			"inputs": [
+				{"components":[{"name":"id","type":"address"},{"name":"data","type":"cell"}],"name":"acc","type":"tuple"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getCertByHash",
+			"inputs": [
+				{"components":[{"name":"id","type":"address"},{"name":"data","type":"cell"}],"name":"accounts","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "filterTokensByRoot",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "showMenu",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "mintNft",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getImagesInfo",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getLevelImageInfo",
+			"inputs": [
+				{"name":"root","type":"address"},
+				{"name":"owner","type":"address"},
+				{"name":"chunks","type":"uint8"},
+				{"name":"price","type":"uint64"},
+				{"name":"levelImageCount","type":"uint8"},
+				{"name":"nextLevelImageCount","type":"uint8"},
+				{"name":"complete","type":"bool"},
+				{"name":"name","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "showMintMenu",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "selectLevelImg",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getLevelImageContent",
+			"inputs": [
+				{"name":"content","type":"map(uint8,bytes)"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "imageBase64",
+			"inputs": [
+				{"name":"base64","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setShowImageResult",
+			"inputs": [
+				{"name":"result","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "confirmImage",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "mintToken",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setMintTokenAddress",
+			"inputs": [
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setMintTokenType",
+			"inputs": [
+				{"name":"acc_type","type":"int8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "confirmMintToken",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "checkMsigBalanceAmount",
+			"inputs": [
+				{"name":"nanotokens","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "mintTokenError",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "mintTokenSuccess",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "listNft",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "selectUserNft",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "giftUserNft",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getNewOwner",
+			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "confirmChangeOwner",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "changeOwnerError",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "changeOwnerSuccess",
+			"inputs": [
+				{"name":"transId","type":"uint64"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDebotInfo",
+			"id": "0xDEB",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"version","type":"bytes"},
+				{"name":"publisher","type":"bytes"},
+				{"name":"caption","type":"bytes"},
+				{"name":"author","type":"bytes"},
+				{"name":"support","type":"address"},
+				{"name":"hello","type":"bytes"},
+				{"name":"language","type":"bytes"},
+				{"name":"dabi","type":"bytes"},
+				{"name":"icon","type":"bytes"}
+			]
+		},
+		{
+			"name": "getRequiredInterfaces",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"interfaces","type":"uint256[]"}
+			]
+		},
+		{
+			"name": "upgrade",
+			"inputs": [
+				{"name":"state","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDebotOptions",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"options","type":"uint8"},
+				{"name":"debotAbi","type":"bytes"},
+				{"name":"targetAbi","type":"bytes"},
+				{"name":"targetAddr","type":"address"}
+			]
+		},
+		{
+			"name": "setABI",
+			"inputs": [
+				{"name":"dabi","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

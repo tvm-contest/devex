@@ -1,0 +1,102 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"owner","type":"address"},
+				{"name":"levelImageCount","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setImageProps",
+			"inputs": [
+				{"name":"chunks","type":"uint8"},
+				{"name":"price","type":"uint64"},
+				{"name":"nextLevelImageCount","type":"uint8"},
+				{"name":"name","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getImageAddress",
+			"inputs": [
+				{"name":"levelId","type":"uint8"},
+				{"name":"id","type":"uint8"}
+			],
+			"outputs": [
+				{"name":"addr","type":"address"}
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"root","type":"address"},
+				{"name":"owner","type":"address"},
+				{"name":"chunks","type":"uint8"},
+				{"name":"price","type":"uint64"},
+				{"name":"levelImageCount","type":"uint8"},
+				{"name":"nextLevelImageCount","type":"uint8"},
+				{"name":"complete","type":"bool"},
+				{"name":"name","type":"bytes"}
+			]
+		},
+		{
+			"name": "getContent",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"content","type":"map(uint8,bytes)"}
+			]
+		},
+		{
+			"name": "fillContent",
+			"inputs": [
+				{"name":"chunkNumber","type":"uint8"},
+				{"name":"part","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "processMint",
+			"inputs": [
+				{"name":"futureAddress","type":"address"},
+				{"name":"imgIds","type":"uint8[]"},
+				{"name":"price","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "undoMint",
+			"inputs": [
+				{"name":"futureAddress","type":"address"},
+				{"name":"imgIds","type":"uint8[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "_complete",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"_complete","type":"bool"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"_root","type":"address"},
+		{"key":2,"name":"_level","type":"uint8"},
+		{"key":3,"name":"_id","type":"uint8"}
+	],
+	"events": [
+	]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "nftcollectibles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js",
+    "build": "scripts/build.sh",
+    "build_debot": "tondev sol compile ./debot/NFTDeBot.sol",
+    "deploy": "node deploy/deploy.js",
+    "deploy_debot": "debot/deploy_debot.sh"
+
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tonclient/core": "^1.27.0",
+    "@tonclient/lib-node": "^1.27.0"
+  }
+}
