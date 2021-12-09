@@ -64,7 +64,7 @@ export class AddParamsService {
     let enumVariants = enumParam.getEnumVariants().toString().split(',');
     let enumsNumbers = '';
     for (let i = 0; i < enumVariants.length; i++) {
-      enumsNumbers = enumsNumbers + ' ' + (i+1) + ' - ' + enumVariants[i];
+      enumsNumbers = enumsNumbers + ' ' + (i+1) + ' - ' + enumVariants[i] + '\n';
     }
     let paramForDebotCheckResult = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(enum' + enumParam.getName() + ')));\n\t\t' + markForDebotCheckResult;
     let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(_nftParams.enum' + enumParam.getName() + ')));\n\t\t' + markForDebotDeployNftStep2;
