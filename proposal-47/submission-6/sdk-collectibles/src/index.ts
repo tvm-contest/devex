@@ -28,12 +28,19 @@ import { SwiftManager } from "./swift/swift-manager";
 import { SwiftDecoder, SwiftHandlerParser } from "./swift/swift-decoder";
 import { TonClientColContractFactory } from "./ton/ton-col/ton-client-col-contract";
 import { TonClientTokenContractFactory } from "./ton/ton-tokens/ton-client-token-contract";
+import * as fs from "fs";
+import path from "path";
 
 dotenv.config();
 TonClient.useBinaryLibrary(libNode);
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const run = async (params?: {controllers?: Function[]; middlewares?: Function[];}) => {
+  // deleting old file, if they exist
+  if (await fs.existsSync(path.resolve(__dirname, '../public'))) {
+    await fs.promises.rm(path.resolve(__dirname, '../public'), { recursive: true });
+  }
+
   const swiftUpdateIntervalMs = +(process.env.SWIFT_UPDATE_INTERVAL_MS_SDK || '1000');
   const tonUrls = (process.env.TON_ENDPOINTS ?? "").split("|").filter(Boolean);
   const config = {
@@ -69,30 +76,30 @@ const run = async (params?: {controllers?: Function[]; middlewares?: Function[];
   const tokenService = new TokenService(connection.getMongoRepository(Token));
 
   const swiftMessageHandler = new SwiftMessageHandler(
-    new SeriesCreateHandler(
-      actionService, 
-      seriesService, 
-      tonClientColRoot,
-      tonClient,
-      tonClientColContractFactory
-    ),
-    new MintQueryHandler(
-      actionService,
-      seriesService,
-      tonClientColRoot,
-      tonClient,
-      tonClientColContractFactory,
-      tokenService
-    ),
-    new TokenMintHandler(
-      actionService,
-      seriesService,
-      tonClientColRoot,
-      tonClient,
-      tonClientColContractFactory,
-      tokenService,
-      tonClientTokenContractFactory
-    )
+      new SeriesCreateHandler(
+          actionService,
+          seriesService,
+          tonClientColRoot,
+          tonClient,
+          tonClientColContractFactory
+      ),
+      new MintQueryHandler(
+          actionService,
+          seriesService,
+          tonClientColRoot,
+          tonClient,
+          tonClientColContractFactory,
+          tokenService
+      ),
+      new TokenMintHandler(
+          actionService,
+          seriesService,
+          tonClientColRoot,
+          tonClient,
+          tonClientColContractFactory,
+          tokenService,
+          tonClientTokenContractFactory
+      )
   );
 
   const lastMessageTimeRepo = connection.getMongoRepository(LastMessageTime);
@@ -107,12 +114,12 @@ const run = async (params?: {controllers?: Function[]; middlewares?: Function[];
   const swiftHandlerParser = new SwiftHandlerParser(connection.getMongoRepository(SwiftCode));
 
   new SwiftManager(
-    actionService,
-    swiftWatcher,
-    new SwiftDecoder(tonClient, swiftHandlerParser),
-    abiFinder,
-    swiftMessageHandler,
-    swiftService
+      actionService,
+      swiftWatcher,
+      new SwiftDecoder(tonClient, swiftHandlerParser),
+      abiFinder,
+      swiftMessageHandler,
+      swiftService
   );
 
   swiftWatcher.start();
