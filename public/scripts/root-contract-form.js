@@ -81,7 +81,7 @@ const addVariant = (e) => {
     typeConteiner.id = id_perent_block[1]+ "e" + enum_id
     $(`.block-for-col-param-choice#${id_perent_block}`).find(".param-enum-field")[0].append(typeConteiner)
     
-    $(`#p${param_id}.block-for-col-param-choice`).find(`#${param_id}e${enum_id}`).attr('name', `parameter[${param_id}][enum][${enum_id}]`);
+    $(`#p${param_id}.block-for-col-param-choice`).find(`#${param_id}e${enum_id}`).find(`.form-control.param-enum`).attr('name', `parameter[${param_id}][enum][${enum_id}]`);
     arr_enum_variant[id_perent_block[1]] = enum_id
 }
 const addParam = () => {
