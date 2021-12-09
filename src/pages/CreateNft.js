@@ -16,7 +16,9 @@ import {
   Link,
   TextField,
   Grid,
-  FormHelperText
+  FormHelperText,
+  Backdrop,
+  CircularProgress
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
@@ -59,11 +61,10 @@ export default function CreateNFT() {
   const [currentDeletedIndex, setCurrentDeletedIndex] = useState();
   const [open, setOpen] = useState(false);
   const [currentDeleting, setCurrentDeleting] = useState('');
+  const [isSpinner, setIsSpinner] = useState(false);
   const {
-    state: { account, ton }
+    state: { account }
   } = useContext(StoreContext);
-
-  window.ttt = ton;
 
   const { getRootProps, getInputProps, acceptedFiles, isDragActive } = useDropzone();
 
@@ -97,6 +98,7 @@ export default function CreateNFT() {
   };
 
   const getDataForBlockchain = async () => {
+    setIsSpinner(true);
     const uploadArrayPromise = [];
     for (const d of nftData) {
       uploadArrayPromise.push(uploadImageToIpfs(d.image));
@@ -108,6 +110,7 @@ export default function CreateNFT() {
     for (const [key, data] of Object.entries(nftData)) {
       returnData.push({ ...data, image: `ipfs://${uploadedData[key]}` });
     }
+    setIsSpinner(false);
     console.log(returnData);
 
     return returnData;
@@ -284,6 +287,9 @@ export default function CreateNFT() {
 
   return (
     <Page title="Create you new Nft">
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isSpinner}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Container>
         <Typography variant="h4" sx={{ mb: 5 }}>
           Create a new NFTs
@@ -307,11 +313,24 @@ export default function CreateNFT() {
           in the "User flow" section. Please keep in mind that NeFerTiti is still working in test
           mode.
         </Typography>
+        <Typography variant="subtitle1" sx={{ marginBottom: 5 }}>
+          Test mode limitations are:
+          <ul>
+            <li>
+              You can't upload more then 10 images per once (we are working on own ipfs gateway).
+            </li>
+            <li>
+              Blockchain integration is not available on web, please use TON CLI to deploy prepared
+              data. Also will be implemented in future
+            </li>
+            <li>Some pages on development stage now</li>
+          </ul>
+        </Typography>
       </Container>
 
       <Container>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Collection Name"
               value={collectionName}
@@ -325,7 +344,7 @@ export default function CreateNFT() {
               ''
             )}
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Number of NFTs (max 10 for now)"
               type="number"
@@ -527,8 +546,13 @@ export default function CreateNFT() {
           )}
           <NFTList nfts={nftData} />
           {!!nftData.length && (
-            <Button onClick={getDataForBlockchain} variant="contained" fullWidth>
-              TODO getDataForBlockchain
+            <Button
+              onClick={getDataForBlockchain}
+              variant="contained"
+              fullWidth
+              sx={{ marginTop: 5 }}
+            >
+              GetDataForBlockchain
             </Button>
           )}
         </Box>
