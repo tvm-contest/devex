@@ -1,0 +1,80 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendMetadata",
+			"inputs": [
+				{"name":"adr","type":"address"},
+				{"name":"metadata","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "startSelling",
+			"inputs": [
+				{"name":"adr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendValueOnNft",
+			"inputs": [
+				{"name":"adr","type":"address"},
+				{"name":"dest","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"bounce","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "mintByAdmin",
+			"inputs": [
+				{"name":"adr","type":"address"},
+				{"name":"dest","type":"address"},
+				{"name":"amount","type":"uint128"},
+				{"name":"bounce","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "sendToken",
+			"inputs": [
+				{"name":"adrNft","type":"address"},
+				{"name":"adr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "value",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value","type":"uint256"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"messages","type":"map(uint256,uint32)"},
+		{"name":"value","type":"uint256"}
+	]
+}
