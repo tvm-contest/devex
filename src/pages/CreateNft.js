@@ -55,7 +55,8 @@ export default function CreateNFT() {
   const [collectionDesc, setCollectionDesc] = useState('');
   const [isSubmitClick, setIsSubmitClick] = useState(false);
   const [layerData, setLayerData] = useState([]);
-  const [totalImages, setTotalImages] = useState();
+  const [totalImages, setTotalImages] = useState(null);
+  const [nftPrice, setNftPrice] = useState(null);
   const [nftData, setNftData] = useState([]);
   const [currentLayer, setCurrentLayer] = useState();
   const [currentDeletedIndex, setCurrentDeletedIndex] = useState();
@@ -108,10 +109,20 @@ export default function CreateNFT() {
     const returnData = [];
 
     for (const [key, data] of Object.entries(nftData)) {
-      returnData.push({ ...data, image: `ipfs://${uploadedData[key]}` });
+      returnData.push({
+        name: data.name,
+        description: data.description,
+        traits: data.traits,
+        price: nftPrice,
+        image: `ipfs://${uploadedData[key]}`
+      });
     }
     setIsSpinner(false);
-    console.log(returnData);
+    const a = document.createElement('a');
+    const file = new Blob([JSON.stringify(returnData)], { type: 'application/json' });
+    a.href = URL.createObjectURL(file);
+    a.download = 'nefertit_io_generated_data.json';
+    a.click();
 
     return returnData;
   };
@@ -136,7 +147,7 @@ export default function CreateNFT() {
     setIsSubmitClick(true);
 
     // validation
-    if (!totalImages || !collectionName || !collectionDesc) {
+    if (!totalImages || !collectionName || !collectionDesc || !nftPrice) {
       return;
     }
 
@@ -324,13 +335,14 @@ export default function CreateNFT() {
               data. Also will be implemented in future
             </li>
             <li>Some pages on development stage now</li>
+            <li>Product contains bugs. Please forgive us</li>
           </ul>
         </Typography>
       </Container>
 
       <Container>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <TextField
               label="Collection Name"
               value={collectionName}
@@ -344,7 +356,7 @@ export default function CreateNFT() {
               ''
             )}
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <TextField
               label="Number of NFTs (max 10 for now)"
               type="number"
@@ -363,6 +375,26 @@ export default function CreateNFT() {
             />
             {isSubmitClick && !totalImages ? (
               <FormHelperText error>Please Enter Number of NFTs greater than 0</FormHelperText>
+            ) : (
+              ''
+            )}
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="NFT price (in TON)"
+              type="number"
+              value={nftPrice}
+              onChange={(e) => {
+                const number = e.target.value;
+                if (number >= 0) {
+                  setNftPrice(number);
+                }
+              }}
+              error={isSubmitClick && !nftPrice}
+              fullWidth
+            />
+            {isSubmitClick && !nftPrice ? (
+              <FormHelperText error>Please Enter price of NFTs greater than 0</FormHelperText>
             ) : (
               ''
             )}
