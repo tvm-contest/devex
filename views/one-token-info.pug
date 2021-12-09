@@ -11,32 +11,12 @@ block content
       input.btn.btn-blue(type="submit" value="Find")
 
     .token-info-container
-      if tokenInfo
-        .row
-          .col
-            p Token address:
-          .col 
-            p= tokenInfo.addrData
-        .row
-          .col
-            p Collection address:
-          .col 
-            p= tokenInfo.addrRoot
-        .row
-          .col
-            p Owner Address:
-          .col 
-            p= tokenInfo.addrOwner
-        .row
-          .col
-            p Trusted wallet address:
-          .col 
-            p= tokenInfo.addrTrusted
-        .row
-          .col
-            p Color:
-          .col 
-            p= tokenInfo.color
+      if outputInfo        
+        each line in outputInfo
+          if line.isIPFS
+            iframe(src=line.value frameborder="0" height="100%" width="100%" ) 
+          else
+            pre= line.value
     
 
   script(src="/scripts/root-contract-form.js")
