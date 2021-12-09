@@ -341,6 +341,7 @@ export default function CreateNFT() {
           <ul>
             <li>
               You can't upload more then 10 images per minute (we are working on own ipfs gateway).
+              Sometimes you can upload more. Please, be patient.
             </li>
             <li>
               Blockchain integration is not available on web, please use TON CLI to deploy prepared
@@ -370,13 +371,13 @@ export default function CreateNFT() {
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField
-              label="Number of NFTs (max 10 for now)"
+              label="Number of NFTs (max 100 for now)"
               type="number"
               value={totalImages}
               onChange={(e) => {
                 let number = e.target.value;
-                if (number > 10) {
-                  number = 10;
+                if (number > 100) {
+                  number = 100;
                 }
                 if (number >= 0) {
                   setTotalImages(number);
