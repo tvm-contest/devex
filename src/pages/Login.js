@@ -35,12 +35,16 @@ export default function Login() {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Typography variant="h6" sx={{ mb: 2 }}>
-              To start working with NeFerTiti you need to connect your TON Crystal Wallet. Click on
-              the button below and have fun!
+              To start working with NeFerTiti you need to connect your TON Crystal Wallet chrome
+              extension. Click on the button below and have fun!
             </Typography>
             <Typography variant="h6" sx={{ mb: 1 }}>
-              If you still haven't Crystal Wallet you can get it
-              <Link href="https://l1.broxus.com/everscale/wallet" target="_blank" underline="none">
+              If you still haven't Crystal Wallet extension you can get it
+              <Link
+                href="https://chrome.google.com/webstore/detail/ton-crystal-wallet/cgeeodpfagjceefieflmdfphplkenlfk?hl=en"
+                target="_blank"
+                underline="none"
+              >
                 {` here >>> `}
               </Link>
             </Typography>

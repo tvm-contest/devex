@@ -50,12 +50,18 @@ export default function NFTCard({ nft }) {
           {name}
         </Typography>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack alignItems="center" justifyContent="space-between">
           {traits.map((trait) => (
-            <div key={`${name}_${trait.trait_type}`}>
-              <Typography variant="subtitle1">{trait.trait_type}</Typography>
-              <Typography variant="subtitle1">{trait.value}</Typography>
-            </div>
+            <Stack
+              alignItems="center"
+              direction="row"
+              justifyContent="space-between"
+              width="100%"
+              key={`${name}_${trait.trait_type}`}
+            >
+              <Typography variant="subtitle2">{trait.trait_type}</Typography>
+              <Typography variant="subtitle2">{trait.value}</Typography>
+            </Stack>
           ))}
         </Stack>
         {ipfs && (

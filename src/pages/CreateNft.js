@@ -59,8 +59,8 @@ export default function CreateNFT() {
   const [collectionDesc, setCollectionDesc] = useState('');
   const [isSubmitClick, setIsSubmitClick] = useState(false);
   const [layerData, setLayerData] = useState([]);
-  const [totalImages, setTotalImages] = useState(null);
-  const [nftPrice, setNftPrice] = useState(null);
+  const [totalImages, setTotalImages] = useState(10);
+  const [nftPrice, setNftPrice] = useState(100);
   const [nftData, setNftData] = useState([]);
   const [currentLayer, setCurrentLayer] = useState();
   const [currentDeletedIndex, setCurrentDeletedIndex] = useState();
@@ -74,7 +74,6 @@ export default function CreateNFT() {
   const { getRootProps, getInputProps, acceptedFiles, isDragActive } = useDropzone();
 
   const uploadImageToIpfs = async (key, image) => {
-    console.log('uploadImageToIpfs', key);
     const base64 = image.image;
     if (image.ipfs) {
       return image.ipfs;
@@ -102,9 +101,9 @@ export default function CreateNFT() {
         Object.entries(files).forEach(([, value]) => {
           elem.imagArr.push({
             id: Math.floor(Math.random() * 100000),
-            traitVal: '',
+            traitVal: value.name.replace(/\.[^/.]+$/, ''),
             src: URL.createObjectURL(value),
-            traitRar: ''
+            traitRar: '1'
           });
         });
       }
@@ -132,7 +131,6 @@ export default function CreateNFT() {
         image: `ipfs://${uploadedData[key]}`
       });
     }
-    console.log(nftData);
     setIsSpinner(false);
     const a = document.createElement('a');
     const file = new Blob([JSON.stringify(returnData)], { type: 'application/json' });
@@ -153,7 +151,7 @@ export default function CreateNFT() {
       ...layerData,
       {
         id: Math.floor(Math.random() * 1000),
-        traitName: '',
+        traitName: `Train #${layerData.length + 1}`,
         imagArr: []
       }
     ]);
@@ -349,6 +347,10 @@ export default function CreateNFT() {
               You can't upload more then 10 images per minute (we are working on own ipfs gateway).
               Sometimes you can upload more. Please, be patient. But you able to generate images
               with no limitations
+            </li>
+            <li>
+              Generation a lot of images (1000+) can be slow (10+ seconds). Future optimization is
+              needed
             </li>
             <li>
               Blockchain integration is not available on web, please use TON CLI to deploy prepared
