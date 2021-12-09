@@ -20,8 +20,6 @@ import {
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import mergeImages from 'merge-images';
-// import * as IPFS from 'ipfs-core';
-// import web3Utils from 'web3-utils';
 import { styled } from '@mui/material/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 // components
