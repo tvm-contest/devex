@@ -43,7 +43,11 @@ const ProductImgStyle = styled('img')({
   width: '100%',
   height: '100%',
   objectFit: 'contain',
-  position: 'absolute'
+  position: 'absolute',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    backgroundColor: 'rgba(0,0,0,0.2)'
+  }
 });
 
 //
@@ -167,6 +171,7 @@ export default function CreateNFT() {
     if (validate) {
       return;
     }
+    setIsSpinner(true);
 
     const imagesToGenerate = [];
 
@@ -239,6 +244,7 @@ export default function CreateNFT() {
       });
     }
     setNftData(andFinalImages);
+    setIsSpinner(false);
 
     //  TODO add method to upload chunks
   };
@@ -341,7 +347,8 @@ export default function CreateNFT() {
           <ul>
             <li>
               You can't upload more then 10 images per minute (we are working on own ipfs gateway).
-              Sometimes you can upload more. Please, be patient.
+              Sometimes you can upload more. Please, be patient. But you able to generate images
+              with no limitations
             </li>
             <li>
               Blockchain integration is not available on web, please use TON CLI to deploy prepared
@@ -371,14 +378,14 @@ export default function CreateNFT() {
           </Grid>
           <Grid item xs={12} md={4}>
             <TextField
-              label="Number of NFTs (max 100 for now)"
+              label="Number of NFTs (up to 10 for test mode)"
               type="number"
               value={totalImages}
               onChange={(e) => {
-                let number = e.target.value;
-                if (number > 100) {
-                  number = 100;
-                }
+                const number = e.target.value;
+                // if (number > 100) {
+                //   number = 100;
+                // }
                 if (number >= 0) {
                   setTotalImages(number);
                 }
