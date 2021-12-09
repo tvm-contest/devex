@@ -4,6 +4,8 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import TelegramIcon from '@mui/icons-material/Telegram';
 // components
 import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
@@ -113,27 +115,45 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         >
           <Box
             component="img"
-            src="/static/illustrations/illustration_avatar.png"
-            sx={{ width: 100, position: 'absolute', top: -50 }}
+            src="/static/logo.svg"
+            sx={{ width: 60, position: 'absolute', top: -50 }}
           />
 
           <Box sx={{ textAlign: 'center' }}>
-            <Typography gutterBottom variant="h6">
+            <Typography gutterBottom>
+              <Link href="https://twitter.com/TONiumNFT" target="_blank" underline="none">
+                <TwitterIcon />
+              </Link>
+              <Link href="https://t.me/tonium_io" target="_blank">
+                <TelegramIcon />
+              </Link>
+            </Typography>
+            <Typography>NeFerTiti</Typography>
+            <Typography>
+              <Link
+                href="https://drive.google.com/file/d/1mXScyRSkHIfHR_J3KExNLa4bL0da483j/view?usp=sharing"
+                target="_blank"
+                underline="none"
+              >
+                WhitePaper
+              </Link>
+            </Typography>
+            {/* <Typography gutterBottom variant="h6">
               Get more? TODO Alex
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               From only $69
-            </Typography>
+            </Typography> */}
           </Box>
 
-          <Button
+          {/* <Button
             fullWidth
             href="https://material-ui.com/store/items/minimal-dashboard/"
             target="_blank"
             variant="contained"
           >
             Upgrade to Pro
-          </Button>
+          </Button> */}
         </Stack>
       </Box>
     </Scrollbar>

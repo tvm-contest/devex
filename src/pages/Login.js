@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // material
-import { Container, Typography, Grid, Button } from '@mui/material';
+import { Container, Typography, Grid, Button, Link } from '@mui/material';
 
 // components
 import Page from '../components/Page';
@@ -34,8 +34,20 @@ export default function Login() {
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            Here description and link to
-            https://chrome.google.com/webstore/detail/ton-crystal-wallet/cgeeodpfagjceefieflmdfphplkenlfk
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              To start working with NeFerTiti you need to connect your TON Crystal Wallet. Click on
+              the button below and have fun!
+            </Typography>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              If you still haven't Crystal Wallet you can get it
+              <Link
+                href="https://l1.broxus.com/everscale/wallet?utm_source=freeton.com&utm_medium=organic&utm_campaign=ecosystem"
+                target="_blank"
+                underline="none"
+              >
+                {` here >>> `}
+              </Link>
+            </Typography>
           </Grid>
           {ton.isReady && (
             <Grid item xs={12}>
