@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    link(rel="stylesheet" href="/stylesheets/displayToken.css")
+    div.container
+        each token in tokens
+            div.token-container
+                p Root address: #{token.rootAddress}
+                p Owner address: #{token.ownerAddress}
+                p rarity: #{token.rarityType}

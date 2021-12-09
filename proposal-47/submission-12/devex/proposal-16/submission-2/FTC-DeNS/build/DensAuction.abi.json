@@ -1,0 +1,322 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addBalance",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "installBidCode",
+			"inputs": [
+				{"name":"code","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "inquiryRequest",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"rhash","type":"uint128"},
+				{"name":"_expiry","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint128"},
+				{"name":"value1","type":"bool"},
+				{"name":"value2","type":"uint32"}
+			]
+		},
+		{
+			"name": "participateProxy",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"components":[{"name":"sender","type":"address"},{"name":"duration","type":"uint32"},{"name":"hash","type":"uint256"}],"name":"rpr","type":"tuple"},
+				{"name":"rhash","type":"uint128"},
+				{"name":"_expiry","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint128"},
+				{"name":"value1","type":"bool"}
+			]
+		},
+		{
+			"name": "bid",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"hash","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"value0","type":"bool"}
+			]
+		},
+		{
+			"name": "findBid",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"bidder","type":"address"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "revealInt",
+			"inputs": [
+				{"name":"owner","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finalize",
+			"inputs": [
+				{"name":"_answer_id","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"bool"}
+			]
+		},
+		{
+			"name": "destroy",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "root",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"root","type":"address"}
+			]
+		},
+		{
+			"name": "name",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"}
+			]
+		},
+		{
+			"name": "start",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"start","type":"uint32"}
+			]
+		},
+		{
+			"name": "endBid",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"endBid","type":"uint32"}
+			]
+		},
+		{
+			"name": "endRev",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"endRev","type":"uint32"}
+			]
+		},
+		{
+			"name": "expiry",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"expiry","type":"uint32"}
+			]
+		},
+		{
+			"name": "minfinal",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"minfinal","type":"uint32"}
+			]
+		},
+		{
+			"name": "prolongGrace",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"prolongGrace","type":"uint32"}
+			]
+		},
+		{
+			"name": "bid_code",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"bid_code","type":"cell"}
+			]
+		},
+		{
+			"name": "bid_code_fuse",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"bid_code_fuse","type":"bool"}
+			]
+		},
+		{
+			"name": "top_bid",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"top_bid","type":"address"}
+			]
+		},
+		{
+			"name": "top_bid_amt",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"top_bid_amt","type":"uint128"}
+			]
+		},
+		{
+			"name": "winner",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"winner","type":"address"}
+			]
+		},
+		{
+			"name": "sec_bid",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"sec_bid","type":"address"}
+			]
+		},
+		{
+			"name": "sec_bid_amt",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"sec_bid_amt","type":"uint128"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+		{
+			"name": "deployed",
+			"inputs": [
+				{"name":"root","type":"address"},
+				{"name":"name","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "initialized",
+			"inputs": [
+				{"name":"start","type":"uint32"},
+				{"name":"endBid","type":"uint32"},
+				{"name":"endRev","type":"uint32"},
+				{"name":"expiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "bid_ev",
+			"inputs": [
+				{"name":"sender","type":"address"},
+				{"name":"hash","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "revealed",
+			"inputs": [
+				{"name":"sender","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "new_first",
+			"inputs": [
+				{"name":"sender","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "new_second",
+			"inputs": [
+				{"name":"sender","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "new_winner",
+			"inputs": [
+				{"name":"newwin","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "returned",
+			"inputs": [
+				{"name":"dest","type":"address"},
+				{"name":"amount","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "failed",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "finalized",
+			"inputs": [
+				{"name":"winner","type":"address"},
+				{"name":"paid","type":"uint128"},
+				{"name":"expiry","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "balanceAdded",
+			"inputs": [
+				{"name":"donor","type":"address"},
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		}
+	]
+}

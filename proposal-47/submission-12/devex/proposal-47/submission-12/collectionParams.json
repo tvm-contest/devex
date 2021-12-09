@@ -1,0 +1,17 @@
+{
+	"collectionName": "MyFirstTokensCollection",
+	"nftTokens": [
+		{
+			"name": "legend",
+			"limit": 5
+		},
+		{
+			"name": "usual",
+			"limit": 10000
+		},
+		{
+			"name": "squid",
+			"limit": 20
+		}
+	]
+}
