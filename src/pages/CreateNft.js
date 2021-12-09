@@ -69,7 +69,12 @@ export default function CreateNFT() {
 
   const { getRootProps, getInputProps, acceptedFiles, isDragActive } = useDropzone();
 
-  const uploadImageToIpfs = async (base64) => {
+  const uploadImageToIpfs = async (key, image) => {
+    console.log('uploadImageToIpfs', key);
+    const base64 = image.image;
+    if (image.ipfs) {
+      return image.ipfs;
+    }
     // TODO implement upload to IPFS
     // file is data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAA…SjVDpQJfhcdt/3Hrt7ev+H+rDD13H5jEOAAAAAElFTkSuQmCC
     // console.log('uploadImageTiIpfs', file);
@@ -78,6 +83,12 @@ export default function CreateNFT() {
       .then((blob) => new File([blob], 'File name', { type: 'image/png' }));
 
     const fileInfo = await ipfsClient.add(file);
+
+    setNftData((nftD) => {
+      const newNFTData = [...nftD];
+      newNFTData[key] = { ...newNFTData[key], status: 'uploaded', ipfs: fileInfo.path };
+      return newNFTData;
+    });
     return fileInfo.path;
   };
 
@@ -101,8 +112,8 @@ export default function CreateNFT() {
   const getDataForBlockchain = async () => {
     setIsSpinner(true);
     const uploadArrayPromise = [];
-    for (const d of nftData) {
-      uploadArrayPromise.push(uploadImageToIpfs(d.image));
+    for (const [key, value] of Object.entries(nftData)) {
+      uploadArrayPromise.push(uploadImageToIpfs(key, value));
     }
     const uploadedData = await Promise.all(uploadArrayPromise);
 
@@ -117,6 +128,7 @@ export default function CreateNFT() {
         image: `ipfs://${uploadedData[key]}`
       });
     }
+    console.log(nftData);
     setIsSpinner(false);
     const a = document.createElement('a');
     const file = new Blob([JSON.stringify(returnData)], { type: 'application/json' });
@@ -328,7 +340,7 @@ export default function CreateNFT() {
           Test mode limitations are:
           <ul>
             <li>
-              You can't upload more then 10 images per once (we are working on own ipfs gateway).
+              You can't upload more then 10 images per minute (we are working on own ipfs gateway).
             </li>
             <li>
               Blockchain integration is not available on web, please use TON CLI to deploy prepared
