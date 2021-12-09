@@ -16,7 +16,9 @@ import { oneTokenInfoRouter } from './routes/one-token-info';
 import { parameterForm } from './routes/parameter-form'
 import { collectionListRouter } from './routes/collection-list'
 import { mintRouter } from './routes/mint';
+import { mintAnyRouter } from './routes/mint-any-warrior';
 import { deployFromFile } from './routes/deploy-from-file';
+import { imageGen } from './routes/gen-warrior';
 
 const app = express();
 
@@ -44,7 +46,9 @@ app.use('/generate-contract', generateContractRouter);
 app.use('/parameter-form', parameterForm);
 app.use('/collection-list', collectionListRouter);
 app.use('/mint', mintRouter);
+app.use('/mint-any', mintAnyRouter);
 app.use('/deploy-from-file', deployFromFile)
+app.use('/gen-img', imageGen);
 
 app.use((req: Request, res: Response) => {
     res.status(404);
