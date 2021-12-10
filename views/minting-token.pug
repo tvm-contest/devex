@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .forms
+    .container
+      form.row.g-3#form-contract(action="", method="post") 
+        .content
+          .rarities
+      
+          .parameters 
+          
+          .mediafile 
+            
+        input.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token")
+    
+  script. 
+    var address = `!{FileJson}`
+    //console.log(address)
+  script(type="module" src="/scripts/minting-token.js")
+  
+        
