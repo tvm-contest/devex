@@ -1,0 +1,10 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+        "AzureTableStorage_ConnectionString": "DefaultEndpointsProtocol=https;AccountName=acc;AccountKey=keykey;EndpointSuffix=core.windows.net",
+        "KAFKA_PASS": "S0m3str0ngP4sSw0rd"
+    },
+    "ConnectionStrings": { }
+}
