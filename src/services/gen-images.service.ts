@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const { Canvas, Image } = require('canvas');
-// import { Canvas, Image } from 'canvas';
+
 const mergeImages = require('merge-images');
 
 type Image = {
@@ -50,18 +50,6 @@ const bgArray: string[] = [
 
 export class TokenImagesCreator {
     // To check whether all images is unique
-    private nameAndRarityArray: string[] = [''];
-
-    async createImagesArr(): Promise<Image[]> {
-        let imagesArr: Image[] = [];
-
-        for (let i = 0; i < 7; i++) {
-            const image: Image = await this.createImage();
-            imagesArr.push(image);
-        }
-
-        return imagesArr;
-    }
 
     async createImage(): Promise<Image> {
         // For creating image by mergeImages

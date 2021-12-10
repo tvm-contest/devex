@@ -58,15 +58,15 @@ export class MintNftService {
             rootNftAccount,
             'mintNft',
             {
-                //
-                // Hard code parameters
-                //
                 name: utf8ToHex(""),
                 url: utf8ToHex(""),
                 editionNumber: 1,
                 editionAmount: 1,
-                managersList: [""],
+                managersList: [],
                 royalty: 1,
+                //
+                // Hard code parameters
+                //
                 nftType: utf8ToHex('rarity'),
                 heroPower: 10,
                 arm: utf8ToHex('gun')
@@ -80,14 +80,20 @@ export class MintNftService {
         const messageParams = {
             abi: account.abi,
             address: await account.getAddress(),
+            //
+            // Hard code
+            //
+            src_address: everscale_settings.SAFE_MULTISIG_ADDRESS,
+
             call_set: {
                 function_name: func,
                 input
             },
-            value: '11000000000'
+            value: '2000000000'
         };
 
         return await this.client.abi.encode_internal_message(messageParams);
+        
     }
 
     private async sendMessageToMint(message: string) {
