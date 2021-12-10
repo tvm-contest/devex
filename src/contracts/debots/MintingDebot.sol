@@ -51,6 +51,7 @@ contract NftDebot is Debot, Upgradable {
     uint32 _keyHandle;
 
     NftParams _nftParams;
+    /*PARAM_ENUM_LENGTH*/
 
     modifier accept {
         tvm.accept();

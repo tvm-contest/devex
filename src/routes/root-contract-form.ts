@@ -54,12 +54,12 @@ router.post('/deploy-contracts', async function(req, res, next) {
     if (req.body.checkCommissionAuthorGenerator == '') {
         commissionAuthorGenerator = req.body.commissionAuthorGenerator;
     }
-    let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
-    contractDir = path.join(globals.RESULT_COLLECTION, address.slice(2))
+    let rootAddress = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
+    contractDir = path.join(globals.RESULT_COLLECTION, rootAddress.slice(2))
     let deployDebotService = new DeployDebotService();
-    await deployDebotService.deployDebot(contractDir, address);
+    let debotAddress = await deployDebotService.deployDebot(contractDir, rootAddress);
     
-    res.redirect('/tokens-data-info?rootNftAddress=' + address)
+    res.redirect('/tokens-data-info?rootNftAddress=' + rootAddress + '&debotAddress=' + debotAddress)
 });
   
 router.post('/', async function(req, res, next) {

@@ -20,14 +20,22 @@ export class DeployTrueNftService {
         let indexContract = fs.readFileSync(path.resolve(pathWithContracts, "Index.sol")).toString();
         let rootNftContract = fs.readFileSync(path.resolve(pathWithContracts, "NftRoot.sol")).toString();
         
+        let name = collection.getDescription().getName()
+        name = Buffer.from(name).toString("hex")
+        let initData = {
+            _name: name
+        }
+
         let dataAccount = await this.deployService.createContractAccount(dataContract, pathWithContracts);
         let indexAccount = await this.deployService.createContractAccount(indexContract, pathWithContracts);
-        let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, pathWithContracts);
+        let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, pathWithContracts, undefined, initData);
         let indexBasisAccount = await this.deployService.createContractAccount(indexBasisContract, pathWithContracts);
         let address = "0";
         try {
             address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection, commissionAuthorGenerator);
-            fs.renameSync(pathWithContracts, path.join(globals.RESULT_COLLECTION, address.slice(2)))
+            if (!fs.existsSync(path.join(globals.RESULT_COLLECTION, address.slice(2)))) {
+                fs.renameSync(pathWithContracts, path.join(globals.RESULT_COLLECTION, address.slice(2)))
+            }
             console.log("RootNft address: " + await rootNftAccount.getAddress());
             await this.deployBasis(rootNftAccount, indexBasisAccount);
         } catch(err) {
@@ -136,9 +144,7 @@ export class DeployTrueNftService {
             _limit.push(collection.getRarities()[index].getLimit())
         }
 
-        let _name = collection.getDescription().getName()
         let _icon = collection.getDescription().getIcon() ?? ""
-        _name = Buffer.from(_name).toString("hex")
         _icon = Buffer.from(_icon).toString("hex")
 
         let initInput = {
@@ -148,7 +154,6 @@ export class DeployTrueNftService {
             mintingCommission: commissionAuthorGenerator,
             nftTypes: _nftTypes,
             limit: _limit,
-            name: _name,
             icon: _icon
         }
 
