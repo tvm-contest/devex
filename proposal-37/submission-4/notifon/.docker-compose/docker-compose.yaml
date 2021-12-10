@@ -1,0 +1,45 @@
+version: '3.3'
+
+services:
+  app:
+    image: ghcr.io/ton-actions/notifon:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Redis__Configuration=redis
+      - RabbitMq__Host=rabbitmq
+      - RabbitMq__Username=user
+      - RabbitMq__Password=bitnami
+      - PostgreSql__ConnectionString=Server=postgresql;Port=5432;User Id=postgres;Database=app
+    ports:
+      - '8080:80'
+    env_file: .env
+    restart: unless-stopped
+  redis:
+    image: docker.io/bitnami/redis:6.2
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - 'redis_data:/bitnami/redis/data'
+    restart: unless-stopped
+  rabbitmq:
+    image: bitnami/rabbitmq:3.9
+    environment:
+      - 'RABBITMQ_COMMUNITY_PLUGINS=https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.9.0/rabbitmq_delayed_message_exchange-3.9.0.ez'
+      - 'RABBITMQ_PLUGINS=rabbitmq_management rabbitmq_web_dispatch rabbitmq_management_agent rabbitmq_delayed_message_exchange rabbitmq_prometheus'
+      - 'RABBITMQ_DISK_FREE_RELATIVE_LIMIT=0.1'
+    volumes:
+      - rabbitmq_data:/bitnami
+    restart: unless-stopped
+  postgresql:
+    image: docker.io/bitnami/postgresql:13.4.0-debian-10-r48
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_DATABASE=app
+      - ALLOW_EMPTY_PASSWORD=yes
+    restart: unless-stopped
+volumes:
+  redis_data:
+  rabbitmq_data:
+  postgresql_data:
+    

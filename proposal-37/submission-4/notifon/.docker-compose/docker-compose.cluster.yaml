@@ -1,0 +1,49 @@
+version: '3.3'
+
+services:
+  app:
+    deploy:
+      replicas: 0
+  app1:
+    image: ghcr.io/ton-actions/notifon:latest
+    env_file: .env
+    volumes:
+      - ./firebase-key.json:/app/firebase-key.json
+    restart: unless-stopped
+  app2:
+    image: ghcr.io/ton-actions/notifon:latest
+    env_file: .env
+    volumes:
+      - ./firebase-key.json:/app/firebase-key.json
+    restart: unless-stopped
+  app3:
+    image: ghcr.io/ton-actions/notifon:latest
+    env_file: .env
+    volumes:
+      - ./firebase-key.json:/app/firebase-key.json
+    restart: unless-stopped
+  nginx:
+    image: docker.io/bitnami/nginx:1.21
+    ports:
+      - '80:8080'
+      - '443:8443'
+    volumes:
+      - ./nginx/conf/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
+      - ./nginx/ssl:/opt/bitnami/nginx/ssl
+    restart: unless-stopped
+  prometheus:
+    image: bitnami/prometheus:2.30.3-debian-10-r3
+    volumes:
+      - ./prometheus-cluster.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+      - prometheus_data:/opt/bitnami/prometheus/data
+  grafana:
+    image: grafana/grafana:8.2.1
+    volumes:
+      - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
+      - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
+      - ./grafana/dashboards:/dashboards
+      - ./grafana.ini:/etc/grafana/grafana.ini
+      # - grafana_data:/var/lib/grafana
+volumes:
+  prometheus_data:
+  # grafana_data:

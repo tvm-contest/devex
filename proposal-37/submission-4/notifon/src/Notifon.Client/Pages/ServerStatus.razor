@@ -1,0 +1,45 @@
+﻿@page "/server-status"
+@inject IApiStatusClient _apiStatusClient;
+
+<MudText Typo="Typo.h4" Align="Align.Center" GutterBottom="true">Server status</MudText>
+<MudGrid Spacing="6">
+    <MudItem xs="12">
+        <MudPaper Class="d-flex flex-column" Outlined="true" Height="300px" Width="450px">
+            <MudList Clickable="@false" Dense="@true">
+                @if (Status == null) {
+                    for (var i = 0; i < 4; i++) {
+                        <MudListItem>
+                            <div class="d-flex flex-row">
+                                <MudSkeleton Width="20px" Height="30px"/>
+                                <MudSkeleton Width="350px" Height="30px" Class="mx-6"/>
+                                <MudSkeleton Width="20px" Height="30px"/>
+                            </div>
+                        </MudListItem>
+                    }
+                }
+                else {
+                    <MudListItem Icon="@Icons.Rounded.NetworkCheck" IconSize="@Size.Small">
+                        <MudText>FreeTON Endpoints: @(string.Join(", ", Status.TonEndpoints))</MudText>
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Rounded.People" IconSize="@Size.Small">
+                        <MudText>Registered users: @Status.UserCount</MudText>
+                    </MudListItem>
+                    <MudListItem Icon="@Icons.Rounded.CloudDone" IconSize="@Size.Small">
+                        <MudText>Registered endpoints: @Status.EndpointCount</MudText>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+
+@code{
+
+    protected override async Task OnInitializedAsync() {
+        Status = await _apiStatusClient.GetServerStatusAsync();
+    }
+
+    private GetServerStatusResult Status { get; set; }
+
+}

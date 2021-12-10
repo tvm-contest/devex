@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  prometheus:
+    image: bitnami/prometheus:2.30.3-debian-10-r3
+    volumes:
+      - ./prometheus-cluster.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+      - prometheus_data:/opt/bitnami/prometheus/data
+  grafana:
+    image: grafana/grafana:8.2.1
+    volumes:
+      - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
+      - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
+      - ./grafana/dashboards:/dashboards
+      - ./grafana.ini:/etc/grafana/grafana.ini
+      # - grafana_data:/var/lib/grafana
+volumes:
+  prometheus_data:
+  # grafana_data:

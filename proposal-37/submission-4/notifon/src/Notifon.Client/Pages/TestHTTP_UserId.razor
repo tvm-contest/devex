@@ -1,0 +1,115 @@
+﻿@page "/test-http/{UserId}"
+@implements IAsyncDisposable
+
+<style>
+    .message {
+        overflow-wrap: anywhere;
+        max-height: 100px;
+        width: auto;
+        overflow: auto;        
+    }
+</style>
+
+<MudText Typo="@Typo.h4" Align="@Align.Center" GutterBottom="@true">Real-time HTTP consumer</MudText>
+<MudGrid>
+    <MudItem xs="12">
+        <MudTable Items="@(Messages ?? Array.Empty<MessageInfo>())" Dense="false" Hover="true" Bordered="false" Striped="true" Loading="@(Messages == null)">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Recived messages: @(Messages?.Count ?? 0)</MudText>
+                <ConsumerConnectionStatus IsConnected="@IsConnected"/>
+                <MudSpacer/>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Clear">Clear</MudButton>
+            </ToolBarContent>
+            <ColGroup>
+                <col style="width: 180px"/>
+                <col style="width: auto"/>
+                <col style="width: 40px;"/>
+            </ColGroup>
+            <HeaderContent>
+                <MudTh Style="text-align: center">Time</MudTh>
+                <MudTh Style="text-align: center">Message</MudTh>
+                <MudTh/>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd Class="pa-1 mx-3" Style="text-align: left">
+                    <MudText Typo="Typo.body2" Style="word-wrap: unset; overflow-wrap: unset">@context.DateTime</MudText>
+                </MudTd>
+                <MudTd Class="pa-1 mx-3">
+                    <MudText Class="message" Style="@(context.Message.Length > 200 ? "font-size: 0.7rem;" : string.Empty)">@context.Message</MudText>
+                </MudTd>
+                <MudTd Class="pa-1 mx-3" Style="text-align: right">
+                    <MudChipSet @bind-SelectedChip="SelectedChip" Filter="true" Mandatory="false">
+                        <MudChip OnClick="@(() => CopyToClipboard(context.Message))" Icon="@Icons.Filled.ContentCopy" Color="Color.Info"/>
+                    </MudChipSet>
+                </MudTd>
+            </RowTemplate>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+            <PagerContent>
+                <MudTablePager/>
+            </PagerContent>
+        </MudTable>
+    </MudItem>
+    <MudItem xs="12">
+        <MessageSenderWidget/>
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    [Inject]
+    public IJsApiService JsApiService { get; set; }
+
+    [Inject]
+    NavigationManager Navigation { get; set; }
+
+    [Inject]
+    IMessageInfoStorage MessagesStorage { get; set; }
+
+    [ParameterAttribute]
+    public string UserId { get; set; }
+
+    private HubConnection _hubConnection;
+    private IReadOnlyCollection<MessageInfo> Messages { get; set; }
+    private bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
+
+    private MudChip SelectedChip { get; set; }
+
+    private async Task CopyToClipboard(string message) {
+        if (SelectedChip == null) return;
+        await JsApiService.CopyToClipboardAsync(message);
+        await Task.Delay(TimeSpan.FromSeconds(0.5));
+        SelectedChip = null;
+    }
+
+    protected override async Task OnInitializedAsync() {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri($"/signalr?UserId={UserId}"))
+            .WithAutomaticReconnect(Enumerable.Range(0, 20).Select(r => TimeSpan.FromSeconds(r * 2)).ToArray())
+            .Build();
+        _hubConnection.On<string>("ReceiveMessage", async message => {
+            Messages = await MessagesStorage.Push(new MessageInfo { DateTime = DateTime.Now, Message = message });
+            StateHasChanged();
+        });
+        _hubConnection.Reconnecting += _ => InvokeAsync(StateHasChanged);
+        _hubConnection.Closed += _ => InvokeAsync(StateHasChanged);
+        _hubConnection.Reconnected += _ => InvokeAsync(StateHasChanged);
+        await _hubConnection.StartAsync();
+        await MessagesStorage.Init();
+        Messages = await MessagesStorage.GetAll();
+    }
+
+    public async ValueTask DisposeAsync() {
+        if (_hubConnection is not null) {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+    private async Task Clear() {
+        Messages = null;
+        await MessagesStorage.Clear();
+        Messages = await MessagesStorage.GetAll();
+    }
+
+}

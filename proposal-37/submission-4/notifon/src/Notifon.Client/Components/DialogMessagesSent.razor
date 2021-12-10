@@ -1,0 +1,49 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudPaper>
+            <MudList Clickable="false" @bind-SelectedValue="_selectedMessage">
+                @foreach (var message in Messages) {
+                    <MudListItem Value="@message" Icon="@Icons.Material.Filled.Drafts">
+                        <MudPaper Elevation="0" Class="d-flex flex-row pa-0 px-0">
+                            <MudText>Id:@message</MudText>
+                            <MudChipSet @bind-SelectedChip="SelectedChip" Filter="true" Mandatory="false">
+                                <MudChip OnClick="@(() => CopyToClipboard(message))" Icon="@Icons.Filled.ContentCopy" Color="Color.Info"/>
+                            </MudChipSet>
+                        </MudPaper>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [Inject]
+    public IJsApiService JsApiService { get; set; }
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public ICollection<string> Messages { get; set; }
+
+    object _selectedMessage;
+
+    void Submit() {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private MudChip SelectedChip { get; set; }
+
+    private async Task CopyToClipboard(string message) {
+        if (SelectedChip == null) return;
+        await JsApiService.CopyToClipboardAsync(message);
+        await Task.Delay(TimeSpan.FromSeconds(0.5));
+        SelectedChip = null;
+    }
+
+}

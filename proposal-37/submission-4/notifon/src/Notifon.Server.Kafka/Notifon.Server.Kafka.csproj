@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit.Kafka" Version="7.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Notifon.Server.Business\Notifon.Server.Business.csproj" />
+        <ProjectReference Include="..\Notifon.Server.Configuration\Notifon.Server.Configuration.csproj" />
+    </ItemGroup>
+
+</Project>

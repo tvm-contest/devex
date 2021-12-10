@@ -1,0 +1,48 @@
+name: Main workflow
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - README.md
+
+env:
+  DOTNET_NOLOGO: true
+
+permissions: write-all
+
+jobs:
+  build:
+    name: Build, Push, Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          name: id_rsa
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup .NET Core ${{ env.NETCORE_VERSION }}
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      #      - uses: satackey/action-docker-layer-caching@v0.0.11
+      #        continue-on-error: true
+
+      - name: Build, Push, Deploy
+        run: |
+          dotnet build ./Notifon.Deploy.proj -t:Push,Deploy -p:ImagesPrune=true -p:FullStack=true
