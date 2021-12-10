@@ -1,0 +1,13 @@
+version: '3.1'
+
+volumes:
+  #  notify_db:
+  notify_db:
+    external: true
+services:
+  java:
+    image: openjdk:latest
+    command: java --version
+    build:
+      context: ./
+      dockerfile: Dockerfile
