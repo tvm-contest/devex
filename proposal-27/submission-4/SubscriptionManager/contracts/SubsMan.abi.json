@@ -1,0 +1,353 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "getDebotInfo",
+			"id": "0xDEB",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"version","type":"bytes"},
+				{"name":"publisher","type":"bytes"},
+				{"name":"caption","type":"bytes"},
+				{"name":"author","type":"bytes"},
+				{"name":"support","type":"address"},
+				{"name":"hello","type":"bytes"},
+				{"name":"language","type":"bytes"},
+				{"name":"dabi","type":"bytes"},
+				{"name":"icon","type":"bytes"}
+			]
+		},
+		{
+			"name": "setSubscriptionBase",
+			"inputs": [
+				{"name":"image","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubscriptionWalletCode",
+			"inputs": [
+				{"name":"image","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubscriptionIndexCode",
+			"inputs": [
+				{"name":"image","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubscriptionService",
+			"inputs": [
+				{"name":"image","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "start",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getRequiredInterfaces",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"interfaces","type":"uint256[]"}
+			]
+		},
+		{
+			"name": "checkWallet",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "checkWalletState",
+			"inputs": [
+				{"name":"acc_type","type":"int8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "buildSubscriptionIndex",
+			"inputs": [
+				{"name":"ownerKey","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "deployAccountHelper",
+			"inputs": [
+				{"name":"ownerKey","type":"uint256"},
+				{"name":"serviceKey","type":"uint256"},
+				{"name":"params","type":"cell"},
+				{"name":"signature","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployAccount",
+			"inputs": [
+				{"name":"signature","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployWalletHelper",
+			"inputs": [
+				{"name":"ownerKey","type":"uint256"},
+				{"name":"signature","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployWallet",
+			"inputs": [
+				{"name":"signature","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "signSubscriptionWalletCode",
+			"inputs": [
+				{"name":"sbHandle","type":"uint32"},
+				{"name":"wallet","type":"address"},
+				{"name":"ownerKey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onSignSubscriptionWalletCode",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "printWalletStatus",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "checkAccount",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "menuCheckAccount",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "checkHash",
+			"inputs": [
+				{"name":"code_hash","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "callMultisig",
+			"inputs": [
+				{"name":"src","type":"address"},
+				{"name":"pubkey","type":"uint256"},
+				{"name":"sbhandle","type":"uint32"},
+				{"name":"dest","type":"address"},
+				{"name":"payload","type":"cell"},
+				{"name":"value","type":"uint128"},
+				{"name":"gotoId","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onSuccess",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onError",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "invokeDeploySubscription",
+			"inputs": [
+				{"name":"ownerKey","type":"uint256"},
+				{"name":"serviceKey","type":"uint256"},
+				{"name":"wallet","type":"address"},
+				{"name":"sbHandle","type":"uint32"},
+				{"name":"args","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "invokeDeploySubscriptionService",
+			"inputs": [
+				{"name":"ownerKey","type":"uint256"},
+				{"name":"to","type":"address"},
+				{"name":"wallet","type":"address"},
+				{"name":"sbHandle","type":"uint32"},
+				{"name":"period","type":"uint32"},
+				{"name":"value","type":"uint128"},
+				{"name":"name","type":"bytes"},
+				{"name":"description","type":"bytes"},
+				{"name":"args","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "signServiceCode",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "signSubscriptionIndexCode",
+			"inputs": [
+				{"name":"ownerKey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "QueryServices",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getServiceParams",
+			"inputs": [
+				{"components":[{"name":"id","type":"address"},{"name":"data","type":"cell"}],"name":"accounts","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployServiceHelper",
+			"inputs": [
+				{"name":"serviceKey","type":"uint256"},
+				{"name":"params","type":"cell"},
+				{"name":"signature","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployService",
+			"inputs": [
+				{"name":"signature","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "printServiceStatus",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "invokeQuerySubscriptions",
+			"inputs": [
+				{"name":"ownerKey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "invokeQuerySubscribers",
+			"inputs": [
+				{"name":"serviceKey","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubscriptions",
+			"inputs": [
+				{"components":[{"name":"id","type":"address"},{"name":"data","type":"cell"}],"name":"accounts","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSubscriptionsSubscriber",
+			"inputs": [
+				{"components":[{"name":"id","type":"address"},{"name":"data","type":"cell"}],"name":"accounts","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDebotOptions",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"options","type":"uint8"},
+				{"name":"debotAbi","type":"bytes"},
+				{"name":"targetAbi","type":"bytes"},
+				{"name":"targetAddr","type":"address"}
+			]
+		},
+		{
+			"name": "setABI",
+			"inputs": [
+				{"name":"dabi","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}
