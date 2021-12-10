@@ -1,0 +1,132 @@
+extends layout
+
+block content
+  
+  .forms
+    .container
+      form.row.g-3#form-contract(action="", method="post")
+        ul.nav.nav-tabs.justify-content-center#myTab(role="tablist" )
+          li.nav-item(role="presentation")
+            button.nav-link.active#home-tab(data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true") Main
+          li.nav-item(role="presentation")
+            button.nav-link#rarity-tab(data-bs-toggle="tab" data-bs-target="#rarity" type="button" role="tab" aria-controls="rarity" aria-selected="false") Rarity
+          li.nav-item(role="presentation")
+            button.nav-link#comissions-tab(data-bs-toggle="tab" data-bs-target="#comissions" type="button" role="tab" aria-controls="comissions" aria-selected="false") Comissions
+          li.nav-item(role="presentation")
+            button.nav-link#profile-tab(data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false") Token Parameters
+        .tab-content#myTabContent
+          .tab-pane.fade.show.active#home(role="tabpanel" aria-labelledby="home-tab") 
+            .content-name
+              .row.row_init
+                .col
+                  label.form-label() Collection name
+                  input.form-control(name="nameContract" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Collection name" aria-label="Collection Name")
+                .col
+                  label.form-label() Maximum number of tokenes
+                  input.form-control(name="tokenLimit" onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Maximum number of tokenes" aria-label="Maximum number of tokenes")
+              
+            
+          .tab-pane.fade#rarity(role="tabpanel" aria-labelledby="rarity-tab") 
+            .content-type  
+              .form-check.for-type 
+                  input.form-check-input#type-rarity(type="checkbox" value="" name="checkboxTypeRarity")
+                  label.form-check-label(for="type-rarity") Use Rarity Types for tokens
+              .complete-block-collections-types
+                .block-for-col-types
+                  .row.collection-type-#c0
+                      .col.name
+                        label.form-label() Rarity Type For Token
+                        input.form-control.col-name(name="type[0][name]" type="text" pattern="[A-Za-z0-9_]+" onInput="checkLatinInput(this)" placeholder="Collection type" aria-label="Collection types")
+                      .col.limit
+                        label.form-label() Maximum tokens number for type
+                        input.form-control.col-limit(name="type[0][limit]" type="text" pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Number of tokens" aria-label="Number of tokens")                            
+                .row.buttons
+                  .col
+                    input.btn.btn-block.btn-blue.btn-additionally(type="button" value="- Delete type" onclick="deleteType();")
+                  .col
+                    input.btn.btn-block.btn-blue.btn-additionally(type="button" value=" + Add type" onclick="addType();")
+          .tab-pane.fade#profile(role="tabpanel" aria-labelledby="profile-tab")
+            .content-param
+              .block-for-col-param-choice#p0
+                .row.parameter-choice    
+                  .col
+                    label.form-label() Parameter name
+                    #nameParam
+                      input.form-control.nameParam(name="parameter[0][name]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Parameter name")
+                  .col
+                    label.form-label() Parameter type
+                    select.type-parameter.form-select.btn-blue.btn-additionally(name="selectpicker")
+                        option(value="none") Choose parameter type
+                        option(value="number") Number
+                        option(value="line") String
+                        option(value="enum") Enum
+                        option(value="mediafile") Mediafile
+                .row.parameter-number
+                  .col
+                    label.form-label() Minimum value
+                    input.form-control.param-num-min(type="text"  name = 'parameter[0][number][min]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Manimum value")
+                  .col
+                    label.form-label() Maximum value
+                    input.form-control.param-num-max(type="Stext" name = 'parameter[0][number][max]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Maximum value")
+                .row.parameter-string
+                  .col
+                    label.form-label() Minimum length
+                    input.form-control.param-line-min(type="text" name = 'parameter[0][line][min]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minimum length")
+                  .col
+                    label.form-label() Maximum length
+                    input.form-control.param-line-min(type="text" name = 'parameter[0][line][max]' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Maximum length")
+                .parameter-enum
+                  .param-enum-field
+                    .col-12.parameter-enum-variant
+                      label.form-label() Variant
+                      input.form-control.param-enum#e0(name="parameter[0][enum][0]" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Variant")
+                  .row.button-enum
+                    .col-6.button-addVariant
+                      input.btn.btn-blue.btn-block.btn-additionally(type="button" value=" + Add variant" onclick="addVariant(this);")
+                    .col-6.button-addVariant
+                      input.btn.btn-blue.btn-block.btn-additionally(type="button" value=" - Delete variant" onclick="deleteVariant(this);")
+                  
+      
+            .row.buttons
+              .col
+                input.btn.btn-blue.btn-block.btn-additionally(type="button" value=" + Add paremeter" onclick="addParam();")
+              .col
+                input.btn.btn-blue.btn-block.btn-additionally(class="btn btn-blue" type="button" value="- Delete parameter" onclick="deleteParam();")
+          .tab-pane.fade#comissions(role="tabpanel" aria-labelledby="comissions-tab")
+            .checkbox-for-commissions
+              .form-check 
+                input.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor")
+                label.form-check-label(for="use-author") Add token author and his comission
+              .col-6.input-commission.use-author
+                label.form-label() Commission (%)
+                input.form-control.commission(type="text" name = 'commissionAuthor' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
+              .form-check 
+                input.form-check-input#commission-favor-owner(type="checkbox" value="" name="checkCommissionFavorOwner")
+                label.form-check-label(for="commission-favor-owner") Commission to Collection Owner
+              .col-6.input-commission.commission-favor-owner
+                label.form-label() Commission (%)
+                input.form-control(type="text" name = 'commissionFavorOwner' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
+              .form-check 
+                input.form-check-input#commission-author-generator(type="checkbox" value="" name="checkCommissionAuthorGenerator")
+                label.form-check-label(for="commission-author-generator") Commission to Service Creator
+              .col-6.input-commission.commission-author-generator
+                label.form-label() Commission (%)
+                input.form-control(type="text" name = 'commissionAuthorGenerator' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="%")
+            .col-6.MintingPriceUsers
+              label.form-label() Minting price for users
+              input.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users")
+        .row.button-main-3
+          .col.button-main
+            input.submit-button.btn.btn-blue.btn-block#save-data(type="submit" value="Save data")
+          .col.button-main
+            input.submit-button.btn.btn-blue.btn-block#form-contracts(type="submit" value="Generate Contracts Code")
+          .col.button-main
+            input.submit-button.btn.btn-blue.btn-block#deploy-contracts(type="submit" value="Deploy contracts")
+  script(src="/scripts/root-contract-form.js")
+  script(src="/scripts/input-validation.js")
+      
+      
+
+
+
+

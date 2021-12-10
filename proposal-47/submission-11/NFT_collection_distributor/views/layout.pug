@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    script(src="/scripts/bootstrap.bundle.min.js") 
+    script(src="/scripts/jquery-3.6.0.min.js") 
+    //link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/mdb.dark.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+    meta(charset="utf-8")
+
+  body
+    header 
+        nav(class="navbar navbar-expand-lg")
+          .container
+              a.navbar-brand(href="/") Home
+              button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
+                span.navbar-toggler-icon
+              .collapse.navbar-collapse(id="navbarNav")
+                ul(class="navbar-nav")
+                  li(class="nav-item")
+                    a(class="nav-link" href="/root-contract-form")="Root contract form"
+                  li(class="nav-item")
+                    a(class="nav-link" href="/deploy-from-file")="Deploy from file"
+                    li(class="nav-item")
+                    a(class="nav-link" href="/collection-list")="Collection list"
+    .container
+      block content

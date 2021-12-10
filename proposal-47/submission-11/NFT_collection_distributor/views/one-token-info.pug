@@ -1,0 +1,48 @@
+extends layout
+
+block content
+  .container
+    form.row.g-3
+      .search
+        .row.row_init
+          .col
+            label.form-label() Token address
+            input.form-control(name="tokenAddress" onInput="checkAddressInput(this)" type="text" pattern="[A-Za-z0-9:]+" placeholder="Token address" aria-label="Token address")
+      input.btn.btn-blue(type="submit" value="Find")
+
+    .token-info-container
+      if tokenInfo
+        .row
+          .col
+            p Token address:
+          .col 
+            p= tokenInfo.addrData
+        .row
+          .col
+            p Collection address:
+          .col 
+            p= tokenInfo.addrRoot
+        .row
+          .col
+            p Owner Address:
+          .col 
+            p= tokenInfo.addrOwner
+        .row
+          .col
+            p Trusted wallet address:
+          .col 
+            p= tokenInfo.addrTrusted
+        .row
+          .col
+            p Color:
+          .col 
+            p= tokenInfo.color
+    
+
+  script(src="/scripts/root-contract-form.js")
+  script(src="/scripts/input-validation.js")
+    
+
+
+
+
