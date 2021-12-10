@@ -6,8 +6,6 @@ import * as fs from 'fs';
 import { globals } from '../config/globals'
 import path from 'path';
 
-// Для получения списка data нам необходим abi рут контракта для вызова метода resolveCodeHashData
-// Не знаю куда его лучше запихнуть
 
 type RootNtfInfo = {
     name: string,

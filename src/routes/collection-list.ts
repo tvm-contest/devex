@@ -1,8 +1,4 @@
 import express from 'express';
-import { Collection } from '../models/collection';
-import { DescriptCollection } from '../models/descript-collection';
-import { Parametr } from '../models/parametr';
-import { Rarity } from '../models/rarity';
 import { CollectionListService } from '../services/collection-list.service';
 const router = express.Router();
 

@@ -1,5 +1,4 @@
 import express from 'express';
-import { consoleTerminal } from 'tondev';
 import fs from 'fs';
 import path from 'path';
 import { globals } from '../config/globals'

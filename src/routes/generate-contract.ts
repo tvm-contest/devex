@@ -4,7 +4,7 @@ import { Collection } from '../models/collection';
 import { DescriptCollection } from '../models/descript-collection';
 import { Parametr } from '../models/parametr';
 import { Rarity } from '../models/rarity';
-import { deleteContractDirTemp, generateContract } from '../services/contract-generator.service';
+import { generateContract } from '../services/contract-generator.service';
 
 
 const router = express.Router();

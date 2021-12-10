@@ -1,16 +1,16 @@
 import express from 'express';
 import { everscale_settings } from '../config/everscale-settings';
-import { globals } from '../config/globals';
+
 const router = express.Router();
 
 import { TokensData } from "../services/tokesData.service";
 
 router.get('/', async function(req, res, next) {
-    if (req.query.rootNftAddress){
+    if (req.query.rootNftAddress && req.query.debotAddress){
         const tokensDataInfo = new TokensData();
         let tokensData = await tokensDataInfo.getTokensData(req.query.rootNftAddress.toString());
         let rootNftInfo = await tokensDataInfo.getRootNftInfo(req.query.rootNftAddress.toString());
-        let debotAddress = await tokensDataInfo.getDebotAddress(req.query.rootNftAddress.toString());
+        let debotAddress = req.query.debotAddress.toString();
         let net;
         if (everscale_settings.ENDPOINTS == "https://main.ton.dev") {
             net = 'mainnet'
