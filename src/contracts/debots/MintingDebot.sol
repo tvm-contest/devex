@@ -249,7 +249,7 @@ contract NftDebot is Debot, Upgradable {
     
     function setKeyHandle(uint32 handle) public accept {
         _keyHandle = handle;
-        setup2();
+        menu();
     }
     
     function attachNftRoot() public accept {

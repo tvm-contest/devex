@@ -83,20 +83,17 @@ export class AddParamsService {
     let enumsNumbers = '';
     let enumLength = 0;
     for (let i = 0; i < enumVariants.length; i++) {
-      enumsNumbers = enumsNumbers + ' ' + (i) + ' - ' + enumVariants[i];
+      enumsNumbers = enumsNumbers + ' ' + (i) + ' - ' + enumVariants[i] + "\\n";
       enumLength++;
     }
     let paramForDebotCheckResult = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(enum' + enumParam.getName() + ')));\n\t\t' + markForDebotCheckResult;
     let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(_nftParams.enum' + enumParam.getName() + ')));\n\t\t' + markForDebotDeployNftStep2;
-    let paramForDebotSetTypes = 'Terminal.input(' + 
-    'tvm.functionId(nftParamsSetenum' + enumParam.getName() +'), ' + 
-    '"Enter ' + enumParam.getName() + '\\nAvailable: ' + enumsNumbers + '(enter the number):", false);\n\t\t' + markForDebotSetTypes;
-    let paramForDebotEnumLength = 'uint ' + enumParam.getName() + 'Length = ' + enumLength + ';\n' + markForDebotParamEnumLength;
+    let paramForDebotSetTypes = 'AmountInput.get(tvm.functionId(nftParamsSetenum' + enumParam.getName() +'), ' + 
+    '"Enter ' + enumParam.getName() + '\\nAvailable: \\n' + enumsNumbers + '(enter the number):",  0, 0, ' + enumParam.getName() + 'Length - 1);\n\t\t' + markForDebotSetTypes;
+    let paramForDebotEnumLength = 'uint128 ' + enumParam.getName() + 'Length = ' + enumLength + ';\n' + markForDebotParamEnumLength;
 
-    let functionForDebotSetTypes = 'function nftParamsSetenum' + enumParam.getName() + '(string value) public {\n' +
-    '\t\t(uint i,) = stoi(value);\n' +
-    '\t\trequire(i >= ' + enumParam.getName() + 'Length || i < 0, 777, i = 0);\n' +
-    '\t\t_nftParams.enum' + enumParam.getName() + ' = '+ enumParam.getName() +'(i);\n\t}\n\t' + markForDebotFunctionSetTypes;
+    let functionForDebotSetTypes = 'function nftParamsSetenum' + enumParam.getName() + '(uint128 value) public {\n' +
+    '\t\t_nftParams.enum' + enumParam.getName() + ' = '+ enumParam.getName() +'(value);\n\t}\n\t' + markForDebotFunctionSetTypes;
     
     codeSource = codeSource.replace(markForEnums, enumParameter);
     codeSource = codeSource.replace(markForDebotCheckResult, paramForDebotCheckResult);
@@ -120,7 +117,11 @@ export class AddParamsService {
     let paramForDebotCheckResult = 'Terminal.print(0, format("' + param.getName() + ': {}",' + param.getName() + '));\n\t\t' + markForDebotCheckResult;
     let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("' + param.getName() + ': {}", _nftParams.' + param.getName() + '));\n\t\t' + markForDebotDeployNftStep2;
     let paramForDebotSetTypes;
-    if (!(param instanceof MediaFile)) {
+    if (param.getType() == 'uint') {
+      paramForDebotSetTypes = 'AmountInput.get(tvm.functionId(nftParamsSet' + param.getName() + '), ' + 
+        '"Enter ' + param.getName() + ' (' + param.getType() + '):",  0, 0, 3000000000000000000000000000000000000);\n\t\t' + 
+        markForDebotSetTypes;
+    } else if (!(param instanceof MediaFile)) {
       paramForDebotSetTypes = 'Terminal.input(' + 
         'tvm.functionId(nftParamsSet' + param.getName() +  '), ' + 
         '"Enter ' + param.getName() + ' (' + param.getType() + '):", false);\n\t\t' + markForDebotSetTypes;
@@ -129,7 +130,7 @@ export class AddParamsService {
     if (param.getType() == 'string') {
       functionForDebotSetTypes = 'function nftParamsSet' + param.getName() + '(string value) public { _nftParams.' + param.getName() + ' = value;}\n\t' + markForDebotFunctionSetTypes;
     } else if (param.getType() == 'uint') {
-      functionForDebotSetTypes = 'function nftParamsSet' + param.getName() + '(string value) public { (_nftParams.' + param.getName() + ',) = stoi(value);}\n\t' + markForDebotFunctionSetTypes;
+      functionForDebotSetTypes = 'function nftParamsSet' + param.getName() + '(uint128 value) public { _nftParams.' + param.getName() + ' = value;}\n\t' + markForDebotFunctionSetTypes;
     } else {
       functionForDebotSetTypes = markForDebotFunctionSetTypes;
     }
