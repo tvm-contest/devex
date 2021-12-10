@@ -119,7 +119,7 @@ export class AddParamsService {
     let paramForDebotSetTypes;
     if (param.getType() == 'uint') {
       paramForDebotSetTypes = 'AmountInput.get(tvm.functionId(nftParamsSet' + param.getName() + '), ' + 
-        '"Enter ' + param.getName() + ' (' + param.getType() + '):",  0, 0, 3000000000000000000000000000000000000);\n\t\t' + 
+        '"Enter ' + param.getName() + ' (' + param.getType() + '):",  0, ' + param.getMinValue() + ', ' + param.getMaxValue() + ');\n\t\t' + 
         markForDebotSetTypes;
     } else if (!(param instanceof MediaFile)) {
       paramForDebotSetTypes = 'Terminal.input(' + 
