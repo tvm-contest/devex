@@ -1,0 +1,19 @@
+{
+  "defaultDebotAddress": "0:1f67c746ba0d3187854a38ba06cd2b6cb6fd6d0ff3c65a886c5d145ccbe94a5f",
+  "defaultDebotNetwork": { "name": "DEVNET", "url": "https://net.ton.dev" },
+  "availableNetworks": [
+    { "name": "DEVNET", "url": "https://net.ton.dev" },
+    { "name": "MAINNET", "url": "https://main.ton.dev" }
+  ],
+  "debotIcon": "",
+  "header": {
+    "show": "1",
+    "search": "1",
+    "reload": "1",
+    "themeToggle": {
+      "show": "1",
+      "default": "DARK"
+    }
+  },
+  "styleProps": 0
+}

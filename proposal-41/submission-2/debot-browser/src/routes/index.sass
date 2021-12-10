@@ -1,0 +1,303 @@
+@import '~antd/dist/antd.css'
+
+.app
+  height: 100%
+  width: 100%
+  transition: background-color .3s
+  background-color: var(--bg-color)
+
+#root
+  height: 100%
+  width: 100%
+
+.header
+  padding: 5px 15px
+  width: 100%
+  display: flex
+  align-items: center
+  background-color: inherit
+
+.debot-info
+  display: flex
+  align-items: center
+  flex-grow: 1
+  height: 100%
+  &__network-logo
+    width: 16px
+    height: 16px
+  &__debot-name
+    margin-left: 10px
+    font-size: 16px
+    color: var(--bot-name-color)
+
+.control-panel
+  display: flex
+  height: 100%
+  &__control-btn
+    height: 100%
+    margin-left: 24px
+    display: flex
+    align-items: center
+    svg
+      fill: var(--control-btn-color)
+      transition: fill .3s
+      cursor: pointer
+    svg:hover
+      fill: var(--control-btn-hover-color)
+  &____search-debot
+
+.initialize-modal
+  &__addr
+    height: 34px
+  &__addr_input
+    padding: 5px 15px
+    z-index: 2
+  &__network-dropdown
+    display: flex
+    align-items: center
+    justify-content: space-between
+    box-sizing: border-box
+    padding: 16px
+    border: var(--input-border-width) var(--input-border-style) var(--input-border-color)
+    border-radius: var(--border-radius) !important
+    background-color: var(--input-bg-color)
+    color: var(--input-color)
+
+  &__error-close
+    z-index: 1
+    display: none
+  &__error-open
+    z-index: 1
+    display: block
+
+.browser
+  height: 100%
+  padding: 0 15px
+  display: flex
+  flex-direction: column
+  justify-content: flex-end
+  &__messages-window
+    flex-grow: 1
+    overflow: auto
+    margin-bottom: 20px
+    &::-webkit-scrollbar
+  &__inputs-window
+    max-height: 70%
+    //overflow: auto
+    .ant-layout
+      background-color: var(--bg-color)
+
+.message-container-from-me
+  justify-content: end
+
+.message-container-from-debot
+  justify-content: start
+.message
+  display: flex
+  padding-top: 4px
+  &__title
+    border-radius: var(--border-radius)
+    padding: 12px 16px 12px 16px
+    min-width: 70px
+    white-space: pre-wrap
+    &._center
+      text-align: center
+  &__from-me
+    background-color: var(--usr-msg-bg-color)
+    align-self: flex-end
+    color: var(--usr-msg-color)
+  &__from-debot
+    background-color: var(--bot-msg-bg-color)
+    color: var(--bot-msg-color)
+  &__confirm_no
+    background-color: var(--confirm-btn-bg-color-no)
+    border: var(--confirm-btn-border-width-no) var(--confirm-btn-border-style-no) var(--confirm-btn-border-color-no)
+    color: var(--confirm-btn-color-no)
+  &__confirm_yes
+    background-color: var(--confirm-btn-bg-color-yes)
+    border: var(--confirm-btn-border-width-yes) var(--confirm-btn-border-style-yes) var(--confirm-btn-border-color-yes)
+    color: var(--confirm-btn-color-yes)
+  &__qr
+    width: 200px
+
+.menu
+  display: flex
+  flex-wrap: wrap
+  margin: 0 auto
+  justify-content: center
+  max-width: 70%
+  &__el
+    margin: 0 4px 8px
+    &.ant-btn
+      white-space: pre-wrap
+      height: auto
+      background-color: var(--btn-bg-color)
+      border: var(--btn-border-width) var(--btn-border-style) var(--btn-border-color)
+      border-radius: var(--border-radius)
+      padding: 12px 16px
+      color: var(--btn-color)
+    &:hover
+      border-color: var(--btn-border-color-hover)
+      background-color: var(--btn-bg-color-hover)
+      color: var(--btn-color-hover)
+    & > span
+      overflow-wrap: break-word
+
+.string-input
+  margin-bottom: 12px
+  &__input
+    display: flex
+    .ant-input-affix-wrapper
+      border-radius: var(--border-radius)
+      background-color: var(--input-bg-color)
+      border: var(--input-border-width) var(--input-border-style) var(--input-border-color)
+      &:hover
+        border-right-width: var(--input-border-width-hover) !important
+        border: var(--input-border-width-hover) var(--input-border-style-hover) var(--input-border-color-hover) !important
+      .ant-input
+        background-color: var(--input-bg-color)
+        color: var(--input-color)
+      .ant-input-suffix
+        svg
+          height: 12px
+          width: 12px
+          fill: var(--input-icon-color)
+    .ant-input-affix-wrapper-focused
+      outline: 0
+      box-shadow: unset !important
+      border-right-width: var(--input-border-width-hover) !important
+      border: var(--input-border-width-hover) var(--input-border-style-hover) var(--input-border-color-hover) !important
+  &__input-error
+    .ant-input-affix-wrapper
+      border: var(--input-border-width) var(--input-border-style) var(--error-color) !important
+      &:hover
+        border: var(--input-border-width) var(--input-border-style) var(--error-color) !important
+      input
+        color: var(--error-color) !important
+    .ant-input-affix-wrapper-focused
+      border: var(--input-border-width) var(--input-border-style) var(--error-color) !important
+    .ant-input-suffix
+      svg
+        fill: var(--error-color) !important
+  &__error
+    color: var(--error-color)
+    margin-left: 20px
+    font-size: 12px
+    opacity: 0
+    transition: opacity .3s
+  .error-active
+    opacity: 1
+
+.confirm
+  display: flex
+  margin: 0 auto
+  margin-bottom: 12px
+  justify-content: center
+  .ant-btn
+    height: 46px
+    width: 100px
+    background-color: var(--btn-bg-color)
+    border-radius: var(--border-radius)
+    padding: 12px 36px
+    display: flex
+    justify-content: center
+    align-items: center
+  button
+    margin-right: 15px
+  &__yes
+    color: var(--confirm-btn-color-yes)
+    border: var(--btn-border-width) var(--btn-border-style) var(--usr-msg-bg-color)
+    &:hover
+      color: var(--usr-msg-bg-color)
+      border: var(--btn-border-width) var(--btn-border-style) var(--confirm-btn-color-yes-hover)
+  &__no
+    color: var(--confirm-btn-color-no)
+    border: var(--btn-border-width) var(--btn-border-style) var(--error-color)
+    &:hover
+      color: var(--confirm-btn-color-no-hover)
+      border: var(--btn-border-width) var(--btn-border-style) var(--error-color)
+
+.date-time-input
+  display: flex
+  flex-direction: row
+  background: var(--bg-color)
+  margin-bottom: 8px
+  .ant-picker
+    background-color: var(--input-bg-color)
+    border: var(--input-border-width) var(--input-border-style) var(--input-border-color)
+    border-radius: var(--border-radius)
+    &:hover
+      border-right-width: var(--input-border-width-hover) !important
+    .ant-picker-input
+      input
+        color: var(--input-color)
+      .ant-picker-suffix
+        background-color: var(--input-bg-color) !important
+        span
+          background-color: var(--input-bg-color) !important
+          svg
+            fill: var(--input-icon-color)
+  .ant-picker-focused
+    border-right-width: var(--input-border-width-hover) !important
+    &:hover
+      border-right-width: var(--input-border-width-hover) !important
+  &__info
+    flex-grow: 1
+    margin-left: 8px
+    background-color: var(--input-bg-color)
+    border: var(--input-border-width) var(--input-border-style) var(--input-border-color)
+    border-radius: var(--border-radius)
+    .ant-alert-content
+      .ant-alert-message
+        color: var(--input-color)
+
+.ant-modal-mask
+  background-color: var(--modal-bg-color)
+
+.ant-modal-content
+  border-radius: var(--border-radius) !important
+  background-color: var(--bg-color) !important
+  button
+    span
+      span
+        svg
+          fill: var(--btn-color)
+          &:hover
+            fill: var(--btn-color-hover)
+  .ant-modal-header
+    border: none
+    border-radius: var(--border-radius) !important
+    background-color: var(--bg-color) !important
+    .ant-modal-title
+      color: var(--bot-name-color)
+  .ant-modal-body
+  .initialize-modal__addr
+    margin-bottom: 15px
+    & .ant-input
+      background-color: var(--input-bg-color)
+      color: var(--input-color)
+      &:focus
+        box-shadow: none
+    & .ant-input-suffix
+      svg
+        height: 12px
+        width: 12px
+        fill: var(--input-icon-color)
+    & .ant-input-affix-wrapper-focused
+      outline: 0
+      box-shadow: unset !important
+      border-right-width: var(--input-border-width-hover) !important
+      border: var(--input-border-width-hover) var(--input-border-style-hover) var(--input-border-color-hover) !important
+    input
+      border: var(--input-border-width) var(--input-border-style) var(--input-border-color)
+      border-radius: var(--border-radius) !important
+  .ant-modal-footer
+    border: none
+    padding: 20px
+    & .ant-btn.ant-btn-primary
+      padding: 12px 28px
+      height: auto
+      border-radius: var(--border-radius)
+      background-color: var(--btn-primary-bg-color)
+      box-shadow: none
+      border: none
