@@ -56,7 +56,7 @@ export class DeployService {
         return hash;
     }
 
-    async createContractAccount(contractDotSolCode: string, relative_path?, fileName?:string) : Promise<Account> {
+    async createContractAccount(contractDotSolCode: string, relative_path?, fileName?: string, initData?: object) : Promise<Account> {
         const hash = await this.compileContract(contractDotSolCode, relative_path, fileName);
 
         let abi = await JSON.parse(fs.readFileSync(path.resolve(relative_path || globals.TEMP_ROOT, hash + ".abi.json")).toString());
@@ -67,7 +67,8 @@ export class DeployService {
             tvc: tvc
         }, {
             signer: signerKeys(everscale_settings.KEYS),
-            client: this.client
+            client: this.client,
+            initData: initData
         });
 
         if (relative_path == undefined) {
