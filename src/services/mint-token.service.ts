@@ -6,7 +6,7 @@ import { DeployService } from './deploy.service';
 import { TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
 
-import { TestTokenModel } from '../routes/mint';
+import { TokenImageCreator } from './gen-images.service';
 
 const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
 const utf8ToHex = convert("utf8", "hex");
@@ -14,17 +14,13 @@ const utf8ToHex = convert("utf8", "hex");
 //
 // Hard code
 //
-const TEST_COLLESTION = path.resolve(globals.RESULT_COLLECTION, '3c55281ef9920955ddcec824a7db1421fb790e84bd34f8ad90e3177f65f9c3e7');
-
-async function logEvents(params, response_type) {
-    console.log(`params = ${JSON.stringify(params, null, 2)}`);
-    console.log(`response_type = ${JSON.stringify(response_type, null, 2)}`);
-}
+const TEST_COLLESTION = path.resolve(globals.RESULT_COLLECTION, '61660447d14fd0312cb5240985d0be7d4fbe3c6b14f8a59452c05a945cd00a40');
 
 export class MintNftService {
     private deployService: DeployService;
     private client: TonClient;
     private collectionSrcFolder: string;
+    private imageCreator: TokenImageCreator;
 
     constructor(collectionSrcFolder: string) {
         this.deployService = new DeployService();
@@ -34,6 +30,7 @@ export class MintNftService {
             }
         });
 
+        this.imageCreator = new TokenImageCreator;
         this.collectionSrcFolder = '';
         this.setCollectionSourceFolder(collectionSrcFolder);
     }
@@ -46,12 +43,14 @@ export class MintNftService {
         return this.collectionSrcFolder;
     }
 
-    async mintNft(mintParams: TestTokenModel) {
+    async mintNft() {
         //
         // Hard paths
         //
         let rootNftContract = fs.readFileSync(path.resolve(TEST_COLLESTION, "NftRoot.sol")).toString();
-        let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, TEST_COLLESTION, 'NftRoot');
+        let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, TEST_COLLESTION, 'NftRoot', {_name: utf8ToHex('Warrior')});
+
+        console.log(rootNftContract);
         console.log(await rootNftAccount.getAddress());
 
         const mintMessage = await this.getMintMessage(
@@ -68,12 +67,12 @@ export class MintNftService {
                 // Hard code parameters
                 //
                 nftType: utf8ToHex('rarity'),
-                heroPower: 10,
-                arm: utf8ToHex('gun')
+                power: 3
             }
         );
 
         await this.sendMessageToMint(mintMessage.message);
+        this.imageCreator.createTokenImage('61660447d14fd0312cb5240985d0be7d4fbe3c6b14f8a59452c05a945cd00a40');
     }
 
     private async getMintMessage(account: Account, func: string, input: object) {
@@ -93,7 +92,6 @@ export class MintNftService {
         };
 
         return await this.client.abi.encode_internal_message(messageParams);
-        
     }
 
     private async sendMessageToMint(message: string) {
