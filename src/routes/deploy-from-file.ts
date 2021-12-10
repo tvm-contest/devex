@@ -29,7 +29,7 @@ router.post('/', async function(req, res, next) {
   let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromJson(jsonCollection.enums)
   let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromJson(jsonCollection.mediafiles);
 
-  let contractDir = await generateContract(collection, jsonCollection, enums, mediafiles)
+  let contractDir = await generateContract(collection, JSON.stringify(jsonCollection, null, '\t'), enums, mediafiles)
 
   let deployTrueNftService = new DeployTrueNftService()
   let commissionAuthorGenerator = 0;
