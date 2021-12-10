@@ -11,8 +11,7 @@ contract Data is IData, DataCore {
 
     string _nftType;
 
-    uint heroPower;
-	string arm;
+    uint power;
 	/*%PARAM_DEFENITION%*/
 
     constructor(
@@ -26,8 +25,7 @@ contract Data is IData, DataCore {
         uint8 _royalty,
 
         string nftType, 
-		uint _heroPower, 
-		string _arm/*%PARAM_CONSTRUCTOR%*/
+		uint _power/*%PARAM_CONSTRUCTOR%*/
     )
         public
     {
@@ -52,8 +50,7 @@ contract Data is IData, DataCore {
         for (uint8 i; i < _managersList.length; i++) {
             managersList[_managersList[i]] = i;
         }
-        heroPower = _heroPower;
-		arm = _arm;
+        power = _power;
 		/*%PARAM_SET%*/
 
         deployIndex(addrOwner);
@@ -70,8 +67,7 @@ contract Data is IData, DataCore {
         uint8 number,
         uint8 amount,
         string nftType, 
-		uint _heroPower, 
-		string _arm/*%PARAM_DATA_INFO%*/
+		uint _power/*%PARAM_DATA_INFO%*/
     ) {
         addrRoot = _addrRoot;
         addrOwner = _addrOwner;
@@ -83,8 +79,7 @@ contract Data is IData, DataCore {
         number = editionNumber;
         amount = editionAmount;
         nftType = _nftType;
-        _heroPower = heroPower;
-		_arm = arm;
+        _power = power;
 		/*PARAM_SET_DATA_INFO*/
     }
 
