@@ -85,11 +85,10 @@ export class DeployDebotService {
             });
             
             console.log("Debot address: " + debotAddress);
-            return debotAddress;
         } catch(err) {
             console.log(err);
-            return "0";
         }
+        return debotAddress;
     }
 
     // This is a SafeMultisig Wallet contract for testing purposes.
