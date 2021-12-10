@@ -31,7 +31,7 @@ class ContractGenerator {
     return tempDir;
   }
 
-  async generateContract(collectionSettings : Collection, enums?: EnumParameter[], mediafiles?: MediaFile[]){
+  async generateContract(collectionSettings : Collection, jsonCollection: string, enums?: EnumParameter[], mediafiles?: MediaFile[]){
     const hashContract = sha256(JSON.stringify(collectionSettings));
     const tempDir = path.join(globals.RESULT_COLLECTION, hashContract);
 
@@ -67,6 +67,7 @@ class ContractGenerator {
       fs.copyFileSync(auctionRootFile, auctionRootFileTemp);
       fs.copyFileSync(auctionFile, auctionFileTemp);
       fs.copyFileSync(aDataCoreFile, aDataCoreFileTemp);
+      fs.writeFileSync(path.join(tempDir, "collectionInfo.json"), jsonCollection, {flag: 'w'});
 
       let addParamsService = new AddParamsService();
 

@@ -34,21 +34,25 @@ router.post('/save-data', async function(req, res, next) {
 });
 
 router.post('/form-contracts', async function(req, res, next) {
+    let jsonCollectionService = new JsonCollectionSevice()
     let contractObjectCreator = new ContractObjectCreator()
+    let jsonCollection = await jsonCollectionService.makeJsonCollection(req);
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
     let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromReq(req)
-    let contractDir = await generateContract(collection, enums, mediafiles)
+    let contractDir = await generateContract(collection, jsonCollection, enums, mediafiles)
 
     res.render('success-page', { pageText: "Файлы сгенерированы в директорию: " + path.basename(contractDir) })
 });
 
 router.post('/deploy-contracts', async function(req, res, next) {
+    let jsonCollectionService = new JsonCollectionSevice()
     let contractObjectCreator = new ContractObjectCreator()
+    let jsonCollection = await jsonCollectionService.makeJsonCollection(req);
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
     let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromReq(req);
-    let contractDir = await generateContract(collection, enums, mediafiles);
+    let contractDir = await generateContract(collection, jsonCollection, enums, mediafiles);
     let deployTrueNftService = new DeployTrueNftService()
     let commissionAuthorGenerator = 0;
     if (req.body.checkCommissionAuthorGenerator == '') {
@@ -64,15 +68,15 @@ router.post('/deploy-contracts', async function(req, res, next) {
   
 router.post('/', async function(req, res, next) {
 
-    let contractObjectCreator = new ContractObjectCreator()
-    let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
-    let contractDir = await generateContract(collection)
+    // let contractObjectCreator = new ContractObjectCreator()
+    // let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
+    // let contractDir = await generateContract(collection)
 
-    //Зачем коментирвать весь метод?
-    let deployTrueNftService = new DeployTrueNftService()
-    let address = await deployTrueNftService.deployTrueNft(contractDir, collection, 0)
+    // //Зачем коментирвать весь метод?
+    // let deployTrueNftService = new DeployTrueNftService()
+    // let address = await deployTrueNftService.deployTrueNft(contractDir, collection, 0)
 
-    // deleteContractDirTemp(collection)
+    // // deleteContractDirTemp(collection)
 
     // res.send("Адрес коллекции: " + address)
     res.send("root")
