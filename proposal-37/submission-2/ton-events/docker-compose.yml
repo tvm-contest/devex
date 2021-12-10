@@ -1,0 +1,104 @@
+version: "2.4"
+services:
+  ton-events:
+    build: ./api
+    environment:
+      DEBUG: "api,lib:*"
+    ports:
+      - "127.0.0.1:13000:3000"
+    restart: always
+
+  flink-jobmanager:
+    image: flink:1.14
+    command: jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+        state.backend: hashmap
+        jobmanager.memory.process.size: 1Gb
+        jobmanager.memory.jvm-metaspace.size: 512Mb
+        state.checkpoints.dir: file:///data/flink/checkpoints
+        state.savepoints.dir: file:///data/flink/savepoints
+      - QUEUE_PROVIDER_ADDRESS=${QUEUE_PROVIDER_ADDRESS}
+      - QUEUE_PROVIDER_TOPIC=${QUEUE_PROVIDER_TOPIC}
+      - QUEUE_PROVIDER_USERNAME=${QUEUE_PROVIDER_USERNAME}
+      - QUEUE_PROVIDER_PASSWORD=${QUEUE_PROVIDER_PASSWORD}
+    volumes:
+      - type: bind
+        source: ./core/docker-entrypoint.sh
+        target: /docker-entrypoint.sh
+        read_only: true
+      - type: volume
+        source: flink-data
+        target: /data/flink
+    ports:
+      - "127.0.0.1:18081:8081"
+    restart: always
+
+  flink-taskmanager:
+    image: flink:1.14
+    command: taskmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+        taskmanager.memory.process.size: 4Gb
+        taskmanager.memory.managed.size: 0
+        taskmanager.numberOfTaskSlots: 8
+        state.backend: hashmap
+        state.checkpoints.dir: file:///data/flink/checkpoints
+        state.savepoints.dir: file:///data/flink/savepoints
+    volumes:
+      - type: bind
+        source: ./core/docker-entrypoint.sh
+        target: /docker-entrypoint.sh
+        read_only: true
+      - type: volume
+        source: flink-data
+        target: /data/flink
+    scale: 1
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3.9
+    hostname: rabbitmq.ton.events
+    restart: always
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    restart: always
+
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    hostname: kafka.ton.events
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "notifications:1:1"
+      KAFKA_SASL_ENABLED_MECHANISMS: SCRAM-SHA-512
+      KAFKA_ADVERTISED_LISTENERS: SASL_PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: SASL_PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: SASL_PLAINTEXT:SASL_PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: SASL_PLAINTEXT
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: SCRAM-SHA-512
+      KAFKA_OPTS: -Djava.security.auth.login.config=/opt/kafka/config/jaas.conf
+      CUSTOM_INIT_SCRIPT: |-
+        echo -e 'KafkaServer {\norg.apache.kafka.common.security.scram.ScramLoginModule required\n username="admin"\n password="admin";\n};' > /opt/kafka/config/jaas.conf;
+        kafka-configs.sh --zookeeper zookeeper:2181 --alter --add-config 'SCRAM-SHA-512=[password=admin]' --entity-type users --entity-name admin;
+        kafka-configs.sh --zookeeper zookeeper:2181 --alter --add-config 'SCRAM-SHA-512=[password=tonevents]' --entity-type users --entity-name tonevents;
+        kafka-acls.sh --authorizer-properties zookeeper.connect='zookeeper:2181' --add --allow-principal 'User:tonevents' --producer --topic 'notifications';
+        kafka-acls.sh --authorizer-properties zookeeper.connect='zookeeper:2181' --add --allow-principal 'User:tonevents' --consumer --group 'ton.events' --topic 'notifications';
+    volumes:
+      - type: bind
+        source: ./kafka/bin
+        target: /usr/local/bin
+        read_only: true
+      - type: volume
+        source: kafka-data
+        target: /kafka
+    restart: always
+
+volumes:
+  flink-data:
+  kafka-data:
+
