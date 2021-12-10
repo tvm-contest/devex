@@ -1,0 +1,123 @@
+@import '../../../styles/colors.scss';
+@import '../../../styles/size.scss';
+@import '../../../styles/mixins.scss';
+
+.signing-box {
+	&__header {
+		width: 100%;
+		margin-bottom: 16px;
+		text-align: center;
+		font-size: 30px;
+		font-weight: 700;
+		color: var(--header-text-color);
+	}
+
+	&__description {
+		margin-bottom: 20px;
+		font-size: 24px;
+		color: var(--header-text-color);
+	}
+
+	&__input {
+		height: 70px;
+		width: 100%;
+		margin-bottom: 4px;
+		color: var(--secondary-text-color);
+		font-size: 18px;
+		outline: none;
+		transition: color .2s;
+		border: none;
+		resize: none;
+		border-bottom: 1px solid var(--table-border-color);
+		background: var(--table-background-color);
+
+		&:not(.signing-box__input--error):focus {
+			color: var(--semi-button-active-color);
+			border-color: var(--semi-button-active-color);
+		}
+
+		&--error {
+			color: var(--error-color);
+			border-color: var(--error-color);
+
+			&::placeholder {
+				color: var(--error-color);
+			}
+		}
+
+		&-container {
+			width: 100%;
+			margin-bottom: 15px;
+		}
+
+		&-label {
+			margin-bottom: 12px;
+			font-size: 20px;
+		}
+
+		&-error {
+			font-size: 14px;
+			color: var(--error-color);
+		}
+	}
+
+	&__devider {
+		width: 100%;
+		margin-bottom: 15px;
+		text-align: center;
+		font-size: 24px;
+		font-weight: 700;
+		color: $dark-black;
+	}
+
+	&__upload-keys {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		height: 200px;
+		border-radius: 8px;
+		background-color: var(--background-color);
+		overflow: hidden;
+
+		&-dropable-overlay {
+			position: absolute;
+			z-index: -1;
+			width: 100%;
+			height: 100%;
+
+			&--active {
+				z-index: 10;
+				background-color: rgba($light-blue, 0.2);
+			}
+		}
+
+		label {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: max-content;
+			height: max-content;
+			margin-top: 10px;
+			font-size: 18px;
+			font-weight: 700;
+			cursor: pointer;
+
+			img {
+				width: 90%;
+				height: 90%;
+				max-width: 130px;
+				max-height: 130px;
+				margin-left: 5px;
+				margin-bottom: 10px;
+			}
+		}
+
+		&--error {
+			height: 20px;
+			font-size: 14px;
+			font-weight: 700;
+			color: var(--error-color);
+		}
+	}
+}

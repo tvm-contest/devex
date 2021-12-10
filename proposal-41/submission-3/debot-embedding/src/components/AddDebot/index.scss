@@ -1,0 +1,62 @@
+@import '../../styles/mixins.scss';
+@import '../../styles/size.scss';
+
+.add-debot {
+	padding: 12px 14px;
+
+	&__input-container {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__input-label {
+		margin-bottom: 6px;
+		font-size: 20px;
+		font-weight: 600;
+		word-break: break-word;
+	}
+
+	&__input {
+		@include base-input;
+
+		&:last-child {
+			margin-bottom: 20px;
+		}
+	}
+
+	&__horizontal-inputs {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		width: 100%;
+
+		.options-list {
+			margin-bottom: 20px;
+			margin-left: 6px;
+		}
+
+		@media(max-width: #{$mobile-checkpoint}) {
+			flex-direction: column;
+			align-items: flex-start;
+
+			.options-list {
+				margin-left: 0;
+			}
+		}
+	}
+
+	&__submit-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 36px;
+		font-weight: 600;
+		font-size: 16px;
+		color: var(--primary-button-text-color);
+		border-radius: 12px;
+		background-color: var(--primary-button-background-color);
+		user-select: none;
+		
+		@include light-button-effects(var(--primary-button-background-hover-color), var(--primary-button-text-hover-color));
+	}
+}

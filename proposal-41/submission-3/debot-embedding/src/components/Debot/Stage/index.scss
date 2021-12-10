@@ -1,0 +1,12 @@
+@import '../../../styles/size.scss';
+
+.stage {
+	width: 100%;
+	height: max-content;
+	max-width: $stage-max-width;
+	margin: 0 auto;
+
+	&__container {
+		padding-right: 10px;
+	}
+}

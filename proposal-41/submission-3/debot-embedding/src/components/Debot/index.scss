@@ -1,0 +1,35 @@
+@import '../../styles/size.scss';
+
+.debot {
+	&__controls {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		width: 100%;
+		margin-bottom: $debot-controls-margin;
+
+		@media(max-width: #{$mobile-checkpoint}) {
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: space-between;
+		}
+	}
+
+	&__controls-item {
+		height: max-content;
+		margin-right: 20px;
+		font-weight: 600;
+		font-size: 18px;
+		color: var(--semi-button-color);
+		cursor: pointer;
+		transition: color .2s;
+
+		&:hover {
+			color: var(--semi-button-hover-color);
+		}
+
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+}

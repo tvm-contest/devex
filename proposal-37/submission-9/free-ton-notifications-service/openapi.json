@@ -1,0 +1,270 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Free TON Notifications service (i4ins)",
+    "version": "1.0.0",
+    "description": "Free TON Notifications service endpoints",
+    "contact": {
+      "email": "anton.solodkof@gmail.com",
+      "name": "Anton Solodkov"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    },
+    {
+      "url": "https://ftns.freeton-stats.org/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "webhook",
+      "description": "Webhook APIs"
+    },
+    {
+      "name": "info",
+      "description": "Info APIs"
+    },
+	{
+	  "name": "logs",
+	  "description": "Service logs"
+	}
+  ],
+  "paths": {
+    "/info/get": {
+      "get": {
+        "tags": ["info"],
+        "summary": "Get service information",
+        "operationId": "info-get",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerErrorSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+	"/log/info": {
+		"get": {
+		  "tags": ["logs"],
+		  "summary": "Get service logs",
+		  "operationId": "log-info",
+		  "responses": {
+			"200": {
+			  "description": "Ok",
+			  "content": {
+				"text/plain": {
+				  "schema": {
+					"type": "string"
+				  }
+				}
+			  }
+			},
+			"500": {
+			  "description": "Internal Server Error",
+			  "content": {
+				"application/json": {
+				  "schema": {
+					"$ref": "#/components/schemas/ServerErrorSchema"
+				  }
+				}
+			  }
+			}
+		  }
+		}
+	},
+    "/webhook/subscribe": {
+        "post": {
+            "tags": ["webhook"],
+            "summary": "Subscribe to notifications",
+            "operationId": "webhook-subscribe",
+            "requestBody": {
+                "description": "Subscribe to notifications",
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SubscribeSchema"
+                    }
+                  }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Ok",
+                    "content": {
+						"text/plain": {
+						  "schema": {
+							"type": "string"
+						  }
+						}
+					}
+                },
+                "400": {
+                    "description": "Bad request",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/BadRequestSchema"
+                        }
+                      }
+                    }
+                },
+                "500": {
+                    "description": "Internal Server Error",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ServerErrorSchema"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BadRequestSchema": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "PATH: [endpoint] ;; MESSAGE: \"endpoint\" is required"
+          }
+        },
+        "required": ["error"]
+      },
+      "ServerErrorSchema": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Internal server error"
+          }
+        },
+        "required": ["error"]
+      },
+      "NotFoundErrorSchema": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Item not found"
+          }
+        },
+        "required": ["error"]
+      },
+      "InfoSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Service name",
+            "example": "Free TON Notifications Service"
+          },
+          "id": {
+            "type": "string",
+            "description": "Service id in DeBot",
+            "example": "i4ins"
+          },
+          "description": {
+            "type": "string",
+            "description": "Service description",
+            "example": "Notifications Module for Free TON Blockchaing events"
+          },
+          "source": {
+            "type": "string",
+            "description": "Service source code on github",
+            "example": "https://github.com/Strafi/free-ton-notifications-service"
+          },
+          "surf": {
+            "type": "string",
+            "description": "Wallet of service developer",
+            "example": "0:e9fd9b03ae67de6c071510bce975bc5a0b6c5451546e6b941723df5787f95877"
+          }
+        },
+        "required": ["name", "id", "description", "source", "surf"]
+      },
+	  "NotificationSchema": {
+		"type": "object",
+		"properties": {
+		  "message": {
+			  "type": "string",
+			  "description": "Message that will be sent to the consumer endpoint. Consist of nonce and encodedMessage itself (divided by spaces)",
+			  "example": "0TA/ffMTfi1PkE4MKI3xYAp89VrggvIs CMiMfTlCkflmn8UivdwiVpBro+RbLW7oT+lvI80wMVmM2W4dEwTaPffA0lYnbsMjPtrJCOJYu69AVHu+itm9E9n87HogYzoSKVcaDuF4+H+..."
+			}
+		},
+		"required": ["hash", "endpoint"]
+	  },
+      "ConsumerSchema": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "Unique id to make validation",
+            "example": "c1fce470-2dcb-11ec-9683-49f69e46b8de"
+          },
+          "_id": {
+            "type": "string",
+            "description": "Mongo document id",
+            "example": "c1fce470da23vgerbz"
+          },
+          "endpoint": {
+            "type": "string",
+            "description": "Consumer endpoint to receive notifications",
+            "example": "https://ftns.freeton-stats.org/test/webhook"
+          },
+          "hash": {
+            "type": "string",
+            "description": "Hash from notifications DeBot",
+            "example": "e5586c86a42f0f79a31a9750d2949a97a5155f3f7fe151ffdb2c250f32d5771c"
+          },
+          "isValidated": {
+            "type": "string",
+            "description": "Is consumer's endpoint validated",
+            "example": "false"
+          }
+        },
+        "required": ["_id", "uuid", "endpoint", "hash"]
+      },
+      "SubscribeSchema": {
+          "type": "object",
+          "properties": {
+            "endpoint": {
+                "type": "string",
+                "description": "Consumer endpoint to receive notifications",
+                "example": "https://ftns.freeton-stats.org/test/webhook"
+              },
+              "hash": {
+                "type": "string",
+                "description": "Hash from notifications DeBot",
+                "example": "e5586c86a42f0f79a31a9750d2949a97a5155f3f7fe151ffdb2c250f32d5771c"
+              }
+          },
+          "required": ["hash", "endpoint"]
+      }
+    }
+  }
+}
