@@ -24,9 +24,12 @@ export class DeployDebotService {
         this.deployService = new DeployService();
     }
 
-    async deployDebot(contractsDir, rootNftAddress: string) {
+    async deployDebot(contractsDir, rootNftAddress: string) : Promise<string> {
         let debotCode = fs.readFileSync(path.resolve(contractsDir, "debots", "MintingDebot.sol")).toString();
-        let debotAcc = await this.deployService.createContractAccount(debotCode, path.resolve(contractsDir, "debots"), "MintingDebot");
+        let initData = {
+            _addrNFTRoot: rootNftAddress
+        };
+        let debotAcc = await this.deployService.createContractAccount(debotCode, path.resolve(contractsDir, "debots"), "MintingDebot", initData);
         let walletAcc = await this.getWalletAcc();
         let debotTvc = fs.readFileSync(path.resolve(contractsDir, "debots", "MintingDebot.tvc"), {encoding: 'base64'});
         let debotAddress = await debotAcc.getAddress();
@@ -49,12 +52,14 @@ export class DeployDebotService {
                         keys: everscale_settings.KEYS
                     },
                     deploy_set: {
+                        initial_data: initData,
                         tvc: debotTvc
                     },
                     call_set: {
                         function_name: "constructor",
-                        input: {_addrNFTRoot: rootNftAddress}
+                        input: {}
                     },
+                    address: debotAddress
                 },
                 send_events: false
             });
@@ -83,6 +88,7 @@ export class DeployDebotService {
         } catch(err) {
             console.log(err);
         }
+        return debotAddress;
     }
 
     // This is a SafeMultisig Wallet contract for testing purposes.

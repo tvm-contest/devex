@@ -23,7 +23,7 @@ contract NftRoot is DataResolver, IndexResolver {
     uint128 _mintingCommission;
     uint256 _totalMinted;
     address _addrBasis;
-    string _name;
+    string static _name;
     bytes _icon;
 
 
@@ -37,7 +37,6 @@ contract NftRoot is DataResolver, IndexResolver {
         uint128 mintingCommission,
         string[] nftTypes,
         uint[] limit,
-        string name,
         bytes icon
     )
         public
@@ -48,7 +47,6 @@ contract NftRoot is DataResolver, IndexResolver {
         _codeIndex = codeIndex;
         _addrCommissionAgent = addrCommissionAgent;
         _mintingCommission = mintingCommission;
-        _name = name;
         _icon = icon;
 
         for(uint i = 0; i < nftTypes.length; i++) {

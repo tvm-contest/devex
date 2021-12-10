@@ -54,12 +54,13 @@ export class CollectionListService {
   private async getCollectionAccount(tempCollectionDir : string) : Promise<Account> {
     let abi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, tempCollectionDir, 'NftRoot.abi.json')).toString());
     let tvc = fs.readFileSync(path.join(globals.RESULT_COLLECTION, tempCollectionDir, 'NftRoot.tvc'), {encoding: 'base64'});
+    let address = "0:" + tempCollectionDir;
     const collectionAccount = new Account({
       abi: abi,
       tvc: tvc
     }, {
       signer: signerKeys(everscale_settings.KEYS),
-      initData: {},
+      address: address,
       client: this.client
     });
     return collectionAccount;

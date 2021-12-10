@@ -16,7 +16,7 @@ router.get('/',  function(req, res, next) {
   let description : DescriptCollection = new DescriptCollection("Collect1", 100);
   let collection : Collection = new Collection(description, rariry, params);
 
-  generateContract(collection);
+  // generateContract(collection);
 
   res.send('Файлы сгенерированы');
 

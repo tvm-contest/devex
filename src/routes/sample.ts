@@ -7,8 +7,6 @@ import { DeployService } from '../services/deploy.service';
 import { DeployTrueNftService } from '../services/deployTrueNft.service';
 const router = express.Router();
 
-import { t } from '../services/gen-images.service';
-
 router.get('/addFileToIPFS', async function (req, res, next) {
   const filepath = path.join(globals.SAMPLE_DATA_PATH, '/textfile-test-ipfs-upload.txt');
   const file = fs.readFileSync(filepath, 'utf8');
@@ -50,10 +48,6 @@ router.get('/deployTrueNftService', async function (req, res, next) {
   const deployTrueNftService = new DeployTrueNftService();
   const testPath = path.resolve(globals.BASE_PATH, "src" ,"sample-data", "trueNftSample");
   // deployTrueNftService.deployTrueNft(testPath);
-});
-
-router.get('/color', async function (req, res) {
-  console.log(await t.createImagesArr());
 });
 
 export { router as sampleRouter };
