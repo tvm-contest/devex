@@ -17,8 +17,7 @@ interface IData is IDataCore {
         uint8 number,
         uint8 amount,
         string nftType, 
-		uint _heroPower, 
-		string _arm/*%PARAM_DATA_INFO%*/
+		uint _power/*%PARAM_DATA_INFO%*/
     );
 
     function getInfoResponsible() external view responsible returns (

@@ -73,15 +73,7 @@
 			]
 		},
 		{
-			"name": "nftParamsSetheroPower",
-			"inputs": [
-				{"name":"value","type":"bytes"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "nftParamsSetarm",
+			"name": "nftParamsSetpower",
 			"inputs": [
 				{"name":"value","type":"bytes"}
 			],
@@ -137,8 +129,7 @@
 				{"name":"number","type":"uint8"},
 				{"name":"amount","type":"uint8"},
 				{"name":"nftType","type":"bytes"},
-				{"name":"heroPower","type":"uint256"},
-				{"name":"arm","type":"bytes"}
+				{"name":"power","type":"uint256"}
 			],
 			"outputs": [
 			]
