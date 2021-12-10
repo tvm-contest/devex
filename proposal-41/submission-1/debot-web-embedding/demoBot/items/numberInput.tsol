@@ -1,0 +1,15 @@
+pragma ton-solidity >=0.35.0;
+
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/Terminal/Terminal.sol";
+import "https://raw.githubusercontent.com/tonlabs/DeBot-IS-consortium/main/NumberInput/NumberInput.sol";
+
+contract NumberInputItem {
+    function numberInputStart(uint32 index) public {
+        index = index;
+        NumberInput.get(tvm.functionId(numberInputPrint), "Enter any number", 0, 1000);
+    }
+
+    function numberInputPrint(uint128 value) public {
+        Terminal.print(0x01, format("You've written\n{}", value));
+    }
+}

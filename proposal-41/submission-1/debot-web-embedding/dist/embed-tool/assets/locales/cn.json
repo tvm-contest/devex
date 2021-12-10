@@ -1,0 +1,85 @@
+{
+  "copy": {
+    "copy": "复制",
+    "copied": "已经复制",
+    "error": "错误"
+  },
+  "debotInfo": {
+    "name": "名称",
+    "author": "Author",
+    "language": "语",
+    "publisher": "发行人",
+    "support": "支持",
+    "version": "Version",
+    "launch": "跑步",
+    "untitled": "无标题",
+    "unknown": "未知"
+  },
+  "approveDialog": {
+    "title": "行动确认",
+    "type": "型",
+    "dst": "接受者：",
+    "fee": "费用",
+    "outs": "出局数：",
+    "amount": "额",
+    "dst1": "接受者",
+    "unknown": "未知的活动类型！",
+    "reject": "禁止",
+    "approve": "批准"
+  },
+  "validation": {
+    "required": "所需的",
+    "address": "不正确的地址格式。",
+    "gte": "必须大于或等于{0}。",
+    "lte": "必须小于或等于{0}。",
+    "scale": "减少小数位数。",
+    "isInt": "应为整数。"
+  },
+  "tag": {
+    "unknown": "未知元素",
+    "inputAmount": {
+      "amount": "额",
+      "apply": "应用"
+    },
+    "inputNumber": {
+      "number": "编号",
+      "apply": "应用"
+    },
+    "input": {
+      "value": "价值",
+      "apply": "应用"
+    },
+    "fatal": {
+      "error": "错误",
+      "refresh": "重新开始",
+      "console": "详见控制台。"
+    },
+    "inputAddress": {
+      "address": "地址",
+      "apply": "应用"
+    },
+    "inputConfirm": {
+      "cancel": "取消",
+      "confirm": "确认"
+    },
+    "selectKey": {
+      "title": "该deBot需要密钥",
+      "key": "钥匙",
+      "pass": "密码",
+      "myKeys": "我的钥匙",
+      "select": "选择",
+      "unknownError": "未知错误"
+    },
+    "scanQrCode": {
+      "title": "QR码",
+      "drop": "将图像拖到这个区域",
+      "or":  "或",
+      "upload":  "上载",
+      "scan":  "扫描QR码",
+      "couldNotRecognize":  "无法识别",
+      "error":  "错误  %s",
+      "allowCamera":"允许使用设备上的摄像头",
+      "cancel": "取消"
+    }
+  }
+}

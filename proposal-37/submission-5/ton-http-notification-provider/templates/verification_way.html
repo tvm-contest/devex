@@ -1,0 +1,60 @@
+{{ define "verification_way.html" }}
+<!doctype html>
+<html dir="ltr" lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Verification process</title>
+    <link rel="icon" type="image/png" href="/misc/images/favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row" style="padding: 2rem;">
+        <div class="col-6 is-center"> <img src="/misc/images/logo.png"/> </div>
+        <div class="col-6"> 
+          <h1>Please select the verification way for your endpoint</h1>
+          <p>Keep in mind that you will be able to change your choice before confirmation of verification on this page.</p>
+          <div>
+            <ul>
+                <li>
+                  <label for="dns">DNS</label>
+                  <input type="radio" name="verification_way" value="DNS" id="dns"/>
+                </li>
+                <li>
+                  <label for="file">File</label>
+                  <input type="radio" name="verification_way" value="File" id="file"/>
+                </li>
+                <li>
+                  <label for="file">Metatag</label>
+                  <input type="radio" name="verification_way" value="Metatag" id="metatag"/>
+                </li>
+            </ul>
+            <button id="send">Send</button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 is-center"> Contact - support@mytonwallet.com </div>
+      </div>
+    </div>
+    <script>
+      var id = document.location.href.substr(document.location.href.lastIndexOf("/")+1)
+      var button = document.getElementById("send");
+      button.addEventListener('click', function() {
+        var data = new FormData();
+            data.append("verification_way", document.querySelector('input[name="verification_way"]:checked').value);
+
+        fetch("/verification_way/" + id, {
+          method: 'POST',
+          mode: "cors",
+          cache: "no-cache", 
+          credentials: "same-origin",
+          body: data
+        }).then(function() {
+          document.location = "/verification_way/" + id;
+        });
+      });
+    </script>
+  </body>
+</html>
+{{ end }}

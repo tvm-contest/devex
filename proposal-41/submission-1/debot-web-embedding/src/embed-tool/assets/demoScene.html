@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Embedded debot</title>
+    <style>
+      p.text {
+        font-size: 2rem;
+        padding: 2rem;
+        text-align: center;
+        font-family: "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+      }
+      .debot-browser-wrapper {
+        width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="text">
+        Hi, I am Alice. This is my personal webpage. Please vote on Free TON blockchain for the next article theme.
+    </p>
+    <div class="debot-browser-wrapper">
+      <div id="debot-browser">
+        Debot widget is loading, please wait...
+      </div>
+    </div>
+    <script type="text/javascript">
+      window.debotBrowser = {};
+      window.debotBrowser.targetElementId = "debot-browser";
+      window.debotBrowser.network = "https://net.ton.dev";
+      window.debotBrowser.address = "0:5e4380c442b9cf09c113367e6f4c74b715d3826c57323491d7a1efc1c36c9ce9";
+      window.debotBrowser.language = "en";
+      window.debotBrowser.usedCard = "opacity";
+      window.debotBrowser.exLangungeFile = "";
+  
+      var loading = (function(w,d,t,u,n,c,a,m,) {
+        var loaded = false;
+        w['debotBrowserObject'] = n;
+        w[n] = w[n] ||
+        function() {
+          (w[n].q = w[n].q || []).push(arguments);
+        }, w[n].l = 1 * new Date();
+        var tag = 'script';
+        if (t == 'css') {
+          tag = 'link';
+        }
+        a = d.createElement(tag),
+        m = d.getElementsByTagName(tag)[0];
+        if (typeof m == "undefined") {
+          m = d.getElementsByTagName("head")[0];
+        }
+        a.async = 1;
+        if (t == 'css') {
+          a.href = u;
+          a.rel = "stylesheet";
+        } else {
+          a.src = u;
+          a.type = "text/javascript";
+        }
+        a.onload = a.onreadystatechange = function () {
+          if (!loaded && (!this.readyState || this.readyState == "loaded" || this.readyState == "complete")) {
+            loaded = true;
+            setTimeout(c, 1000);
+            a.onload = a.onreadystatechange = null;
+          }
+        };
+        m.parentNode.insertBefore(a,m);
+      });
+      loading(window, document, 'css', 'http://localhost:10002/debot-browser/debot.css', 'debot-browser-css', function callback () {
+  
+      });
+      loading(window, document, 'script', 'http://localhost:10002/debot-browser/debot.js', 'debot-browser-js', function callback () {
+        runOwnCode();
+      });
+    </script>
+    <script type="text/javascript">
+      const runOwnCode = function () {
+        console.info('debot widget is loaded');
+        //here is your code
+      };
+    </script>
+    <style>
+      :root {
+        --debot-browser-font-size: 0.6rem;
+        --debot-browser-bg-color: #f57a7a;
+        --debot-browser-secondary-color: #f7f7f8;
+      }
+    </style>
+  </body>
+</html>

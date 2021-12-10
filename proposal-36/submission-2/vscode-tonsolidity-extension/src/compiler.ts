@@ -16,9 +16,9 @@ export class Compiler {
                         diagnosticCollection: DiagnosticCollection,
                         buildDir: string, rootDir: string, sourceDir: string, excludePath?: string,
                         singleContractFilePath?: string): Promise<Array<string>> {
-        // Did we find any sol files after all?
+        // Did we find any tsol files after all?
         if (Object.keys(contracts).length === 0) {
-            window.showWarningMessage('No solidity files (*.tsol) found');
+            window.showWarningMessage('No solidity files (*.tsol or *.sol) found');
             return;
         }
         return new Promise((resolve, reject) => {

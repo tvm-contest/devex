@@ -5,6 +5,8 @@ import {
     TransportKind
 } from 'vscode-languageclient';
 import { lintAndfixCurrentDocument } from './linter/soliumClientFixer';
+import { toggleFileExtension } from './toggleFileExtension';
+
 // tslint:disable-next-line:no-duplicate-imports
 import {
     workspace, ExtensionContext, DiagnosticCollection,
@@ -24,6 +26,10 @@ export async function activate(context: ExtensionContext) {
         lintAndfixCurrentDocument();
     }));
 
+    context.subscriptions.push(commands.registerCommand('tonsolidity.toggleFileExtension', () => {
+        toggleFileExtension();
+    }));
+    
     const serverModule = path.join(__dirname, './server.js');
 
     const serverOptions: ServerOptions = {
@@ -48,8 +54,6 @@ export async function activate(context: ExtensionContext) {
         synchronize: {
             // Synchronize the setting section 'tonsolidity' to the server
             configurationSection: 'tonsolidity',
-            // Notify the server about file changes to '.tsol.js files contain in the workspace (TODO node, linter)
-            // fileEvents: vscode.workspace.createFileSystemWatcher('**/.tsol.js'),
         },
         initializationOptions: context.extensionPath,
     };

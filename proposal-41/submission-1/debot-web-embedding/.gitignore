@@ -1,0 +1,6 @@
+/node_modules
+*.log
+/demoBot/items/*.abi.json
+/demoBot/items/*.tvc
+/demoBot/items/~*.*
+/demoBot/items/.solc_imports/~*.*

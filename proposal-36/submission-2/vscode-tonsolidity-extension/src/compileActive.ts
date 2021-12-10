@@ -19,8 +19,9 @@ export function compileActiveContract(compiler: Compiler): Promise<Array<string>
         return; // We need something open
     }
 
-    if (path.extname(editor.document.fileName) !== '.tsol') {
-        window.showWarningMessage('This not a ton solidity file (*.tsol)');
+    if (path.extname(editor.document.fileName) !== '.tsol' ||
+        path.extname(editor.document.fileName) !== '.sol') {
+        window.showWarningMessage('This not a ton solidity file (*.tsol or *.sol)');
         return;
     }
 

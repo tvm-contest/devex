@@ -1,0 +1,85 @@
+{
+  "copy": {
+    "copy": "모사",
+    "copied": "복사 됨",
+    "error": "오류"
+  },
+  "debotInfo": {
+    "name": "이름",
+    "author": "Author",
+    "language": "언어",
+    "publisher": "발행자",
+    "support": "지원하다",
+    "version": "Version",
+    "launch": "달리다",
+    "untitled": "제목 없시",
+    "unknown": "알수없는"
+  },
+  "approveDialog": {
+    "title": "조치 확인",
+    "type": "유형",
+    "dst": "받는 사람 :",
+    "fee": "회비",
+    "outs": "야당",
+    "amount": "양",
+    "dst1": "받는 사람",
+    "unknown": "알 수없는 활동 유형!",
+    "reject": "배척하다",
+    "approve": "허용하다"
+  },
+  "validation": {
+    "required": "필요",
+    "address": "잘못된 주소 형식.",
+    "gte": "{0}보다 크거나 같아야합니다.",
+    "lte": "{0}보다 작거나 같아야합니다.",
+    "scale": "소수점 숫자를 줄여라.",
+    "isInt": "정수여야 한다"
+  },
+  "tag": {
+    "unknown": "알 수없는 요소",
+    "inputAmount": {
+      "amount": "양",
+      "apply": "대다"
+    },
+    "inputNumber": {
+      "number": "숫자",
+      "apply": "적용"
+    },
+    "input": {
+      "value": "값",
+      "apply": "적용"
+    },
+    "fatal": {
+      "error": "오류",
+      "refresh": "재시작",
+      "console": "콘솔에서 세부 사항을보십시오."
+    },
+    "inputAddress": {
+      "address": "주소",
+      "apply": "적용"
+    },
+    "inputConfirm": {
+      "cancel": "취소",
+      "confirm": "확인"
+    },
+    "selectKey": {
+      "title": "deBot에는 키가 필요합니다.",
+      "key": "키",
+      "pass": "암호",
+      "myKeys": "내 열쇠들",
+      "select": "고르다",
+      "unknownError": "알수없는 오류"
+    },
+    "scanQrCode": {
+      "title": "QR 코드",
+      "drop": "이미지를이 영역으로 드래그",
+      "or":  "또는",
+      "upload":  "업로드",
+      "scan":  "QR 코드 스캔",
+      "couldNotRecognize":  "확인할 수 없습니다.",
+      "error":  "오류  %s",
+      "allowCamera":"너의 기기에서 카메라 사용을 허용해",
+      "cancel": "취소"
+    }
+  }
+}

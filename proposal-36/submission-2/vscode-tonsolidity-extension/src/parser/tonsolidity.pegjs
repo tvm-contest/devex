@@ -879,6 +879,7 @@ VisibilitySpecifier
   / ExternalMsgToken
   / InternalMsgToken
   / InternalToken
+  / ExternalToken
 
 StorageLocationSpecifier
   = StorageToken
@@ -1721,8 +1722,8 @@ ReturnStatement
   = ReturnToken EOS {
       return { type: "ReturnStatement", argument: null, start: location().start.offset, end: location().end.offset };
     }
-  / ReturnToken __ argument:Expression EOS {
-      return { type: "ReturnStatement", argument: argument, start: location().start.offset, end: location().end.offset };
+  / ReturnToken __ agrModificator:Arguments? __ argument:Expression EOS {
+      return { type: "ReturnStatement", argument: argument, agrModificator: agrModificator, start: location().start.offset, end: location().end.offset };
     }
 
 ThrowStatement
@@ -1920,7 +1921,7 @@ OnTickTockDeclaration
     }
 
 OnCodeUpgradeDeclaration
-  = OnCodeUpgradeToken __ fnname:FunctionName __ args:ModifierArgumentList? __ body:FunctionBody
+  = FunctionToken __ OnCodeUpgradeToken __ fnname:FunctionName __ args:ModifierArgumentList? __ body:FunctionBody
     {
       return {
         type: "OnCodeUpgradeDeclaration",
@@ -1932,7 +1933,7 @@ OnCodeUpgradeDeclaration
     }
 
 AfterSignatureCheckDeclaration
-  = AfterSignatureCheckToken __ fnname:FunctionName __ args:ModifierArgumentList? __ body:FunctionBody
+  = FunctionToken __ AfterSignatureCheckToken __ fnname:FunctionName __ args:ModifierArgumentList? __ body:FunctionBody
     {
       return {
         type: "AfterSignatureCheckDeclaration",
@@ -2164,6 +2165,10 @@ SourceElement
   / ConstructorDeclaration
   / FallbackDeclaration
   / ReceiveDeclaration
+  / OnBounceDeclaration
+  / OnTickTockDeclaration
+  / OnCodeUpgradeDeclaration
+  / AfterSignatureCheckDeclaration
   / UsingStatement
 
 InlineAssemblyBlock
