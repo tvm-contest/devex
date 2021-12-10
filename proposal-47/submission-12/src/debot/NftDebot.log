@@ -6,12 +6,12 @@ Input arguments:
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "grant hurry cute distance comfort extend winner anger version essence chronic humble"
-Raw address: 0:b8716bbb76f8e328164949e13695637879331e4d499127d8c2adf74bbfcbcd91
+Seed phrase: "supreme thing surge twenty search wage great suggest capital chunk unable swim"
+Raw address: 0:e437079aac41c93832a07382c1fe246d851287067810a12458b9b0b22b79763f
 testnet:
-Non-bounceable address (for init): 0QC4cWu7dvjjKBZJSeE2lWN4eTMeTUmRJ9jCrfdLv8vNkaTw
-Bounceable address (for later access): kQC4cWu7dvjjKBZJSeE2lWN4eTMeTUmRJ9jCrfdLv8vNkfk1
+Non-bounceable address (for init): 0QDkNwearEHJODKgc4LB_iRthRKHBngQoSRYubCyK3l2P8Yk
+Bounceable address (for later access): kQDkNwearEHJODKgc4LB_iRthRKHBngQoSRYubCyK3l2P5vh
 mainnet:
-Non-bounceable address (for init): UQC4cWu7dvjjKBZJSeE2lWN4eTMeTUmRJ9jCrfdLv8vNkR96
-Bounceable address (for later access): EQC4cWu7dvjjKBZJSeE2lWN4eTMeTUmRJ9jCrfdLv8vNkUK_
+Non-bounceable address (for init): UQDkNwearEHJODKgc4LB_iRthRKHBngQoSRYubCyK3l2P32u
+Bounceable address (for later access): EQDkNwearEHJODKgc4LB_iRthRKHBngQoSRYubCyK3l2PyBr
 Succeeded

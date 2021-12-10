@@ -1,5 +1,5 @@
 import { Account } from '@tonclient/appkit';
-import { DeployContractService } from './deploy-contract.service';
+import { DeployContractService } from './deployContract.service';
 import { globals } from '../config/globals';
 import { walletSettings } from '../config/walletKey';
 import { signerKeys } from '@tonclient/core';

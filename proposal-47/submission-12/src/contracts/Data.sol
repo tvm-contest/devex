@@ -29,7 +29,6 @@ contract Data is IData, IndexResolver {
 
     string _rarityName;
     string _url;
-    string abiString;
 
     constructor( 
         address addrOwner,
@@ -50,7 +49,6 @@ contract Data is IData, IndexResolver {
         require(msg.sender == addrRoot);
 
         tvm.accept();
-        abiString =  '/*ABI*/';
         /*PARAM_REQUIRE*/
 
         _addrRoot = addrRoot;
@@ -84,11 +82,11 @@ contract Data is IData, IndexResolver {
     function deployIndex(address owner) private {
         TvmCell codeIndexOwner = _buildIndexCode(_addrRoot, owner);
         TvmCell stateIndexOwner = _buildIndexState(codeIndexOwner, address(this));
-        new Index{stateInit: stateIndexOwner, value: 0.5 ton}(_addrRoot);
+        new Index{stateInit: stateIndexOwner, value: Constants.MIN_FOR_INDEX_DEPLOY}(_addrRoot);
 
         TvmCell codeIndexOwnerRoot = _buildIndexCode(address(0), owner);
         TvmCell stateIndexOwnerRoot = _buildIndexState(codeIndexOwnerRoot, address(this));
-        new Index{stateInit: stateIndexOwnerRoot, value: 0.5 ton}(_addrRoot);
+        new Index{stateInit: stateIndexOwnerRoot, value: Constants.MIN_FOR_INDEX_DEPLOY}(_addrRoot);
     }
 
     // владелец может давать права, только если у него нет доверенного контракта

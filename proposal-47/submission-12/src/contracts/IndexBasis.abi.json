@@ -1,6 +1,5 @@
-export const indexAbi = {
+{
 	"ABI version": 2,
-	"version": "2.2",
 	"header": ["time", "expire"],
 	"functions": [
 		{
@@ -32,12 +31,5 @@ export const indexAbi = {
 		{"key":2,"name":"_codeHashData","type":"uint256"}
 	],
 	"events": [
-	],
-	"fields": [
-		{"name":"_pubkey","type":"uint256"},
-		{"name":"_timestamp","type":"uint64"},
-		{"name":"_constructorFlag","type":"bool"},
-		{"name":"_addrRoot","type":"address"},
-		{"name":"_codeHashData","type":"uint256"}
 	]
 }

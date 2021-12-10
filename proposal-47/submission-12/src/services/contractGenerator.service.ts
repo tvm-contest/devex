@@ -7,7 +7,7 @@ import { globals } from "../config/globals";
 
 import { CollectionModel } from "../models/collention-model"; 
 import { addSeveralParamsToRoot, addSeveralParamsToData, insertAbi} from "./addParamsToContract.service";
-import { DeployContractService } from './deploy-contract.service';
+import { DeployContractService } from './deployContract.service';
 import path from "path";
 
 

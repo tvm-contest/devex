@@ -1,34 +1,16 @@
-export const rootAbi = {
+{
 	"ABI version": 2,
-	"version": "2.2",
 	"header": ["time", "expire"],
 	"functions": [
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"rootName","type":"string"},
+				{"name":"rootName","type":"bytes"},
 				{"name":"rootIcon","type":"bytes"},
 				{"name":"codeIndex","type":"cell"},
 				{"name":"codeData","type":"cell"},
-				{"name":"codeIndexBasis","type":"cell"},
 				{"name":"tokensLimit","type":"uint256"},
-				{"components":[{"name":"rarityName","type":"string"},{"name":"amount","type":"uint256"}],"name":"raritiesList","type":"tuple[]"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "setName",
-			"inputs": [
-				{"name":"rootName","type":"string"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "setIcon",
-			"inputs": [
-				{"name":"icon","type":"bytes"}
+				{"components":[{"name":"rarityName","type":"bytes"},{"name":"amount","type":"uint256"}],"name":"raritiesList","type":"tuple[]"}
 			],
 			"outputs": [
 			]
@@ -36,7 +18,8 @@ export const rootAbi = {
 		{
 			"name": "mintNft",
 			"inputs": [
-				{"name":"rarity","type":"string"}
+				{"name":"rarityName","type":"bytes"},
+				{"name":"url","type":"bytes"}
 			],
 			"outputs": [
 			]
@@ -57,11 +40,61 @@ export const rootAbi = {
 			]
 		},
 		{
+			"name": "addAdmin",
+			"inputs": [
+				{"name":"newAddrAdmin","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "removeAdmin",
+			"inputs": [
+				{"name":"addrAdmin","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getTokenData",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"code","type":"cell"},
+				{"name":"totalMinted","type":"uint256"}
+			]
+		},
+		{
+			"name": "getRaritiesList",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"raritiesArray","type":"bytes[]"}
+			]
+		},
+		{
 			"name": "getAddrBasis",
 			"inputs": [
 			],
 			"outputs": [
 				{"name":"addrBasis","type":"address"}
+			]
+		},
+		{
+			"name": "addRarity",
+			"inputs": [
+				{"name":"rarityName","type":"bytes"},
+				{"name":"amount","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setMintingFee",
+			"inputs": [
+				{"name":"newMintingFee","type":"uint128"}
+			],
+			"outputs": [
 			]
 		},
 		{
@@ -107,20 +140,5 @@ export const rootAbi = {
 	"data": [
 	],
 	"events": [
-	],
-	"fields": [
-		{"name":"_pubkey","type":"uint256"},
-		{"name":"_timestamp","type":"uint64"},
-		{"name":"_constructorFlag","type":"bool"},
-		{"name":"_codeData","type":"cell"},
-		{"name":"_codeIndex","type":"cell"},
-		{"name":"_totalMinted","type":"uint256"},
-		{"name":"_addrBasis","type":"address"},
-		{"name":"_codeIndexBasis","type":"cell"},
-		{"name":"_tokensLimit","type":"uint256"},
-		{"name":"_rarityTypes","type":"optional(cell)"},
-		{"name":"_rarityMintedCounter","type":"optional(cell)"},
-		{"name":"_rootIcon","type":"bytes"},
-		{"name":"_rootName","type":"string"}
 	]
 }

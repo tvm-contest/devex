@@ -6,12 +6,12 @@ Input arguments:
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "engage float south index tenant area burger chapter gadget upper stock void"
-Raw address: 0:4de52efe97e4333b56536f2b216c02d7ae3326cdc02364a3c3ab7e2d420629da
+Seed phrase: "salute draft scout muscle swarm autumn accuse attract exist front matrix stick"
+Raw address: 0:732acc1068558fedd3cb5e3e2c8685c254a98cdeb89ecf7af695024ad9d6d87f
 testnet:
-Non-bounceable address (for init): 0QBN5S7-l-QzO1ZTbyshbALXrjMmzcAjZKPDq34tQgYp2olT
-Bounceable address (for later access): kQBN5S7-l-QzO1ZTbyshbALXrjMmzcAjZKPDq34tQgYp2tSW
+Non-bounceable address (for init): 0QBzKswQaFWP7dPLXj4shoXCVKmM3riez3r2lQJK2dbYf-_N
+Bounceable address (for later access): kQBzKswQaFWP7dPLXj4shoXCVKmM3riez3r2lQJK2dbYf7II
 mainnet:
-Non-bounceable address (for init): UQBN5S7-l-QzO1ZTbyshbALXrjMmzcAjZKPDq34tQgYp2jLZ
-Bounceable address (for later access): EQBN5S7-l-QzO1ZTbyshbALXrjMmzcAjZKPDq34tQgYp2m8c
+Non-bounceable address (for init): UQBzKswQaFWP7dPLXj4shoXCVKmM3riez3r2lQJK2dbYf1RH
+Bounceable address (for later access): EQBzKswQaFWP7dPLXj4shoXCVKmM3riez3r2lQJK2dbYfwmC
 Succeeded

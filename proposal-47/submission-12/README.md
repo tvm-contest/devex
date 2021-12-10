@@ -1,11 +1,8 @@
 
 # NFT collection distributor
-> Short blurb about what your product does.
+The purpose of our project is to simplify user interact with creating NFT collections. User can create collection with various parameters including image of NFT. 
 
-[![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
-
+Also our team developed an NFT DeBot, which is the tool for minting NFTs.
 One to two paragraph statement about your product and what it does.
 
 ![](header.png)

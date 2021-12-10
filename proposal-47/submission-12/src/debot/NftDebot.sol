@@ -14,8 +14,8 @@ import "./vendoring/ConfirmInput.sol";
 import "./vendoring/Upgradable.sol";
 import "./vendoring/Sdk.sol";
 
-import "../NftRoot.sol";
-import "../Data.sol";
+import "../contracts/NftRoot.sol";
+import "../contracts/Data.sol";
 
 interface IMultisig {
 
@@ -104,7 +104,6 @@ contract NftDebot is Debot, Upgradable {
             getCrystalWalletAddr(_addrNFTRoot);
         }
     }
-
 
     function getCrystalWalletAddr(address addr) public {
         Sdk.getAccountType(tvm.functionId(checkRootContract), addr);
@@ -260,12 +259,12 @@ contract NftDebot is Debot, Upgradable {
             _rarityName, 
             _rarityAmount
         );
-        optional(uint256) none;
+        optional(uint256) pubkey;
         IMultisig(_addrMultisig).sendTransaction {
             abiVer: 2,
             extMsg: true,
             sign: true,
-            pubkey: none,
+            pubkey: pubkey,
             time: 0,
             expire: 0,
             callbackId: tvm.functionId(onAddRaritySuccess),

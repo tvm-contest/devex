@@ -1,11 +1,9 @@
 import { GetTokensList } from "../services/tokensList.service";
-import { TokenInfoGetter } from "../services/get-token-info.service";
-import { globals } from "../config/globals";
+import { TokenInfoGetter } from "../services/getTokenInfo.service";
 const express = require('express');
 const router = express.Router();
 
 router.post('/', async function(req, res) {
-    const testAddress = "0:c3a5bea163d0ac25b24f25d59b56d1c2a5428adde6ccedb4e4795d460f2706d6";
     const rootAddress = req.body.address
     let dirName = rootAddress.split(":");
     const tokensListGetter = new GetTokensList();
@@ -16,7 +14,7 @@ router.post('/', async function(req, res) {
     const infoGetter = new TokenInfoGetter()
 	const tokenInfoList = new Array<any>()
     for(let token of tokensList) {
-		const info = await infoGetter.getTokenInfo(token)
+		const info = await infoGetter.getTokenInfo(token, dirName[1])
         const tokenInfo = {
 			tokenAddress: token,
 			ownerAddress: info.data._addrOwner,

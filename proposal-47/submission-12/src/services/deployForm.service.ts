@@ -1,7 +1,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import { DeployTrueNFTContractsCollection } from './deploy-trueNFT-collection.service';
+import { DeployTrueNFTContractsCollection } from './deployTrueNFTCollection.service';
 import { Param } from '../models/param-model';
 import { RarityType } from '../models/rarity-model';
 import { CollectionModel } from '../models/collention-model';

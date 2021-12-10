@@ -33,24 +33,18 @@ export class GetTokensList {
         })).result;
         let tokensList : string[] = []
         for (var key in result)
-        {
             tokensList.push(result[key].id);
-        }
         return tokensList;
-       
-
     }
 
      private async getAddrBasis(rootAddress: string, dirName: string): Promise<string> {
         let rootAbi = await JSON.parse(fs.readFileSync(globals.TEMP_PATH + "\\" + dirName + "\\NftRoot.abi.json").toString());
-
         const account = new Account({
             abi: rootAbi
         }, {
             client: this.client,
             address: rootAddress,
         });
-
         const result = await account.runLocal('getAddrBasis', {});
         let res;
         if(result != undefined)

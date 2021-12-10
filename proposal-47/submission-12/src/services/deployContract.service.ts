@@ -1,4 +1,4 @@
-import { consoleTerminal, runCommand, tondevDone } from 'tondev';
+import { consoleTerminal, runCommand } from 'tondev';
 import { Account } from '@tonclient/appkit';
 import { TonClient, signerKeys, ResultOfDecodeTvc } from '@tonclient/core';
 import { libNode } from '@tonclient/lib-node';
@@ -64,9 +64,6 @@ export class DeployContractService {
             signer: signerKeys(keys),
             client: this.client,
         });
-
-        //this.deleteCompilationFiles(contractName, compilationPath);
-
         return contractAcc;
     }
 
@@ -100,7 +97,6 @@ export class DeployContractService {
         ) : Promise<string>{
 
         return Buffer.from(JSON.stringify(contractAcc.contract.abi)).toString('base64');
-
     }
 
     async getContractCode(
@@ -115,15 +111,4 @@ export class DeployContractService {
         return decodedTvc;
         
     }
-
-    private deleteCompilationFiles(
-        contractName: string,
-        compilationPath: string
-        ) {
-
-        fs.unlinkSync(path.resolve(compilationPath, contractName + ".abi.json"));
-        fs.unlinkSync(path.resolve(compilationPath, contractName + ".tvc"));
-
-    }
-
 }

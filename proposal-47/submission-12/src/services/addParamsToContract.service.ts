@@ -2,14 +2,12 @@ import { Param } from "../models/param-model";
 
 class AddParamsToNftRootConstructor {
 
-
     insertAbi(codeSource: string, abi: string) {
         const abiTeg = '/*ABI*/';
         codeSource = codeSource.replace(abiTeg, abi);
 
         return codeSource;
     }
-
 
     addSingleParamToData(codeSource: string, newData: Param): string {
 

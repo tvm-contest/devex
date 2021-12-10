@@ -27,7 +27,7 @@ contract NftRoot is DataResolver, IndexResolver {
     address _addrBasis;
 
     mapping (address => bool) m_admins;
-    uint128 _mintingFee = 0.4 ton;
+    uint128 _mintingFee = 0.2 ton;
 
     // To limit the tokens amount
     uint _tokensLimit;
@@ -85,16 +85,19 @@ contract NftRoot is DataResolver, IndexResolver {
         TvmCell codeData = _buildDataCode(address(this));
         TvmCell stateData = _buildDataState(codeData, _totalMinted);
 
-        uint8 flag = 0;
-        if (isAdmin(msg.sender)) flag = 1;
-
-        if (isAdmin(msg.sender)) {
-            new Data{
-                stateInit: stateData, 
-                value: 1.5 ton,
-                flag: flag
-            }(msg.sender, _codeIndex, rarityName, url/*PARAM_MINT*/);
+        uint8 flag = 0; 
+        uint128 value = Constants.MIN_FOR_DATA_DEPLOY;
+        if (isAdmin(msg.sender)) { 
+            flag = 1;
+            value += _mintingFee;
         }
+
+        new Data{
+            stateInit: stateData, 
+            value: value,
+            bounce: false,
+            flag: flag
+        }(msg.sender, _codeIndex, rarityName, url/*PARAM_MINT*/);
         
 
         _totalMinted++;
@@ -102,7 +105,7 @@ contract NftRoot is DataResolver, IndexResolver {
     }
 
     function deployBasis(TvmCell codeIndexBasis) public {
-        require(msg.value > 0.5 ton, MESSAGE_WITHOUT_MONEY);
+        require(msg.value > Constants.MIN_FOR_INDEX_BASIS_DEPLOY, MESSAGE_WITHOUT_MONEY);
         uint256 codeHashData = resolveCodeHashData();
         TvmCell state = tvm.buildStateInit({
             contr: IndexBasis,
@@ -115,7 +118,7 @@ contract NftRoot is DataResolver, IndexResolver {
         
         _addrBasis = new IndexBasis{
             stateInit: state,
-             value: 0.5 ton
+             value: Constants.MIN_FOR_INDEX_BASIS_DEPLOY
         }();
     }
 
@@ -169,6 +172,10 @@ contract NftRoot is DataResolver, IndexResolver {
         return raritiesArray;
     }
 
+    function getAddrBasis() public view returns (address addrBasis) {
+       addrBasis = _addrBasis;
+    }
+
     function addRarity(string rarityName, uint amount) public onlyOwner {
         require(amount <= _tokensLimit, RARITY_OVERFLOW, "Tokens of this type can no longer be created");
         _rarityTypes[rarityName] = amount;
@@ -189,5 +196,7 @@ contract NftRoot is DataResolver, IndexResolver {
         tvm.accept();
         _;
     }
+
+
 
 }
