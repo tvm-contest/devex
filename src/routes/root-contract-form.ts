@@ -48,6 +48,10 @@ router.post('/form-contracts', async function(req, res, next) {
 router.post('/deploy-contracts', async function(req, res, next) {
     let jsonCollectionService = new JsonCollectionSevice()
     let contractObjectCreator = new ContractObjectCreator()
+    // Временный костыль, потом заменить нормально, статическая переменная (для рута) видимо не может быть пустой
+    if (req.body.nameContract == '') {
+        req.body.nameContract = 'name';
+    }
     let jsonCollection = await jsonCollectionService.makeJsonCollection(req);
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
