@@ -1,0 +1,6 @@
+project: freeton-notification-service
+configVersion: 1
+
+---
+image: freetonnotificationservice
+dockerfile: Dockerfile

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app
+  name: app
+spec:
+  strategy: 
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      imagePullSecrets:
+        - name: regsecret
+      containers:
+      - image: {{ .Values.werf.image.freetonnotificationservice }}
+        name: app
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: {{ .Values.app.port }}
+            httpHeaders:
+            - name: Custom-Header
+              value: Awesome
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+          - name: KAFKA_USERNAME
+            value: {{ .Values.app.kafka_username | quote }}        
+          - name: KAFKA_PASSWORD
+            value: {{ .Values.app.kafka_password | quote }}
+          - name: MONGODB_CONNECTION_STRING
+            value: {{ .Values.app.mongodb_connection_string | quote }}
+          - name: SALT
+            value: {{ .Values.app.salt | quote }}
+          - name: KAFKA_MECHANISM
+            value: {{ .Values.app.kafka_mechanism | quote }} 
+          - name: KAFKA_TOPIC
+            value: {{ .Values.app.kafka_topic | quote }} 

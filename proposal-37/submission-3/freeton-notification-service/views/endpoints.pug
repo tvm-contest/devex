@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    
+    table.table-sm(id='table' data-toggle="table" data-url="endpoint" data-search="true")
+        thead.thead-dark
+            tr
+                th(data-field='createdAt') DateTime (UTC)
+                th(data-field='hash') Hash
+                th(data-field='callbackUrl') Url
+                th(data-field='telegramChatId') Telegram
+        tbody
+    include footer.pug
+

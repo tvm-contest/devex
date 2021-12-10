@@ -1,0 +1,16 @@
+extends layout
+
+block content     
+    h2(style="text-align:center;") Incoming requests
+    p ℹ️ Click ➕ to the row to get more details
+    table.small(id='messagesTable' data-toggle="table" data-url="message" data-search="true" data-detail-formatter="detailFormatter" data-show-refresh="true" data-auto-refresh="true" autoRefreshInterval=1 data-detail-view="true" data-row-style="messageStyle")
+        thead.thead-dark
+            tr
+                th(data-field='createdAt' data-width="200px") DateTime (UTC)
+                th(data-field='callbackUrl' data-formatter="makeShortUrl") Url
+                //th(data-field='nonce') Nonce
+                //th(data-field='lastError') Last Error
+                th(data-formatter="TableActions" data-width="100px") Action
+        tbody
+    include footer.pug
+
