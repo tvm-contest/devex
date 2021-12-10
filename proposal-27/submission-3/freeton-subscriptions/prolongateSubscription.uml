@@ -1,0 +1,20 @@
+title Prolongate Subscription
+
+actor "Service Owner (multisig)" as owner
+actor "User (multisig)" as user
+participant "User's SubscribeMultisig" as ssig
+participant "Subscription" as sub
+participant "Service" as service
+
+owner->service: (EXT) subscriptionPaymentRequest()
+note over service: Service Owner is the initiator\nof the Subscriptions regular payments
+service->sub: subscriptionPaymentRequested()
+note over sub: Subscription has some conditions\n(in current MVP you can request\npayment only after half of the period passed).\nIf conditions are met, prolongation\npayment is requested from SSIG
+sub->ssig: subscriptionPaymentRequested()
+note over ssig: If SSIG doesn't have enough money,\nmessage is bounced and Subscription\ncontract is destroyed\n(only if Subscription time is over)
+ssig->sub: payForSubscription()
+sub->service: payForSubscription()
+service->owner: transfer()
+note over service:Service transfers Subscription payment\nto Service Owner
+service->user: transfer()
+note over service: Service returns\nunused change to User

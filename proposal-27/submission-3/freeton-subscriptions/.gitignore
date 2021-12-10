@@ -1,0 +1,4 @@
+*.log
+tests/*.json
+contracts/*tvc
+contracts/*.abi.json
