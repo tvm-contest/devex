@@ -63,7 +63,7 @@ router.post('/deploy-contracts', async function(req, res, next) {
     let deployDebotService = new DeployDebotService();
     let debotAddress = await deployDebotService.deployDebot(contractDir, rootAddress);
     
-    res.redirect('/tokens-data-info?rootNftAddress=' + rootAddress + '&debotAddress=' + debotAddress)
+    res.redirect('/tokens-data-info?rootNftAddress=' + rootAddress)
 });
   
 router.post('/', async function(req, res, next) {
