@@ -53,7 +53,6 @@ class ContractGenerator {
     const enumsFileTemp = path.join(tempDir, 'libraries', 'Enums.sol');
     const debotFileTemp = path.join(tempDir, 'debots', 'MintingDebot.sol');
 
-
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir);
       fs.cpSync(interfacesDir, interfacesDirTepm, { recursive: true });
