@@ -1,5 +1,5 @@
 import path from 'path'
-import fs, { mkdir } from 'fs'
+import fs from 'fs'
 import { sha256 } from 'js-sha256';
 
 import { globals } from '../config/globals'
@@ -87,12 +87,15 @@ class ContractGenerator {
           await addParamsService.addMediaFiles(mediafiles, debotFileTemp, debotFileTemp);
         }
       }
-      console.log(collectionSettings, collectionSettings.getRarities().length);
-    
-      if(collectionSettings.getRarities().length == 0 || 
-        (collectionSettings.getRarities().length == 1 && collectionSettings.getRarities()[0].getName() == '')) {
-          await addParamsService.removeNftTypeChecking(nftRootFileTepm, debotFileTemp);
+      if (mediafiles !== undefined) {
+        await addParamsService.addMediaFiles(mediafiles, debotFileTemp, debotFileTemp);
       }
+    }
+    console.log(collectionSettings, collectionSettings.getRarities().length);
+    
+    if(collectionSettings.getRarities().length == 0 || 
+      (collectionSettings.getRarities().length == 1 && collectionSettings.getRarities()[0].getName() == '')) {
+        await addParamsService.removeNftTypeChecking(nftRootFileTepm, debotFileTemp);
     }
 
     return tempDir;
