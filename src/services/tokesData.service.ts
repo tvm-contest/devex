@@ -40,12 +40,16 @@ export class TokensData {
     async getDebotAddress(rootNftAddress: string) : Promise<string>{
         let debotAbi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress.slice(2), 'debots', 'MintingDebot.abi.json')).toString());
         let debotTvc = fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress.slice(2), 'debots', 'MintingDebot.tvc'), {encoding: 'base64'});
+        let initData = {
+            _addrNFTRoot: rootNftAddress
+        };
         const debotAccount = new Account({
             abi: debotAbi,
             tvc: debotTvc
         }, {
             signer: signerKeys(everscale_settings.KEYS),
-            client: this.client
+            client: this.client,
+            initData: initData
         });
 
         return debotAccount.getAddress()
