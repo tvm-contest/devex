@@ -5,8 +5,7 @@ import { globals } from '../config/globals';
 import { DeployService } from './deploy.service';
 import { TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
-
-import { TokenImageCreator } from './gen-images.service';
+import { TokenImageCreator } from './gen-token-image.service';
 
 const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
 const utf8ToHex = convert("utf8", "hex");
@@ -49,9 +48,6 @@ export class MintNftService {
         //
         let rootNftContract = fs.readFileSync(path.resolve(TEST_COLLESTION, "NftRoot.sol")).toString();
         let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, TEST_COLLESTION, 'NftRoot', {_name: utf8ToHex('Warrior')});
-
-        console.log(rootNftContract);
-        console.log(await rootNftAccount.getAddress());
 
         const mintMessage = await this.getMintMessage(
             rootNftAccount,
