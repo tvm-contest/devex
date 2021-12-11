@@ -11,7 +11,6 @@
 				{"name":"mintingCommission","type":"uint128"},
 				{"name":"nftTypes","type":"bytes[]"},
 				{"name":"limit","type":"uint256[]"},
-				{"name":"name","type":"bytes"},
 				{"name":"icon","type":"bytes"}
 			],
 			"outputs": [
@@ -27,8 +26,7 @@
 				{"name":"managersList","type":"address[]"},
 				{"name":"royalty","type":"uint8"},
 				{"name":"nftType","type":"bytes"},
-				{"name":"heroPower","type":"uint256"},
-				{"name":"arm","type":"bytes"}
+				{"name":"power","type":"uint256"}
 			],
 			"outputs": [
 			]
@@ -122,6 +120,7 @@
 		}
 	],
 	"data": [
+		{"key":1,"name":"_name","type":"bytes"}
 	],
 	"events": [
 	]

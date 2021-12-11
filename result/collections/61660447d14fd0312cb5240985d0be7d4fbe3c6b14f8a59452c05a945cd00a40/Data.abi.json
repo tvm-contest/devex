@@ -14,8 +14,7 @@
 				{"name":"_managersList","type":"address[]"},
 				{"name":"_royalty","type":"uint8"},
 				{"name":"nftType","type":"bytes"},
-				{"name":"_heroPower","type":"uint256"},
-				{"name":"_arm","type":"bytes"}
+				{"name":"_power","type":"uint256"}
 			],
 			"outputs": [
 			]
@@ -35,8 +34,7 @@
 				{"name":"number","type":"uint8"},
 				{"name":"amount","type":"uint8"},
 				{"name":"nftType","type":"bytes"},
-				{"name":"_heroPower","type":"uint256"},
-				{"name":"_arm","type":"bytes"}
+				{"name":"_power","type":"uint256"}
 			]
 		},
 		{

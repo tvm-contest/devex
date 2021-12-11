@@ -37,8 +37,7 @@ interface IMultisig {
 struct NftParams {
     string nftType;
     
-    uint heroPower;
-	string arm;
+    uint power;
 	/*%PARAM_DEFENITION%*/
 }
 
@@ -53,6 +52,7 @@ contract NftDebot is Debot, Upgradable {
     uint32 _keyHandle;
 
     NftParams _nftParams;
+    /*PARAM_ENUM_LENGTH*/
 
     modifier accept {
         tvm.accept();
@@ -111,8 +111,7 @@ contract NftDebot is Debot, Upgradable {
     function deployNft(uint32 index) public {
         index = index;
         /*%TYPE_INPUT%*/Terminal.input(tvm.functionId(nftParamsSetType), "Enter NFT type: ", false);
-        Terminal.input(tvm.functionId(nftParamsSetheroPower), "Enter heroPower (uint):", false);
-		Terminal.input(tvm.functionId(nftParamsSetarm), "Enter arm (string):", false);
+        Terminal.input(tvm.functionId(nftParamsSetpower), "Enter power (uint):", false);
 		/*TERMINAL_FOR_DEBOT_SET_TYPES*/
         this.deployNftStep1();
     }
@@ -120,8 +119,7 @@ contract NftDebot is Debot, Upgradable {
         _nftParams.nftType = value;
     }
 
-    function nftParamsSetheroPower(string value) public { (_nftParams.heroPower,) = stoi(value);}
-	function nftParamsSetarm(string value) public { _nftParams.arm = value;}
+    function nftParamsSetpower(string value) public { (_nftParams.power,) = stoi(value);}
 	/*FUNCTION_FOR_DEBOT_SET_TYPES*/
 
     function deployNftStep1() public {
@@ -130,8 +128,7 @@ contract NftDebot is Debot, Upgradable {
     function deployNftStep2() public {
         Terminal.print(0, 'Let`s check data.');
         /*%TYPE_PRINT%*/Terminal.print(0, format("Type: {}", _nftParams.nftType));
-        Terminal.print(0, format("heroPower: {}", _nftParams.heroPower));
-		Terminal.print(0, format("arm: {}", _nftParams.arm));
+        Terminal.print(0, format("power: {}", _nftParams.power));
 		/*TERMINAL_TO_DEPLOY_NFT_STEP_2*/
         Terminal.print(0, format("Owner of Nft: {}\n", _addrMultisig));
         resolveNftDataAddr();
@@ -158,8 +155,7 @@ contract NftDebot is Debot, Upgradable {
             emptyAddrs,
             uint8(0),
             _nftParams.nftType, 
-			_nftParams.heroPower, 
-			_nftParams.arm/*PARAM_TO_DEBOT_MINT*/
+			_nftParams.power/*PARAM_TO_DEBOT_MINT*/
         );
         optional(uint256) none;
         IMultisig(_addrMultisig).sendTransaction {
@@ -198,8 +194,7 @@ contract NftDebot is Debot, Upgradable {
         uint8 number,
         uint8 amount,
         string nftType, 
-		uint heroPower, 
-		string arm/*%PARAM_TO_MINT%*/
+		uint power/*%PARAM_TO_MINT%*/
     ) public {
         Terminal.print(0, 'Check actual data of deployed token: ');
         Terminal.print(0, format("Token address: {}", addrData));
@@ -208,8 +203,7 @@ contract NftDebot is Debot, Upgradable {
         Terminal.print(0, format("Owner: {}", addrOwner));
         Terminal.print(0, format("Author: {}", addrAuthor));
         
-        Terminal.print(0, format("heroPower: {}",heroPower));
-		Terminal.print(0, format("arm: {}",arm));
+        Terminal.print(0, format("power: {}",power));
 		/*TERMINAL_CHECK_RESULT*/
         menu();
     }

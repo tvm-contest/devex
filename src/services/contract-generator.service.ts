@@ -25,13 +25,13 @@ const aDataCoreFile = path.join(globals.CONTRACTS_ROOT, 'ADataCore.sol');
 
 class ContractGenerator {
 
-  getTempDir(collectionSettings : Collection) {
+  getTempDir(collectionSettings: Collection) {
     const hashContract = sha256(JSON.stringify(collectionSettings));
     const tempDir = path.resolve(globals.RESULT_COLLECTION, hashContract);
     return tempDir;
   }
 
-  async generateContract(collectionSettings : Collection, jsonCollection: string, enums?: EnumParameter[], mediafiles?: MediaFile[]){
+  async generateContract(collectionSettings: Collection, jsonCollection: string, enums?: EnumParameter[], mediafiles?: MediaFile[]) {
     const hashContract = sha256(JSON.stringify(collectionSettings));
     const tempDir = path.join(globals.RESULT_COLLECTION, hashContract);
 
@@ -55,11 +55,11 @@ class ContractGenerator {
 
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir);
-      fs.cpSync(interfacesDir, interfacesDirTepm, {recursive: true});
-      fs.cpSync(librariesDir, librariesDirTepm, {recursive: true});
-      fs.cpSync(resolversDir, resolversDirTepm, {recursive: true});
-      fs.cpSync(debotLibDir, debotLibDirTepm, {recursive: true});
-      fs.cpSync(debotsDir, debotsDirTepm, {recursive: true});
+      fs.cpSync(interfacesDir, interfacesDirTepm, { recursive: true });
+      fs.cpSync(librariesDir, librariesDirTepm, { recursive: true });
+      fs.cpSync(resolversDir, resolversDirTepm, { recursive: true });
+      fs.cpSync(debotLibDir, debotLibDirTepm, { recursive: true });
+      fs.cpSync(debotsDir, debotsDirTepm, { recursive: true });
       fs.copyFileSync(indexFile, indexFileTepm);
       fs.copyFileSync(indexBasisFile, indexBasisFileTepm);
       fs.copyFileSync(directSaleRootFile, directSaleRootFileTemp);
@@ -67,7 +67,7 @@ class ContractGenerator {
       fs.copyFileSync(auctionRootFile, auctionRootFileTemp);
       fs.copyFileSync(auctionFile, auctionFileTemp);
       fs.copyFileSync(aDataCoreFile, aDataCoreFileTemp);
-      fs.writeFileSync(path.join(tempDir, "collectionInfo.json"), jsonCollection, {flag: 'w'});
+      fs.writeFileSync(path.join(tempDir, "collectionInfo.json"), jsonCollection, { flag: 'w' });
 
       let addParamsService = new AddParamsService();
 
@@ -92,25 +92,25 @@ class ContractGenerator {
       }
     }
     console.log(collectionSettings, collectionSettings.getRarities().length);
-    
-    if(collectionSettings.getRarities().length == 0 || 
+
+    if (collectionSettings.getRarities().length == 0 ||
       (collectionSettings.getRarities().length == 1 && collectionSettings.getRarities()[0].getName() == '')) {
-        await addParamsService.removeNftTypeChecking(nftRootFileTepm, debotFileTemp);
+      await addParamsService.removeNftTypeChecking(nftRootFileTepm, debotFileTemp);
     }
 
     return tempDir;
 
   }
 
-  deleteContractDirTemp(collectionSettings : Collection){
+  deleteContractDirTemp(collectionSettings: Collection) {
     const hashContract = sha256(JSON.stringify(collectionSettings));
     const tempDir = path.join(globals.RESULT_COLLECTION, hashContract)
 
     fs.access(tempDir, fs.constants.F_OK, (err) => {
-      if (err){
+      if (err) {
         console.log("Временной папки для данного контракта нет")
       } else {
-        fs.rm(tempDir, {recursive: true, force: true}, ()=>{
+        fs.rm(tempDir, { recursive: true, force: true }, () => {
           console.log(`Временный файл ${hashContract} удален`)
         })
       }
