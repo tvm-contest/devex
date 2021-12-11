@@ -1,7 +1,9 @@
 
 const fromCollectionListToTokenList = (container) => {
-  collectionAddress = $(container).find(".collection-address")[0].innerHTML 
-  window.location.href = '/tokens-data-info?rootNftAddress=' + collectionAddress
+  //collectionAddress = $(container).find(".collection-address")[0].value
+  console.log($(container).attr("id"))
+  console.log($(container).parent().parent().parent())
+  window.location.href = '/tokens-data-info?rootNftAddress=' + $(container).attr("id")
 }
 
 const fromTokenListToToken = (container) => {
