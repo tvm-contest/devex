@@ -15,7 +15,7 @@ block content
         each line in tokenInfo
           if line.tag == 'p'
             p= line.title + ': ' + line.value
-          else if line.tag == 'iframe'
+          else if line.tag == 'img'
             p= line.title 
             img.frame(src=line.value) 
           

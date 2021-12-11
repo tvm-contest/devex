@@ -86,7 +86,7 @@ export class TokenInfoBuilder {
         let tag = 'p'
 
         if (value.match(/ipfs.io\/ipfs/g)) {
-          tag = 'iframe'
+          tag = 'img'
         }
 
         respons.push({title: parametr.name, value: value, tag: tag})
