@@ -11,15 +11,14 @@ block content
       input.btn.btn-blue(type="submit" value="Find")
 
     .token-info-container
-      if outputInfo        
-        each line in outputInfo
-          if line.isIPFS
-            iframe(src=line.value frameborder="0" height="100%" width="100%" ) 
-          else
-            pre= line.value
-    
-
-  script(src="/scripts/root-contract-form.js")
+      if tokenInfo        
+        each line in tokenInfo
+          if line.tag == 'p'
+            p= line.title + ': ' + line.value
+          else if line.tag == 'iframe'
+            p= line.title 
+            img.frame(src=line.value) 
+          
   script(src="/scripts/input-validation.js")
     
 
