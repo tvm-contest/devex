@@ -2,15 +2,20 @@ extends layout
 
 block content
   each collection in collectionList
-    .collection-container(onClick="fromCollectionListToTokenList(this);")
-      .row
-        .col
-          p.text.font-weight-bold Название коллекции:
-        .col
-          p.text.font-weight-bold= collection.name
-      .row
-        .col
-          p.text.font-weight-bold Адрес:
-        .col
-          p.text.font-weight-bold.collection-address= collection.address
+    .collection-container
+      form(action="/minting-tokens", method="post")
+        .row
+          .col
+            p.text.font-weight-bold Название коллекции:
+          .col
+            input.output-col(name="colName" value=collection.name)
+        .row
+          .col
+            p.text.font-weight-bold Адрес:
+          .col
+            input.output-col.collection-address(name="colAdd" value=collection.address)
+        .col.button-main
+            input.submit-button.btn.btn-blue.btn-block(id=`${collection.address}` type="button" value="Info root" onclick="fromCollectionListToTokenList(this);")
+            input.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token")
+
   script(src="/scripts/collection-to-token.js") 

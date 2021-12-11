@@ -21,6 +21,9 @@ body {
     /* max-width: 670px;
     min-height: 700px; */
 }
+.content{
+    color: #000;
+}
 .container-output{
     color: #000;
     margin-top: 40px;
@@ -32,7 +35,13 @@ body {
 .col {
     padding: 12px;
 }
-
+.output-col :active, :hover, :focus {
+    outline: 0;
+    outline-offset: 0;
+}
+.output-col{
+    width: 700px;
+}
 .line{
     padding: 10px;
     border-bottom: 1px solid rgb(0, 125, 187);
