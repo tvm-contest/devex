@@ -116,22 +116,17 @@ export class TokenImageCreator {
     }
 
     async createMergedImage(imagesDir: string, outDir: string, imagesArray: string[], fileName: string) {
-        //get images paths
-
         let arrImages: string[] = [];
         imagesArray.forEach(function (part) {
             const imagePart: string = path.join(imagesDir, part);
 
             arrImages.push(imagePart);
         })
-        //get merged image via 'merge-images'/'canvas'
         const b64Data = await mergeImages(arrImages, {
             Canvas: Canvas,
             Image: Image
         });
-        //remove data 'headers'
         const rawb64Data = b64Data.replace(/^data:image\/png;base64,/, "");
-        //write result to out dir
         const mergedImage = await fs.writeFile(path.resolve(__dirname, path.join(outDir, `${fileName}.png`)), rawb64Data, 'base64', (err) => {
             console.log(err)
         });
