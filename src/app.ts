@@ -15,7 +15,7 @@ import {generateContractRouter} from './routes/generate-contract';
 import { oneTokenInfoRouter } from './routes/one-token-info';
 import { parameterForm } from './routes/parameter-form'
 import { collectionListRouter } from './routes/collection-list'
-import { mintRouter } from './routes/mint';
+import { mintTokenRouter } from './routes/mint-token';
 import { deployFromFile } from './routes/deploy-from-file';
 
 const app = express();
@@ -43,7 +43,7 @@ app.use('/tokens-data-info', tokensDataInfo);
 app.use('/generate-contract', generateContractRouter);
 app.use('/parameter-form', parameterForm);
 app.use('/collection-list', collectionListRouter);
-app.use('/mint', mintRouter);
+app.use('/mint-token', mintTokenRouter);
 app.use('/deploy-from-file', deployFromFile)
 
 app.use((req: Request, res: Response) => {

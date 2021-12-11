@@ -1,6 +1,10 @@
+import { globals } from '../config/globals';
 import { addFileToIPFS } from './add-ipfs.service';
 const fs = require('fs');
 const path = require('path');
+
+const { Canvas, Image } = require('canvas');
+const mergeImages = require('merge-images');
 
 type Image = {
     name: string,
@@ -44,24 +48,13 @@ const bgArray: string[] = [
     'bg3.png'
 ];
 
-export class TokenImagesCreator {
-    // To check whether all images is unique
-    private nameAndRarityArray: string[] = [''];
+const DIR_OF_IMAGES = path.resolve('src', 'sample-data', 'images-for-token');
 
-    async createImagesArr(): Promise<Image[]> {
-        let imagesArr: Image[] = [];
+export class TokenImageCreator {
 
-        for (let i = 0; i < 7; i++) {
-            const image: Image = await this.createImage();
-            imagesArr.push(image);
-        }
-
-        return imagesArr;
-    }
-
-    async createImage(): Promise<Image> {
+    async createTokenImage(tokenImageFile: string) {
         // For creating image by mergeImages
-        let imagesFiles: string[] = [];
+        let imgArray: string[] = [];
         while (true) {
             const bgFile: string = this.getPartFile(bgArray);
             const personFile: string = this.getPartFile(personsArray);
@@ -69,36 +62,29 @@ export class TokenImagesCreator {
             const helmetFile: string = this.getPartFile(helmetsArray);
             const armFile: string = this.getPartFile(armsArray);
 
-            imagesFiles.push(bgFile);
-            imagesFiles.push(personFile);
-            imagesFiles.push(shieldFile);
-            imagesFiles.push(helmetFile);
-            imagesFiles.push(armFile);
+            // Create array from the parts of the final image
+            imgArray.push(bgFile);
+            imgArray.push(personFile);
+            imgArray.push(shieldFile);
+            imgArray.push(helmetFile);
+            imgArray.push(armFile);
 
-            var imageRarity = this.getRarity();
-            var imageName = imagesFiles.reduce((prev, current) => prev + current) + imageRarity;
+            let imageRarity = this.getRarity();
+
+            let imageName = imgArray.reduce((prev, current) => prev + current) + imageRarity;
             var imageIPFS = await addFileToIPFS(imageName);
             const imageIPFSToString = imageIPFS.toString();
-            // Путь куда будут записывать картинки
-            const outDir = path.resolve('src', 'sample-data', 'out-images', imageIPFSToString);
 
-            if (!fs.existsSync(imageIPFSToString)) {
-                fs.writeFileSync(outDir, imageIPFSToString);
-                //
-                // Тут нужно создавать изображение, но нужно скачать canvas
-                //
+            const outDir = this.getOutDir(tokenImageFile);
+            const CREATED_IMAGE_NAME = path.resolve(outDir, imageIPFSToString);
+
+            if (!fs.existsSync(CREATED_IMAGE_NAME + '.png')) {
+                this.createMergedImage(DIR_OF_IMAGES, outDir, imgArray, imageIPFSToString);
                 break;
             }
         }
-
-        let image: Image = {
-            name: imageName,
-            rarity: imageRarity,
-            ipfsRef: imageIPFS,
-        };
-
-        return image;
     }
+
 
     getPartFile(array: string[]): string {
         let key: number = this.getRandomKey(array);
@@ -110,14 +96,45 @@ export class TokenImagesCreator {
         return Rarity[key];
     }
 
-    getRandomKey(enumType: object): number {
-        const enumValues = Object.keys(enumType)
+    getOutDir(collectionFile: string): string {
+        const tokenImagesDir: string = path.resolve(globals.RESULT_COLLECTION, collectionFile, 'tokenImages');
+
+        if (!fs.existsSync(tokenImagesDir)) {
+            fs.mkdirSync(tokenImagesDir);
+        }
+
+        return tokenImagesDir;
+    }
+
+    getRandomKey(dataSet: object): number {
+        const indexArray = Object.keys(dataSet)
             .map(n => Number.parseInt(n))
             .filter(n => !Number.isNaN(n))
 
-        const key: number = Math.floor(Math.random() * enumValues.length);
+        const key: number = Math.floor(Math.random() * indexArray.length);
         return key;
     }
-}
 
-export const t = new TokenImagesCreator();
+    async createMergedImage(imagesDir: string, outDir: string, imagesArray: string[], fileName: string) {
+        //get images paths
+
+        let arrImages: string[] = [];
+        imagesArray.forEach(function (part) {
+            const imagePart: string = path.join(imagesDir, part);
+
+            arrImages.push(imagePart);
+        })
+        //get merged image via 'merge-images'/'canvas'
+        const b64Data = await mergeImages(arrImages, {
+            Canvas: Canvas,
+            Image: Image
+        });
+        //remove data 'headers'
+        const rawb64Data = b64Data.replace(/^data:image\/png;base64,/, "");
+        //write result to out dir
+        const mergedImage = await fs.writeFile(path.resolve(__dirname, path.join(outDir, `${fileName}.png`)), rawb64Data, 'base64', (err) => {
+            console.log(err)
+        });
+    }
+
+}
