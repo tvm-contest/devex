@@ -10,65 +10,66 @@ import { TokenImageCreator } from './gen-token-image.service';
 const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
 const utf8ToHex = convert("utf8", "hex");
 
-//
-// Hard code
-//
-const TEST_COLLESTION = path.resolve(globals.RESULT_COLLECTION, '61660447d14fd0312cb5240985d0be7d4fbe3c6b14f8a59452c05a945cd00a40');
-
 export class MintNftService {
     private deployService: DeployService;
     private client: TonClient;
-    private collectionSrcFolder: string;
+    private collectionFolder: string = '';
     private imageCreator: TokenImageCreator;
 
-    constructor(collectionSrcFolder: string) {
+    constructor(collectionRootAddress: string) {
         this.deployService = new DeployService();
         this.client = new TonClient({
             network: {
                 endpoints: [everscale_settings.ENDPOINTS]
             }
         });
-
         this.imageCreator = new TokenImageCreator;
-        this.collectionSrcFolder = '';
-        this.setCollectionSourceFolder(collectionSrcFolder);
+        // Collection folder is the root address withot the 0: in the front
+        this.setCollectionSourceFolder(collectionRootAddress.substring(2));
     }
 
-    private setCollectionSourceFolder(collectionSrcFolder: string) {
-        this.collectionSrcFolder = collectionSrcFolder;
+    private setCollectionSourceFolder(collectionFolder: string) {
+        this.collectionFolder = path.resolve(globals.RESULT_COLLECTION, collectionFolder);
     }
 
     private getCollectionSourceFolder() {
-        return this.collectionSrcFolder;
+        return this.collectionFolder;
     }
 
-    async mintNft() {
-        //
-        // Hard paths
-        //
-        let rootNftContract = fs.readFileSync(path.resolve(TEST_COLLESTION, "NftRoot.sol")).toString();
-        let rootNftAccount = await this.deployService.createContractAccount(rootNftContract, TEST_COLLESTION, 'NftRoot', {_name: utf8ToHex('Warrior')});
+    async mintNft(dataForMinting) {
+        const rootNftContract = fs.readFileSync(path.resolve(this.getCollectionSourceFolder(), "NftRoot.sol")).toString();
+        const rootNftAccount = await this.deployService.createContractAccount(
+            rootNftContract,
+            this.collectionFolder,
+            'NftRoot',
+            { _name: utf8ToHex(dataForMinting.contractName) }
+        );
 
+        const mintParams = this.getMintParams();
         const mintMessage = await this.getMintMessage(
             rootNftAccount,
             'mintNft',
-            {
-                name: utf8ToHex(""),
-                url: utf8ToHex(""),
-                editionNumber: 1,
-                editionAmount: 1,
-                managersList: [],
-                royalty: 1,
-                //
-                // Hard code parameters
-                //
-                nftType: utf8ToHex('rarity'),
-                power: 3
-            }
+            mintParams
         );
 
         await this.sendMessageToMint(mintMessage.message);
-        this.imageCreator.createTokenImage('61660447d14fd0312cb5240985d0be7d4fbe3c6b14f8a59452c05a945cd00a40');
+        this.imageCreator.createTokenImage(this.getCollectionSourceFolder());
+    }
+
+    async getMintParams(): Promise<object> {
+        return {
+            name: utf8ToHex(""),
+            url: utf8ToHex(""),
+            editionNumber: 1,
+            editionAmount: 1,
+            managersList: [],
+            royalty: 1,
+            //
+            // Hard code parameters
+            //
+            nftType: utf8ToHex('rarity'),
+            power: 3
+        }
     }
 
     private async getMintMessage(account: Account, func: string, input: object) {
