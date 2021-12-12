@@ -35,17 +35,23 @@ export class CollectionListService {
     })
 
     for (const collectionDir of collectionDirList) {
-      let collectionAccount = await this.getCollectionAccount(collectionDir.name);
+      try{
+        let collectionAccount = await this.getCollectionAccount(collectionDir.name);
       
-      let collectionIcon = (await collectionAccount.runLocal("getIcon", {})).decoded?.output.icon;
-      let collectionName = (await collectionAccount.runLocal("getName", {})).decoded?.output.name;
-      collectionName = Buffer.from(collectionName, 'hex').toString()
-      let oneCollectionInfo : CollectionInfo = {
-        name: collectionName,
-        address: await collectionAccount.getAddress(),
-        icon: collectionIcon
+        let collectionIcon = (await collectionAccount.runLocal("getIcon", {})).decoded?.output.icon;
+        let collectionName = (await collectionAccount.runLocal("getName", {})).decoded?.output.name;
+        collectionName = Buffer.from(collectionName, 'hex').toString()
+        let oneCollectionInfo : CollectionInfo = {
+          name: collectionName,
+          address: await collectionAccount.getAddress(),
+          icon: collectionIcon
+        }
+        collectionsInfo.push(oneCollectionInfo)
+
+      } catch (err) {
+        console.log(err)
+        console.log(`Коллекции с адресом 0:${collectionDir.name} не существует`)
       }
-      collectionsInfo.push(oneCollectionInfo)
     }
 
     return collectionsInfo
