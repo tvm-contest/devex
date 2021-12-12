@@ -24,23 +24,24 @@ body {
 .content{
     color: #000;
 }
+
 .container-output{
     color: #000;
     margin-top: 40px;
     padding: 50px;
-    
     border-radius: 50px;
     background-color: #fff;
 }
 .col {
     padding: 12px;
 }
-.output-col :active, :hover, :focus {
-    outline: 0;
-    outline-offset: 0;
+.text{
+    word-break: break-all;
 }
-.output-col{
-    width: 700px;
+input.output-col{
+    outline: none;
+    width: 600px;
+    display: none;
 }
 .line{
     padding: 10px;
