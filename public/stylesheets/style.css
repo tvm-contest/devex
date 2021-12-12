@@ -25,6 +25,10 @@ body {
     color: #000;
 }
 
+.col.button-main-list{
+    padding-top: 20px;
+}
+
 .container-output{
     color: #000;
     margin-top: 40px;
