@@ -19,6 +19,7 @@ if(obj.mediafiles != []){
         nameMedia.push(obj.mediafiles[name].name)//!
     }
 }
+
 console.log(nameMedia)
 if(obj.collection.parameters != []){
     $(".parameters ").append($(`<label> Parameters<label>`))
