@@ -4,6 +4,7 @@ import { libNode } from "@tonclient/lib-node";
 import path from "path";
 import * as fs from 'fs';
 const IPFS = require('ipfs-core');
+const fileTypeFromBuffer = require('file-type').fromBuffer
 // const getResponse = require('ipfs-http-response');
 import { everscale_settings } from "../config/everscale-settings";
 import { globals } from "../config/globals";
@@ -14,6 +15,9 @@ export type TokenInfo = {
   value: string,
   tag: string
 }
+
+const IMG_TYPES = ['png', 'jpg', 'jpeg', 'jpe', 'gif', 'svg', 'bmp', 'dib', 'rle', 'ico']
+const VIDEO_TYPES = ['mp4', 'ogv', 'webm']
 
 export class TokenInfoBuilder {
   private client: TonClient;
@@ -26,7 +30,6 @@ export class TokenInfoBuilder {
         endpoints: [everscale_settings.ENDPOINTS]
       }
     });
-
   }
 
   destructor() : void {
@@ -69,10 +72,12 @@ export class TokenInfoBuilder {
     respons.push({title: "Адрес автора", value: output['addrAuthor'], tag: 'p'})
     respons.push({title: "Адрес токена", value: output['addrData'], tag: 'p'})
     
-    if (jsonCollection.collection.rarities != []){
+    if (jsonCollection.collection.rarities.length != 0){
       let value = Buffer.from(output['nftType'], 'hex').toString()
       respons.push({title: "Тип токена", value: value, tag: 'p'})
     }
+
+    var ipfs = await IPFS.create()
 
     for (let parametr of jsonCollection.collection.parameters) {
       if (parametr.type == 'uint') {
@@ -86,12 +91,25 @@ export class TokenInfoBuilder {
         let tag = 'p'
 
         if (value.match(/ipfs.io\/ipfs/g)) {
-          tag = 'img'
+          try {
+            let type = await this.getIpfsFileType(value, ipfs)
+            if (IMG_TYPES.includes(type)){
+              tag = 'img'
+            } else if (VIDEO_TYPES.includes(type)){
+              tag = 'video'
+            } else {
+              tag = 'a'
+            }
+          } catch (err) {
+            console.log(`${value} не является медиа файлом`)
+          }
         }
 
         respons.push({title: parametr.name, value: value, tag: tag})
       } 
     }
+
+    ipfs.stop()
     
     for (let _enum of jsonCollection.enums) {
       let value = _enum.enumVariants[Number(output['_enum' + _enum.name])]
@@ -99,6 +117,17 @@ export class TokenInfoBuilder {
     }
     
     return respons
+  }
+
+  private async getIpfsFileType(url, ipfs) {
+
+    url = url.slice(url.search(/\/Qm/g) + 1)
+    
+    const stream = await ipfs.cat(url)
+
+    for await (const chunk of stream) {
+      return (await fileTypeFromBuffer(chunk))?.ext;
+    } 
   }
 
   
