@@ -9,11 +9,13 @@ block content
             p.text.font-weight-bold Название коллекции:
           .col
             input.output-col(name="colName" value=collection.name)
+            p=collection.name
         .row
           .col
             p.text.font-weight-bold Адрес:
           .col
             input.output-col.collection-address(name="colAdd" value=collection.address)
+            p=collection.address
         .col.button-main
             input.submit-button.btn.btn-blue.btn-block(id=`${collection.address}` type="button" value="Info root" onclick="fromCollectionListToTokenList(this);")
             input.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token")

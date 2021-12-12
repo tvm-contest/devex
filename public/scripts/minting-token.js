@@ -24,7 +24,7 @@ console.log(nameMedia)
 if(obj.collection.parameters != []){
     $(".parameters ").append($(`<label> Parameters<label>`))
     for(var keyID in obj.collection.parameters){
-        if ($.inArray(obj.collection.parameters[keyID].name, nameMedia) != -1 && obj.collection.parameters[keyID].type == "string"){//! 
+        if ($.inArray(obj.collection.parameters[keyID].name, nameMedia) != -1 && obj.collection.parameters[keyID].type == "string" &&obj.collection.parameters[keyID].minValue == null && obj.collection.parameters[keyID].maxValue == null){//! 
             $(".mediafile ").append($(`<label> MediaFile<label>`))
             $(".mediafile ").append($(`<div class="col"id="mediafile${keyID}">`))
             $(`#mediafile${keyID}`).append($(`<label class="form-label"> ${obj.collection.parameters[keyID].name}<label>`))
