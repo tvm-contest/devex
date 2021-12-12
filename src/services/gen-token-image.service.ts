@@ -56,25 +56,14 @@ export class TokenImageCreator {
         // For creating image by mergeImages
         let imgArray: string[] = [];
         while (true) {
-            const bgFile: string = this.getPartFile(bgArray);
-            const personFile: string = this.getPartFile(personsArray);
-            const shieldFile: string = this.getPartFile(shielsdArray);
-            const helmetFile: string = this.getPartFile(helmetsArray);
-            const armFile: string = this.getPartFile(armsArray);
-
-            // Create array from the parts of the final image
-            imgArray.push(bgFile);
-            imgArray.push(personFile);
-            imgArray.push(shieldFile);
-            imgArray.push(helmetFile);
-            imgArray.push(armFile);
-
+            const partsOfImageArrays = [bgArray, personsArray, shielsdArray, helmetsArray, armsArray];
+            imgArray = partsOfImageArrays.map( imageArray => this.getPartFile(imageArray));
             let imageRarity = this.getRarity();
 
             let imageName = imgArray.reduce((prev, current) => prev + current) + imageRarity;
-            var imageIPFS = await addFileToIPFS(imageName);
+            // image will be created by its ipfs
+            const imageIPFS = await addFileToIPFS(imageName);
             const imageIPFSToString = imageIPFS.toString();
-
             const outDir = this.getOutDir(tokenImageFile);
             const CREATED_IMAGE_NAME = path.resolve(outDir, imageIPFSToString);
 
