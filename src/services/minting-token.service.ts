@@ -46,7 +46,7 @@ export class MintNftService {
         );
 
         const mintParams = await this.getMintParams(dataForMinting);
-        
+
         const mintMessage = await this.getMintMessage(
             rootNftAccount,
             'mintNft',
@@ -57,23 +57,51 @@ export class MintNftService {
         this.imageCreator.createTokenImage(this.getCollectionSourceFolder());
     }
 
-    async getMintParams(mitingData): Promise<object> {
-        return {
+    async getMintParams(mintigData): Promise<object> {
+        const collectionInfo = fs.readFileSync(
+            path.resolve(this.collectionFolder, 'collectionInfo.json')
+        ).toString();
+        const collectionInfoJSON = JSON.parse(collectionInfo);
+        const collectionParams = collectionInfoJSON.collection.parameters;
+        const enumOfCollection = collectionInfoJSON.enums;
+        const mediafilesOfCollection = collectionInfoJSON.mediafiles;
+
+        const userParams = mintigData.parameter;
+
+        console.log("ALL PARAMS IS ", collectionParams);
+
+        for (const currentCollecitonParam of collectionParams) {
+            // For uint and string params
+            if (currentCollecitonParam.name in userParams) {
+                if (currentCollecitonParam.type === 'uint') {
+
+                } else if (currentCollecitonParam.type === 'string') {
+
+                }
+            }
+        }
+
+        if (enumOfCollection > 0) {
+            console.log('ENUM IS NOT []');
+        }
+        
+        if (mediafilesOfCollection.length > 0) {
+            console.log('MEDIAFILES IS NOT []');
+        }
+
+        const initialParams = {
             name: utf8ToHex(""),
             url: utf8ToHex(""),
             editionNumber: 1,
             editionAmount: 1,
             managersList: [],
-            royalty: 1,
-            //
-            // Hard code parameters
-            //
-            // Вот тут должны быть параметры под конкретной рут
-            // Этот метод я еще не доделал
-            nftType: utf8ToHex(mitingData.rarities),
-            tokenName: utf8ToHex(''),
-            tokenColor: utf8ToHex('')
-        }
+            royalty: 1
+        };
+
+
+        const resultParams = {};
+
+        return resultParams;
     }
 
     private async getMintMessage(account: Account, func: string, input: object) {
