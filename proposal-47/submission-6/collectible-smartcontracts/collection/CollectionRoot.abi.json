@@ -1,0 +1,127 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"manager","type":"address"},
+				{"name":"creationMinValue","type":"uint128"},
+				{"name":"creationFee","type":"uint128"},
+				{"name":"name","type":"string"},
+				{"name":"symbol","type":"string"},
+				{"name":"collectionCode","type":"cell"},
+				{"name":"colTokenCode","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getManager",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "changeManager",
+			"inputs": [
+				{"name":"newManager","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getInfo",
+			"id": "0xA",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"string"},
+				{"name":"symbol","type":"string"},
+				{"name":"totalSupply","type":"uint64"}
+			]
+		},
+		{
+			"name": "withdraw",
+			"inputs": [
+				{"name":"addr","type":"address"},
+				{"name":"value","type":"uint128"},
+				{"name":"bounce","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "createCollection",
+			"inputs": [
+				{"name":"creator","type":"address"},
+				{"name":"name","type":"string"},
+				{"name":"symbol","type":"string"},
+				{"name":"limit","type":"uint64"},
+				{"name":"creatorFees","type":"uint32"},
+				{"name":"mintCost","type":"uint128"},
+				{"name":"level1","type":"string[]"},
+				{"name":"level2","type":"string[]"},
+				{"name":"level3","type":"string[]"},
+				{"name":"level4","type":"string[]"},
+				{"name":"level5","type":"string[]"},
+				{"name":"hash","type":"string"},
+				{"name":"startTime","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"addr","type":"address"}
+			]
+		},
+		{
+			"name": "getCollectionAddress",
+			"inputs": [
+				{"name":"id","type":"uint64"}
+			],
+			"outputs": [
+				{"name":"addr","type":"address"}
+			]
+		},
+		{
+			"name": "getTokenAddress",
+			"inputs": [
+				{"name":"col","type":"uint64"},
+				{"name":"id1","type":"uint8"},
+				{"name":"id2","type":"uint8"},
+				{"name":"id3","type":"uint8"},
+				{"name":"id4","type":"uint8"},
+				{"name":"id5","type":"uint8"}
+			],
+			"outputs": [
+				{"name":"addr","type":"address"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+		{
+			"name": "SRC_CT_nifi_col1_1",
+			"inputs": [
+				{"name":"id","type":"uint64"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"_manager","type":"address"},
+		{"name":"_creationFee","type":"uint128"},
+		{"name":"_creationMinValue","type":"uint128"},
+		{"name":"_name","type":"string"},
+		{"name":"_symbol","type":"string"},
+		{"name":"_colTokenCode","type":"cell"},
+		{"name":"_collectionCode","type":"cell"},
+		{"name":"_totalSupply","type":"uint64"}
+	]
+}
