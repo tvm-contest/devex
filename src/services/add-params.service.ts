@@ -160,7 +160,12 @@ export class AddParamsService {
       let paramForDebotSetTypes = 'Terminal.input(' + 
         'tvm.functionId(nftParamsSet' + mediafile.getName() +  '), ' + 
         '"Enter ' + mediafile.getName() + '(link to the IPFS where the media file is stored):", false);\n\t\t' + markForDebotSetTypes;
+      let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("' + mediafile.getName() + ': {}", _nftParams.' + mediafile.getName() + '));\n\t\t' + markForDebotDeployNftStep2;
+      let paramForDebotCheckResult = 'Terminal.print(0, format("' + mediafile.getName() + ': {}",' + mediafile.getName() + '));\n\t\t' + markForDebotCheckResult;
+      
       codeSource = codeSource.replace(markForDebotSetTypes, paramForDebotSetTypes);
+      codeSource = codeSource.replace(markForDebotDeployNftStep2, paramForDebotDeployNftStep2);
+      codeSource = codeSource.replace(markForDebotCheckResult, paramForDebotCheckResult);
     }
         
     fs.writeFileSync(outputContractFile, codeSource, 'utf8');
