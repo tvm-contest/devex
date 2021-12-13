@@ -114,10 +114,6 @@ const addVariant = (e) => {
     typeConteiner.className = "col-12 parameter-enum-variant"
     id_perent_block = $(e).parent().parent().parent().parent().attr("id")
     arr_enum_variant[id_perent_block[1]]+=1
-    
-    console.log("id",id_perent_block[1])
-    console.log(arr_enum_variant)
-    console.log(arr_enum_variant[id_perent_block[1]])
     typeConteiner.id = id_perent_block[1]+ "e" + arr_enum_variant[id_perent_block[1]]
     $(`.block-for-col-param-choice#${id_perent_block}`).find(".param-enum-field")[0].append(typeConteiner)
     
@@ -137,8 +133,6 @@ const deleteVariant = (e) =>{
     id_perent_block = $(e).parent().parent().parent().parent().attr("id")
     $(`#${id_perent_block}.block-for-col-param-choice`).find(`#${id_perent_block[1]}e${arr_enum_variant[id_perent_block[1]]}`).remove()
     arr_enum_variant[id_perent_block[1]]-=1
-    console.log(arr_enum_variant)
-
 }
 const addType = () => {
     let typeConteiner = document.createElement('div');
