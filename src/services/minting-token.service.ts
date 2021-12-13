@@ -10,6 +10,9 @@ import { TokenImageCreator } from './gen-token-image.service';
 const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
 const utf8ToHex = convert("utf8", "hex");
 
+// C одними параметрами числа и строки
+// когда есть переч. или медиа
+
 export class MintNftService {
     private deployService: DeployService;
     private client: TonClient;
@@ -58,6 +61,16 @@ export class MintNftService {
     }
 
     async getMintParams(mintigData): Promise<object> {
+        const resultParams = {
+            name: utf8ToHex(mintigData.contractName),
+            url: utf8ToHex(""),
+            editionNumber: 1,
+            editionAmount: 1,
+            managersList: [],
+            royalty: 1,
+            nftType: utf8ToHex(mintigData.rarities)
+        };
+
         const collectionInfo = fs.readFileSync(
             path.resolve(this.collectionFolder, 'collectionInfo.json')
         ).toString();
@@ -65,41 +78,31 @@ export class MintNftService {
         const collectionParams = collectionInfoJSON.collection.parameters;
         const enumOfCollection = collectionInfoJSON.enums;
         const mediafilesOfCollection = collectionInfoJSON.mediafiles;
-
-        const userParams = mintigData.parameter;
-
-        console.log("ALL PARAMS IS ", collectionParams);
+        const userParams = mintigData.parameters;
+        const userEnum = userParams.enum;
+        const userMediaFile = userParams.mediafile;
 
         for (const currentCollecitonParam of collectionParams) {
             // For uint and string params
-            if (currentCollecitonParam.name in userParams) {
+            if (userParams !== undefined && currentCollecitonParam.name in userParams) {
                 if (currentCollecitonParam.type === 'uint') {
-
+                    resultParams[currentCollecitonParam.name] = userParams[currentCollecitonParam.name];
                 } else if (currentCollecitonParam.type === 'string') {
-
+                    resultParams[currentCollecitonParam.name] = utf8ToHex(userParams[currentCollecitonParam.name]);
                 }
             }
         }
 
-        if (enumOfCollection > 0) {
-            console.log('ENUM IS NOT []');
-        }
-        
-        if (mediafilesOfCollection.length > 0) {
-            console.log('MEDIAFILES IS NOT []');
+        for (const currentEnum of enumOfCollection) {
+            // If a enum there is no in the collectionInfo.json this loop will not work
+            // TODO: enum is number
+            resultParams[currentEnum.name] = Number(userEnum[currentEnum.name]);
         }
 
-        const initialParams = {
-            name: utf8ToHex(""),
-            url: utf8ToHex(""),
-            editionNumber: 1,
-            editionAmount: 1,
-            managersList: [],
-            royalty: 1
-        };
-
-
-        const resultParams = {};
+        for (const currentMediafile of mediafilesOfCollection) {
+            // If a mediafile there is no in the collectionInfo.json this loop will not work 
+            resultParams[currentMediafile.name] = utf8ToHex(userMediaFile[currentMediafile.name]);
+        }
 
         return resultParams;
     }

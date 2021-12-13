@@ -22,7 +22,7 @@ const VIDEO_TYPES = ['mp4', 'ogv', 'webm']
 export class TokenInfoBuilder {
   private client: TonClient;
 
-  constructor(){
+  constructor() {
     TonClient.useBinaryLibrary(libNode);
 
     this.client = new TonClient({
@@ -32,22 +32,22 @@ export class TokenInfoBuilder {
     });
   }
 
-  destructor() : void {
-      this.client.close();
+  destructor(): void {
+    this.client.close();
   }
 
-  async getTokenInfo(address: string) : Promise<TokenInfo[]>{
+  async getTokenInfo(address: string): Promise<TokenInfo[]> {
 
-    let tokenAccount = new Account( { abi: nft_setting.INFO_DATA_ABI } , {
+    let tokenAccount = new Account({ abi: nft_setting.INFO_DATA_ABI }, {
       address: address,
       signer: undefined,
       client: this.client
     });
-    let getInfo = await tokenAccount.runLocal("getInfoResponsible", {"_answer_id":21});
+    let getInfo = await tokenAccount.runLocal("getInfoResponsible", { "_answer_id": 21 });
     let addrRoot = getInfo.decoded?.output.addrRoot
 
     let fullAbi = await JSON.parse(fs.readFileSync(path.resolve(globals.RESULT_COLLECTION, addrRoot.slice(2), "Data.abi.json")).toString());
-    tokenAccount = new Account( { abi: fullAbi } , {
+    tokenAccount = new Account({ abi: fullAbi }, {
       address: address,
       signer: undefined,
       client: this.client
@@ -57,7 +57,7 @@ export class TokenInfoBuilder {
 
     let jsonCollection = await JSON.parse(fs.readFileSync(path.resolve(globals.RESULT_COLLECTION, addrRoot.slice(2), "collectionInfo.json")).toString());
     let output = getInfo.decoded?.output
-    let respons : TokenInfo[] = await this.makeRespons(output, jsonCollection)
+    let respons: TokenInfo[] = await this.makeRespons(output, jsonCollection)
 
     console.log(output)
 
@@ -65,16 +65,16 @@ export class TokenInfoBuilder {
 
   }
 
-  private async makeRespons(output, jsonCollection) : Promise<TokenInfo[]> {
-    let respons : TokenInfo[] = []
-    respons.push({title: "Адрес коллекции", value: output['addrRoot'], tag: 'p'})
-    respons.push({title: "Адрес владельца", value: output['addrOwner'], tag: 'p'})
-    respons.push({title: "Адрес автора", value: output['addrAuthor'], tag: 'p'})
-    respons.push({title: "Адрес токена", value: output['addrData'], tag: 'p'})
-    
-    if (jsonCollection.collection.rarities.length != 0){
+  private async makeRespons(output, jsonCollection): Promise<TokenInfo[]> {
+    let respons: TokenInfo[] = []
+    respons.push({ title: "Адрес коллекции", value: output['addrRoot'], tag: 'p' })
+    respons.push({ title: "Адрес владельца", value: output['addrOwner'], tag: 'p' })
+    respons.push({ title: "Адрес автора", value: output['addrAuthor'], tag: 'p' })
+    respons.push({ title: "Адрес токена", value: output['addrData'], tag: 'p' })
+
+    if (jsonCollection.collection.rarities.length != 0) {
       let value = Buffer.from(output['nftType'], 'hex').toString()
-      respons.push({title: "Тип токена", value: value, tag: 'p'})
+      respons.push({ title: "Тип токена", value: value, tag: 'p' })
     }
 
     var ipfs = await IPFS.create()
@@ -83,7 +83,7 @@ export class TokenInfoBuilder {
       if (parametr.type == 'uint') {
 
         let value = Number(output['_' + parametr.name]).toString()
-        respons.push({title: parametr.name, value: value, tag: 'p'})
+        respons.push({ title: parametr.name, value: value, tag: 'p' })
 
       } else if (parametr.type == 'string') {
 
@@ -93,9 +93,9 @@ export class TokenInfoBuilder {
         if (value.match(/ipfs.io\/ipfs/g)) {
           try {
             let type = await this.getIpfsFileType(value, ipfs)
-            if (IMG_TYPES.includes(type)){
+            if (IMG_TYPES.includes(type)) {
               tag = 'img'
-            } else if (VIDEO_TYPES.includes(type)){
+            } else if (VIDEO_TYPES.includes(type)) {
               tag = 'video'
             } else {
               tag = 'a'
@@ -105,32 +105,32 @@ export class TokenInfoBuilder {
           }
         }
 
-        respons.push({title: parametr.name, value: value, tag: tag})
-      } 
+        respons.push({ title: parametr.name, value: value, tag: tag })
+      }
     }
 
     ipfs.stop()
-    
+
     for (let _enum of jsonCollection.enums) {
-      console.log(_enum.enumVariants) 
+      console.log(_enum.enumVariants)
       console.log(output['_' + _enum.name])
       let value = _enum.enumVariants[Number(output['_' + _enum.name])]
-      respons.push({title: _enum.name, value: value, tag: 'p'})
+      respons.push({ title: _enum.name, value: value, tag: 'p' })
     }
-    
+
     return respons
   }
 
   private async getIpfsFileType(url, ipfs) {
 
     url = url.slice(url.search(/\/Qm/g) + 1)
-    
+
     const stream = await ipfs.cat(url)
 
     for await (const chunk of stream) {
       return (await fileTypeFromBuffer(chunk))?.ext;
-    } 
+    }
   }
 
-  
+
 }

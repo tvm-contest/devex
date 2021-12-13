@@ -10,7 +10,7 @@ if(obj.collection.rarities != []){
         listRar.push(obj.collection.rarities[keyID].name)
     }
     $("#rarities ").append($(`<label>( ${listRar})<label>`))
-    $(`#rarities`).append($(`<input class="form-control" name="rarities">`)) 
+    $(`#rarities`).append($(`<input class="form-control" required name="rarities">`)) 
 }
 
 if(obj.mediafiles != []){
@@ -28,11 +28,11 @@ if(obj.collection.parameters != []){
             $(".mediafile ").append($(`<label> MediaFile<label>`))
             $(".mediafile ").append($(`<div class="col"id="mediafile${keyID}">`))
             $(`#mediafile${keyID}`).append($(`<label class="form-label"> ${obj.collection.parameters[keyID].name}<label>`))
-            $(`#mediafile${keyID}`).append($(`<input class="form-control" name="paramener[mediafile][${obj.collection.parameters[keyID].name}]${keyID}">`))  
+            $(`#mediafile${keyID}`).append($(`<input class="form-control" required name="parameters[mediafile][${obj.collection.parameters[keyID].name}]${keyID}">`))  
         } else if (obj.collection.parameters[keyID].type.substring(0,4) != "Enum"){//!
             $(".parameters").append($(`<div class="col"id="parameters${keyID}">`))
             $(`#parameters${keyID}`).append($(`<label class="form-label"> ${obj.collection.parameters[keyID].name}<label>`))
-            $(`#parameters${keyID}`).append($(`<input class="form-control" name="paramener[${obj.collection.parameters[keyID].name}]${keyID}">`))   
+            $(`#parameters${keyID}`).append($(`<input class="form-control" required name="parameters[${obj.collection.parameters[keyID].name}]${keyID}">`))   
         } 
        
         }
@@ -50,7 +50,7 @@ if (obj.enums.length > 0){
             listEnum.push(obj.enums[keyIdColEnum].enumVariants[keyIDenum])
         }
         $(`#paramenersE${keyIdColEnum}`).append($(`<label class="form-label"> (${listEnum})<label>`))
-        $(`#paramenersE${keyIdColEnum}`).append($(`<input class="form-control" name="paramener[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`)) 
+        $(`#paramenersE${keyIdColEnum}`).append($(`<input class="form-control" required name="parameters[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`)) 
         listEnum = []
     }
     }
