@@ -1,6 +1,6 @@
 var arr_collection_type = []
 var arr_collection_param = []
-var arr_enum_variant = []
+var arr_enum_variant = [0]
 value_id = 1
 param_id = 0
 enum_id = 0
@@ -72,21 +72,10 @@ $('form').on("change", ".type-parameter",function(){
         $(`.block-for-col-param-choice#${$(this).parent().parent().parent().attr('id')}`).find(".parameter-enum").css('display','none');
     }
 });
-const addVariant = (e) => {
-    enum_id+=1
-    let typeConteiner = document.createElement('div');
-    typeConteiner.innerHTML = $(".col-12.parameter-enum-variant")[0].innerHTML
-    typeConteiner.className = "col-12 parameter-enum-variant"
-    id_perent_block = $(e).parent().parent().parent().parent().attr("id")
-    typeConteiner.id = id_perent_block[1]+ "e" + enum_id
-    $(`.block-for-col-param-choice#${id_perent_block}`).find(".param-enum-field")[0].append(typeConteiner)
-    
-    $(`#p${param_id}.block-for-col-param-choice`).find(`#${param_id}e${enum_id}`).find(`.form-control.param-enum`).attr('name', `parameter[${param_id}][enum][${enum_id}]`);
-    arr_enum_variant[id_perent_block[1]] = enum_id
-}
+
 const addParam = () => {
     enum_id = 0
-
+    arr_enum_variant.push(0)
 
     var typeConteiner = document.createElement('div');
     typeConteiner.innerHTML = typeConteinerParams.innerHTML
@@ -118,17 +107,37 @@ const addParam = () => {
     $(`#p${param_id}.block-for-col-param-choice`).find(".row.parameter-string").find(".param-line-max").attr('name', `parameter[${param_id}][line][max]`);
     
 }
+const addVariant = (e) => {
+    
+    let typeConteiner = document.createElement('div');
+    typeConteiner.innerHTML = $(".col-12.parameter-enum-variant")[0].innerHTML
+    typeConteiner.className = "col-12 parameter-enum-variant"
+    id_perent_block = $(e).parent().parent().parent().parent().attr("id")
+    arr_enum_variant[id_perent_block[1]]+=1
+    
+    console.log("id",id_perent_block[1])
+    console.log(arr_enum_variant)
+    console.log(arr_enum_variant[id_perent_block[1]])
+    typeConteiner.id = id_perent_block[1]+ "e" + arr_enum_variant[id_perent_block[1]]
+    $(`.block-for-col-param-choice#${id_perent_block}`).find(".param-enum-field")[0].append(typeConteiner)
+    
+    $(`#${id_perent_block}.block-for-col-param-choice`).find(`#${id_perent_block[1]}e${arr_enum_variant[id_perent_block[1]]}`).find(`.form-control.param-enum`).attr('name', `parameter[${id_perent_block[1]}][enum][${arr_enum_variant[id_perent_block[1]]}]`);
+    arr_enum_variant[id_perent_block[1]] = arr_enum_variant[id_perent_block[1]]
+
+}
 const deleteParam = () => {
     if (arr_collection_param.length > 0){
         $(`#p${arr_collection_param[arr_collection_param.length - 1]}`).remove()
         arr_collection_param.pop()
         param_id= param_id - 1
     }
+    
 }
 const deleteVariant = (e) =>{
     id_perent_block = $(e).parent().parent().parent().parent().attr("id")
     $(`#${id_perent_block}.block-for-col-param-choice`).find(`#${id_perent_block[1]}e${arr_enum_variant[id_perent_block[1]]}`).remove()
     arr_enum_variant[id_perent_block[1]]-=1
+    console.log(arr_enum_variant)
 
 }
 const addType = () => {
