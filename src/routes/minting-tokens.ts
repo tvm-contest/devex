@@ -30,7 +30,7 @@ router.post('/minting', async function (req, res, next) {
         console.log(error);
     }
     
-    // res.redirect('/tokens-data-info?rootNftAddress=' + req.body.rootAddress);
+    res.redirect('/tokens-data-info?rootNftAddress=' + req.body.rootAddress);
 })
 
 export { router as MintingTokens };
