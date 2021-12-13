@@ -23,5 +23,6 @@ export const everscale_settings = {
 //         public: "8b523c8d69cfdfb37f3cee3cf8514dd7e0820f8032ab737139ea6f31ad67872d",
 //         secret: "186b279cf353c7193536077fba9cd07e9df65ff6d436efdd597c8fafdac0d7d5"
 //     },
-//     AUTHOR_GENERATOR_ADDRESS: "0:86735f47ea300c13826ae26e83e264311607095eb877c7d23b9516e4e95712b8"
+//     AUTHOR_GENERATOR_ADDRESS: "0:86735f47ea300c13826ae26e83e264311607095eb877c7d23b9516e4e95712b8",
+//     TIMEOUT: 50000
 // };
