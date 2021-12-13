@@ -59,8 +59,8 @@ export class ContractObjectCreator {
           )
         } else if (req.body.selectpicker[index] == 'enum') {
           parameter = new Parametr(
-            'enum' + req.body.parameter[index].name,
-            req.body.parameter[index].name
+            req.body.parameter[index].name,
+            "Enum" + req.body.parameter[index].name
           )
         } else {
           parameter = new Parametr(
