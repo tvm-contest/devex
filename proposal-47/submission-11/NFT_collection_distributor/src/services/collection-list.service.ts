@@ -5,7 +5,6 @@ import fs from 'fs'
 import path from 'path';
 import { everscale_settings } from '../config/everscale-settings';
 import { globals } from '../config/globals';
-import { Collection } from "../models/collection";
 
 export type CollectionInfo = {
   name : string
@@ -36,17 +35,23 @@ export class CollectionListService {
     })
 
     for (const collectionDir of collectionDirList) {
-      let collectionAccount = await this.getCollectionAccount(collectionDir.name);
+      try{
+        let collectionAccount = await this.getCollectionAccount(collectionDir.name);
       
-      let collectionIcon = (await collectionAccount.runLocal("getIcon", {})).decoded?.output.icon;
-      let collectionName = (await collectionAccount.runLocal("getName", {})).decoded?.output.name;
-      collectionName = Buffer.from(collectionName, 'hex').toString()
-      let oneCollectionInfo : CollectionInfo = {
-        name: collectionName,
-        address: await collectionAccount.getAddress(),
-        icon: collectionIcon
+        let collectionIcon = (await collectionAccount.runLocal("getIcon", {})).decoded?.output.icon;
+        let collectionName = (await collectionAccount.runLocal("getName", {})).decoded?.output.name;
+        collectionName = Buffer.from(collectionName, 'hex').toString()
+        let oneCollectionInfo : CollectionInfo = {
+          name: collectionName,
+          address: await collectionAccount.getAddress(),
+          icon: collectionIcon
+        }
+        collectionsInfo.push(oneCollectionInfo)
+
+      } catch (err) {
+        console.log(err)
+        console.log(`Коллекции с адресом 0:${collectionDir.name} не существует`)
       }
-      collectionsInfo.push(oneCollectionInfo)
     }
 
     return collectionsInfo
@@ -55,12 +60,13 @@ export class CollectionListService {
   private async getCollectionAccount(tempCollectionDir : string) : Promise<Account> {
     let abi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, tempCollectionDir, 'NftRoot.abi.json')).toString());
     let tvc = fs.readFileSync(path.join(globals.RESULT_COLLECTION, tempCollectionDir, 'NftRoot.tvc'), {encoding: 'base64'});
+    let address = "0:" + tempCollectionDir;
     const collectionAccount = new Account({
       abi: abi,
       tvc: tvc
     }, {
       signer: signerKeys(everscale_settings.KEYS),
-      initData: {},
+      address: address,
       client: this.client
     });
     return collectionAccount;

@@ -21,18 +21,32 @@ body {
     /* max-width: 670px;
     min-height: 700px; */
 }
+.content{
+    color: #000;
+}
+
+.col.button-main-list{
+    padding-top: 20px;
+}
+
 .container-output{
     color: #000;
     margin-top: 40px;
     padding: 50px;
-    
     border-radius: 50px;
     background-color: #fff;
 }
 .col {
     padding: 12px;
 }
-
+.text{
+    word-break: break-all;
+}
+input.output-col{
+    outline: none;
+    width: 600px;
+    display: none;
+}
 .line{
     padding: 10px;
     border-bottom: 1px solid rgb(0, 125, 187);

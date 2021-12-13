@@ -1,13 +1,11 @@
 import express from 'express';
 import path from 'path';
-import fs from 'fs'
 
-import fileUpload, { UploadedFile } from 'express-fileupload';
+import { UploadedFile } from 'express-fileupload';
 import { DeployTrueNftService } from '../services/deployTrueNft.service';
 import { generateContract } from '../services/contract-generator.service';
 import { Collection } from '../models/collection';
 import { EnumParameter } from '../models/enum';
-import * as mediafile from '../models/mediafile';
 import { DeployDebotService } from '../services/deployDebot.service';
 import { globals } from '../config/globals';
 import { MediaFile } from '../models/mediafile';
@@ -31,7 +29,7 @@ router.post('/', async function(req, res, next) {
   let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromJson(jsonCollection.enums)
   let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromJson(jsonCollection.mediafiles);
 
-  let contractDir = await generateContract(collection, enums, mediafiles)
+  let contractDir = await generateContract(collection, JSON.stringify(jsonCollection, null, '\t'), enums, mediafiles)
 
   let deployTrueNftService = new DeployTrueNftService()
   let commissionAuthorGenerator = 0;

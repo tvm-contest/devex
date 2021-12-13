@@ -4,17 +4,15 @@ pragma AbiHeader expire;
 pragma AbiHeader time;
 
 import "Auction.sol";
+import 'ARoyaltyRecipient.sol';
 
-contract AuctionRoot {
+contract AuctionRoot is ARoyaltyRecipient {
 
     TvmCell _codeAuction;
-    address _addrOwner;
-    address _addrRoyaltyRecipient;
-    uint8 _royaltyPercent;
 
     constructor (
         TvmCell codeAuction,
-        address addrRoyaltyRecipient,
+        address addrBeneficiary,
         uint8 royaltyPercent
     )
         public
@@ -22,8 +20,7 @@ contract AuctionRoot {
     {
         tvm.accept();
         _codeAuction = codeAuction;
-        _addrOwner = address(this);
-        _addrRoyaltyRecipient = addrRoyaltyRecipient;
+        _addrBeneficiary = addrBeneficiary;
         _royaltyPercent = royaltyPercent;
     }
 
@@ -78,15 +75,6 @@ contract AuctionRoot {
 
     // MODIFIERS
 
-    modifier onlyAuctionRootOwner {
-        require(msg.sender == _addrOwner, AuctionErr.NOT_AUCTION_ROOT_OWNER);
-        _;
-    }
-
-    modifier validRoyalty(uint8 royaltyPercent) {
-        require(royaltyPercent <= 100, AuctionErr.INVALID_ROYALTY);
-        _;
-    }
     modifier notZeroInitialPrice(uint128 price) {
         require(price > 0, AuctionErr.ZERO_INITIAL_PRICE);
         _;

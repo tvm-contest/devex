@@ -59,12 +59,7 @@ def mint_nft(
             'editionAmount': 1,
             'managersList': [],
             'royalty': royalty,
-
             'nftType': NFT_TYPES[0],
-            'additionalEnumParameter': 1,
-            'additionalStrParameter': Bytes(str2bytes('some_str')),
-            'additionalIntParameter': 1,
-            'additionalBoolParameter': True,
         }
     )
     wallet.call_method_signed(

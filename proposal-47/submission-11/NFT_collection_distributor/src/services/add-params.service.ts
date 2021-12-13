@@ -17,8 +17,26 @@ const markForDebotCheckResult = '/*TERMINAL_CHECK_RESULT*/';
 const markForDebotDeployNftStep2 = '/*TERMINAL_TO_DEPLOY_NFT_STEP_2*/';
 const markForDebotSetTypes = '/*TERMINAL_FOR_DEBOT_SET_TYPES*/';
 const markForDebotFunctionSetTypes = '/*FUNCTION_FOR_DEBOT_SET_TYPES*/';
+const markForDebotParamEnumLength = '/*PARAM_ENUM_LENGTH*/';
+
+const markForRequireType = '/*%REQUIRE_TYPE%*/';
+const markForRequireTypeLimit = '/*%REQUIRE_TYPE_LIMIT%*/';
+const markForTypePrint = '/*%TYPE_PRINT%*/';
+const markForTypeInput = '/*%TYPE_INPUT%*/';
 
 export class AddParamsService {
+  async removeNftTypeChecking(rootContractPath : string, debotContractPath : string) : Promise<any> {
+    let codeSourceRoot = fs.readFileSync(rootContractPath, 'utf8');
+    let codeSourceDebot = fs.readFileSync(debotContractPath, 'utf8');
+
+    codeSourceRoot = codeSourceRoot.replace(markForRequireType, "//");
+    codeSourceRoot = codeSourceRoot.replace(markForRequireTypeLimit, "//");
+    codeSourceDebot = codeSourceDebot.replace(markForTypePrint, "//");
+    codeSourceDebot = codeSourceDebot.replace(markForTypeInput, "//");
+
+    fs.writeFileSync(rootContractPath, codeSourceRoot, 'utf8');
+    fs.writeFileSync(debotContractPath, codeSourceDebot, 'utf8');
+  }
 
   async addSingleParam(param: Parametr, inputContractFile: string, outputContractFile?: string) : Promise<void>{
 
@@ -58,29 +76,30 @@ export class AddParamsService {
   }
 
   private async addEnum(enumParam: EnumParameter, codeSource: string) : Promise<string> {
-    let enumParameter = "enum " + enumParam.getName() + ' { ' + enumParam.getEnumVariants().toString() + ' } ' + '\n' + markForEnums;
+    let enumParameter = "enum Enum" + enumParam.getName() + ' { ' + enumParam.getEnumVariants().toString() + ' } ' + '\n' + markForEnums;
     
-
     let enumVariants = enumParam.getEnumVariants().toString().split(',');
     let enumsNumbers = '';
+    let enumLength = 0;
     for (let i = 0; i < enumVariants.length; i++) {
-      enumsNumbers = enumsNumbers + ' ' + (i) + ' - ' + enumVariants[i];
+      enumsNumbers = enumsNumbers + ' ' + (i) + ' - ' + enumVariants[i] + "\\n";
+      enumLength++;
     }
-    let paramForDebotCheckResult = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(enum' + enumParam.getName() + ')));\n\t\t' + markForDebotCheckResult;
-    let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(_nftParams.enum' + enumParam.getName() + ')));\n\t\t' + markForDebotDeployNftStep2;
-    let paramForDebotSetTypes = 'Terminal.input(' + 
-    'tvm.functionId(nftParamsSetenum' + enumParam.getName() +'), ' + 
-    '"Enter ' + enumParam.getName() + '\\nAvailable: ' + enumsNumbers + '(enter the number):", false);\n\t\t' + markForDebotSetTypes;
+    let paramForDebotCheckResult = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n ' + enumParam.getName() + ': {}", uint(' + enumParam.getName() + ')));\n\t\t' + markForDebotCheckResult;
+    let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n ' + enumParam.getName() + ': {}", uint(_nftParams.' + enumParam.getName() + ')));\n\t\t' + markForDebotDeployNftStep2;
+    let paramForDebotSetTypes = 'AmountInput.get(tvm.functionId(nftParamsSet' + enumParam.getName() +'), ' + 
+    '"Enter ' + enumParam.getName() + '\\nAvailable: \\n' + enumsNumbers + '(enter the number):",  0, 0, ' + enumParam.getName() + 'Length - 1);\n\t\t' + markForDebotSetTypes;
+    let paramForDebotEnumLength = 'uint128 ' + enumParam.getName() + 'Length = ' + enumLength + ';\n' + markForDebotParamEnumLength;
 
-    let functionForDebotSetTypes = 'function nftParamsSetenum' + enumParam.getName() + '(string value) public {\n' +
-    '\t\t(uint i,) = stoi(value);\n' +
-    '\t\t_nftParams.enum' + enumParam.getName() + ' = '+ enumParam.getName() +'(i);\n\t}\n\t' + markForDebotFunctionSetTypes;
+    let functionForDebotSetTypes = 'function nftParamsSet' + enumParam.getName() + '(uint128 value) public {\n' +
+    '\t\t_nftParams.' + enumParam.getName() + ' = Enum'+ enumParam.getName() +'(value);\n\t}\n\t' + markForDebotFunctionSetTypes;
     
     codeSource = codeSource.replace(markForEnums, enumParameter);
     codeSource = codeSource.replace(markForDebotCheckResult, paramForDebotCheckResult);
     codeSource = codeSource.replace(markForDebotDeployNftStep2, paramForDebotDeployNftStep2);
     codeSource = codeSource.replace(markForDebotSetTypes, paramForDebotSetTypes);
     codeSource = codeSource.replace(markForDebotFunctionSetTypes, functionForDebotSetTypes);
+    codeSource = codeSource.replace(markForDebotParamEnumLength, paramForDebotEnumLength);
     return codeSource;
   }
 
@@ -97,7 +116,11 @@ export class AddParamsService {
     let paramForDebotCheckResult = 'Terminal.print(0, format("' + param.getName() + ': {}",' + param.getName() + '));\n\t\t' + markForDebotCheckResult;
     let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("' + param.getName() + ': {}", _nftParams.' + param.getName() + '));\n\t\t' + markForDebotDeployNftStep2;
     let paramForDebotSetTypes;
-    if (!(param instanceof MediaFile)) {
+    if (param.getType() == 'uint') {
+      paramForDebotSetTypes = 'AmountInput.get(tvm.functionId(nftParamsSet' + param.getName() + '), ' + 
+        '"Enter ' + param.getName() + ' (' + param.getType() + '):",  0, ' + param.getMinValue() + ', ' + param.getMaxValue() + ');\n\t\t' + 
+        markForDebotSetTypes;
+    } else if (!(param instanceof MediaFile)) {
       paramForDebotSetTypes = 'Terminal.input(' + 
         'tvm.functionId(nftParamsSet' + param.getName() +  '), ' + 
         '"Enter ' + param.getName() + ' (' + param.getType() + '):", false);\n\t\t' + markForDebotSetTypes;
@@ -106,7 +129,7 @@ export class AddParamsService {
     if (param.getType() == 'string') {
       functionForDebotSetTypes = 'function nftParamsSet' + param.getName() + '(string value) public { _nftParams.' + param.getName() + ' = value;}\n\t' + markForDebotFunctionSetTypes;
     } else if (param.getType() == 'uint') {
-      functionForDebotSetTypes = 'function nftParamsSet' + param.getName() + '(string value) public { (_nftParams.' + param.getName() + ',) = stoi(value);}\n\t' + markForDebotFunctionSetTypes;
+      functionForDebotSetTypes = 'function nftParamsSet' + param.getName() + '(uint128 value) public { _nftParams.' + param.getName() + ' = value;}\n\t' + markForDebotFunctionSetTypes;
     } else {
       functionForDebotSetTypes = markForDebotFunctionSetTypes;
     }
@@ -137,7 +160,12 @@ export class AddParamsService {
       let paramForDebotSetTypes = 'Terminal.input(' + 
         'tvm.functionId(nftParamsSet' + mediafile.getName() +  '), ' + 
         '"Enter ' + mediafile.getName() + '(link to the IPFS where the media file is stored):", false);\n\t\t' + markForDebotSetTypes;
+      let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("' + mediafile.getName() + ': {}", _nftParams.' + mediafile.getName() + '));\n\t\t' + markForDebotDeployNftStep2;
+      let paramForDebotCheckResult = 'Terminal.print(0, format("' + mediafile.getName() + ': {}",' + mediafile.getName() + '));\n\t\t' + markForDebotCheckResult;
+      
       codeSource = codeSource.replace(markForDebotSetTypes, paramForDebotSetTypes);
+      codeSource = codeSource.replace(markForDebotDeployNftStep2, paramForDebotDeployNftStep2);
+      codeSource = codeSource.replace(markForDebotCheckResult, paramForDebotCheckResult);
     }
         
     fs.writeFileSync(outputContractFile, codeSource, 'utf8');

@@ -4,7 +4,7 @@ import { Collection } from '../models/collection';
 import { DescriptCollection } from '../models/descript-collection';
 import { Parametr } from '../models/parametr';
 import { Rarity } from '../models/rarity';
-import { deleteContractDirTemp, generateContract } from '../services/contract-generator.service';
+import { generateContract } from '../services/contract-generator.service';
 
 
 const router = express.Router();
@@ -16,7 +16,7 @@ router.get('/',  function(req, res, next) {
   let description : DescriptCollection = new DescriptCollection("Collect1", 100);
   let collection : Collection = new Collection(description, rariry, params);
 
-  generateContract(collection);
+  // generateContract(collection);
 
   res.send('Файлы сгенерированы');
 

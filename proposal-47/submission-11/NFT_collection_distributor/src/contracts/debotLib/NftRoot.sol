@@ -10,7 +10,6 @@ import './IndexBasis.sol';
 
 import './interfaces/IData.sol';
 import './interfaces/IIndexBasis.sol';
-import './libraries/Enums.sol';
 
 contract NftRoot is DataResolver, IndexResolver {
 
@@ -23,9 +22,8 @@ contract NftRoot is DataResolver, IndexResolver {
     uint128 _mintingCommission;
     uint256 _totalMinted;
     address _addrBasis;
-    string static _name;
+    string _name;
     bytes _icon;
-
 
     mapping(string=>uint) _limitByTypes; 
     mapping(string=>uint) _mintedByTypes; 
@@ -37,6 +35,7 @@ contract NftRoot is DataResolver, IndexResolver {
         uint128 mintingCommission,
         string[] nftTypes,
         uint[] limit,
+        string name,
         bytes icon
     )
         public
@@ -47,14 +46,15 @@ contract NftRoot is DataResolver, IndexResolver {
         _codeIndex = codeIndex;
         _addrCommissionAgent = addrCommissionAgent;
         _mintingCommission = mintingCommission;
+        _name = name;
         _icon = icon;
 
         for(uint i = 0; i < nftTypes.length; i++) {
             _limitByTypes[nftTypes[i]] = limit[i];
         }
     }
-    
-    function mintNft(
+
+    function mintNft (
         bytes name,
         bytes url,
         uint8 editionNumber,
@@ -62,13 +62,17 @@ contract NftRoot is DataResolver, IndexResolver {
         address[] managersList,
         uint8 royalty,
 
-        string nftType/*%PARAM_TO_MINT%*/
+        string nftType,
+        int additionalEnumParameter,
+        string additionalStrParameter,
+        uint256 additionalIntParameter,
+        bool additionalBoolParameter
     )
         public
     {
         require(isEnoughValueToMint(msg.value) || isCommissionAgent(msg.sender), NOT_ENOUGH_VALUE_TO_MINT);
-        /*%REQUIRE_TYPE%*/require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
-        /*%REQUIRE_TYPE_LIMIT%*/require(_mintedByTypes[nftType] < _limitByTypes[nftType], LIMIT_REACHED, "Limit reached");
+        require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
+        require(_mintedByTypes[nftType] < _limitByTypes[nftType], LIMIT_REACHED, "Limit reached");
 
         if (isEnoughValueToMint(msg.value)) {
             tvm.rawReserve(address(this).balance - msg.value, 0);
@@ -93,7 +97,11 @@ contract NftRoot is DataResolver, IndexResolver {
             editionAmount,
             managersList,
             royalty,
-            nftType/*%PARAM_TO_DATA%*/
+            nftType,
+            additionalEnumParameter,
+            additionalStrParameter,
+            additionalIntParameter,
+            additionalBoolParameter
         );
 
         _mintedByTypes[nftType]++;
@@ -104,12 +112,6 @@ contract NftRoot is DataResolver, IndexResolver {
         } else {
             msg.sender.transfer({value: msg.value, flag: 0});
         }      
-
-    }
-    function getTokenData() public view returns(TvmCell code, uint totalMinted) {
-        tvm.accept();
-        totalMinted = _totalMinted;
-        code = _codeData;
     }
 
     function deployBasis(TvmCell codeIndexBasis) public {
@@ -137,12 +139,17 @@ contract NftRoot is DataResolver, IndexResolver {
         _addrCommissionAgent = addrNewAdmin;
     }
 
+    function getTokenData() public view returns (TvmCell code, uint totalMinted) {
+        tvm.accept();
+        totalMinted = _totalMinted;
+        code = _codeData;
+    }
 
-    function getName() public view returns(string name) {
+    function getName() external view returns (string name) {
         name = _name;
     }
 
-    function getIcon() public view returns(bytes icon) {
+    function getIcon() external view returns (bytes icon) {
         icon = _icon;
     }
 
@@ -154,12 +161,18 @@ contract NftRoot is DataResolver, IndexResolver {
         return addrCommissionAgent == _addrCommissionAgent;
     }
 
-
     // MODIFIERS
 
     modifier onlyCommissionAgent {
         require(isCommissionAgent(msg.sender),
                ONLY_COMMISSION_AGENT);       
+        _;
+    }
+
+    modifier enoughValueToDeployData {
+        require(msg.value >= Fees.MIN_FOR_DATA_DEPLOY + Fees.MIN_FOR_MESSAGE,
+               DataErr.NOT_ENOUGH_VALUE_TO_DEPLOY_DATA,
+               "Message balance is not enough for Data deployment");       
         _;
     }
 }

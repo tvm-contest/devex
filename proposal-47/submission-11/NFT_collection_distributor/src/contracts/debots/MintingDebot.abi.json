@@ -73,38 +73,6 @@
 			]
 		},
 		{
-			"name": "nftParamsSetEnum",
-			"inputs": [
-				{"name":"value","type":"bytes"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "nftParamsSetStr",
-			"inputs": [
-				{"name":"value","type":"bytes"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "nftParamsSetInt",
-			"inputs": [
-				{"name":"value","type":"bytes"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "nftParamsSetBool",
-			"inputs": [
-				{"name":"value","type":"bool"}
-			],
-			"outputs": [
-			]
-		},
-		{
 			"name": "deployNftStep1",
 			"inputs": [
 			],
@@ -152,10 +120,6 @@
 				{"name":"url","type":"bytes"},
 				{"name":"number","type":"uint8"},
 				{"name":"amount","type":"uint8"},
-				{"name":"color","type":"uint8"},
-				{"name":"additionalStrParameter","type":"bytes"},
-				{"name":"additionalIntParameter","type":"uint256"},
-				{"name":"additionalBoolParameter","type":"bool"},
 				{"name":"nftType","type":"bytes"}
 			],
 			"outputs": [
@@ -260,6 +224,7 @@
 		}
 	],
 	"data": [
+		{"key":1,"name":"_addrNFTRoot","type":"address"}
 	],
 	"events": [
 	]

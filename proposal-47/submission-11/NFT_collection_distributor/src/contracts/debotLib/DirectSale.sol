@@ -3,21 +3,17 @@ pragma ton-solidity >=0.43.0;
 pragma AbiHeader expire;
 pragma AbiHeader time;
 
+import 'ARoyaltyPayer.sol';
+import './interfaces/IData.sol';
+
 import './libraries/FeeValues.sol';
 import './libraries/DirectSaleErrors.sol';
 
-import './interfaces/IData.sol';
-
-contract DirectSale {
+contract DirectSale is ARoyaltyPayer {
 
     address static _addrRoot;      // адрес родительского DirectSaleRoot
     address static _addrOwner;     // адрес кошелька создателя контракта
     address static _addrNft;       // адрес выставленного на продажу токена
-    
-    address _addrRoyaltyRoot;      // адрес получателя роялти со стороны DirectSaleRoot
-    uint8 _royaltyPercentRoot;     // процент с продажи для addrRoyaltyRoot
-    address _addrRoyaltyAuthor;    // адрес владельца токена
-    uint8 _royaltyPercentAuthor;   // процент с продажи для addrRoyaltyAuthor
     
     bool _isDurationLimited;       // ограничена ли продажа по времени
 
@@ -37,8 +33,8 @@ contract DirectSale {
 
         _nftPrice = nftPrice;
         _isDurationLimited = isDurationLimited;
-        _addrRoyaltyRoot = addrRoyaltyRecipient;
-        _royaltyPercentRoot = royaltyPercent;
+        _addrIntermediary = addrRoyaltyRecipient;
+        _royaltyPercentIntermediary = royaltyPercent;
     }
 
     function start()
@@ -66,7 +62,7 @@ contract DirectSale {
         saleOwnerShouldBeNftOwner(addrNftOwner)
         saleShouldBeTrusted(addrTrusted) 
     {
-        _addrRoyaltyAuthor = addrRoyaltyAuthor;
+        _addrNftAuthor = addrRoyaltyAuthor;
         _royaltyPercentAuthor = royaltyPercent;
         _saleStartTime = now;
     }
@@ -78,11 +74,7 @@ contract DirectSale {
         saleTimeNotPassed
         enoughValueToBuyNft
     {
-        uint128 royaltyValueRoot = math.muldiv(_nftPrice, _royaltyPercentRoot, 100);
-        _addrRoyaltyRoot.transfer({value: royaltyValueRoot, flag: 1});
-
-        uint128 royaltyValueAuthor = math.muldiv((_nftPrice - royaltyValueRoot), _royaltyPercentAuthor, 100);
-        _addrRoyaltyAuthor.transfer({value: royaltyValueAuthor, flag: 1});
+        payRoyalty(_nftPrice);
         
         IData(_addrNft).transferOwnership{ value: Fees.MIN_FOR_INDEX_DEPLOY + Fees.MIN_FOR_MESSAGE }(msg.sender);
         IData(_addrNft).returnOwnership{ value: Fees.MIN_FOR_MESSAGE }();
@@ -106,7 +98,6 @@ contract DirectSale {
         saleNotStarted
         notZeroDuration(saleDuration)
     {
-        tvm.accept();
         _saleDuration = saleDuration;
         if (!_isDurationLimited) { _isDurationLimited = true; }
     }
@@ -116,9 +107,8 @@ contract DirectSale {
         onlySaleOwner
         saleNotStarted
     {
-        tvm.accept();
         _isDurationLimited = false;
-        if (_saleDuration > 0) { _saleDuration = 0; }
+        if (_saleDuration > 0) { _saleDuration = 0; } // проверить на избыточность
     }
 
     function getNftPrice() external view returns (uint128 nftPrice) {
@@ -143,7 +133,7 @@ contract DirectSale {
         saleDuration = _saleDuration;
     }
 
-    function isSaleStarted() private view returns (bool) {
+    function isSaleStarted() private inline view returns (bool) {
         return _saleStartTime != 0;
     }
 

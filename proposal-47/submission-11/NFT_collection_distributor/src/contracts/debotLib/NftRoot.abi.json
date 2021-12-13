@@ -18,6 +18,12 @@
 		{
 			"name": "mintNft",
 			"inputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"url","type":"bytes"},
+				{"name":"editionNumber","type":"uint8"},
+				{"name":"editionAmount","type":"uint8"},
+				{"name":"managersList","type":"address[]"},
+				{"name":"royalty","type":"uint8"},
 				{"name":"nftType","type":"bytes"},
 				{"name":"additionalEnumParameter","type":"int256"},
 				{"name":"additionalStrParameter","type":"bytes"},
