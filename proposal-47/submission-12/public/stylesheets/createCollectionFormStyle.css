@@ -34,7 +34,7 @@
 }
 
 .submitButton {
-    margin-top: 15px;
+    margin-top: 10px;
     margin-bottom: 10px;
     width: 100%;
 }
@@ -68,12 +68,21 @@
     margin-bottom: 10px;
 }
 
+.uploadImageButton {
+    margin-top: 10px;
+    width: 100%;
+}
+
 .last-in-param {
     border-color: black;
     border-bottom: solid;
 }
 
 #model-input {
+    display: none;
+}
+
+#image-input {
     display: none;
 }
 

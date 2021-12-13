@@ -36,7 +36,7 @@ contract NftRoot is DataResolver, IndexResolver {
     // To count when tokens are created
     mapping (string => uint) _rarityMintedCounter;
 
-    bytes _rootIcon;
+    string _rootIcon;
     string _rootName;
 
     struct Rarity {
@@ -46,7 +46,7 @@ contract NftRoot is DataResolver, IndexResolver {
 
     constructor(
         string rootName,
-        bytes rootIcon,
+        string rootIcon,
         TvmCell codeIndex, 
         TvmCell codeData,
         uint tokensLimit,

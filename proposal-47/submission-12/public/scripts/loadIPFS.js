@@ -6,7 +6,7 @@ $("#file-input").on("change", async (e) => {
     const fileObject = e.target.files[0]
     const reader = new FileReader()
     reader.onload = async () => {
-        const base64 = reader.result.replace("data:", "").replace(/^.+,/, "")
+        const base64 = reader.result
         const link = await fetch(
             "/loadIPFS",
             {

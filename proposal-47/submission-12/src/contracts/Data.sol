@@ -137,16 +137,12 @@ contract Data is IData, IndexResolver {
         address addrData,
         address addrRoot,
         address addrOwner,
-        address addrTrusted,
-        string rarityName,
-        string url
+        address addrTrusted
     ) {
         addrData = address(this);
         addrRoot = _addrRoot;
         addrOwner = _addrOwner;
         addrTrusted = _addrTrusted;
-        rarityName = _rarityName;
-        url = _url;
     }
 
     function rightsTransferabilityStatus() public view override onlyOwnerOrTrusted returns(bool status) {

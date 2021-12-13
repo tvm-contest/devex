@@ -51,9 +51,7 @@ contract DirectSellRoot {
         new DirectSell {
             stateInit: stateDirectSell,
             value: Constants.MIN_FOR_DIRECT_SELL_DEPLOY
-            }(
-                price
-            );
+            }();
 
         msg.sender.transfer({value: 0, flag: 128});
     }

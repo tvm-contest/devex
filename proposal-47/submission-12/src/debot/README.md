@@ -2,10 +2,10 @@
  
 ## Test our Debot on TON Surf
 <ul dir="auto">
-<li>Follow the link to the <a href = "https://web.ton.surf/debot?address=0%3Ab8716bbb76f8e328164949e13695637879331e4d499127d8c2adf74bbfcbcd91&net=devnet&restart=true">Ton Surf </a></li>
+<li>Follow the link to the <a href = "https://web.ton.surf/debot?address=0%3A03938c42bcba291d75d51e642af799b278ca3ac000ad972020454ab335477c70&net=devnet&restart=true">Ton Surf </a></li>
 <li>Enter your wallet address</li>
-<li>Enter your Nft Root address</li>
-Example: 0:4de52efe97e4333b56536f2b216c02d7ae3326cdc02364a3c3ab7e2d420629da
+<li>Enter NFT Root address</li>
+Example: 0:732acc1068558fedd3cb5e3e2c8685c254a98cdeb89ecf7af695024ad9d6d87f
  <li>Follow the instructions</li>
 </ul>
 

@@ -13,9 +13,7 @@ interface IData {
         address addrData,
         address addrRoot,
         address addrOwner,
-        address addrTrusted,
-        string rarityName,
-        string url
+        address addrTrusted
     );
 
     function rightsTransferabilityStatus() external view returns(bool status);

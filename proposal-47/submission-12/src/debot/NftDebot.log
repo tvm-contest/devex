@@ -6,12 +6,12 @@ Input arguments:
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "supreme thing surge twenty search wage great suggest capital chunk unable swim"
-Raw address: 0:e437079aac41c93832a07382c1fe246d851287067810a12458b9b0b22b79763f
+Seed phrase: "wife second mask tank pilot heavy rebel purpose cream skirt hunt engage"
+Raw address: 0:03938c42bcba291d75d51e642af799b278ca3ac000ad972020454ab335477c70
 testnet:
-Non-bounceable address (for init): 0QDkNwearEHJODKgc4LB_iRthRKHBngQoSRYubCyK3l2P8Yk
-Bounceable address (for later access): kQDkNwearEHJODKgc4LB_iRthRKHBngQoSRYubCyK3l2P5vh
+Non-bounceable address (for init): 0QADk4xCvLopHXXVHmQq95myeMo6wACtlyAgRUqzNUd8cGwP
+Bounceable address (for later access): kQADk4xCvLopHXXVHmQq95myeMo6wACtlyAgRUqzNUd8cDHK
 mainnet:
-Non-bounceable address (for init): UQDkNwearEHJODKgc4LB_iRthRKHBngQoSRYubCyK3l2P32u
-Bounceable address (for later access): EQDkNwearEHJODKgc4LB_iRthRKHBngQoSRYubCyK3l2PyBr
+Non-bounceable address (for init): UQADk4xCvLopHXXVHmQq95myeMo6wACtlyAgRUqzNUd8cNeF
+Bounceable address (for later access): EQADk4xCvLopHXXVHmQq95myeMo6wACtlyAgRUqzNUd8cIpA
 Succeeded

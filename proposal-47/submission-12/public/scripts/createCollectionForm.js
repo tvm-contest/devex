@@ -29,6 +29,7 @@ const defaultValues = {
 
 const tokens = []
 const params = []
+let collectionImageData = ""
 
 const createLabel = (text) => {
     const label = document.createElement("label")
@@ -46,7 +47,8 @@ const createTokenTypeInput = (tokenObject) => {
     tokenTypeInput.value = "Name"
     tokenTypeInput.placeholder = "Input the type of a token"
     tokenTypeInput.type = "text"
-    tokenTypeInput.pattern = "[A-Za-z0-9_]+"
+    tokenTypeInput.pattern = "[A-Za-z0-9]+"
+    tokenTypeInput.title = "Only english letters are allowed"
     tokenObject.rarityName = defaultValues.Token.name
     tokenTypeInput.onchange = (e) => {
         tokenObject.rarityName = e.target.value
@@ -146,6 +148,12 @@ const createValueDiv = (type, labelText, onChange, defaultValue) => {
 
     const valueLabel = createLabel(labelText)
     const valueInput = document.createElement("input")
+
+    if (type === "text") {
+        console.log("here") 
+        valueInput.pattern = "^[a-zA-Z_$][a-zA-Z_$0-9]*"
+        valueInput.title = "This field can't contain numbers as the first character"
+    }
 
     if (type !== "checkbox") {
         valueInput.value = defaultValue
@@ -310,6 +318,10 @@ const addParam = () => {
 }
 
 const onSubmit = async () => {
+    if (!document.getElementById("collection-form").checkValidity()) {
+        return
+    }
+
     const collectionName = $("#collectionNameInput").val()
     const paramsToSend = []
 
@@ -336,6 +348,7 @@ const onSubmit = async () => {
 
     const collection = {
         rootName: collectionName,
+        rootIcon: collectionImageData,
         raritiesList: tokens,
         paramsData: paramsToSend
     }
@@ -352,6 +365,10 @@ const onSubmit = async () => {
 }
 
 const save = async () => {
+    if (!document.getElementById("collection-form").checkValidity()) {
+        return
+    }
+
     const collectionName = $("#collectionNameInput").val()
     const paramsToSend = []
 
@@ -375,6 +392,7 @@ const save = async () => {
 
     const collection = {
         rootName: collectionName,
+        rootIcon: collectionImageData,
         raritiesList: tokens,
         paramsData: paramsToSend
     }
@@ -391,6 +409,10 @@ const save = async () => {
     download(`http://localhost:8081/${data.filename}`, "collectionParams")
 }
 
+const onUpload = () => {
+    $("#image-input").trigger("click")
+}
+
 const importModel = () => {
     $("#model-input").trigger("click")
 }
@@ -402,20 +424,48 @@ function download(fileUrl, fileName) {
     a.click();
 }
 
-$("#model-input").on("change", async (e) => { 
-    const dataFile = e.target.files[0]
-    const reader = new FileReader()
+$("#image-input").on("change", async (e) => {
+    if (e.target.files) {
+        console.log("here")
+        const fileObject = e.target.files[0]
+        const reader = new FileReader()
+        reader.onload = async () => {
+            const base64 = reader.result
+            const link = await fetch(
+                "/loadIPFS",
+                {
+                    method: "POST",
+                    body: JSON.stringify({ "base64": base64 }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+            
+            const data = await link.json()
+            collectionImageData = data.link
+        }
 
-    reader.onload = async () => {
-        const collection = JSON.parse(reader.result)
-        await fetch("/createCollection", {
-            method: "POST",
-            body: JSON.stringify(collection),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        reader.readAsDataURL(fileObject)
     }
+})
 
-    reader.readAsText(dataFile)
+$("#model-input").on("change", async (e) => { 
+    if (e.target.files) {
+        const dataFile = e.target.files[0]
+        const reader = new FileReader()
+
+        reader.onload = async () => {
+            const collection = JSON.parse(reader.result)
+            await fetch("/createCollection", {
+                method: "POST",
+                body: JSON.stringify(collection),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+        }
+
+        reader.readAsText(dataFile)
+    }
 })

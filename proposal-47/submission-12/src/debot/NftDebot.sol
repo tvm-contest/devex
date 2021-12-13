@@ -16,6 +16,7 @@ import "./vendoring/Sdk.sol";
 
 import "../contracts/NftRoot.sol";
 import "../contracts/Data.sol";
+import '../contracts/interfaces/IData.sol';
 
 interface IMultisig {
 
@@ -34,11 +35,6 @@ struct NftParams {
     string url;
 }
 
-struct NftResp {
-    address addrData;
-    address owner;
-}
-
 contract NftDebot is Debot, Upgradable {
 
     address _addrNFT;
@@ -51,7 +47,6 @@ contract NftDebot is Debot, Upgradable {
     uint _rarityAmount;
 
     NftParams _nftParams;
-    NftResp[] _owners;
 
     /// @notice Returns Metadata about DeBot.
     function getDebotInfo() public functionID(0xDEB) override view returns(
@@ -221,12 +216,12 @@ contract NftDebot is Debot, Upgradable {
     function onNftDeploySuccess() public {
         tvm.accept();
         Terminal.print(0, format('Your token is deployed at address: {}', _addrNFT));
-        Data(_addrNFT).getInfo{
+        IData(_addrNFT).getInfo{
             abiVer: 2,
             extMsg: true,
             callbackId: tvm.functionId(checkResult),
-            onErrorId: 0,
-            time: 0,
+            onErrorId: tvm.functionId(onError),
+            time: uint64(now),
             expire: 0,
             sign: false
         }();
@@ -241,14 +236,12 @@ contract NftDebot is Debot, Upgradable {
         address addrData,
         address addrRoot,
         address addrOwner,
-        address addrTrusted,
-        string rarityName,
-        string url
+        address addrTrusted
     ) public {
         Terminal.print(0, 'Data of deployed NFT: ');
         Terminal.print(0, format("NFT address: {}", addrData));
-        Terminal.print(0, format("Rarity: {}\n", rarityName));
-        Terminal.print(0, format("Link: {}\n", url));
+        Terminal.print(0, format("Rarity: {}\n", _nftParams.rarityName));
+        Terminal.print(0, format("Link: {}\n", _nftParams.url));
         restart();
     }
 
@@ -284,7 +277,11 @@ contract NftDebot is Debot, Upgradable {
     }
 
     function printRaritiesList() public {
-        Terminal.print(0, "List of rarities: UltraRare, Rare, Common, Junk");
+        if (_rarityName == "") {
+            Terminal.print(0, "List of rarities: UltraRare, Rare, Common, Junk");
+        } else {
+            Terminal.print(0, format("List of rarities: UltraRare, Rare, Common, Junk, {}", _rarityName));
+        }
         restart();
     }
 
@@ -294,7 +291,7 @@ contract NftDebot is Debot, Upgradable {
             abiVer: 2,
             extMsg: true,
             callbackId: tvm.functionId(setNftAddr),
-            onErrorId: 0,
+            onErrorId: tvm.functionId(onError),
             time: uint64(now),
             expire: 0,
             sign: false

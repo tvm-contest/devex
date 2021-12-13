@@ -2,6 +2,11 @@ p {
     margin: 0px;
 }
 
+img {
+    max-width: 200px;
+    max-height: 200px;
+}
+
 .container {
     margin: 0 auto;
     width: 450px;

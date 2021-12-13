@@ -21,14 +21,8 @@ contract DirectSell {
     uint128 _price;
     uint64 _endUnixtime;
 
-    constructor(
-        uint128 price
-    ) 
-        public
-    {
+    constructor() public {
         require(msg.sender == _addrRoot, DirectSellErr.ONLY_ROOT, "Only root allowed");
-        tvm.accept();
-        _price = price;
     }
 
     function verifyNftTradability()
@@ -52,7 +46,7 @@ contract DirectSell {
         require(price > 0, DirectSellErr.WRONG_NUMBER_IS_GIVEN, "Price must be greater than zero");
 
         tvm.accept();
-        price = _price;
+        _price = price;
         if (duration == 0) {
             _endUnixtime = 9999999999999;
         }
