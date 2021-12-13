@@ -45,7 +45,8 @@ export class MintNftService {
             { _name: utf8ToHex(dataForMinting.contractName) }
         );
 
-        const mintParams = this.getMintParams();
+        const mintParams = await this.getMintParams(dataForMinting);
+        
         const mintMessage = await this.getMintMessage(
             rootNftAccount,
             'mintNft',
@@ -56,7 +57,7 @@ export class MintNftService {
         this.imageCreator.createTokenImage(this.getCollectionSourceFolder());
     }
 
-    async getMintParams(): Promise<object> {
+    async getMintParams(mitingData): Promise<object> {
         return {
             name: utf8ToHex(""),
             url: utf8ToHex(""),
@@ -67,8 +68,11 @@ export class MintNftService {
             //
             // Hard code parameters
             //
-            nftType: utf8ToHex('rarity'),
-            power: 3
+            // Вот тут должны быть параметры под конкретной рут
+            // Этот метод я еще не доделал
+            nftType: utf8ToHex(mitingData.rarities),
+            tokenName: utf8ToHex(''),
+            tokenColor: utf8ToHex('')
         }
     }
 

@@ -22,9 +22,13 @@ router.post('/', async function (req, res, next) {
 });
 
 router.post('/minting', async function (req, res, next) {
-    console.log(req.body);
-    const mintService = new MintNftService(req.body.rootAddress);
-    await mintService.mintNft(req.body);
+    try {
+        console.log("BODY IS ", req.body);
+        const mintService = new MintNftService(req.body.rootAddress);
+        await mintService.mintNft(req.body);
+    } catch (error) {
+        console.log(error);
+    }
     
     // res.redirect('/tokens-data-info?rootNftAddress=' + req.body.rootAddress);
 })
