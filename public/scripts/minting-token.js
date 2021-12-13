@@ -1,16 +1,17 @@
 
 var obj = JSON.parse(address)
-console.log(obj.collection.parameters)
-console.log(obj)
 if(obj.collection.rarities != []){
     $(".rarities ").append($(`<label> Rarities<label>`))
     $(".rarities").append($(`<div class="col"id="rarities">`))
-    var listRar = []
+    $(`#rarities`).append($(`<select class="form-select select-param-token" id ="select-rarities" name="rarities">`))
+    //var listRar = []
+    
     for(var keyID in obj.collection.rarities){
-        listRar.push(obj.collection.rarities[keyID].name)
+        $(`#select-rarities`).append($(`<option value=${obj.collection.rarities[keyID].name}> ${obj.collection.rarities[keyID].name}</option>`))
+        //listRar.push(obj.collection.rarities[keyID].name)
     }
-    $("#rarities ").append($(`<label>( ${listRar})<label>`))
-    $(`#rarities`).append($(`<input class="form-control" name="rarities">`)) 
+    //$("#rarities ").append($(`<label>( ${listRar})<label>`))
+    //$(`#rarities`).append($(`<input class="form-control" name="rarities">`)) 
 }
 
 if(obj.mediafiles != []){
@@ -20,7 +21,7 @@ if(obj.mediafiles != []){
     }
 }
 
-console.log(nameMedia)
+
 if(obj.collection.parameters != []){
     $(".parameters ").append($(`<label> Parameters<label>`))
     for(var keyID in obj.collection.parameters){
@@ -41,17 +42,20 @@ if(obj.collection.parameters != []){
 if (obj.enums.length > 0){
     $(".parameters").append($(`<br><label>  Enum <label>`))
 
-    var listEnum = []
+    //var listEnum = []
     for(var keyIdColEnum in obj.enums){
         $(".parameters").append($(`<div class="col" id="paramenersE${keyIdColEnum}">`))
         $(`#paramenersE${keyIdColEnum}`).append($(`<label class="form-label"> ${obj.enums[keyIdColEnum].name}<label>`))
-        
+
+        $(`#paramenersE${keyIdColEnum}`).append($(`<select class="form-select select-param-enum" id ="select-enum${keyIdColEnum}" name="paramener[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`))
         for(var keyIDenum in obj.enums[keyIdColEnum].enumVariants){
-            listEnum.push(obj.enums[keyIdColEnum].enumVariants[keyIDenum])
+            //listEnum.push(obj.enums[keyIdColEnum].enumVariants[keyIDenum])
+            $(`#select-enum${keyIdColEnum}`).append($(`<option value=${keyIDenum}> ${obj.enums[keyIdColEnum].enumVariants[keyIDenum]}</option>`))
+
         }
-        $(`#paramenersE${keyIdColEnum}`).append($(`<label class="form-label"> (${listEnum})<label>`))
-        $(`#paramenersE${keyIdColEnum}`).append($(`<input class="form-control" name="paramener[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`)) 
-        listEnum = []
+        //$(`#paramenersE${keyIdColEnum}`).append($(`<label class="form-label"> (${listEnum})<label>`))
+        //$(`#paramenersE${keyIdColEnum}`).append($(`<input class="form-control" name="paramener[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`)) 
+        //listEnum = []
     }
     }
 //
