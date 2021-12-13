@@ -196,11 +196,4 @@ abstract contract DataCore is IDataCore, IndexResolver {
                "Message balance is not enough for ownership transfer");       
         _;
     }
-
-    // modifier enoughValueToReturnOwnership {
-    //     require(msg.value >= Fees.MIN_FOR_MESSAGE,
-    //            DataErr.NOT_ENOUGH_VALUE_TO_RETURN_OWNERSHIP,
-    //            "Message balance is not enough for ownership returning");       
-    //     _;
-    // }
 }

@@ -14,10 +14,10 @@ contract DirectSale {
     address static _addrOwner;     // адрес кошелька создателя контракта
     address static _addrNft;       // адрес выставленного на продажу токена
     
-    address _addrRoyaltyRoot;
-    uint8 _royaltyPercentRoot;
-    address _addrRoyaltyAuthor;
-    uint8 _royaltyPercentAuthor;
+    address _addrRoyaltyRoot;      // адрес получателя роялти со стороны DirectSaleRoot
+    uint8 _royaltyPercentRoot;     // процент с продажи для addrRoyaltyRoot
+    address _addrRoyaltyAuthor;    // адрес владельца токена
+    uint8 _royaltyPercentAuthor;   // процент с продажи для addrRoyaltyAuthor
     
     bool _isDurationLimited;       // ограничена ли продажа по времени
 
@@ -118,7 +118,7 @@ contract DirectSale {
     {
         tvm.accept();
         _isDurationLimited = false;
-        if (_saleDuration > 0) { _saleDuration = 0; } // проверить на избыточность
+        if (_saleDuration > 0) { _saleDuration = 0; }
     }
 
     function getNftPrice() external view returns (uint128 nftPrice) {

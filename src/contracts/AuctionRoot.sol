@@ -7,8 +7,6 @@ import "Auction.sol";
 
 contract AuctionRoot {
 
-    uint8 constant MAX_ROYALTY_PERC = 25;
-
     TvmCell _codeAuction;
     address _addrOwner;
     address _addrRoyaltyRecipient;
@@ -86,7 +84,7 @@ contract AuctionRoot {
     }
 
     modifier validRoyalty(uint8 royaltyPercent) {
-        require(royaltyPercent <= MAX_ROYALTY_PERC, AuctionErr.INVALID_ROYALTY);
+        require(royaltyPercent <= 100, AuctionErr.INVALID_ROYALTY);
         _;
     }
     modifier notZeroInitialPrice(uint128 price) {

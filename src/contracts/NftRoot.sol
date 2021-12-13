@@ -65,7 +65,6 @@ contract NftRoot is DataResolver, IndexResolver {
         string nftType/*%PARAM_TO_MINT%*/
     )
         public
-        enoughValueToDeployData
     {
         require(isEnoughValueToMint(msg.value) || isCommissionAgent(msg.sender), NOT_ENOUGH_VALUE_TO_MINT);
         /*%REQUIRE_TYPE%*/require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
@@ -163,12 +162,4 @@ contract NftRoot is DataResolver, IndexResolver {
                ONLY_COMMISSION_AGENT);       
         _;
     }
-
-    modifier enoughValueToDeployData {
-        require(msg.value >= Fees.MIN_FOR_DATA_DEPLOY + Fees.MIN_FOR_MESSAGE,
-               DataErr.NOT_ENOUGH_VALUE_TO_DEPLOY_DATA,
-               "Message balance is not enough for Data deployment");       
-        _;
-    }
-
 }
