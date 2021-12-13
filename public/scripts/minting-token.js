@@ -44,11 +44,13 @@ if (obj.enums.length > 0){
     var listEnum = []
     for(var keyIdColEnum in obj.enums){
         $(".parameters").append($(`<div class="col" id="paramenersE${keyIdColEnum}">`))
+        $(`#paramenersE${keyIdColEnum}`).append($(`<label class="form-label"> ${obj.enums[keyIdColEnum].name}<label>`))
+        
         for(var keyIDenum in obj.enums[keyIdColEnum].enumVariants){
             listEnum.push(obj.enums[keyIdColEnum].enumVariants[keyIDenum])
         }
         $(`#paramenersE${keyIdColEnum}`).append($(`<label class="form-label"> (${listEnum})<label>`))
-        $(`#paramenersE${keyIdColEnum}`).append($(`<input class="form-control" name="paramener[enum][${obj.enums[keyIdColEnum].enumVariants[keyIDenum]}]${keyIDenum}">`)) 
+        $(`#paramenersE${keyIdColEnum}`).append($(`<input class="form-control" name="paramener[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`)) 
         listEnum = []
     }
     }
