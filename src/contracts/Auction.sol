@@ -19,39 +19,15 @@ contract Auction {
     uint128 _highestBidValue;      // размер максимальной ставки
     address _addrHighestBidder;    // адрес предложившего максимальную ставку
 
-    address _addrRoyaltyRoot;
-    uint8 _royaltyPercentRoot;
-    address _addrRoyaltyAuthor;
-    uint8 _royaltyPercentAuthor;
+    address _addrRoyaltyRoot;      // адрес получателя роялти со стороны AuctionRoot
+    uint8 _royaltyPercentRoot;     // процент с продажи для addrRoyaltyRoot
+    address _addrRoyaltyAuthor;    // адрес владельца токена
+    uint8 _royaltyPercentAuthor;   // процент с продажи для addrRoyaltyAuthor
 
     uint64 _auctionStartTime;      // дата окончания аукциона в Unix-time формате
     uint64 _auctionDuration;       // продолжительность аукциона в секундах
 
     address _addrExternRoot;       // адрес вида addr_extern, на который события будут отправлять сообщения
-
-    event AuctionStarted(
-        address addrOwner,
-        address addrNft,
-        uint128 initialPrice,
-        uint64 auctionDuration
-    );
-    
-    event BidPlaced(
-        address addrBidder,
-        uint128 bidValue
-    );
-
-    event AuctionFinished(
-        address addrOwner,
-        address addrNft,
-        address addrWinner,
-        uint128 valueOwnerReceived
-    );
-
-    event AuctionCancelled(
-        address addrOwner,
-        address addrNft
-    );
 
     constructor (
         uint128 initialPrice,
@@ -62,10 +38,6 @@ contract Auction {
         tvm.accept();
         _initialPrice = initialPrice;
         _minBidStep = minBidStep;
-
-        // на основе адреса addrRoot формируем адрес вида addr_extern
-        // по сути может быть любым, но для единообразия выбран такой способ
-        _addrExternRoot = address.makeAddrExtern(address(_addrRoot).value, 256);
     }
 
     function start(uint64 auctionDuration)
@@ -98,15 +70,6 @@ contract Auction {
         _addrRoyaltyAuthor = addrRoyaltyAuthor;
         _royaltyPercentAuthor = royaltyPercent;
         _auctionStartTime = now;
-
-        emit AuctionStarted {
-            dest: _addrExternRoot
-        }(
-            _addrOwner,
-            _addrNft,
-            _initialPrice,
-            _auctionDuration
-        );
     }
 
     function placeBid(uint128 bidValue)
@@ -125,13 +88,6 @@ contract Auction {
         _highestBidValue = bidValue;
         _addrHighestBidder = msg.sender;
 
-        emit BidPlaced {
-            dest: _addrExternRoot
-        }(
-            _addrHighestBidder,
-            _highestBidValue
-        );
-
         msg.sender.transfer({value: 0, flag: 128});
     }
 
@@ -143,22 +99,13 @@ contract Auction {
         enoughValueToFinishAuction
     {
         uint128 royaltyValueRoot = math.muldiv(_highestBidValue, _royaltyPercentRoot, 100);
-        _addrRoyaltyRoot.transfer({value: royaltyValueRoot, flag: 1}); // определиться с флагом
+        _addrRoyaltyRoot.transfer({value: royaltyValueRoot, flag: 1});
 
         uint128 royaltyValueAuthor = math.muldiv((_highestBidValue - royaltyValueRoot), _royaltyPercentAuthor, 100);
         _addrRoyaltyAuthor.transfer({value: royaltyValueAuthor, flag: 1});
 
         IData(_addrNft).transferOwnership{ value: Fees.MIN_FOR_INDEX_DEPLOY + Fees.MIN_FOR_MESSAGE }(_addrHighestBidder);
         IData(_addrNft).returnOwnership{ value: Fees.MIN_FOR_MESSAGE }();
-
-        emit AuctionFinished {
-            dest: _addrExternRoot
-        }(
-            _addrOwner,
-            _addrNft,
-            _addrHighestBidder,
-            _highestBidValue
-        );
 
         _addrOwner.transfer({value: 0, flag: 160});
     }
@@ -168,17 +115,9 @@ contract Auction {
         onlyOwner
         noBidsMade
         auctionStarted
-        enoughValueToCancel
+        enoughValueForMessage
     {
         IData(_addrNft).returnOwnership{ value: Fees.MIN_FOR_MESSAGE }();
-
-        emit AuctionCancelled {
-            dest: _addrExternRoot
-        }(
-            _addrOwner,
-            _addrNft
-        );
-
         _addrOwner.transfer({value: 0, flag: 160});
     }
 
@@ -290,7 +229,7 @@ contract Auction {
     }
 
     modifier enoughValueToStartAuction {
-        require(msg.value >= 3 * Fees.MIN_FOR_MESSAGE,
+        require(msg.value >= 2 * Fees.MIN_FOR_MESSAGE,
                 AuctionErr.NOT_ENOUGH_VALUE_TO_START_AUCTION);
         _;
     }
@@ -298,12 +237,6 @@ contract Auction {
     modifier enoughValueToFinishAuction {
         require(msg.value >= Fees.MIN_FOR_INDEX_DEPLOY + 4 * Fees.MIN_FOR_MESSAGE,
                 AuctionErr.NOT_ENOUGH_VALUE_TO_FINISH_AUCTION);
-        _;
-    }
-
-    modifier enoughValueToCancel {
-        require(msg.value >= 2 * Fees.MIN_FOR_MESSAGE,
-                AuctionErr.NOT_ENOUGH_VALUE_TO_CANCEL_AUCTION);
         _;
     }
 

@@ -7,8 +7,6 @@ import "DirectSale.sol";
 
 contract DirectSaleRoot {
 
-    uint8 constant MAX_ROYALTY_PERC = 25;
-
     TvmCell _codeSale;
     address _addrOwner;
     address _addrRoyaltyRecipient;
@@ -53,7 +51,6 @@ contract DirectSaleRoot {
             }
         });
 
-        // проверить на возможность повторного создания
         new DirectSale {
             stateInit: stateSale,
             value: Fees.MIN_FOR_SALE_DEPLOY
@@ -98,7 +95,7 @@ contract DirectSaleRoot {
     }
 
     modifier validRoyalty(uint8 royaltyPercent) {
-        require(royaltyPercent <= MAX_ROYALTY_PERC, SaleErr.INVALID_ROYALTY);
+        require(royaltyPercent < 100, SaleErr.INVALID_ROYALTY);
         _;
     }
 
