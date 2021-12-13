@@ -16,7 +16,7 @@ block content
           .col-8
             input.output-col.collection-address(name="colAdd" value=collection.address)
             .text=collection.address
-        .col.button-main
+        .col.button-main-list
             input.submit-button.btn.btn-blue.btn-block(id=`${collection.address}` type="button" value="Info root" onclick="fromCollectionListToTokenList(this);")
             input.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token")
 

@@ -11,15 +11,20 @@ block content
       input.btn.btn-blue(type="submit" value="Find")
 
     .token-info-container
-      if outputInfo        
-        each line in outputInfo
-          if line.isIPFS
-            iframe(src=line.value frameborder="0" height="100%" width="100%" ) 
-          else
-            pre= line.value
-    
-
-  script(src="/scripts/root-contract-form.js")
+      if tokenInfo        
+        each line in tokenInfo
+          if line.tag == 'p'
+            p= line.title + ': ' + line.value
+          else if line.tag == 'img'
+            p= line.title 
+            img(src=line.value)
+          else if line.tag == 'video'
+            p= line.title 
+            video(src=line.value)
+          else if line.tag == 'a'
+            p= line.title 
+            a(href=line.value target="_blank")= line.value
+          
   script(src="/scripts/input-validation.js")
     
 
