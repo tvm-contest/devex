@@ -29,7 +29,7 @@ if(obj.collection.parameters != []){
             $(".mediafile ").append($(`<label> MediaFile<label>`))
             $(".mediafile ").append($(`<div class="col"id="mediafile${keyID}">`))
             $(`#mediafile${keyID}`).append($(`<label class="form-label"> ${obj.collection.parameters[keyID].name}<label>`))
-            $(`#mediafile${keyID}`).append($(`<input class="form-control" name="paramener[mediafile][${obj.collection.parameters[keyID].name}]${keyID}">`))  
+            $(`#mediafile${keyID}`).append($(`<br><input type="file" class="form-file-input" id="customFile" name="paramener[mediafile][${obj.collection.parameters[keyID].name}]${keyID}">`))  
         } else if (obj.collection.parameters[keyID].type.substring(0,4) != "Enum"){//!
             $(".parameters").append($(`<div class="col"id="parameters${keyID}">`))
             $(`#parameters${keyID}`).append($(`<label class="form-label"> ${obj.collection.parameters[keyID].name}<label>`))
