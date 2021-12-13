@@ -112,7 +112,9 @@ export class TokenInfoBuilder {
     ipfs.stop()
     
     for (let _enum of jsonCollection.enums) {
-      let value = _enum.enumVariants[Number(output['_enum' + _enum.name])]
+      console.log(_enum.enumVariants) 
+      console.log(output['_' + _enum.name])
+      let value = _enum.enumVariants[Number(output['_' + _enum.name])]
       respons.push({title: _enum.name, value: value, tag: 'p'})
     }
     
