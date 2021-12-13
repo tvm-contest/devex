@@ -106,7 +106,7 @@ export class DeployTrueNftService {
                 aborted: { eq: false },
             },
             result: "now aborted",
-            timeout: 10000,
+            timeout: everscale_settings.TIMEOUT,
         });
         return result;
     }
