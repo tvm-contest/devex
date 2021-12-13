@@ -87,9 +87,6 @@ class ContractGenerator {
           await addParamsService.addMediaFiles(mediafiles, debotFileTemp, debotFileTemp);
         }
       }
-      if (mediafiles !== undefined) {
-        await addParamsService.addMediaFiles(mediafiles, debotFileTemp, debotFileTemp);
-      }
       if (collectionSettings.getRarities().length == 0 ||
         (collectionSettings.getRarities().length == 1 && collectionSettings.getRarities()[0].getName() == '')) {
         await addParamsService.removeNftTypeChecking(nftRootFileTepm, debotFileTemp);

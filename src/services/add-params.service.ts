@@ -76,9 +76,8 @@ export class AddParamsService {
   }
 
   private async addEnum(enumParam: EnumParameter, codeSource: string) : Promise<string> {
-    let enumParameter = "enum " + enumParam.getName() + ' { ' + enumParam.getEnumVariants().toString() + ' } ' + '\n' + markForEnums;
+    let enumParameter = "enum Enum" + enumParam.getName() + ' { ' + enumParam.getEnumVariants().toString() + ' } ' + '\n' + markForEnums;
     
-
     let enumVariants = enumParam.getEnumVariants().toString().split(',');
     let enumsNumbers = '';
     let enumLength = 0;
@@ -86,14 +85,14 @@ export class AddParamsService {
       enumsNumbers = enumsNumbers + ' ' + (i) + ' - ' + enumVariants[i] + "\\n";
       enumLength++;
     }
-    let paramForDebotCheckResult = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(enum' + enumParam.getName() + ')));\n\t\t' + markForDebotCheckResult;
-    let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n enum' + enumParam.getName() + ': {}", uint(_nftParams.enum' + enumParam.getName() + ')));\n\t\t' + markForDebotDeployNftStep2;
-    let paramForDebotSetTypes = 'AmountInput.get(tvm.functionId(nftParamsSetenum' + enumParam.getName() +'), ' + 
+    let paramForDebotCheckResult = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n ' + enumParam.getName() + ': {}", uint(' + enumParam.getName() + ')));\n\t\t' + markForDebotCheckResult;
+    let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("Available: ' + enumsNumbers + '\\n ' + enumParam.getName() + ': {}", uint(_nftParams.' + enumParam.getName() + ')));\n\t\t' + markForDebotDeployNftStep2;
+    let paramForDebotSetTypes = 'AmountInput.get(tvm.functionId(nftParamsSet' + enumParam.getName() +'), ' + 
     '"Enter ' + enumParam.getName() + '\\nAvailable: \\n' + enumsNumbers + '(enter the number):",  0, 0, ' + enumParam.getName() + 'Length - 1);\n\t\t' + markForDebotSetTypes;
     let paramForDebotEnumLength = 'uint128 ' + enumParam.getName() + 'Length = ' + enumLength + ';\n' + markForDebotParamEnumLength;
 
-    let functionForDebotSetTypes = 'function nftParamsSetenum' + enumParam.getName() + '(uint128 value) public {\n' +
-    '\t\t_nftParams.enum' + enumParam.getName() + ' = '+ enumParam.getName() +'(value);\n\t}\n\t' + markForDebotFunctionSetTypes;
+    let functionForDebotSetTypes = 'function nftParamsSet' + enumParam.getName() + '(uint128 value) public {\n' +
+    '\t\t_nftParams.' + enumParam.getName() + ' = Enum'+ enumParam.getName() +'(value);\n\t}\n\t' + markForDebotFunctionSetTypes;
     
     codeSource = codeSource.replace(markForEnums, enumParameter);
     codeSource = codeSource.replace(markForDebotCheckResult, paramForDebotCheckResult);
@@ -161,7 +160,12 @@ export class AddParamsService {
       let paramForDebotSetTypes = 'Terminal.input(' + 
         'tvm.functionId(nftParamsSet' + mediafile.getName() +  '), ' + 
         '"Enter ' + mediafile.getName() + '(link to the IPFS where the media file is stored):", false);\n\t\t' + markForDebotSetTypes;
+      let paramForDebotDeployNftStep2 = 'Terminal.print(0, format("' + mediafile.getName() + ': {}", _nftParams.' + mediafile.getName() + '));\n\t\t' + markForDebotDeployNftStep2;
+      let paramForDebotCheckResult = 'Terminal.print(0, format("' + mediafile.getName() + ': {}",' + mediafile.getName() + '));\n\t\t' + markForDebotCheckResult;
+      
       codeSource = codeSource.replace(markForDebotSetTypes, paramForDebotSetTypes);
+      codeSource = codeSource.replace(markForDebotDeployNftStep2, paramForDebotDeployNftStep2);
+      codeSource = codeSource.replace(markForDebotCheckResult, paramForDebotCheckResult);
     }
         
     fs.writeFileSync(outputContractFile, codeSource, 'utf8');
