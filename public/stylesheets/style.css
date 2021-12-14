@@ -24,7 +24,13 @@ body {
 .content{
     color: #000;
 }
-
+.select-param-token,
+.select-param-enum{
+    color: rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);;
+    border-radius: 50px;
+    box-shadow: none !important;
+}
 .col.button-main-list{
     padding-top: 20px;
 }

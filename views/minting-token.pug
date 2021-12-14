@@ -4,12 +4,15 @@ block content
   .forms
     .container
       form.row.g-3#form-contract(action="/minting-tokens/minting", method="post") 
+        input(name="rootAddress" value=collectionRootAddress type="hidden")
+        input(name="contractName" value=collectionName type="hidden")
         .content
           .rarities
         
           .parameters 
           
           .mediafile 
+          
             
         input.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token")
     
