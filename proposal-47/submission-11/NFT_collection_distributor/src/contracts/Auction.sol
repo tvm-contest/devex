@@ -6,9 +6,10 @@ pragma AbiHeader time;
 import './libraries/FeeValues.sol';
 import './libraries/AuctionErrors.sol';
 
+import 'ARoyaltyPayer.sol';
 import './interfaces/IData.sol';
 
-contract Auction {
+contract Auction is ARoyaltyPayer {
 
     address static _addrRoot;      // адрес родительского AuctionRoot
     address static _addrOwner;     // адрес кошелька создателя аукциона
@@ -19,57 +20,36 @@ contract Auction {
     uint128 _highestBidValue;      // размер максимальной ставки
     address _addrHighestBidder;    // адрес предложившего максимальную ставку
 
-    address _addrRoyaltyRoot;      // адрес получателя роялти со стороны AuctionRoot
-    uint8 _royaltyPercentRoot;     // процент с продажи для addrRoyaltyRoot
-    address _addrRoyaltyAuthor;    // адрес владельца токена
-    uint8 _royaltyPercentAuthor;   // процент с продажи для addrRoyaltyAuthor
-
     uint64 _auctionStartTime;      // дата окончания аукциона в Unix-time формате
     uint64 _auctionDuration;       // продолжительность аукциона в секундах
 
-    address _addrExternRoot;       // адрес вида addr_extern, на который события будут отправлять сообщения
-
     constructor (
-        uint128 initialPrice,
-        uint128 minBidStep
-    )
-        public
-    {
-        tvm.accept();
-        _initialPrice = initialPrice;
-        _minBidStep = minBidStep;
-    }
-
-    function start(uint64 auctionDuration)
-        public
-        onlyOwner
-        auctionNotStarted
-        notZeroDuration(auctionDuration)
-        enoughValueToStartAuction
-    {
-        _auctionDuration = auctionDuration;
-        
-        IData(_addrNft).getOwnershipProvidersResponsible{
-            value: 2*Fees.MIN_FOR_MESSAGE,
-            callback: approveTradability
-        }();
-    }
-
-    function approveTradability (
-        address addrNftOwner,
-        address addrTrusted,
-        address addrRoyaltyAuthor,
+        address addrRoyaltyAgent,
         uint8 royaltyPercent
     )
         public
-        onlyNft
-        auctionNotStarted
-        haveRightsToTradeNft(addrNftOwner, addrTrusted)
-        enoughValueForMessage
     {
-        _addrRoyaltyAuthor = addrRoyaltyAuthor;
-        _royaltyPercentAuthor = royaltyPercent;
+        _addrRoyaltyAgent = addrRoyaltyAgent;
+        _royaltyPercent = royaltyPercent;
+    }
+
+    function start(
+        uint128 initialPrice,
+        uint128 minBidStep,
+        uint64 auctionDuration
+    )
+        public
+        onlyOwner
+        auctionNotStarted
+        validPrice(initialPrice)
+        validDuration(auctionDuration)
+        enoughValueToStartAuction
+    {
+        _initialPrice = initialPrice;
+        _minBidStep = minBidStep;
+        _auctionDuration = auctionDuration;
         _auctionStartTime = now;
+
     }
 
     function placeBid(uint128 bidValue)
@@ -98,16 +78,12 @@ contract Auction {
         auctionTimePassed
         enoughValueToFinishAuction
     {
-        uint128 royaltyValueRoot = math.muldiv(_highestBidValue, _royaltyPercentRoot, 100);
-        _addrRoyaltyRoot.transfer({value: royaltyValueRoot, flag: 1});
-
-        uint128 royaltyValueAuthor = math.muldiv((_highestBidValue - royaltyValueRoot), _royaltyPercentAuthor, 100);
-        _addrRoyaltyAuthor.transfer({value: royaltyValueAuthor, flag: 1});
+        _highestBidValue = payRoyalty(_highestBidValue);
 
         IData(_addrNft).transferOwnership{ value: Fees.MIN_FOR_INDEX_DEPLOY + Fees.MIN_FOR_MESSAGE }(_addrHighestBidder);
         IData(_addrNft).returnOwnership{ value: Fees.MIN_FOR_MESSAGE }();
 
-        _addrOwner.transfer({value: 0, flag: 160});
+        selfdestruct(_addrOwner);
     }
 
     function cancel()
@@ -115,10 +91,11 @@ contract Auction {
         onlyOwner
         noBidsMade
         auctionStarted
-        enoughValueForMessage
+        enoughValueToCancelAuction
     {
         IData(_addrNft).returnOwnership{ value: Fees.MIN_FOR_MESSAGE }();
-        _addrOwner.transfer({value: 0, flag: 160});
+
+        selfdestruct(_addrOwner);
     }
 
     function getHighestBid() external anyBidMade view returns (uint128 highestBidValue) {
@@ -147,11 +124,11 @@ contract Auction {
         highestBidValue = _highestBidValue;
     }
 
-    function isAuctionStarted() private view returns (bool) {
+    function isAuctionStarted() inline private view returns (bool) {
         return _auctionStartTime != 0;
     }
 
-    function isAnyBid() private view returns (bool) {
+    function isAnyBid() inline private view returns (bool) {
         return _addrHighestBidder != address(0);
     }
 
@@ -172,21 +149,12 @@ contract Auction {
         _;
     }
 
-    modifier onlyNft {
-        require(msg.sender == _addrNft,
-                AuctionErr.SENDER_SHOULD_BE_NFT,
-                "Action is only available for tradable NFT as message senders");
+    modifier validPrice(uint128 price) {
+        require(price > 0, AuctionErr.ZERO_INITIAL_PRICE);
         _;
     }
 
-    modifier haveRightsToTradeNft(address addrNftOwner, address addrTrusted) {
-        require(addrNftOwner == _addrOwner && addrTrusted == address(this),
-                AuctionErr.NO_RIGHTS_TO_TRADE,
-                "No rights to sell the NFT");
-        _;
-    }
-
-    modifier notZeroDuration(uint64 duration) {
+    modifier validDuration(uint64 duration) {
         require(duration > 0, AuctionErr.ZERO_DURATION);
         _;
     }
@@ -229,7 +197,7 @@ contract Auction {
     }
 
     modifier enoughValueToStartAuction {
-        require(msg.value >= 2 * Fees.MIN_FOR_MESSAGE,
+        require(msg.value >= 3 * Fees.MIN_FOR_MESSAGE,
                 AuctionErr.NOT_ENOUGH_VALUE_TO_START_AUCTION);
         _;
     }
@@ -240,8 +208,9 @@ contract Auction {
         _;
     }
 
-    modifier enoughValueForMessage {
-        require(msg.value >= Fees.MIN_FOR_MESSAGE, AuctionErr.NOT_ENOUGH_VALUE_FOR_MESSAGE);       
+    modifier enoughValueToCancelAuction {
+        require(msg.value >= 2 * Fees.MIN_FOR_MESSAGE,
+                AuctionErr.NOT_ENOUGH_VALUE_TO_CANCEL_AUCTION);
         _;
     }
 }

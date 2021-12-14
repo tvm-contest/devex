@@ -31,15 +31,6 @@
 			]
 		},
 		{
-			"name": "getTokenData",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"code","type":"cell"},
-				{"name":"totalMinted","type":"uint256"}
-			]
-		},
-		{
 			"name": "deployBasis",
 			"inputs": [
 				{"name":"codeIndexBasis","type":"cell"}
@@ -55,11 +46,20 @@
 			]
 		},
 		{
-			"name": "changeAdmin",
+			"name": "changeCommissionAgent",
 			"inputs": [
-				{"name":"addrNewAdmin","type":"address"}
+				{"name":"addrCommissionAgent","type":"address"}
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "getTokenData",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"code","type":"cell"},
+				{"name":"totalMinted","type":"uint256"}
 			]
 		},
 		{

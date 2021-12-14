@@ -117,26 +117,15 @@
 			]
 		},
 		{
-			"name": "getOwnershipProviders",
+			"name": "verifyTradability",
 			"inputs": [
+				{"name":"_answer_id","type":"uint32"},
+				{"name":"addrPossibleOwner","type":"address"},
+				{"name":"addrPossibleTrusted","type":"address"}
 			],
 			"outputs": [
 				{"name":"addrOwner","type":"address"},
-				{"name":"addrTrusted","type":"address"},
-				{"name":"addrRoyaltyAuthor","type":"address"},
-				{"name":"royaltyPercent","type":"uint8"}
-			]
-		},
-		{
-			"name": "getOwnershipProvidersResponsible",
-			"inputs": [
-				{"name":"_answer_id","type":"uint32"}
-			],
-			"outputs": [
-				{"name":"addrOwner","type":"address"},
-				{"name":"addrTrusted","type":"address"},
-				{"name":"addrRoyaltyAuthor","type":"address"},
-				{"name":"royaltyPercent","type":"uint8"}
+				{"name":"addrTrusted","type":"address"}
 			]
 		},
 		{
