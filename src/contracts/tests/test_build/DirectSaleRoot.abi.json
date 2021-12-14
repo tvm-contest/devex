@@ -1,0 +1,81 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"codeSale","type":"cell"},
+				{"name":"addrRoyaltyAgent","type":"address"},
+				{"name":"royaltyPercent","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "createSale",
+			"inputs": [
+				{"name":"addrNft","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "approveCreateSale",
+			"inputs": [
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrTrusted","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "returnRights",
+			"inputs": [
+				{"name":"addrNft","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "approveReturnRights",
+			"inputs": [
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrTrusted","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getSaleAddress",
+			"inputs": [
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrNft","type":"address"}
+			],
+			"outputs": [
+				{"name":"addrSale","type":"address"}
+			]
+		},
+		{
+			"name": "changeRoyaltyAgent",
+			"inputs": [
+				{"name":"addrRoyaltyAgent","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getRoyaltyInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"addrRoyaltyAgent","type":"address"},
+				{"name":"royaltyPercent","type":"uint8"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}
