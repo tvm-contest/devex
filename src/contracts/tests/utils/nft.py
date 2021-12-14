@@ -5,15 +5,14 @@ from tonos_ts4.BaseContract import BaseContract
 eq = ts4.eq
 
 def restore_nft_by_addr(nft_address: ts4.Address):
-    nft_root = BaseContract(
+    nft = BaseContract(
         'Data',
         ctor_params = {},
         address = nft_address,
     )
-    return nft_root
+    return nft
 
-
-def transfer_nft(wallet_owner: BaseContract, wallet_receiver: BaseContract, nft: BaseContract, value: int):
+def transfer_nft(wallet_owner: BaseContract, wallet_receiver: BaseContract, nft: BaseContract, message_value: int):
     payload_transfer_nft = ts4.encode_message_body(
         'Data',
         'transferOwnership',
@@ -23,7 +22,7 @@ def transfer_nft(wallet_owner: BaseContract, wallet_receiver: BaseContract, nft:
         'sendTransaction',
         params = {
             'dest': nft.address,
-            'value': value,
+            'value': message_value,
             'bounce': True,
             'flags': 3,
             'payload': payload_transfer_nft,
@@ -32,7 +31,7 @@ def transfer_nft(wallet_owner: BaseContract, wallet_receiver: BaseContract, nft:
     ts4.dispatch_messages()
 
 
-def lend_ownership(wallet_owner: BaseContract, wallet_trusted: BaseContract, nft: BaseContract, value: int):
+def lend_ownership(wallet_owner: BaseContract, wallet_trusted: BaseContract, nft: BaseContract, message_value: int):
     payload_lend_ownership = ts4.encode_message_body(
         'Data',
         'lendOwnership',
@@ -42,7 +41,7 @@ def lend_ownership(wallet_owner: BaseContract, wallet_trusted: BaseContract, nft
         'sendTransaction',
         params = {
             'dest': nft.address,
-            'value': value,
+            'value': message_value,
             'bounce': True,
             'flags': 3,
             'payload': payload_lend_ownership,
@@ -51,7 +50,7 @@ def lend_ownership(wallet_owner: BaseContract, wallet_trusted: BaseContract, nft
     ts4.dispatch_messages()
 
 
-def return_ownership(wallet_trusted: BaseContract, nft: BaseContract, value: int):
+def return_ownership(wallet_trusted: BaseContract, nft: BaseContract, message_value: int):
     payload_return_ownership = ts4.encode_message_body(
         'Data',
         'returnOwnership',
@@ -61,7 +60,7 @@ def return_ownership(wallet_trusted: BaseContract, nft: BaseContract, value: int
         'sendTransaction',
         params = {
             'dest': nft.address,
-            'value': value,
+            'value': message_value,
             'bounce': True,
             'flags': 3,
             'payload': payload_return_ownership,
