@@ -41,13 +41,13 @@ $("#commission-author-generator").on("click", function(){
 $(".submit-button").on("click",(function(event){
     event.preventDefault()
     if ($(this).attr("id") === "save-data"){
-        $('#form-contract').attr("action","/root-contract-form/save-data")
+        $('.form-contract').attr("action","/root-contract-form/save-data")
     } else if ($(this).attr("id") === "form-contracts"){
-        $('#form-contract').attr("action","/root-contract-form/form-contracts")
+        $('.form-contract').attr("action","/root-contract-form/form-contracts")
     } else if ($(this).attr("id") === "deploy-contracts"){
-        $('#form-contract').attr("action","/root-contract-form/deploy-contracts")
+        $('.form-contract').attr("action","/root-contract-form/deploy-contracts")
     }
-    $('#form-contract').submit()
+    $('.form-contract').submit()
     
 }))
 

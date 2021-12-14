@@ -21,8 +21,10 @@ router.post('/minting', async function(req, res, next){
     // let jsonCollection = await JSON.parse((file.data.toString()).toString());
     console.log(req.body.parameter)
     console.log(req.body);
-    const json = JSON.stringify(req.body);  // {"name":"John Smith"}
+    
+    const json = JSON.stringify(req.body);  
     console.log(json);
+    console.log(req.files);
     res.send("root")
     
 })
