@@ -19,8 +19,10 @@ router.post('/', async function(req, res, next) {
 router.post('/minting', async function(req, res, next){
     //const file = req.files.
     // let jsonCollection = await JSON.parse((file.data.toString()).toString());
+    console.log(req.body.parameter)
     console.log(req.body);
-    console.log(req.files);
+    const json = JSON.stringify(req.body);  // {"name":"John Smith"}
+    console.log(json);
     res.send("root")
     
 })

@@ -95,11 +95,11 @@ block content
           .tab-pane.fade#comissions(role="tabpanel" aria-labelledby="comissions-tab")
             .checkbox-for-commissions
               .form-check 
-                input.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor" disabled)
+                input.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor" )
                 label.form-check-label(for="use-author") Add token author and his comission
               .col-6.input-commission.use-author
-                label.form-label() Commission (%)
-                input.form-control.commission(type="text" name = 'commissionAuthor' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="")
+                label.form-label() Commission (ton)
+                input.form-control.commission(type="number" name = 'commissionAuthor' step="any"  placeholder="ton")
               .form-check 
                 input.form-check-input#commission-favor-owner(type="checkbox" value="" name="checkCommissionFavorOwner" disabled)
                 label.form-check-label(for="commission-favor-owner") Commission to Collection Owner

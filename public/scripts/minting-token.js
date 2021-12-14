@@ -3,7 +3,8 @@ var obj = JSON.parse(address)
 if(obj.collection.rarities != []){
     $(".rarities ").append($(`<label> Rarities<label>`))
     $(".rarities").append($(`<div class="col"id="rarities">`))
-    $(`#rarities`).append($(`<select class="form-select select-param-token" id ="select-rarities" name="rarities">`))
+    
+    $(`#rarities`).append($(`<select class="form-select select-param-token" id ="select-rarities" name='rarities'>`))
     //var listRar = []
     
     for(var keyID in obj.collection.rarities){
@@ -29,12 +30,12 @@ if(obj.collection.parameters != []){
             $(".mediafile ").append($(`<label> MediaFile<label>`))
             $(".mediafile ").append($(`<div class="col"id="mediafile${keyID}">`))
             $(`#mediafile${keyID}`).append($(`<label class="form-label"> ${obj.collection.parameters[keyID].name}<label>`))
-            $(`#mediafile${keyID}`).append($(`<br><input type="file" class="form-file-input" id="customFile" name="${obj.collection.parameters[keyID].name}">`))  
+            $(`#mediafile${keyID}`).append($(`<br><input type="file" class="form-file-input" id="customFile" name=${obj.collection.parameters[keyID].name}>`))  
         } 
         if (obj.collection.parameters[keyID].type.substring(0,4) != "Enum" && $.inArray(obj.collection.parameters[keyID].name, nameMedia) == -1){//!
             $(".parameters").append($(`<div class="col"id="parameters${keyID}">`))
             $(`#parameters${keyID}`).append($(`<label class="form-label"> ${obj.collection.parameters[keyID].name}<label>`))
-            $(`#parameters${keyID}`).append($(`<input class="form-control" name="parameter[${obj.collection.parameters[keyID].name}]">`))   
+            $(`#parameters${keyID}`).append($(`<input required class="form-control" name='parameter[${obj.collection.parameters[keyID].name}]' minlength=${obj.collection.parameters[keyID].minValue} maxlength=${obj.collection.parameters[keyID].maxValue}> ` ) )   
         } 
        
         }
@@ -77,7 +78,7 @@ if (obj.enums.length > 0){
 //        console.log( response );
 //      }
 //    });
-   //$("#form-for-file").submit()
+//    $("#form-for-file").submit()
 // }));
 //
 // for(var keyID in obj.mediafiles){
