@@ -117,11 +117,12 @@ block content
               input.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users" disabled)
         .row.button-main-3
           .col.button-main
-            input.submit-button.btn.btn-blue.btn-block#save-data(type="submit" value="Save data")
+            button.submit-button.btn.btn-blue.btn-block#save-data(type="submit" value="Save data")= "Save data "
           .col.button-main
-            input.submit-button.btn.btn-blue.btn-block#form-contracts(type="submit" value="Generate Contracts Code")
+            button.submit-button.btn.btn-blue.btn-block#form-contracts(type="submit" value="Generate Contracts Code")= "Generate Contracts Code "
           .col.button-main
-            input.submit-button.btn.btn-blue.btn-block#deploy-contracts(type="submit" value="Deploy contracts")
+            button.submit-button.btn.btn-blue.btn-block#deploy-contracts(type="submit" value="Deploy contracts")= "Deploy contracts "
+              span(class="" role="status" aria-hidden="true")
   script(src="/scripts/root-contract-form.js")
   script(src="/scripts/input-validation.js")
       

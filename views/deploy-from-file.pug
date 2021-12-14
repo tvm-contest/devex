@@ -7,4 +7,10 @@ block content
         form(method='post' enctype='multipart/form-data').deploy-from-file
             input(name='jsonCollection', type="file").btn-blue
             br
-            input(type='submit').btn.btn-blue
+            button(type='submit' onclick="loader(this)").btn.btn-blue= "Deploy "
+              span(class="" role="status" aria-hidden="true")
+
+  script.
+    const loader = (btn) => {
+    $($(btn)[0].firstElementChild).addClass('spinner-border')  
+    $($(btn)[0].firstElementChild).addClass('spinner-border-sm')}
