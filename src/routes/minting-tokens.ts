@@ -2,6 +2,7 @@ import express from 'express';
 import { globals } from '../config/globals'
 import path from 'path'
 import fs from 'fs'
+import { UploadedFile } from 'express-fileupload';
 
 const router = express.Router();
 
@@ -16,7 +17,10 @@ router.post('/', async function(req, res, next) {
     
 });
 router.post('/minting', async function(req, res, next){
+    //const file = req.files.
+    // let jsonCollection = await JSON.parse((file.data.toString()).toString());
     console.log(req.body);
+    console.log(req.files);
     res.send("root")
     
 })
