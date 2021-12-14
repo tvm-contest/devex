@@ -1,6 +1,5 @@
 pragma ton-solidity >=0.43.0;
 
-pragma AbiHeader pubkey;
 pragma AbiHeader expire;
 pragma AbiHeader time;
 
@@ -28,13 +27,21 @@ abstract contract DataCore is IDataCore, IndexResolver {
 
     mapping(address => uint8) managersList;
 
+
     function transferOwnership(address addrTo)
         public override
         enoughValueToTransferOwnership
     {
-        require(msg.sender == _addrOwner && !isTrustedExists() || msg.sender == _addrTrusted,
+        require(isTrusted(msg.sender) || (!isTrustedExists() && isOwner(msg.sender)),
                 DataErr.OWNERSHIP_CANNOT_BE_TRANSFERRED,
                 "Cannot transfer Data ownership");
+
+        if (isTrusted(msg.sender)) {
+            uint128 availableValue = msg.value - Fees.MIN_FOR_TRANSFER_OWNERSHIP;
+            uint128 royaltyValue = math.muldiv(availableValue, royalty, 100);
+            _addrAuthor.transfer({value: royaltyValue, flag: 1});
+            _addrOwner.transfer({value: availableValue - royaltyValue, flag: 1});
+        }
 
         address oldIndexOwner = resolveIndex(_addrRoot, address(this), _addrOwner);
         IIndex(oldIndexOwner).destruct();
@@ -46,40 +53,48 @@ abstract contract DataCore is IDataCore, IndexResolver {
         delete managersListArr;
 
         deployIndex(addrTo);
+
+        if (!isTrusted(msg.sender)) {
+            tvm.rawReserve(1 ton, 0);
+            msg.sender.transfer({value: 0, flag: 128});
+        }
     }
 
     function lendOwnership(address _addr)
-        public override
-        addressIsNotNull
+        external override
+        validAddress
     {
-        require((msg.sender == _addrOwner || isManager(msg.sender)) && !isTrustedExists(),
+        require(isTrusted(msg.sender) || (!isTrustedExists() && (isOwner(msg.sender) || isManager(msg.sender))),
                 DataErr.RIGHTS_CANNOT_BE_GIVEN,
                 "Cannot lend Data ownership");
-        tvm.accept();
+        tvm.rawReserve(0, 4);
         _addrTrusted = _addr;
+        msg.sender.transfer({value: 0, flag: 128});
     }
 
     function returnOwnership()
-        public override
+        external override
         onlyTrusted
     {
+        tvm.rawReserve(0, 4);
         _addrTrusted = address(0);
+        msg.sender.transfer({value: 0, flag: 128});
     }
 
-    function addManager(address _addr) external
+    function addManager(address _addr)
+        external
         onlyOwner
         managerNotExists(_addr)
     {
-        tvm.accept();
         managersList[_addr] = uint8(managersListArr.length);
         managersListArr.push(_addr);
     }
 
-    function removeManager(address _addr) external
+    function removeManager(address _addr)
+        external
         onlyOwner
         managerExists(_addr)
     {
-        tvm.accept();
         for (uint8 i = managersList[_addr]; i < managersListArr.length - 1; i++) {
             managersListArr[i] = managersListArr[i+1];
         }
@@ -87,37 +102,24 @@ abstract contract DataCore is IDataCore, IndexResolver {
     }
 
     function burn(address _dest) onlyOwner trustedNotExists external {
-        tvm.accept();
         selfdestruct(_dest);
     }
 
-    function getOwner() external view override returns(address addrOwner) {
+    function getOwner() public view override returns (address addrOwner) {
         addrOwner = _addrOwner;
     }
 
-    function getOwnerResponsible() external view override responsible returns(address addrOwner) {
+    function getOwnerResponsible() public view override responsible returns (address addrOwner) {
         return { value: 0 ton, flag: 64 } (_addrOwner);
     }
 
-    function getOwnershipProviders() external view override returns (
-        address addrOwner,
-        address addrTrusted,
-        address addrRoyaltyAuthor,
-        uint8 royaltyPercent
-    ) {
-        addrOwner = _addrOwner;
-        addrTrusted = _addrTrusted;
-        addrRoyaltyAuthor = _addrAuthor;
-        royaltyPercent = royalty;
-    }
-
-    function getOwnershipProvidersResponsible() external view override responsible returns (
-        address addrOwner,
-        address addrTrusted,
-        address addrRoyaltyAuthor,
-        uint8 royaltyPercent
-    ) {
-        return { value: 0 ton, flag: 64 } (_addrOwner, _addrTrusted, _addrAuthor, royalty);
+    function verifyTradability(address addrPossibleOwner, address addrPossibleTrusted)
+        public view override responsible
+        returns (address addrOwner, address addrTrusted)
+    {
+        if (isOwner(addrPossibleOwner)) { addrOwner = addrPossibleOwner;}
+        if (isTrusted(addrPossibleTrusted)) { addrTrusted = addrPossibleTrusted;}
+        return { value: 0 ton, flag: 64 } (addrOwner, addrTrusted);
     }
 
     function getAllowance() external view returns (address addr) {
@@ -137,26 +139,34 @@ abstract contract DataCore is IDataCore, IndexResolver {
         TvmCell stateIndexOwnerRoot = _buildIndexState(codeIndexOwnerRoot, address(this));
         new Index{stateInit: stateIndexOwnerRoot, value: Fees.MIN_FOR_INDEX_DEPLOY}(_addrRoot);
     }
-
-    function isTrustedExists() private view returns (bool) {
-        return _addrTrusted != address(0);
+    
+    function isOwner(address addrPossibleOwner) inline private view returns (bool) {
+        return _addrOwner == addrPossibleOwner;
     }
 
-    function isManager(address addrManager) private view returns (bool) {
-        return managersList.exists(addrManager);
+    function isTrusted(address addrPossibleTrusted) inline private view returns (bool) {
+        return _addrTrusted == addrPossibleTrusted;
+    }
+
+    function isManager(address addrPossibleManager) inline private view returns (bool) {
+        return managersList.exists(addrPossibleManager);
+    }
+
+    function isTrustedExists() inline private view returns (bool) {
+        return _addrTrusted != address(0);
     }
 
     // MODIFIERS
 
     modifier onlyOwner {
-        require(msg.sender == _addrOwner,
+        require(isOwner(msg.sender),
                 DataErr.NOT_OWNER,
                 "Action available only for Data owner");
         _;
     }
 
     modifier onlyTrusted {
-        require(msg.sender == _addrTrusted,
+        require(isTrusted(msg.sender),
                 DataErr.NOT_TRUSTED,
                 "Action available only for trusted address");
         _;
@@ -169,7 +179,7 @@ abstract contract DataCore is IDataCore, IndexResolver {
         _;
     }
 
-    modifier addressIsNotNull {
+    modifier validAddress {
         require(msg.sender != address(0),
                 DataErr.NULL_ADDRESS,
                 "Sender's address cannot be null");
@@ -191,7 +201,7 @@ abstract contract DataCore is IDataCore, IndexResolver {
     }
 
     modifier enoughValueToTransferOwnership {
-        require(msg.value >= Fees.MIN_FOR_INDEX_DEPLOY,
+        require(msg.value >= Fees.MIN_FOR_TRANSFER_OWNERSHIP,
                DataErr.NOT_ENOUGH_VALUE_TO_TRANSFER_OWNERSHIP,
                "Message balance is not enough for ownership transfer");       
         _;

@@ -16,4 +16,5 @@ library DataErr {
     uint16 constant NOT_ENOUGH_VALUE_TO_RETURN_OWNERSHIP = 212;
     uint16 constant NOT_OWNER_NOR_MANAGER = 213;
     uint16 constant NOT_ENOUGH_VALUE_TO_TRANSFER_OWNERSHIP = 214;
+    uint16 constant NOT_ENOUGH_VALUE_FOR_MESSAGE = 511;
 }

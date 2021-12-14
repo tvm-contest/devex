@@ -14,6 +14,8 @@ library SaleErr {
     uint16 constant SALE_TIME_PASSED = 510;
     uint16 constant NOT_ENOUGH_VALUE_FOR_MESSAGE = 511;
     uint16 constant NOT_ENOUGH_VALUE_TO_BUY_NFT = 512;
+    uint16 constant NOT_ENOUGH_VALUE_TO_RETURN_RIGHTS = 512;
+    uint16 constant NOT_ENOUGH_VALUE_TO_CREATE_SALE = 512;
     uint16 constant ZERO_DURATION = 513;
     uint16 constant NO_RIGHTS_TO_TRADE = 514;
     uint16 constant NOT_ENOUGH_VALUE_TO_START_SALE = 515;
