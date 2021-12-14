@@ -68,8 +68,16 @@ export class ContractObjectCreator {
             'string' //Нужен тип по умолчанию если пользователь не выбрал
           );
         }
-
-        parametrs.push(parameter)
+        let varIsExists : boolean = false;
+        for (let j = 0; j < parametrs.length; j++) {
+          if (parameter.getName() == parametrs[j].getName()) {
+            varIsExists = true;
+            console.log("Variable \"" + parameter.getName() + "\" already exists");
+          }
+        }
+        if (!varIsExists) {
+          parametrs.push(parameter);
+        }
       }
     }
 
