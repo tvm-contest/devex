@@ -67,14 +67,14 @@ export class TokenInfoBuilder {
 
   private async makeRespons(output, jsonCollection): Promise<TokenInfo[]> {
     let respons: TokenInfo[] = []
-    respons.push({ title: "Адрес коллекции", value: output['addrRoot'], tag: 'p' })
-    respons.push({ title: "Адрес владельца", value: output['addrOwner'], tag: 'p' })
-    respons.push({ title: "Адрес автора", value: output['addrAuthor'], tag: 'p' })
-    respons.push({ title: "Адрес токена", value: output['addrData'], tag: 'p' })
+    respons.push({ title: "Collection Address: ", value: output['addrRoot'], tag: 'p' })
+    respons.push({ title: "Owner Address: ", value: output['addrOwner'], tag: 'p' })
+    respons.push({ title: "Autor Address: ", value: output['addrAuthor'], tag: 'p' })
+    respons.push({ title: "Token Address: ", value: output['addrData'], tag: 'p' })
 
     if (jsonCollection.collection.rarities.length != 0) {
       let value = Buffer.from(output['nftType'], 'hex').toString()
-      respons.push({ title: "Тип токена", value: value, tag: 'p' })
+      respons.push({ title: "Token Type: ", value: value, tag: 'p' })
     }
 
     var ipfs = await IPFS.create()
@@ -101,7 +101,7 @@ export class TokenInfoBuilder {
               tag = 'a'
             }
           } catch (err) {
-            console.log(`${value} не является медиа файлом`)
+            console.log(`${value} Isn't mediafile`)
           }
         }
 

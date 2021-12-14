@@ -10,9 +10,6 @@ import { TokenImageCreator } from './gen-token-image.service';
 const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
 const utf8ToHex = convert("utf8", "hex");
 
-// C одними параметрами числа и строки
-// когда есть переч. или медиа
-
 export class MintNftService {
     private deployService: DeployService;
     private client: TonClient;
