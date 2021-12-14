@@ -71,6 +71,7 @@ export class MintNftService {
             nftType: utf8ToHex(mintigData.rarities)
         };
 
+        // Data from the collectionInfo.json
         const collectionInfo = fs.readFileSync(
             path.resolve(this.collectionFolder, 'collectionInfo.json')
         ).toString();
@@ -78,13 +79,14 @@ export class MintNftService {
         const collectionParams = collectionInfoJSON.collection.parameters;
         const enumOfCollection = collectionInfoJSON.enums;
         const mediafilesOfCollection = collectionInfoJSON.mediafiles;
+        //Data which user inputted to the form
         const userParams = mintigData.parameters;
         const userEnum = userParams.enum;
         const userMediaFile = userParams.mediafile;
 
         for (const currentCollecitonParam of collectionParams) {
             // For uint and string params
-            if (userParams !== undefined && currentCollecitonParam.name in userParams) {
+            if (currentCollecitonParam.name in userParams) {
                 if (currentCollecitonParam.type === 'uint') {
                     resultParams[currentCollecitonParam.name] = userParams[currentCollecitonParam.name];
                 } else if (currentCollecitonParam.type === 'string') {
@@ -95,7 +97,6 @@ export class MintNftService {
 
         for (const currentEnum of enumOfCollection) {
             // If a enum there is no in the collectionInfo.json this loop will not work
-            // TODO: enum is number
             resultParams[currentEnum.name] = Number(userEnum[currentEnum.name]);
         }
 
