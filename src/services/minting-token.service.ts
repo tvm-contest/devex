@@ -134,7 +134,7 @@ export class MintNftService {
     }
 
     private async getIpfsURL(file) : Promise<string>{
-        let cid = await addFileToIPFS({path: "path", content: file.data}) 
+        let cid = await addFileToIPFS(file.data) 
         return `${ipfs_setting.GATEWAY}/ipfs/${cid}`
     }
 }
