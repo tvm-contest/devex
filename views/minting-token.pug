@@ -5,6 +5,10 @@ block content
     .container
       .form-mint
         form.row.g-3.form-contract#form-param(action="/minting-tokens/minting" method="post" enctype='multipart/form-data') 
+          input(name="rootAddress" value=collectionRootAddress type="hidden")
+          
+          input(name="contractName" value=collectionName type="hidden")
+
           .content
             .rarities
           
