@@ -5,19 +5,20 @@ block content
     .collection-container
       form(action="/minting-tokens", method="post")
         .row.row-name-col
-          .col-4
-            .text.font-weight-bold Название коллекции:
+          .col-2
+            .text.text-main Collection:
           .col-8.row-name-col
             input.output-col(name="colName" value=collection.name)
-            .text=collection.name
+            .text.text-sub-main=collection.name
         .row
-          .col-4
-            .text.font-weight-bold Адрес:
+          .col-2
+            .text.text-main Address:
           .col-8
             input.output-col.collection-address(name="colAdd" value=collection.address)
-            .text=collection.address
-        .col.button-main-list
-            input.submit-button.btn.btn-blue.btn-block(id=`${collection.address}` type="button" value="Info root" onclick="fromCollectionListToTokenList(this);")
-            input.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token")
+            .text.text-sub-main=collection.address
+        .row
+          .col.button-main-list
+              input.btn.btn-blue.btn-collection-list.btn-submit(type="submit" value="Minting token")
+              input.btn.btn-blue.btn-collection-list.btn-info-root(id=`${collection.address}` type="button" value="Info root" onclick="fromCollectionListToTokenList(this);")
 
   script(src="/scripts/collection-to-token.js") 

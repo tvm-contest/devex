@@ -5,6 +5,6 @@ block content
   .forms
     .container
         form(method='post' enctype='multipart/form-data').deploy-from-file
-            input(name='jsonCollection', type="file").btn-blue
+            input.text(name='jsonCollection', type="file").btn-blue
             br
-            input(type='submit').btn.btn-blue
+            input.text.btn-submit(type='submit' value ="Deploy").btn.btn-blue
