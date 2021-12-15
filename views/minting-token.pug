@@ -3,18 +3,21 @@ extends layout
 block content
   .forms
     .container
-      form.row.g-3#form-contract(action="/minting-tokens/minting", method="post") 
-        input(name="rootAddress" value=collectionRootAddress type="hidden")
-        input(name="contractName" value=collectionName type="hidden")
-        .content
-          .rarities
+      .form-mint
+        form.row.g-3.form-contract#form-param(action="/minting-tokens/minting" method="post" enctype='multipart/form-data') 
+          input(name="rootAddress" value=collectionRootAddress type="hidden")
+          
+          input(name="contractName" value=collectionName type="hidden")
+
+          .content
+            .rarities
+          
+            .parameters 
         
-          .parameters 
+            .mediafile 
           
-          .mediafile 
-          
-            
-        input.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token")
+      
+          input.submit-button.btn.btn-blue.btn-block#sub-mint(type="submit" value="Minting token" )
     
   script. 
     var address = `!{FileJson}`
