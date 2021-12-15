@@ -90,7 +90,7 @@ export class TokenInfoBuilder {
         let value = Buffer.from(output['_' + parametr.name], 'hex').toString()
         let tag = 'p'
 
-        if (value.match(/ipfs.io\/ipfs/g)) {
+        if (value.match(/\/ipfs\//g)) {
           try {
             let type = await this.getIpfsFileType(value, ipfs)
             if (IMG_TYPES.includes(type)) {
