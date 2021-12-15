@@ -9,3 +9,4 @@ src/contracts/tests/__pycache__
 .idea
 .env
 .DS_Store
+result
