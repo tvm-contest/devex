@@ -23,7 +23,6 @@ router.post('/', async function (req, res, next) {
 
 router.post('/minting', async function (req, res, next) {
     try {
-        console.log("BODY IS ", req.body);
         const mintService = new MintNftService(req.body.rootAddress);
         await mintService.mintNft(req.body);
     } catch (error) {

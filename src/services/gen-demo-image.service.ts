@@ -6,12 +6,6 @@ const path = require('path');
 const { Canvas, Image } = require('canvas');
 const mergeImages = require('merge-images');
 
-type Image = {
-    name: string,
-    rarity: string,
-    ipfsRef: string
-}
-
 enum Rarity {
     USUAL,
     NO_USUAL,
@@ -57,7 +51,7 @@ export class TokenImageCreator {
         let imgArray: string[] = [];
         while (true) {
             const partsOfImageArrays = [bgArray, personsArray, shielsdArray, helmetsArray, armsArray];
-            imgArray = partsOfImageArrays.map( imageArray => this.getPartFile(imageArray));
+            imgArray = partsOfImageArrays.map(imageArray => this.getPartFile(imageArray));
             let imageRarity = this.getRarity();
 
             let imageName = imgArray.reduce((prev, current) => prev + current) + imageRarity;
@@ -120,5 +114,4 @@ export class TokenImageCreator {
             console.log(err)
         });
     }
-
 }
