@@ -11,5 +11,6 @@ block content
       p.text.font-weight-bold List of data tokens on this root address:
       each id in tokensData
         ul
-          li.token-list.address(onClick="fromTokenListToToken(this);")= id.id    
+          li.token-list.address(onClick="fromTokenListToToken(this);")= id.id 
+            span(class="" role="status" aria-hidden="true") 
   script(src="/scripts/collection-to-token.js") 
