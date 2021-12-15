@@ -1,0 +1,64 @@
+{
+	"collection": {
+		"description": {
+			"name": "DemoWarriorTokens",
+			"limit": 1000,
+			"icon": null
+		},
+		"rarities": [
+			{
+				"name": "rarity",
+				"limit": "1000"
+			}
+		],
+		"parameters": [
+			{
+				"name": "token_name",
+				"type": "string",
+				"minValue": "1",
+				"maxValue": "100"
+			},
+			{
+				"name": "warrior_shield",
+				"type": "uint",
+				"minValue": "1",
+				"maxValue": "1000"
+			},
+			{
+				"name": "warrior_arm",
+				"type": "Enumwarrior_arm",
+				"minValue": null,
+				"maxValue": null
+			}
+		]
+	},
+	"enums": [
+		{
+			"name": "warrior_arm",
+			"type": "enum",
+			"minValue": null,
+			"maxValue": null,
+			"enumVariants": [
+				"helmet",
+				"lance",
+				"sword"
+			]
+		}
+	],
+	"mediafiles": [],
+	"commissions": {
+		"commissionAuthor": {
+			"check": false,
+			"value": 0
+		},
+		"commissionFavorOwner": {
+			"check": false,
+			"value": 0
+		},
+		"commissionAuthorGenerator": {
+			"check": true,
+			"value": 1
+		},
+		"mintingPriceUsers": null
+	}
+}

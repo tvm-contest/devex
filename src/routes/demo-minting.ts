@@ -23,14 +23,14 @@ router.post('/', async function (req, res, next) {
             const mintService = new MintNftService(req.body.rootAddress);
             await mintService.mintNft({
                 // It's as req.body
-                contractName: 'DemoWarriors',
+                contractName: 'DemoWarriorTokens',
                 rarities: "rarity",
                 parameters: {
                     // shield for different tokens
-                    shield: getRandomShield(1, 100),
-                    warrior_name: "token_demo_name",
+                    token_name: "token_demo_name",
+                    warrior_shield: getRandomShield(1, 100),
                     enum: {
-                        arm: 0
+                        warrior_arm: 0
                     }
                 }
             });
