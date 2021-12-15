@@ -50,8 +50,7 @@ if (obj.enums.length > 0){
     for(var keyIdColEnum in obj.enums){
         $(".parameters").append($(`<div class="col" id="parametersE${keyIdColEnum}">`))
         $(`#parametersE${keyIdColEnum}`).append($(`<label class="form-label"> ${obj.enums[keyIdColEnum].name}<label>`))
-
-        $(`#paramenersE${keyIdColEnum}`).append($(`<select class="form-select select-param-enum" id ="select-enum${keyIdColEnum}" name="${obj.enums[keyIdColEnum].name}">`))
+        $(`#parametersE${keyIdColEnum}`).append($(`<select class="form-select select-param-enum" id ="select-enum${keyIdColEnum}" name="${obj.enums[keyIdColEnum].name}">`))
         for(var keyIDenum in obj.enums[keyIdColEnum].enumVariants){
             //listEnum.push(obj.enums[keyIdColEnum].enumVariants[keyIDenum])
             $(`#select-enum${keyIdColEnum}`).append($(`<option value=${keyIDenum}> ${obj.enums[keyIdColEnum].enumVariants[keyIDenum]}</option>`))
