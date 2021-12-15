@@ -9,8 +9,3 @@ block content
             br
             button(type='submit' onclick="loader(this)").btn.btn-blue= "Deploy "
               span(class="" role="status" aria-hidden="true")
-
-  script.
-    const loader = (btn) => {
-    $($(btn)[0].firstElementChild).addClass('spinner-border')  
-    $($(btn)[0].firstElementChild).addClass('spinner-border-sm')}

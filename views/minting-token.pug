@@ -14,7 +14,8 @@ block content
           .mediafile 
           
             
-        input.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token")
+        button.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token" onClick="loader(this)")= "Minting token "
+          span(class="" role="status" aria-hidden="true")
     
   script. 
     var address = `!{FileJson}`
