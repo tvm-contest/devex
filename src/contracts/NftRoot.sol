@@ -7,25 +7,23 @@ import './resolvers/IndexResolver.sol';
 import './resolvers/DataResolver.sol';
 
 import './IndexBasis.sol';
-
 import './interfaces/IData.sol';
 import './interfaces/IIndexBasis.sol';
-import './libraries/Enums.sol';
+
+import './libraries/NftRootErrors.sol';
 
 contract NftRoot is DataResolver, IndexResolver {
 
     uint8 constant NON_EXISTENT_TYPE = 105;
     uint8 constant LIMIT_REACHED = 106;
-    uint8 constant NOT_ENOUGH_VALUE_TO_MINT = 107;
-    uint8 constant ONLY_COMMISSION_AGENT = 108;
+
+    string static _name;
 
     address _addrCommissionAgent;
     uint128 _mintingCommission;
     uint256 _totalMinted;
     address _addrBasis;
-    string static _name;
     bytes _icon;
-
 
     mapping(string=>uint) _limitByTypes; 
     mapping(string=>uint) _mintedByTypes; 
@@ -53,7 +51,7 @@ contract NftRoot is DataResolver, IndexResolver {
             _limitByTypes[nftTypes[i]] = limit[i];
         }
     }
-    
+
     function mintNft(
         bytes name,
         bytes url,
@@ -65,14 +63,13 @@ contract NftRoot is DataResolver, IndexResolver {
         string nftType/*%PARAM_TO_MINT%*/
     )
         public
-        enoughValueToDeployData
     {
-        require(isEnoughValueToMint(msg.value) || isCommissionAgent(msg.sender), NOT_ENOUGH_VALUE_TO_MINT);
+        require(isEnoughValueToMint(msg.value) || isCommissionAgent(msg.sender), NftRootErr.NOT_ENOUGH_VALUE_TO_MINT);
         /*%REQUIRE_TYPE%*/require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
         /*%REQUIRE_TYPE_LIMIT%*/require(_mintedByTypes[nftType] < _limitByTypes[nftType], LIMIT_REACHED, "Limit reached");
 
         if (isEnoughValueToMint(msg.value)) {
-            tvm.rawReserve(address(this).balance - msg.value, 0);
+            tvm.rawReserve(0, 4);
         }
 
         if (!isCommissionAgent(msg.sender)) {
@@ -103,14 +100,8 @@ contract NftRoot is DataResolver, IndexResolver {
         if (isEnoughValueToMint(msg.value)) {
             msg.sender.transfer({value: 0, flag: 128});
         } else {
-            msg.sender.transfer({value: msg.value, flag: 0});
+            msg.sender.transfer({value: msg.value, flag: 1});
         }      
-
-    }
-    function getTokenData() public view returns(TvmCell code, uint totalMinted) {
-        tvm.accept();
-        totalMinted = _totalMinted;
-        code = _codeData;
     }
 
     function deployBasis(TvmCell codeIndexBasis) public {
@@ -134,16 +125,21 @@ contract NftRoot is DataResolver, IndexResolver {
         IIndexBasis(_addrBasis).destruct();
     }
 
-    function changeAdmin(address addrNewAdmin) external onlyCommissionAgent {
-        _addrCommissionAgent = addrNewAdmin;
+    function changeCommissionAgent(address addrCommissionAgent) external onlyCommissionAgent {
+        _addrCommissionAgent = addrCommissionAgent;
     }
 
+    function getTokenData() public view returns (TvmCell code, uint totalMinted) {
+        tvm.accept();
+        totalMinted = _totalMinted;
+        code = _codeData;
+    }
 
-    function getName() public view returns(string name) {
+    function getName() external view returns (string name) {
         name = _name;
     }
 
-    function getIcon() public view returns(bytes icon) {
+    function getIcon() external view returns (bytes icon) {
         icon = _icon;
     }
 
@@ -155,20 +151,11 @@ contract NftRoot is DataResolver, IndexResolver {
         return addrCommissionAgent == _addrCommissionAgent;
     }
 
-
     // MODIFIERS
 
     modifier onlyCommissionAgent {
         require(isCommissionAgent(msg.sender),
-               ONLY_COMMISSION_AGENT);       
+               NftRootErr.ONLY_COMMISSION_AGENT);       
         _;
     }
-
-    modifier enoughValueToDeployData {
-        require(msg.value >= Fees.MIN_FOR_DATA_DEPLOY + Fees.MIN_FOR_MESSAGE,
-               DataErr.NOT_ENOUGH_VALUE_TO_DEPLOY_DATA,
-               "Message balance is not enough for Data deployment");       
-        _;
-    }
-
 }

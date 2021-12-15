@@ -12,6 +12,7 @@ if(obj.collection.rarities != []){
         $(`#select-rarities`).append($(`<option value=${obj.collection.rarities[keyID].name}> ${obj.collection.rarities[keyID].name}</option>`))
         //listRar.push(obj.collection.rarities[keyID].name)
     }
+
     //$("#rarities ").append($(`<label>( ${listRar})<label>`))
     //$(`#rarities`).append($(`<input class="form-control" name="rarities">`)) 
 }
@@ -47,8 +48,8 @@ if (obj.enums.length > 0){
 
     //var listEnum = []
     for(var keyIdColEnum in obj.enums){
-        $(".parameters").append($(`<div class="col" id="paramenersE${keyIdColEnum}">`))
-        $(`#paramenersE${keyIdColEnum}`).append($(`<label class="form-label"> ${obj.enums[keyIdColEnum].name}<label>`))
+        $(".parameters").append($(`<div class="col" id="parametersE${keyIdColEnum}">`))
+        $(`#parametersE${keyIdColEnum}`).append($(`<label class="form-label"> ${obj.enums[keyIdColEnum].name}<label>`))
 
         $(`#paramenersE${keyIdColEnum}`).append($(`<select class="form-select select-param-enum" id ="select-enum${keyIdColEnum}" name="${obj.enums[keyIdColEnum].name}">`))
         for(var keyIDenum in obj.enums[keyIdColEnum].enumVariants){
@@ -56,8 +57,8 @@ if (obj.enums.length > 0){
             $(`#select-enum${keyIdColEnum}`).append($(`<option value=${keyIDenum}> ${obj.enums[keyIdColEnum].enumVariants[keyIDenum]}</option>`))
 
         }
-        //$(`#paramenersE${keyIdColEnum}`).append($(`<label class="form-label"> (${listEnum})<label>`))
-        //$(`#paramenersE${keyIdColEnum}`).append($(`<input class="form-control" name="paramener[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`)) 
+        //$(`#parametersE${keyIdColEnum}`).append($(`<label class="form-label"> (${listEnum})<label>`))
+        //$(`#parametersE${keyIdColEnum}`).append($(`<input class="form-control" name="paramener[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`)) 
         //listEnum = []
     }
     }

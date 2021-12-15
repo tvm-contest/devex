@@ -4,79 +4,95 @@ pragma AbiHeader expire;
 pragma AbiHeader time;
 
 import "DirectSale.sol";
+import 'ARoyaltyRecipient.sol';
+import './interfaces/IDirectSaleRoot.sol';
 
-contract DirectSaleRoot {
-
-    uint8 constant MAX_ROYALTY_PERC = 25;
+contract DirectSaleRoot is IDirectSaleRoot, ARoyaltyRecipient {
 
     TvmCell _codeSale;
-    address _addrOwner;
-    address _addrRoyaltyRecipient;
-    uint8 _royaltyPercent;
 
     constructor (
         TvmCell codeSale,
-        address addrRoyaltyRecipient,
+        address addrRoyaltyAgent,
         uint8 royaltyPercent
     )
         public
         validRoyalty(royaltyPercent)
+        validRoyaltyAgent(addrRoyaltyAgent)
     {
         tvm.accept();
+
         _codeSale = codeSale;
-        _addrOwner = address(this);
-        _addrRoyaltyRecipient = addrRoyaltyRecipient;
+        _addrRoyaltyAgent = addrRoyaltyAgent;
         _royaltyPercent = royaltyPercent;
     }
 
-    function createSale (
-        address addrNft,
-        uint128 nftPrice,
-        bool isDurationLimited
-    )
-        external view
-        notZeroPrice(nftPrice)
-        enoughValueToDeploySale
-    {
-        tvm.accept();
-        
-        tvm.rawReserve(address(this).balance - msg.value, 0);
+    function createSale (address addrNft)
+        external view override
+        enoughValueToCreateSale
+    {    
+        tvm.rawReserve(0, 4);
 
-        TvmCell stateSale = tvm.buildStateInit({
-            code: _codeSale,
-            contr: DirectSale,
-            pubkey: tvm.pubkey(),
-            varInit: { 
-                _addrRoot: address(this),
-                _addrOwner: msg.sender,
-                _addrNft: addrNft
-            }
-        });
-
-        // проверить на возможность повторного создания
-        new DirectSale {
-            stateInit: stateSale,
-            value: Fees.MIN_FOR_SALE_DEPLOY
-        }(
-            nftPrice,
-            isDurationLimited,
-            _addrRoyaltyRecipient,
-            _royaltyPercent
-        );
+        IData(addrNft).verifyTradability{
+            value: Fees.MIN_FOR_SALE_DEPLOY,
+            callback: approveCreateSale
+        }(msg.sender, address(this));
 
         msg.sender.transfer({value: 0, flag: 128});
     }
 
-    function setRoyaltyRecipient(address addrRoyaltyRecipient) external {
-        _addrRoyaltyRecipient = addrRoyaltyRecipient;
-    }
-
-    function getSaleAddress(address addrOwner, address addrNft) external view returns (address addrSale) {
+    function approveCreateSale(address addrOwner, address addrTrusted)
+        public view
+        nftManagementIsPossible(addrOwner, addrTrusted)
+    {
         TvmCell stateSale = tvm.buildStateInit({
             contr: DirectSale,
             code: _codeSale,
-            pubkey: tvm.pubkey(),
-            varInit: {
+            varInit: { 
+                _addrRoot: address(this),
+                _addrOwner: addrOwner,
+                _addrNft: msg.sender
+            }
+        });
+
+        address addrSale = address(tvm.hash(stateSale));
+        IData(msg.sender).lendOwnership{ value: Fees.MIN_FOR_MESSAGE }(addrSale);
+
+        new DirectSale {
+            stateInit: stateSale,
+            value: Fees.MIN_FOR_SALE_DEPLOY
+        }(
+            _addrRoyaltyAgent,
+            _royaltyPercent
+        );
+    }
+
+    function returnRights(address addrNft)
+        external view override
+        enoughValueToReturnRights
+    {    
+        tvm.rawReserve(0, 4);
+
+        IData(addrNft).verifyTradability{
+            value: Fees.MIN_FOR_RETURN_RIGHTS,
+            callback: approveReturnRights
+        }(msg.sender, address(this));
+
+        msg.sender.transfer({value: 0, flag: 128});
+    }
+
+    function approveReturnRights(address addrOwner, address addrTrusted)
+        public view
+        nftManagementIsPossible(addrOwner, addrTrusted)
+    {
+        IData(msg.sender).returnOwnership{ value: Fees.MIN_FOR_MESSAGE }();
+    }
+
+    function getSaleAddress(address addrOwner, address addrNft) external view override returns (address addrSale) {
+        TvmCell stateSale = tvm.buildStateInit({
+            contr: DirectSale,
+            code: _codeSale,
+            varInit: { 
                 _addrRoot: address(this),
                 _addrOwner: addrOwner,
                 _addrNft: addrNft
@@ -85,32 +101,26 @@ contract DirectSaleRoot {
         addrSale = address(tvm.hash(stateSale));
     }
 
-    function getRoyaltyInfo() external view returns (address addrRoyaltyRecipient, uint8 royaltyPercent) {
-        addrRoyaltyRecipient = _addrRoyaltyRecipient;
-        royaltyPercent = _royaltyPercent;
-    }
-
     // MODIFIERS
 
-    modifier onlySaleRootOwner {
-        require(msg.sender == _addrOwner, SaleErr.NOT_SALE_ROOT_OWNER);
-        _;
-    }
-
-    modifier validRoyalty(uint8 royaltyPercent) {
-        require(royaltyPercent <= MAX_ROYALTY_PERC, SaleErr.INVALID_ROYALTY);
-        _;
-    }
-
-    modifier notZeroPrice(uint128 price) {
-        require(price > 0, SaleErr.ZERO_PRICE);
-        _;
-    }
-
-    modifier enoughValueToDeploySale {
+    modifier enoughValueToCreateSale {
         require(msg.value >= Fees.MIN_FOR_SALE_DEPLOY + Fees.MIN_FOR_MESSAGE,
                SaleErr.NOT_ENOUGH_VALUE_TO_DEPLOY_DATA,
-               "Message balance is not enough for DirectSale deployment");
+               "Message balance is not enough to create sale");
+        _;
+    }
+
+    modifier enoughValueToReturnRights {
+        require(msg.value >= Fees.MIN_FOR_RETURN_RIGHTS + Fees.MIN_FOR_MESSAGE,
+               SaleErr.NOT_ENOUGH_VALUE_TO_RETURN_RIGHTS,
+               "Message balance is not enough to return rights");
+        _;
+    }
+
+    modifier nftManagementIsPossible(address addrNftOwner, address addrTrusted) {
+        require(addrNftOwner != address(0) && addrTrusted != address(0),
+                SaleErr.NO_RIGHTS_TO_TRADE,
+                "No rights to sell the NFT");
         _;
     }
 }

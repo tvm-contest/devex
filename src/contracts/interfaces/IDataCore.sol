@@ -11,17 +11,5 @@ interface IDataCore {
 
     function getOwnerResponsible() external view responsible returns (address addrOwner); 
 
-    function getOwnershipProviders() external view returns (
-        address addrOwner,
-        address addrTrusted,
-        address addrRoyaltyAuthor,
-        uint8 royaltyPercent
-    );
-
-    function getOwnershipProvidersResponsible() external view responsible returns (
-        address addrOwner,
-        address addrTrusted,
-        address addrRoyaltyAuthor,
-        uint8 royaltyPercent
-    );
+    function verifyTradability(address addrPossibleOwner, address addrPossibleTrusted) external view responsible returns (address addrOwner, address addrTrusted);
 }
