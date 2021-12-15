@@ -5,6 +5,10 @@ import fs from 'fs'
 import { MintNftService } from '../services/minting-token.service';
 
 const router = express.Router();
+//const multipartMiddleware = multipart()
+//router.use(multipart())
+
+
 
 router.post('/', async function (req, res, next) {
     console.log(req.body.colName, req.body.colAdd)
