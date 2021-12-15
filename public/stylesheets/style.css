@@ -3,60 +3,73 @@
     --title-color: rgb(32, 38, 42);
 }
 
+html {
+    height: 100%;
+}
+
 body {
     background-color: var(--main-color);
+    overflow-x: hidden;
+    height: 100%;
 }
 
 .forms {
     padding: 50px 0;
 }
 
-#form-contract {
-    
+#form-contract,
+.demo-mint-form {
     padding: 0 30px 20px 30px;
     display: flex;
     margin: 0 auto;
     border-radius: 50px;
     background-color: #fff;
-    /* max-width: 670px;
-    min-height: 700px; */
 }
-.content{
+
+.content {
     color: #000;
 }
+
 .select-param-token,
-.select-param-enum{
+.select-param-enum {
     color: rgb(0, 0, 0);
-    background-color: rgb(255, 255, 255);;
+    background-color: rgb(255, 255, 255);
+    ;
     border-radius: 50px;
     box-shadow: none !important;
 }
-.col.button-main-list{
+
+.col.button-main-list {
     padding-top: 20px;
 }
 
-.container-output{
+.container-output {
     color: #000;
     margin-top: 40px;
     padding: 50px;
     border-radius: 50px;
     background-color: #fff;
 }
+
 .col {
     padding: 12px;
 }
-.text{
+
+.text {
     word-break: break-all;
 }
-input.output-col{
+
+input.output-col {
     outline: none;
     width: 600px;
     display: none;
 }
-.line{
+
+.line {
     padding: 10px;
     border-bottom: 1px solid rgb(0, 125, 187);
 }
+
 .button-delete {
     width: 30px;
     height: 30px;
@@ -141,7 +154,7 @@ label {
     color: #000;
     margin-top: 40px;
     padding: 25px 40px;
-    
+
     border-radius: 50px;
     background-color: #fff;
     cursor: pointer;
@@ -199,12 +212,15 @@ label {
     border-radius: 50px;
     box-shadow: none !important;
 }
-.btn-additionally{
+
+.btn-additionally {
     color: #fff;
-    background-color: rgb(54, 163, 218);;
+    background-color: rgb(54, 163, 218);
+    ;
     border-radius: 50px;
     box-shadow: none !important;
 }
+
 .button-main-3 {
     margin: 20px 0 0 0;
 }
@@ -262,7 +278,7 @@ input {
     font-weight: 500;
 }
 
-.deploy-from-file{
+.deploy-from-file {
     animation: appearance 1s ease-in-out;
     position: relative;
     /* top: 50%;
@@ -279,7 +295,7 @@ input {
 }
 
 /* Animation */
-@keyframes appearance{
+@keyframes appearance {
     0% {
         transform: scale(0);
     }
@@ -289,7 +305,7 @@ input {
     }
 }
 
-@keyframes slideInFromLeft{
+@keyframes slideInFromLeft {
     0% {
         transform: translateX(-100%);
         color: transparent;
@@ -300,7 +316,7 @@ input {
     }
 }
 
-@keyframes slideInFromRight{
+@keyframes slideInFromRight {
     0% {
         transform: translateX(100%);
         color: transparent;
@@ -311,7 +327,7 @@ input {
     }
 }
 
-@keyframes slideInFromTop{
+@keyframes slideInFromTop {
     0% {
         transform: translateY(-100%);
     }
@@ -321,7 +337,7 @@ input {
     }
 }
 
-@keyframes slideInFromBottom{
+@keyframes slideInFromBottom {
     0% {
         transform: translateY(100%);
     }
@@ -331,7 +347,7 @@ input {
     }
 }
 
-@keyframes appeareText{
+@keyframes appeareText {
     0% {
         color: transparent;
     }
