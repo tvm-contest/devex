@@ -5,7 +5,6 @@ import { globals } from '../config/globals';
 import { DeployService } from './deploy.service';
 import { TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
-import { TokenImageCreator } from './gen-token-image.service';
 
 const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
 const utf8ToHex = convert("utf8", "hex");
@@ -14,7 +13,6 @@ export class MintNftService {
     private deployService: DeployService;
     private client: TonClient;
     private collectionFolder: string = '';
-    private imageCreator: TokenImageCreator;
 
     constructor(collectionRootAddress: string) {
         this.deployService = new DeployService();
@@ -23,7 +21,6 @@ export class MintNftService {
                 endpoints: [everscale_settings.ENDPOINTS]
             }
         });
-        this.imageCreator = new TokenImageCreator;
         // Collection folder is the root address withot the 0: in the front
         this.setCollectionSourceFolder(collectionRootAddress.substring(2));
     }
@@ -54,7 +51,6 @@ export class MintNftService {
         );
 
         await this.sendMessageToMint(mintMessage.message);
-        this.imageCreator.createTokenImage(this.getCollectionSourceFolder());
     }
 
     async getMintParams(mintigData): Promise<object> {
