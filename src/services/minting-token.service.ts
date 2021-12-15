@@ -16,7 +16,6 @@ export class MintNftService {
     private deployService: DeployService;
     private client: TonClient;
     private collectionFolder: string = '';
-    private imageCreator: TokenImageCreator;
 
     constructor(collectionRootAddress: string) {
         this.deployService = new DeployService();
@@ -25,7 +24,6 @@ export class MintNftService {
                 endpoints: [everscale_settings.ENDPOINTS]
             }
         });
-        this.imageCreator = new TokenImageCreator;
         // Collection folder is the root address withot the 0: in the front
         this.setCollectionSourceFolder(collectionRootAddress.substring(2));
     }
@@ -56,7 +54,6 @@ export class MintNftService {
         );
 
         await this.sendMessageToMint(mintMessage.message);
-        this.imageCreator.createTokenImage(this.getCollectionSourceFolder());
     }
 
     async getMintParams(mintigData): Promise<object> {

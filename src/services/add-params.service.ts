@@ -24,7 +24,19 @@ const markForRequireTypeLimit = '/*%REQUIRE_TYPE_LIMIT%*/';
 const markForTypePrint = '/*%TYPE_PRINT%*/';
 const markForTypeInput = '/*%TYPE_INPUT%*/';
 
+const markForCreatorFee = '/*%CREATOR_FEE%*/';
+
+
 export class AddParamsService {
+  async addCreatorFee(feesFilePath: string,creatorFee?:number) : Promise<any> {
+    let codeSource = fs.readFileSync(feesFilePath, 'utf8');
+
+    codeSource = codeSource.replace(markForCreatorFee, `+ ${creatorFee} ton`);
+
+    fs.writeFileSync(feesFilePath, codeSource, 'utf8');
+
+  }
+
   async removeNftTypeChecking(rootContractPath : string, debotContractPath : string) : Promise<any> {
     let codeSourceRoot = fs.readFileSync(rootContractPath, 'utf8');
     let codeSourceDebot = fs.readFileSync(debotContractPath, 'utf8');
