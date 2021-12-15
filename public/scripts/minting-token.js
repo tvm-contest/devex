@@ -8,6 +8,7 @@ if(obj.collection.rarities != []){
     //var listRar = []
     
     for(var keyID in obj.collection.rarities){
+        console.log("!")
         $(`#select-rarities`).append($(`<option value=${obj.collection.rarities[keyID].name}> ${obj.collection.rarities[keyID].name}</option>`))
         //listRar.push(obj.collection.rarities[keyID].name)
     }
@@ -35,7 +36,7 @@ if(obj.collection.parameters != []){
         if (obj.collection.parameters[keyID].type.substring(0,4) != "Enum" && $.inArray(obj.collection.parameters[keyID].name, nameMedia) == -1){//!
             $(".parameters").append($(`<div class="col"id="parameters${keyID}">`))
             $(`#parameters${keyID}`).append($(`<label class="form-label"> ${obj.collection.parameters[keyID].name}<label>`))
-            $(`#parameters${keyID}`).append($(`<input required class="form-control" name='parameter[${obj.collection.parameters[keyID].name}]' minlength=${obj.collection.parameters[keyID].minValue} maxlength=${obj.collection.parameters[keyID].maxValue}> ` ) )   
+            $(`#parameters${keyID}`).append($(`<input required class="form-control" name='${obj.collection.parameters[keyID].name}' minlength=${obj.collection.parameters[keyID].minValue} maxlength=${obj.collection.parameters[keyID].maxValue}> ` ) )   
         } 
        
         }
@@ -49,7 +50,7 @@ if (obj.enums.length > 0){
         $(".parameters").append($(`<div class="col" id="paramenersE${keyIdColEnum}">`))
         $(`#paramenersE${keyIdColEnum}`).append($(`<label class="form-label"> ${obj.enums[keyIdColEnum].name}<label>`))
 
-        $(`#paramenersE${keyIdColEnum}`).append($(`<select class="form-select select-param-enum" id ="select-enum${keyIdColEnum}" name="parameter[enum][${obj.enums[keyIdColEnum].name}]">`))
+        $(`#paramenersE${keyIdColEnum}`).append($(`<select class="form-select select-param-enum" id ="select-enum${keyIdColEnum}" name="${obj.enums[keyIdColEnum].name}">`))
         for(var keyIDenum in obj.enums[keyIdColEnum].enumVariants){
             //listEnum.push(obj.enums[keyIdColEnum].enumVariants[keyIDenum])
             $(`#select-enum${keyIdColEnum}`).append($(`<option value=${keyIDenum}> ${obj.enums[keyIdColEnum].enumVariants[keyIDenum]}</option>`))
