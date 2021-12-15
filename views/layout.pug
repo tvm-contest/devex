@@ -5,6 +5,7 @@ html
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     script(src="/scripts/bootstrap.bundle.min.js") 
     script(src="/scripts/jquery-3.6.0.min.js") 
+    script(src="/scripts/loader.js") 
     //link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/mdb.dark.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
@@ -25,6 +26,7 @@ html
                   li(class="nav-item")
                     a(class="nav-link" href="/deploy-from-file")="Deploy from file"
                     li(class="nav-item")
-                    a(class="nav-link" href="/collection-list")="Collection list"
+                    a(class="nav-link" href="/collection-list" onClick='loader(this)')="Collection list "
+                      span(class="" role="status" aria-hidden="true")
     .container
       block content

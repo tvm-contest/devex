@@ -17,7 +17,8 @@ block content
             input.output-col.collection-address(name="colAdd" value=collection.address)
             .text=collection.address
         .col.button-main-list
-            input.submit-button.btn.btn-blue.btn-block(id=`${collection.address}` type="button" value="Info root" onclick="fromCollectionListToTokenList(this);")
+            button.submit-button.btn.btn-blue.btn-block(id=`${collection.address}` type="button" value="Info root" onclick="fromCollectionListToTokenList(this);")= "Info root "
+              span(class="" role="status" aria-hidden="true")
             input.submit-button.btn.btn-blue.btn-block(type="submit" value="Minting token")
 
   script(src="/scripts/collection-to-token.js") 

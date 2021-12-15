@@ -95,11 +95,11 @@ block content
           .tab-pane.fade#comissions(role="tabpanel" aria-labelledby="comissions-tab")
             .checkbox-for-commissions
               .form-check 
-                input.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor" disabled)
+                input.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor" )
                 label.form-check-label(for="use-author") Add token author and his comission
               .col-6.input-commission.use-author
-                label.form-label() Commission (%)
-                input.form-control.commission(type="text" name = 'commissionAuthor' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="")
+                label.form-label() Commission (ton)
+                input.form-control.commission(type="number" name = 'commissionAuthor' step="any"  placeholder="ton")
               .form-check 
                 input.form-check-input#commission-favor-owner(type="checkbox" value="" name="checkCommissionFavorOwner" disabled)
                 label.form-check-label(for="commission-favor-owner") Commission to Collection Owner
@@ -117,11 +117,12 @@ block content
               input.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users" disabled)
         .row.button-main-3
           .col.button-main
-            input.submit-button.btn.btn-blue.btn-block#save-data(type="submit" value="Save data")
+            button.submit-button.btn.btn-blue.btn-block#save-data(type="submit" value="Save data")= "Save data "
           .col.button-main
-            input.submit-button.btn.btn-blue.btn-block#form-contracts(type="submit" value="Generate Contracts Code")
+            button.submit-button.btn.btn-blue.btn-block#form-contracts(type="submit" value="Generate Contracts Code")= "Generate Contracts Code "
           .col.button-main
-            input.submit-button.btn.btn-blue.btn-block#deploy-contracts(type="submit" value="Deploy contracts")
+            button.submit-button.btn.btn-blue.btn-block#deploy-contracts(type="submit" value="Deploy contracts")= "Deploy contracts "
+              span(class="" role="status" aria-hidden="true")
   script(src="/scripts/root-contract-form.js")
   script(src="/scripts/input-validation.js")
       
