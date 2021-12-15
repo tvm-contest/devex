@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    form.row.demo-mint-form(action="/demo-minting" method="post")
+        ul.demo-title Tokens will be minted with any params:
+        for param in tokenParams
+            if (param.minValue)
+                // If the param is not enum of mediafile
+                li.demo-text #{param.name}
+        if (enums)
+            .demo-title Tokens will be minted with any enum variant:
+            for currentEnum in enums
+                h3.enum-name #{currentEnum.name}
+                for enumVar in currentEnum.enumVariants
+                    li.demo-text #{enumVar}
+        input(type='hidden' value=rootAddress name="rootAddress")
+        input.submit-button.btn.btn-blue.btn-block(type="submit" value="Deploy demo tokens")
