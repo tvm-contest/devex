@@ -27,13 +27,13 @@ block content
                 .col-3
                   p.text.text-main= line.title
                 .col-9
-                  img(src=line.value)
+                  img(src=line.value style="max-width: -webkit-fill-available;")
             else if line.tag == 'video'
               .row 
                 .col-3
                   p.text.text-main= line.title
                 .col-9
-                  video(src=line.value)
+                  video(src=line.value controls="controls" style="max-width: -webkit-fill-available;")
             else if line.tag == 'a'
               .row 
                 .col-3

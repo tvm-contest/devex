@@ -19,6 +19,6 @@ block content
         .row
           .col.button-main-list
               input.btn.btn-blue.btn-collection-list.btn-submit(type="submit" value="Minting token")
-              input.btn.btn-blue.btn-collection-list.btn-info-root(id=`${collection.address}` type="button" value="Info root" onclick="fromCollectionListToTokenList(this);")
-
+              button.btn.btn-blue.btn-collection-list.btn-info-root(id=`${collection.address}` type="button" onclick="fromCollectionListToTokenList(this);")="Info root"
+                span(class="" role="status" aria-hidden="true")
   script(src="/scripts/collection-to-token.js") 

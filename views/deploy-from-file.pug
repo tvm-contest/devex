@@ -7,4 +7,5 @@ block content
         form(method='post' enctype='multipart/form-data').deploy-from-file
             input.text(name='jsonCollection', type="file").btn-blue
             br
-            input.text.btn-submit(type='submit' value ="Deploy").btn.btn-blue
+            button.text.btn-submit(type='submit' onClick='loader(this)').btn.btn-blue="Deploy"
+              span(class="" role="status" aria-hidden="true")
