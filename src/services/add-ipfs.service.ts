@@ -1,12 +1,18 @@
-const IPFS = require('ipfs-core');
+import { ipfs_setting } from "../config/ipfs-setting";
 
-class ipfsAddService {
+const ipfsClent = require('ipfs-http-client');
 
-    async addFileToIPFS(file) {
-        const ipfs = await IPFS.create();
-        const { cid } = await ipfs.add(file);
-        await ipfs.stop();
-        return cid;
+class ipfsAddService {  
+
+    addFileToIPFS = async (file) => {
+        const ipfs = new ipfsClent.create({
+            host: ipfs_setting.HOST,
+            port: ipfs_setting.PORT,
+            protocol: ipfs_setting.PROTOCOL
+        });
+        const fileAdded = await ipfs.add({content: file});
+        const fileHash = fileAdded.path;
+        return fileHash
     }
 }
 

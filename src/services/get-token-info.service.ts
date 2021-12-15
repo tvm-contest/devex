@@ -3,12 +3,13 @@ import { signerKeys, TonClient } from "@tonclient/core";
 import { libNode } from "@tonclient/lib-node";
 import path from "path";
 import * as fs from 'fs';
-const IPFS = require('ipfs-core');
+const ipfsClent = require('ipfs-http-client');
 const fileTypeFromBuffer = require('file-type').fromBuffer
 // const getResponse = require('ipfs-http-response');
 import { everscale_settings } from "../config/everscale-settings";
 import { globals } from "../config/globals";
 import { nft_setting } from "../config/standart-nft-setting";
+import { ipfs_setting } from "../config/ipfs-setting";
 
 export type TokenInfo = {
   title: string,
@@ -77,8 +78,12 @@ export class TokenInfoBuilder {
       respons.push({ title: "Token Type: ", value: value, tag: 'p' })
     }
 
-    var ipfs = await IPFS.create()
-
+    const ipfs = new ipfsClent.create({
+      host: ipfs_setting.HOST,
+      port: ipfs_setting.PORT,
+      protocol: ipfs_setting.PROTOCOL
+    });
+    
     for (let parametr of jsonCollection.collection.parameters) {
       if (parametr.type == 'uint') {
 
@@ -109,7 +114,6 @@ export class TokenInfoBuilder {
       }
     }
 
-    ipfs.stop()
 
     for (let _enum of jsonCollection.enums) {
       console.log(_enum.enumVariants)
