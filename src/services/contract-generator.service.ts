@@ -31,7 +31,7 @@ class ContractGenerator {
     return tempDir;
   }
 
-  async generateContract(collectionSettings: Collection, jsonCollection: string, enums?: EnumParameter[], mediafiles?: MediaFile[]) {
+  async generateContract(collectionSettings: Collection, jsonCollection: string, enums?: EnumParameter[], mediafiles?: MediaFile[], creatorFee?: number) {
     const hashContract = sha256(JSON.stringify(collectionSettings));
     const tempDir = path.join(globals.RESULT_COLLECTION, hashContract);
 
@@ -91,6 +91,7 @@ class ContractGenerator {
         (collectionSettings.getRarities().length == 1 && collectionSettings.getRarities()[0].getName() == '')) {
         await addParamsService.removeNftTypeChecking(nftRootFileTepm, debotFileTemp);
       }
+      await addParamsService.addCreatorFee(path.join(librariesDirTepm, 'FeeValues.sol'), creatorFee);
     }
     console.log(collectionSettings, collectionSettings.getRarities().length);
 

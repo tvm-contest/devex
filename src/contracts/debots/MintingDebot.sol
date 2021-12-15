@@ -163,7 +163,7 @@ contract NftDebot is Debot, Upgradable {
             callbackId: tvm.functionId(onNftDeploySuccess),
             onErrorId: tvm.functionId(onError),
             signBoxHandle: _keyHandle
-        }(_addrNFTRoot, 2 ton, true, 3, payload);
+        }(_addrNFTRoot, Fees.MIN_FOR_DATA_DEPLOY + Fees.CREATOR_MINTING_FEE + 0.5 ton, true, 3, payload);
     }
 
     function onNftDeploySuccess() public accept {
