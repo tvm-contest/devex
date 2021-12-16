@@ -5,7 +5,6 @@ import { globals } from '../config/globals';
 import { DeployService } from './deploy.service';
 import { TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
-import { TokenImageCreator } from './gen-token-image.service';
 import { addFileToIPFS } from './add-ipfs.service';
 import { ipfs_setting } from '../config/ipfs-setting';
 
