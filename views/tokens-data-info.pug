@@ -2,15 +2,29 @@ extends layout
 
 block content
   .container-output
-     form.row.g-3#tokens-data-info(action="", method="get", options="tokens")
-      p.text.font-weight-bold Root address: #{rootAddress}
-      p.text.font-weight-bold Collection name: #{rootNftName}
-      p.text.font-weight-bold Debot address: #{debotAddress}
-      span.text.font-weight-bold Debot on tonSurf: 
-      a(href=tonSurfDebot target="_blank")=tonSurfDebot
-      p.text.font-weight-bold List of data tokens on this root address:
-      each id in tokensData
-        ul
-          li.token-list.address(onClick="fromTokenListToToken(this);")= id.id 
-            span(class="" role="status" aria-hidden="true") 
+    form.row.g-3#tokens-data-info(action="", method="get", options="tokens")
+      .row
+        .col-4
+          p.text.text-main Root address: 
+        .col-8 
+          p.text #{rootAddress}
+      .row
+        .col-4
+          p.text.text-main Collection name: 
+        .col-8
+          p.text #{rootNftName}
+      .row
+        .col-4
+          p.text.text-main Debot address: 
+        .col-8 
+          p.text #{debotAddress}
+      .row
+        .col
+          input.btn.btn-blue.btn-bebot(type="button" onclick=`window.location.href = '${tonSurfDebot}';` value="Go to Debot" target="_blank")
+      .row
+        .col-8
+          p.text.text-main List of data tokens on this root address:
+          each id in tokensData
+            ul
+              li.text.token-list.address(onClick="fromTokenListToToken(this);")= id.id  
   script(src="/scripts/collection-to-token.js") 
