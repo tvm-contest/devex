@@ -37,7 +37,13 @@ if(obj.collection.parameters != []){
         if (obj.collection.parameters[keyID].type.substring(0,4) != "Enum" && $.inArray(obj.collection.parameters[keyID].name, nameMedia) == -1){//!
             $(".parameters").append($(`<div class="col"id="parameters${keyID}">`))
             $(`#parameters${keyID}`).append($(`<label class="form-label text"> ${obj.collection.parameters[keyID].name}<label>`))
-            $(`#parameters${keyID}`).append($(`<input required class="form-control text" name='${obj.collection.parameters[keyID].name}' minlength=${obj.collection.parameters[keyID].minValue} maxlength=${obj.collection.parameters[keyID].maxValue}> ` ) )   
+            if (obj.collection.parameters[keyID].type == "uint"){
+                $(`#parameters${keyID}`).append($(`<input type="number" required class="form-control text" name='${obj.collection.parameters[keyID].name}' min=${obj.collection.parameters[keyID].minValue} max=${obj.collection.parameters[keyID].maxValue}> `))
+            }else{
+                $(`#parameters${keyID}`).append($(`<input required class="form-control text" name='${obj.collection.parameters[keyID].name}' > `))
+                // minlength=${obj.collection.parameters[keyID].minValue} maxlength=${obj.collection.parameters[keyID].maxValue}
+            }
+            
         } 
        
         }
