@@ -381,7 +381,7 @@ input {
 
 .feature__text {
     animation: appeareText 1s ease-in-out;
-    color: #fff;
+    color: #000;
     font-size: 19px;
     font-weight: 500;
 }
