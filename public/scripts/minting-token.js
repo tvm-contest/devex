@@ -40,7 +40,8 @@ if(obj.collection.parameters != []){
             if (obj.collection.parameters[keyID].type == "uint"){
                 $(`#parameters${keyID}`).append($(`<input type="number" required class="form-control text" name='${obj.collection.parameters[keyID].name}' min=${obj.collection.parameters[keyID].minValue} max=${obj.collection.parameters[keyID].maxValue}> `))
             }else{
-                $(`#parameters${keyID}`).append($(`<input required class="form-control text" name='${obj.collection.parameters[keyID].name}' minlength=${obj.collection.parameters[keyID].minValue} maxlength=${obj.collection.parameters[keyID].maxValue}> `))
+                $(`#parameters${keyID}`).append($(`<input required class="form-control text" name='${obj.collection.parameters[keyID].name}' > `))
+                // minlength=${obj.collection.parameters[keyID].minValue} maxlength=${obj.collection.parameters[keyID].maxValue}
             }
             
         } 
