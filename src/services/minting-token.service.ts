@@ -6,6 +6,8 @@ import { DeployService } from './deploy.service';
 import { TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
 import { TokenImageCreator } from './gen-token-image.service';
+import { addFileToIPFS } from './add-ipfs.service';
+import { ipfs_setting } from '../config/ipfs-setting';
 
 const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
 const utf8ToHex = convert("utf8", "hex");
@@ -14,7 +16,6 @@ export class MintNftService {
     private deployService: DeployService;
     private client: TonClient;
     private collectionFolder: string = '';
-    private imageCreator: TokenImageCreator;
 
     constructor(collectionRootAddress: string) {
         this.deployService = new DeployService();
@@ -23,7 +24,6 @@ export class MintNftService {
                 endpoints: [everscale_settings.ENDPOINTS]
             }
         });
-        this.imageCreator = new TokenImageCreator;
         // Collection folder is the root address withot the 0: in the front
         this.setCollectionSourceFolder(collectionRootAddress.substring(2));
     }
@@ -42,7 +42,7 @@ export class MintNftService {
             rootNftContract,
             this.collectionFolder,
             'NftRoot',
-            { _name: utf8ToHex(dataForMinting.contractName) }
+            { _name: utf8ToHex(dataForMinting.body.contractName) }
         );
 
         const mintParams = await this.getMintParams(dataForMinting);
@@ -54,18 +54,22 @@ export class MintNftService {
         );
 
         await this.sendMessageToMint(mintMessage.message);
-        this.imageCreator.createTokenImage(this.getCollectionSourceFolder());
     }
 
     async getMintParams(mintigData): Promise<object> {
+        //Data which user inputted to the form
+        const userParams = mintigData.body;
+        // const userEnum = userParams.enum;
+        const userMediaFile = mintigData.files;
+
         const resultParams = {
-            name: utf8ToHex(mintigData.contractName),
+            name: utf8ToHex(userParams.contractName),
             url: utf8ToHex(""),
             editionNumber: 1,
             editionAmount: 1,
             managersList: [],
             royalty: 1,
-            nftType: utf8ToHex(mintigData.rarities)
+            nftType: userParams.rarities ? utf8ToHex(userParams.rarities) : ""
         };
 
         // Data from the collectionInfo.json
@@ -76,10 +80,6 @@ export class MintNftService {
         const collectionParams = collectionInfoJSON.collection.parameters;
         const enumOfCollection = collectionInfoJSON.enums;
         const mediafilesOfCollection = collectionInfoJSON.mediafiles;
-        //Data which user inputted to the form
-        const userParams = mintigData.parameters;
-        const userEnum = userParams.enum;
-        const userMediaFile = userParams.mediafile;
 
         for (const currentCollecitonParam of collectionParams) {
             // For uint and string params
@@ -94,12 +94,12 @@ export class MintNftService {
 
         for (const currentEnum of enumOfCollection) {
             // If a enum there is no in the collectionInfo.json this loop will not work
-            resultParams[currentEnum.name] = Number(userEnum[currentEnum.name]);
+            resultParams[currentEnum.name] = Number(userParams[currentEnum.name]);
         }
 
         for (const currentMediafile of mediafilesOfCollection) {
             // If a mediafile there is no in the collectionInfo.json this loop will not work 
-            resultParams[currentMediafile.name] = utf8ToHex(userMediaFile[currentMediafile.name]);
+            resultParams[currentMediafile.name] = utf8ToHex(await this.getIpfsURL(userMediaFile[currentMediafile.name]));
         }
 
         return resultParams;
@@ -131,5 +131,10 @@ export class MintNftService {
         }
 
         await this.client.processing.send_message(shardIdParams);
+    }
+
+    private async getIpfsURL(file) : Promise<string>{
+        let cid = await addFileToIPFS(file.data) 
+        return `${ipfs_setting.GATEWAY}/ipfs/${cid}`
     }
 }

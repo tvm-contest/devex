@@ -2,17 +2,9 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { globals } from '../config/globals'
-import { addFileToIPFS } from '../services/add-ipfs.service';
 import { DeployService } from '../services/deploy.service';
 import { DeployTrueNftService } from '../services/deployTrueNft.service';
 const router = express.Router();
-
-router.get('/addFileToIPFS', async function (req, res, next) {
-  const filepath = path.join(globals.SAMPLE_DATA_PATH, '/textfile-test-ipfs-upload.txt');
-  const file = fs.readFileSync(filepath, 'utf8');
-  const CID = await addFileToIPFS(file);
-  res.render('my-sample', { title: 'My-sample', CID: CID });
-});
 
 router.get('/deployService', async function (req, res, next) {
   //const solString = "pragma ton-solidity >= 0.35.0; pragma AbiHeader expire; contract helloworld {function renderHelloWorld () public pure returns (string) {return 'hello';}}";

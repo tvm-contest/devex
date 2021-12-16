@@ -17,6 +17,7 @@ import { oneTokenInfoRouter } from './routes/one-token-info';
 import { parameterForm } from './routes/parameter-form'
 import { collectionListRouter } from './routes/collection-list'
 import { deployFromFile } from './routes/deploy-from-file';
+import { demoMinting } from './routes/demo-minting';
 
 const app = express();
 
@@ -44,7 +45,8 @@ app.use('/tokens-data-info', tokensDataInfo);
 app.use('/generate-contract', generateContractRouter);
 app.use('/parameter-form', parameterForm);
 app.use('/collection-list', collectionListRouter);
-app.use('/deploy-from-file', deployFromFile)
+app.use('/deploy-from-file', deployFromFile);
+app.use('/demo-minting', demoMinting);
 
 app.use((req: Request, res: Response) => {
     res.status(404);
