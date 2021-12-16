@@ -25,7 +25,7 @@ export class DirectSaleService {
     async deployDirectSaleRoot(collectionPath: string, addrRoyaltyAgent: string, royaltyPercent: number) : Promise<string> {
         let directSaleRootAcc = await this.createDirectSaleRootAccount(collectionPath);
         let directSaleAcc = await this.createDirectSaleAccount(collectionPath);
-        let initInput = await this.buildInitInputForDeployDirectSaleRoot(directSaleAcc, addrRoyaltyAgent, royaltyPercent);
+        let initInput = await this.buildInitInputForDeployDirectSaleRoot(collectionPath, addrRoyaltyAgent, royaltyPercent);
         await this.deployService.deploy(directSaleRootAcc, initInput);
          
         return await directSaleRootAcc.getAddress();
@@ -53,7 +53,6 @@ export class DirectSaleService {
         console.log("landOwnership");
         await this.createSale(directSaleRootAcc, walletAcc, directSaleRootAddr, nftAddr);
         console.log("createSale");
-        await(20000)
         let saleAddr = await this.getSaleAddr(directSaleRootAcc, nftAddr);
         console.log(saleAddr);
     }
@@ -86,10 +85,11 @@ export class DirectSaleService {
         return directSaleAcc;
     }
     
-    private async buildInitInputForDeployDirectSaleRoot(directSaleAcc: Account, addrRoyaltyAgent: string, royaltyPercent: number) : Promise<object> {
-        console.log((await this.deployService.getDecodeTVC(directSaleAcc)).code);
+    private async buildInitInputForDeployDirectSaleRoot(collectionPath: string, addrRoyaltyAgent: string, royaltyPercent: number) : Promise<object> {
+        
+        let tvc = Buffer.from(fs.readFileSync(path.join(globals.RESULT_COLLECTION, collectionPath, "DirectSale.tvc"))).toString("base64");
         let initInput = {
-            codeSale: (await this.deployService.getDecodeTVC(directSaleAcc)).code,
+            codeSale: (await this.client.boc.get_code_from_tvc({tvc: tvc})).code,
             addrRoyaltyAgent: addrRoyaltyAgent,
             royaltyPercent: royaltyPercent
         };
@@ -141,10 +141,9 @@ export class DirectSaleService {
                     addrNft: addrNft
                 }
             },
-            processing_try_index: 3
         });
         try {
-            await walletAcc.run(
+            let { transaction } = await walletAcc.run(
                 "sendTransaction",
                 {
                     dest: directSaleRootAddr,
@@ -154,6 +153,17 @@ export class DirectSaleService {
                     payload: body,
                 }
             );
+            let { result } = await this.client.net.wait_for_collection({
+                collection: "transactions",
+                filter: {
+                    account_addr: { eq: directSaleRootAddr },
+                    now: { ge: transaction.now },
+                    aborted: { eq: false },
+                },
+                result: "now aborted",
+                timeout: 200000,
+            });
+            console.log(result);
         } catch(err) {
             console.log("CreateSale error")
         }
