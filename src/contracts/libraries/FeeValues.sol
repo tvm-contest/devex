@@ -5,6 +5,7 @@ library Fees {
     uint128 constant MIN_FOR_INDEX_DEPLOY = 0.5 ton;
     uint128 constant MIN_FOR_INDEX_BASIS_DEPLOY = 0.5 ton;
     uint128 constant MIN_FOR_DATA_DEPLOY = 1.5 ton;
+    uint128 constant MIN_FOR_MINTING = 1.7 ton; // MIN_FOR_DATA_DEPLOY + calculation fee
     uint128 constant MIN_FOR_SALE_DEPLOY = 1.5 ton;
     uint128 constant MIN_FOR_SALE_CREATE = 1.5 ton;
     uint128 constant MIN_FOR_RETURN_RIGHTS = 0.5 ton;

@@ -64,11 +64,11 @@ contract NftRoot is DataResolver, IndexResolver {
     )
         public
     {
-        require(isEnoughValueToMint(msg.value) || isCommissionAgent(msg.sender), NftRootErr.NOT_ENOUGH_VALUE_TO_MINT);
+        require(isEnoughValueToMint(msg.value), NftRootErr.NOT_ENOUGH_VALUE_TO_MINT);
         /*%REQUIRE_TYPE%*/require(_limitByTypes.exists(nftType), NON_EXISTENT_TYPE, "The token type does not exist");
         /*%REQUIRE_TYPE_LIMIT%*/require(_mintedByTypes[nftType] < _limitByTypes[nftType], LIMIT_REACHED, "Limit reached");
 
-        if (isEnoughValueToMint(msg.value)) {
+        if (msg.value >= Fees.MIN_FOR_MINTING) {
             tvm.rawReserve(0, 4);
         }
 
@@ -97,11 +97,11 @@ contract NftRoot is DataResolver, IndexResolver {
         _mintedByTypes[nftType]++;
         _totalMinted++;
 
-        if (isEnoughValueToMint(msg.value)) {
+        if (msg.value >= Fees.MIN_FOR_MINTING) {
             msg.sender.transfer({value: 0, flag: 128});
         } else {
             msg.sender.transfer({value: msg.value, flag: 1});
-        }      
+        }
     }
 
     function deployBasis(TvmCell codeIndexBasis) public {
@@ -144,7 +144,7 @@ contract NftRoot is DataResolver, IndexResolver {
     }
 
     function isEnoughValueToMint(uint128 value) inline private view returns (bool) {
-        return value >= _mintingCommission + Fees.MIN_FOR_DATA_DEPLOY;
+        return isCommissionAgent(msg.sender) || value >= _mintingCommission + Fees.MIN_FOR_MINTING;
     }
 
     function isCommissionAgent(address addrCommissionAgent) inline private view returns (bool) {
