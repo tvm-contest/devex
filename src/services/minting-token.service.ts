@@ -7,6 +7,7 @@ import { TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
 import { addFileToIPFS } from './add-ipfs.service';
 import { ipfs_setting } from '../config/ipfs-setting';
+import { surf_setting } from '../config/surf_setting';
 
 const convert = (from, to) => (str) => Buffer.from(str, from).toString(to);
 const utf8ToHex = convert("utf8", "hex");
@@ -46,13 +47,15 @@ export class MintNftService {
 
         const mintParams = await this.getMintParams(dataForMinting);
 
-        const mintMessage = await this.getMintMessage(
+        const mesBody = await this.getMessageBody(
             rootNftAccount,
             'mintNft',
             mintParams
         );
 
-        await this.sendMessageToMint(mintMessage.message);
+        const walletAcc = await this.getWalletAccount()
+
+        await this.sendTransactionAndMint(walletAcc, rootNftAccount, mesBody)
     }
 
     async getMintParams(mintigData): Promise<object> {
@@ -104,32 +107,50 @@ export class MintNftService {
         return resultParams;
     }
 
-    private async getMintMessage(account: Account, func: string, input: object) {
+    private async getMessageBody(account: Account, func: string, input: object) {
         const messageParams = {
             abi: account.abi,
-            address: await account.getAddress(),
-            //
-            // Hard code
-            //
-            src_address: everscale_settings.SAFE_MULTISIG_ADDRESS,
-
             call_set: {
                 function_name: func,
                 input
             },
-            value: '2000000000'
+            is_internal: true,
+            signer: account.signer
         };
+        let payload =  await this.client.abi.encode_message_body(messageParams);
 
-        return await this.client.abi.encode_internal_message(messageParams);
+        return payload.body
     }
 
-    private async sendMessageToMint(message: string) {
-        const shardIdParams = {
-            message,
-            send_events: false
-        }
+    private async getWalletAccount(){
+        let walletAbi = surf_setting.SEND_TRANSACTION_ABI
+        const walletAcc = new Account(
+            {
+                abi: walletAbi, 
+            },
+            {
+                client: this.client,
+                address: everscale_settings.SAFE_MULTISIG_ADDRESS,
+                signer: {
+                    type: "Keys",
+                    keys: everscale_settings.SAFE_MULTISIG_KEYS
+                }
+            }
+        );
+        return walletAcc
+    }
 
-        await this.client.processing.send_message(shardIdParams);
+    private async sendTransactionAndMint(walletAcc: Account, nftRootAcc: Account, mesBody: string) {
+        await walletAcc.run(
+            "sendTransaction",
+            {
+                dest: await nftRootAcc.getAddress(),
+                value: 2_000_000_000,
+                flags: 3,
+                bounce: true,
+                payload: mesBody,
+            }
+        );
     }
 
     private async getIpfsURL(file) : Promise<string>{
