@@ -24,7 +24,9 @@ html
                     a(class="nav-link text" href="/root-contract-form")="Root contract form"
                   li(class="nav-item text")
                     a(class="nav-link text" href="/deploy-from-file")="Deploy from file"
-                    li(class="nav-item")
-                    a(class="nav-link text" href="/collection-list" onClick='loader(this)')="Collection list"
+                  li(class="nav-item")
+                    a(class="nav-link text" href="/collection-list" onClick='loader(this)')="Collection list "
+                      span(class="" role="status" aria-hidden="true")
+
     .container
       block content
