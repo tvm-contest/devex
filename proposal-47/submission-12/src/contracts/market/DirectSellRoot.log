@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: DirectSellRoot.tvc
+      wc: None
+    keys: DirectSellRoot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "during zoo can shrimp glow gown surprise truth chronic find boil fury"
+Raw address: 0:d7f733c9230279629f5168ba88756e245b0ff98843d2dcc694b22b7e30fd7d26
+testnet:
+Non-bounceable address (for init): 0QDX9zPJIwJ5Yp9RaLqIdW4kWw_5iEPS3MaUsit-MP19JkGH
+Bounceable address (for later access): kQDX9zPJIwJ5Yp9RaLqIdW4kWw_5iEPS3MaUsit-MP19JhxC
+mainnet:
+Non-bounceable address (for init): UQDX9zPJIwJ5Yp9RaLqIdW4kWw_5iEPS3MaUsit-MP19JvoN
+Bounceable address (for later access): EQDX9zPJIwJ5Yp9RaLqIdW4kWw_5iEPS3MaUsit-MP19JqfI
+Succeeded

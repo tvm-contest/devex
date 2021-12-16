@@ -3,25 +3,42 @@ import { TokenInfoGetter } from "../services/getTokenInfo.service";
 const express = require('express');
 const router = express.Router();
 
+
+type tokenInfoType = {
+    tokenAddress: string,
+    ownerAddress: string,
+    rarityType: string
+} 
+
+
 router.post('/', async function(req, res) {
     const rootAddress = req.body.address
     let dirName = rootAddress.split(":");
     const tokensListGetter = new GetTokensList();
 
     const tokensList = await tokensListGetter.getTokensList(rootAddress, dirName[1]);
-    console.log(tokensList);
 
     const infoGetter = new TokenInfoGetter()
-	const tokenInfoList = new Array<any>()
+	const tokenInfoList = new Array<tokenInfoType>()
     for(let token of tokensList) {
-		const info = await infoGetter.getTokenInfo(token, dirName[1])
-        const tokenInfo = {
-			tokenAddress: token,
-			ownerAddress: info.data._addrOwner,
-			rarityType: info.data._rarityType
-		}
+        try {
+            const info = await infoGetter.getTokenInfo(token, dirName[1]);
+            const convert = (from, to) => (data) => Buffer.from(data, from).toString(to);
+            const utf8ToHex = convert("utf8", "hex");
+            let _rarityType = utf8ToHex(info.data._rarityType);
+            // console.log(token);
+            // console.log(info.data._addrOwner);
+            // console.log(_rarityType);
 
-		tokenInfoList.push(tokenInfo)
+            const tokenInfo =  {
+                tokenAddress: token,
+                ownerAddress: info.data._addrOwner,
+                rarityType: _rarityType
+            }
+            tokenInfoList.push(tokenInfo)
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     res.render('tokensList', {

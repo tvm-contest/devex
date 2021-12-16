@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: DirectSellDebot.tvc
+      wc: None
+    keys: DirectSellDebot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "ginger advice hedgehog prefer slight foot swap clerk satoshi stand armed like"
+Raw address: 0:5bf4bec53f2ec741b225cdea274a50b76ad347d80e737bd29f035e4c56fabda9
+testnet:
+Non-bounceable address (for init): 0QBb9L7FPy7HQbIlzeonSlC3atNH2A5ze9KfA15MVvq9qTkb
+Bounceable address (for later access): kQBb9L7FPy7HQbIlzeonSlC3atNH2A5ze9KfA15MVvq9qWTe
+mainnet:
+Non-bounceable address (for init): UQBb9L7FPy7HQbIlzeonSlC3atNH2A5ze9KfA15MVvq9qYKR
+Bounceable address (for later access): EQBb9L7FPy7HQbIlzeonSlC3atNH2A5ze9KfA15MVvq9qd9U
+Succeeded

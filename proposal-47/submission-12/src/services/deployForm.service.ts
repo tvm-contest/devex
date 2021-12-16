@@ -7,9 +7,9 @@ import { RarityType } from '../models/rarity-model';
 import { CollectionModel } from '../models/collention-model';
 import { ContractGeneratorService } from './contractGenerator.service';
 import { globals } from '../config/globals';
+import { DeployDebotService } from './deployDebot.service';
 
 export class NFTCollectionJSON {
-    //public static generate(jsonParameters: JSON) {
       public static  async deploy(input: JSON) {
      
       
@@ -46,13 +46,19 @@ export class NFTCollectionJSON {
             summLimit = summLimit + inputRootParamets.raritiesList[i].amount;
           }
 
+          let debotService = new DeployDebotService();
+          await debotService.deployDebot(trueNFTPath);
+
           const rootAddress = await deployTrueNFT.deployTrueNFTContracts(dataContract, indexContract, indexBasisContract, nftRootContract, 
             utf8ToHex(inputRootParamets.rootName), utf8ToHex(inputRootParamets.rootIcon), summLimit, inputRootParamets.raritiesList, trueNFTPath);
 
             if (rootAddress !== '' && fs.existsSync(trueNFTPath)) {
               fs.renameSync(trueNFTPath, path.join(globals.TEMP_PATH, rootAddress.substr(2)));
             }
-            
       }
+
+
+
+      
     
 }

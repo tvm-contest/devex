@@ -4,7 +4,7 @@ pragma AbiHeader time;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
-import "DirectSell.sol";
+import "./DirectSell.sol";
 import '../libraries/DirectSellErrors.sol';
 import '../libraries/Constants.sol';
 
@@ -27,12 +27,13 @@ contract DirectSellRoot {
     } 
 
     function deployDirectSell(
-        address addrNFT,
-        uint128 price
+        address addrNFT
     )
         public view
         deploymentSolvency
     {
+        require(addrNFT.value != 0, DirectSellErr.WRONG_NUMBER_IS_GIVEN, "Param is zero");
+        require(address(this).balance - msg.value >=  Constants.CONTRACT_MIN_BALANCE, DirectSellErr.LOW_CONTRACT_BALANCE, "Check contract balance");
         tvm.accept();
 
         tvm.rawReserve(address(this).balance - msg.value, 0);

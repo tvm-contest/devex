@@ -86,3 +86,12 @@
     display: none;
 }
 
+.image-div {
+    margin-top: 1px;
+    text-align: center;
+}
+
+#upload-text {
+    display: none;
+}
+

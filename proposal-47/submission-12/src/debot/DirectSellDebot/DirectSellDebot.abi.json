@@ -1,0 +1,394 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "getDebotInfo",
+			"id": "0xDEB",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"version","type":"bytes"},
+				{"name":"publisher","type":"bytes"},
+				{"name":"caption","type":"bytes"},
+				{"name":"author","type":"bytes"},
+				{"name":"support","type":"address"},
+				{"name":"hello","type":"bytes"},
+				{"name":"language","type":"bytes"},
+				{"name":"dabi","type":"bytes"},
+				{"name":"icon","type":"bytes"}
+			]
+		},
+		{
+			"name": "getRequiredInterfaces",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"interfaces","type":"uint256[]"}
+			]
+		},
+		{
+			"name": "setSellRootContractAddr",
+			"inputs": [
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDurationMinMaxMinutes",
+			"inputs": [
+				{"name":"min_duration_minutes","type":"uint128"},
+				{"name":"max_duration_minutes","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDurationMinMaxDays",
+			"inputs": [
+				{"name":"min_durations_days","type":"uint128"},
+				{"name":"max_durations_days","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDurationMinMaxHours",
+			"inputs": [
+				{"name":"min_durations_hours","type":"uint128"},
+				{"name":"max_durations_hours","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "start",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "_start",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getNftAddress",
+			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "checkNftAccountStatus",
+			"inputs": [
+				{"name":"acc_type","type":"int8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getNftContractData",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "_restart",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setNftItemDetails",
+			"inputs": [
+				{"name":"addrData","type":"address"},
+				{"name":"addrRoot","type":"address"},
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrTrusted","type":"address"},
+				{"name":"rarityName","type":"bytes"},
+				{"name":"url","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getWalletData",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "_getWalletAddress",
+			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "checkWalletAccountStatus",
+			"inputs": [
+				{"name":"acc_type","type":"int8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "checkWalletHash",
+			"inputs": [
+				{"name":"code_hash","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "printNftInfo",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "printNFTDetails",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "CheckOwner",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getPrice",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setAmount",
+			"inputs": [
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "showDurationMenu",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "askDurationInMinutes",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDurationInMinutes",
+			"inputs": [
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "askDurationInHours",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "askDurationBack",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDurationInHours",
+			"inputs": [
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "askDurationInDays",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDurationInDays",
+			"inputs": [
+				{"name":"value","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "SellItem",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "createDirectSell",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onDeploySuccess",
+			"inputs": [
+				{"name":"transId","type":"uint64"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onDeployError",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDirectSellAddress",
+			"inputs": [
+				{"name":"addr","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "CheckThatDirectSellDeployed",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "_CheckThatDirectSellDeployed",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "StopWhaitThatDirectSellDeployed",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "CheckDirectSellAddress",
+			"inputs": [
+				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "checkDirectSellAccountStatus",
+			"inputs": [
+				{"name":"acc_type","type":"int8"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "CheckThatDirectSellAccountStatusIsActive",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "StopWhaitThatDirectSellAccountStatusIsActive",
+			"inputs": [
+				{"name":"value","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setDirectSellContractData",
+			"inputs": [
+				{"name":"addrRoot","type":"address"},
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrNFT","type":"address"},
+				{"name":"alreadyBought","type":"bool"},
+				{"name":"withdrawn","type":"bool"},
+				{"name":"isNftTradable","type":"bool"},
+				{"name":"price","type":"uint128"},
+				{"name":"endUnixtime","type":"uint64"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDebotOptions",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"options","type":"uint8"},
+				{"name":"debotAbi","type":"bytes"},
+				{"name":"targetAbi","type":"bytes"},
+				{"name":"targetAddr","type":"address"}
+			]
+		},
+		{
+			"name": "setABI",
+			"inputs": [
+				{"name":"dabi","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

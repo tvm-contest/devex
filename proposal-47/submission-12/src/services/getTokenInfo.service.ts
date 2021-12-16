@@ -12,14 +12,16 @@ export class TokenInfoGetter {
     constructor() {
         this.client = new TonClient({
             network: {
-                server_address: networks.TONDEV
+                server_address: networks.LOCALHOST
             }
         });
     }
 
     async getTokenInfo(tokenAddress: string, dirName: string): Promise<ResultOfDecodeAccountData> {
         const tokenData = await this.getTokenData(tokenAddress);
+
         const tokenDecodedInfo: ResultOfDecodeAccountData = await this.getTokenDecodedInfo(tokenData, dirName);
+      
         return tokenDecodedInfo;
     }
 
@@ -39,10 +41,12 @@ export class TokenInfoGetter {
 
     async getTokenDecodedInfo(tokenData: string,  dirName: string): Promise<ResultOfDecodeAccountData> {
         let dataAbi = await JSON.parse(fs.readFileSync(globals.TEMP_PATH + "\\" + dirName + "\\Data.abi.json").toString());
+
         const decodedDataOfToken = await this.client.abi.decode_account_data({
-            abi: abiContract(dataAbi),  
-            data: tokenData
+            abi: await abiContract(dataAbi),  
+            data: tokenData,
         });
-        return decodedDataOfToken;
+
+        return  decodedDataOfToken;
     }
 }

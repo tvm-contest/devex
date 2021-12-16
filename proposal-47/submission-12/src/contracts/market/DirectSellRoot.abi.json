@@ -1,0 +1,36 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"codeDirectSell","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployDirectSell",
+			"inputs": [
+				{"name":"addrNFT","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDirectSellAddress",
+			"inputs": [
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrNFT","type":"address"}
+			],
+			"outputs": [
+				{"name":"addrDirectSell","type":"address"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

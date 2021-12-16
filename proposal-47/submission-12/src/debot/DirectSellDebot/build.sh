@@ -1,11 +1,11 @@
 tos=/home/chezetti/tonos-cli/target/release/tonos-cli
 
-DEBOT_NAME=NftDebot
+DEBOT_NAME=DirectSellDebot
 
 DEBOT_ABI=$(cat $DEBOT_NAME.abi.json | xxd -ps -c 20000)
 
 function get_address {
-echo $(cat NftDebot.log | grep "Raw address:" | cut -d ' ' -f 3)
+echo $(cat $DEBOT_NAME.log | grep "Raw address:" | cut -d ' ' -f 3)
 }
 
 DEBOT_ADDRESS=$(get_address)

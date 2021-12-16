@@ -12,8 +12,8 @@ contract Data is IData, IndexResolver {
     uint8 constant ERROR_LIMIT = 114;
 
     struct paramInfo { 
-        int min;
-        int max; 
+        uint min;
+        uint max; 
         bool required;
     }
     /*CONST*/

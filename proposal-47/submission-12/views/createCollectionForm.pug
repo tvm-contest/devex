@@ -17,7 +17,10 @@ block content
                 div.collection-settings.tokens-container
                 div.collections-settings.param-container
 
-            button.btn.btn-outline-dark.uploadImageButton(type="button" onClick="onUpload()") Upload image   
+            div.image-div
+                button.btn.btn-outline-dark.uploadImageButton(type="button" onClick="onUpload()") Upload image   
+                label#upload-text.text-muted Image is uploaded
+
             button.btn.btn-outline-dark.shadow-none.submitButton(type="submit" onClick="onSubmit()") Create collection
             button.btn.btn-outline-dark.importButton(type="button" onClick="importModel()") Import collection settings
             button.btn.btn-outline-dark.saveButton(type="button" onClick="save()") Save collection settings

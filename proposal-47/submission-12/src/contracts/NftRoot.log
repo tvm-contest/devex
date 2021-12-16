@@ -6,13 +6,12 @@ Input arguments:
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "salute draft scout muscle swarm autumn accuse attract exist front matrix stick"
-Raw address: 0:732acc1068558fedd3cb5e3e2c8685c254a98cdeb89ecf7af695024ad9d6d87f
+Seed phrase: "tray harvest number panic neither access loud wise medal local dove curious"
+Raw address: 0:d904b8e6b23f23349ef63a3ea9ccd7b415e2bbbe80eae49dd89e3ed99e5cf427
 testnet:
-Non-bounceable address (for init): 0QBzKswQaFWP7dPLXj4shoXCVKmM3riez3r2lQJK2dbYf-_N
-Bounceable address (for later access): kQBzKswQaFWP7dPLXj4shoXCVKmM3riez3r2lQJK2dbYf7II
+Non-bounceable address (for init): 0QDZBLjmsj8jNJ72Oj6pzNe0FeK7voDq5J3Ynj7Znlz0JybH
+Bounceable address (for later access): kQDZBLjmsj8jNJ72Oj6pzNe0FeK7voDq5J3Ynj7Znlz0J3sC
 mainnet:
-Non-bounceable address (for init): UQBzKswQaFWP7dPLXj4shoXCVKmM3riez3r2lQJK2dbYf1RH
-Bounceable address (for later access): EQBzKswQaFWP7dPLXj4shoXCVKmM3riez3r2lQJK2dbYfwmC
+Non-bounceable address (for init): UQDZBLjmsj8jNJ72Oj6pzNe0FeK7voDq5J3Ynj7Znlz0J51N
+Bounceable address (for later access): EQDZBLjmsj8jNJ72Oj6pzNe0FeK7voDq5J3Ynj7Znlz0J8CI
 Succeeded
- 

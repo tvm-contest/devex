@@ -82,7 +82,7 @@
 			]
 		},
 		{
-			"name": "checkRootContract",
+			"name": "deployNft",
 			"inputs": [
 				{"name":"acc_type","type":"int8"}
 			],
@@ -90,39 +90,7 @@
 			]
 		},
 		{
-			"name": "deployNft",
-			"inputs": [
-				{"name":"index","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "addRarityParam",
-			"inputs": [
-				{"name":"index","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "addRarityName",
-			"inputs": [
-				{"name":"value","type":"bytes"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "setRarityAmount",
-			"inputs": [
-				{"name":"value","type":"uint256"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "nftParamsInputRarity",
+			"name": "nftParamsInput",
 			"inputs": [
 				{"name":"index","type":"uint32"}
 			],
@@ -138,7 +106,7 @@
 			]
 		},
 		{
-			"name": "nftParamsSetMedia",
+			"name": "nftParamsSetImage",
 			"inputs": [
 				{"name":"value","type":"bytes"}
 			],
@@ -195,31 +163,10 @@
 			]
 		},
 		{
-			"name": "resolveRarityAddition",
-			"inputs": [
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "onAddRaritySuccess",
-			"inputs": [
-			],
-			"outputs": [
-			]
-		},
-		{
 			"name": "onError",
 			"inputs": [
 				{"name":"sdkError","type":"uint32"},
 				{"name":"exitCode","type":"uint32"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "printRaritiesList",
-			"inputs": [
 			],
 			"outputs": [
 			]

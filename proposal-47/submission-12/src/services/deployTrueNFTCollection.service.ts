@@ -1,15 +1,12 @@
 import { Account } from '@tonclient/appkit';
 import { DeployContractService } from './deployContract.service';
-import { globals } from '../config/globals';
 import { walletSettings } from '../config/walletKey';
 import { signerKeys } from '@tonclient/core';
-import path from "path";
 import { RarityType } from '../models/rarity-model';
 
 export class DeployTrueNFTContractsCollection {
 
     private readonly deployContractService: DeployContractService;
-    private readonly compilationPath: string = path.join(globals.DATA_SAMPLES_PATH, '/trueNFTContracts');
 
     constructor() {
 
