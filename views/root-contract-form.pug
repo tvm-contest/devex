@@ -20,7 +20,7 @@ block content
               .row.row_init
                 .col
                   label.text.form-label() Collection name
-                  input.text.form-control(name="nameContract" onInput="checkLatinInput(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Collection name" aria-label="Collection Name")
+                  input.text.form-control#collection-name(name="nameContract" onInput="checkLatinInputCollName(this)" type="text" pattern="[A-Za-z0-9_]+" placeholder="Collection name" aria-label="Collection Name")
                 .col
                   label.text.form-label() Maximum number of tokenes
                   input.text.form-control(name="tokenLimit" onInput="checkNumberInput(this)" type="text" pattern="[0-9]+" placeholder="Maximum number of tokenes" aria-label="Maximum number of tokenes")
