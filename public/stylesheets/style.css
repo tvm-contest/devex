@@ -255,9 +255,18 @@ label {
     margin-top: 1rem;
 }
 /* minting token */
+.sub-mint-btn{
+    padding: 20px;
+    display: flex;
+    justify-content: left;
+}
+#sub-mint{
+    
+    width: 40%;
+    
+}
 .btn-submit{
     background-color:var(--btr-color);
-    
     color: rgb(255, 255, 255)!important;
     
 }
@@ -285,7 +294,7 @@ label {
     padding: 10px 80px 12px 80px;
     display: flex;
     justify-content: center;
-    width: 25%;
+    width: 30%;
     background-color:var(--btr-color);
     
     color: rgb(255, 255, 255)!important;
@@ -301,7 +310,7 @@ label {
     padding: 10px 80px 12px 80px;
     display: flex;
     justify-content: center;
-    width: 25%;
+    width: 30%;
     height: auto;
     text-transform: none !important;
     font-size: 16px;
