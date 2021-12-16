@@ -22,6 +22,7 @@ block content
                   p.text.text-main= line.title
                 .col-9
                   p.text=line.value
+        
             else if line.tag == 'img'
               .row 
                 .col-3
@@ -40,7 +41,10 @@ block content
                   p.text.text-main= line.title
                 .col-9
                   a(href=line.value target="_blank")= line.value
-          
+          form.row.g-3.form-contract#form-param(action="/sale-token" method="post")
+            input(name="rootAddress" value=tokenInfo[0].value type="hidden")
+            input(name="tokenAddress" value=p=tokenInfo[3].value type="hidden")
+            button.text.btn-find.submit-button.btn.btn-blue.btn-block#sub-mint(type="submit")="Sale token"
   script(src="/scripts/input-validation.js")
     
 
