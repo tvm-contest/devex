@@ -13,6 +13,7 @@ One to two paragraph statement about your product and what it does.
 ## Installation
 
 <ul dir="auto">
+<li>Run <code>tondev sol set -c 0.47.0</code></li>
 <li>Run <code>tondev se start</code></li>
 <li>Navigate to "trueNFTCollection" directory: <code>cd trueNFTCollection</code></li>
 <li>Run <code>npm install</code></li>
