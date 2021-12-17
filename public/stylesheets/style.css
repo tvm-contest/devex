@@ -141,7 +141,7 @@ label {
     padding: 0 0 10px 0;
 }
 
-.col.button-main {
+.button-main {
     padding: 6px;
 }
 
@@ -199,9 +199,6 @@ label {
 }
 
 /* NAVBAR */
-.navbar {
-    background: #fff;
-}
 
 .navbar-brand,
 .navbar-nav .nav-link {
@@ -214,6 +211,10 @@ label {
     color: #000;
     transform: scale(1.05);
 }
+
+/* .navbar-toggler-icon{
+    color: #333;
+} */
 /* TEXT */
 .text{
     word-break: break-all;
@@ -267,6 +268,7 @@ label {
 .btr-info-token{
     width: 40%;
 }
+
 .block-for-btr-info-token{
     padding-left: 30px;
     display: flex;
@@ -351,6 +353,7 @@ label {
 
 .button-main-3 {
     margin: 20px 0 0 0;
+    position: relative;
 }
 
 /* INPUTS */
