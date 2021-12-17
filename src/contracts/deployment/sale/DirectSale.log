@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: ../DirectSale.tvc
+      wc: None
+    keys: sale/DirectSale.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "hood alter buddy fame soda negative visit cry slice ask panda consider"
+Raw address: 0:8bb1d246bac8e1762c29d62c56f136cd8d7b0f1288053228a6eee5eeb5bb6cee
+testnet:
+Non-bounceable address (for init): 0QCLsdJGusjhdiwp1ixW8TbNjXsPEogFMiim7uXutbts7mo7
+Bounceable address (for later access): kQCLsdJGusjhdiwp1ixW8TbNjXsPEogFMiim7uXutbts7jf-
+mainnet:
+Non-bounceable address (for init): UQCLsdJGusjhdiwp1ixW8TbNjXsPEogFMiim7uXutbts7tGx
+Bounceable address (for later access): EQCLsdJGusjhdiwp1ixW8TbNjXsPEogFMiim7uXutbts7ox0
+Succeeded

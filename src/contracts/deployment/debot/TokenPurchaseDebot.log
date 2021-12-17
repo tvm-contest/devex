@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: ../debots/TokenPurchaseDebot.tvc
+      wc: None
+    keys: debot/TokenPurchaseDebot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "dutch guilt play hockey library yellow still together rescue once tomorrow maple"
+Raw address: 0:461c1a630a5f7bbde8828853eee232803cc2f197dd1547130c169252521bc21a
+testnet:
+Non-bounceable address (for init): 0QBGHBpjCl97veiCiFPu4jKAPMLxl90VRxMMFpJSUhvCGgQV
+Bounceable address (for later access): kQBGHBpjCl97veiCiFPu4jKAPMLxl90VRxMMFpJSUhvCGlnQ
+mainnet:
+Non-bounceable address (for init): UQBGHBpjCl97veiCiFPu4jKAPMLxl90VRxMMFpJSUhvCGr-f
+Bounceable address (for later access): EQBGHBpjCl97veiCiFPu4jKAPMLxl90VRxMMFpJSUhvCGuJa
+Succeeded
