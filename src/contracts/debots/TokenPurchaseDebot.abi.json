@@ -116,6 +116,22 @@
 			]
 		},
 		{
+			"name": "printTokenFinalInfo",
+			"inputs": [
+				{"name":"addrRoot","type":"address"},
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrAuthor","type":"address"},
+				{"name":"addrData","type":"address"},
+				{"name":"id","type":"uint256"},
+				{"name":"name","type":"bytes"},
+				{"name":"url","type":"bytes"},
+				{"name":"number","type":"uint8"},
+				{"name":"amount","type":"uint8"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "onError",
 			"inputs": [
 				{"name":"sdkError","type":"uint32"},

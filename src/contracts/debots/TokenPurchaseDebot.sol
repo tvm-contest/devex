@@ -79,8 +79,6 @@ contract TokenPurchaseDebot is Debot, Upgradable {
         SigningBoxInput.get(tvm.functionId(setKeyHandle), "Enter keys to sign all operations.", none);
 
         AddressInput.get(tvm.functionId(saveSaleAddress), "Input sale address: ");
-
-        getSaleInfo();
     }
    
 
@@ -137,11 +135,12 @@ contract TokenPurchaseDebot is Debot, Upgradable {
             callbackId: tvm.functionId(onTokenBought),
             onErrorId: tvm.functionId(onError),
             signBoxHandle: _keyHandle
-        }(_saleAddress, _nftPrice + Fees.MIN_FOR_TRANSFER_OWNERSHIP + Fees.MIN_FOR_MESSAGE , true, 3, payload);
+        }(_saleAddress, _nftPrice + Fees.MIN_FOR_TRANSFER_OWNERSHIP + 4*Fees.MIN_FOR_MESSAGE , true, 3, payload);
     }
 
     function saveSaleAddress(address value) public {
         _saleAddress = value;
+        getSaleInfo();
     }
 
     function attachMultisig() public accept {
@@ -185,12 +184,13 @@ contract TokenPurchaseDebot is Debot, Upgradable {
         if(addrOwner == _addrMultisig) {
             Terminal.print(0, 'Purchase was successfull!');
         } else {
-            Terminal.print(0, 'Purchase was failed!');
+            Terminal.print(0, 'Purchase has failed!');
         }
         Terminal.print(0, 'Thanks for using our service. ^^');
     }
     function onError(uint32 sdkError, uint32 exitCode) public {
         Terminal.print(0, format("Sdk error {}. Exit code {}.", sdkError, exitCode));
+        getSaleInfo();
     }
 
 

@@ -6,12 +6,12 @@ Input arguments:
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "dutch guilt play hockey library yellow still together rescue once tomorrow maple"
-Raw address: 0:461c1a630a5f7bbde8828853eee232803cc2f197dd1547130c169252521bc21a
+Seed phrase: "economy satoshi pupil hollow educate unaware brisk laundry carry creek cause dismiss"
+Raw address: 0:a4ab4a4bd48054551c973524dfea09fbfc1e872b7c91fc3cf03d9436ebc6c78e
 testnet:
-Non-bounceable address (for init): 0QBGHBpjCl97veiCiFPu4jKAPMLxl90VRxMMFpJSUhvCGgQV
-Bounceable address (for later access): kQBGHBpjCl97veiCiFPu4jKAPMLxl90VRxMMFpJSUhvCGlnQ
+Non-bounceable address (for init): 0QCkq0pL1IBUVRyXNSTf6gn7_B6HK3yR_DzwPZQ268bHjuu_
+Bounceable address (for later access): kQCkq0pL1IBUVRyXNSTf6gn7_B6HK3yR_DzwPZQ268bHjrZ6
 mainnet:
-Non-bounceable address (for init): UQBGHBpjCl97veiCiFPu4jKAPMLxl90VRxMMFpJSUhvCGr-f
-Bounceable address (for later access): EQBGHBpjCl97veiCiFPu4jKAPMLxl90VRxMMFpJSUhvCGuJa
+Non-bounceable address (for init): UQCkq0pL1IBUVRyXNSTf6gn7_B6HK3yR_DzwPZQ268bHjlA1
+Bounceable address (for later access): EQCkq0pL1IBUVRyXNSTf6gn7_B6HK3yR_DzwPZQ268bHjg3w
 Succeeded
