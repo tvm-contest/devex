@@ -50,9 +50,7 @@ export class DirectSaleService {
         let walletAcc = await this.getWalletAcc();
         
         await this.landOwnership(nftAcc, walletAcc, directSaleRootAddr, nftAddr);
-        console.log("landOwnership");
         await this.createSale(directSaleRootAcc, walletAcc, directSaleRootAddr, nftAddr);
-        console.log("createSale");
         let saleAddr = await this.getSaleAddr(directSaleRootAcc, nftAddr);
         return saleAddr;
     }
@@ -84,9 +82,9 @@ export class DirectSaleService {
             call_set: {
                 function_name: "start",
                 input: {
-                    nftPrice: 50000,
-                    isDurationLimited: false,
-                    saleDuration: 10
+                    nftPrice: nftPrise,
+                    isDurationLimited: isDurationLimited,
+                    saleDuration: saleDuration
                 }
             },
         });
