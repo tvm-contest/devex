@@ -38,7 +38,6 @@ contract Data is IData, IndexResolver {
         /*PARAM_CONSTRUCTOR*/
     )
         public
-        deploymentSolvency 
     {
         mapping(string => paramInfo) valuesLimit;
         /*PARAM_LIMIT*/
