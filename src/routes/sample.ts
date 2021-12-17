@@ -7,8 +7,6 @@ import { addFileToIPFS } from '../services/add-ipfs.service';
 import { DeployService } from '../services/deploy.service';
 import { DeployTrueNftService } from '../services/deployTrueNft.service';
 import { DirectSaleService } from '../services/directSale.service';
-import { TonClient } from '@tonclient/core';
-import { libNode } from '@tonclient/lib-node';
 const router = express.Router();
 
 router.get('/deployService', async function (req, res, next) {
@@ -49,13 +47,23 @@ router.get('/deployTrueNftService', async function (req, res, next) {
 
 router.get('/directSale', async function (req, res, next) {
   const directSaleService = new DirectSaleService();
+  // адрес коллекции, для определения пути к коллекции
+  let RootNftAddr = "270e3c5bddc9a3e0863226b5921a8ff573a8a016900f6a4cb1dff1f21aeafc5a";
+
+  // создание рута продаж
   let addrRoyaltyAgent = everscale_settings.AUTHOR_GENERATOR_ADDRESS;
-  let addressRootNft = "270e3c5bddc9a3e0863226b5921a8ff573a8a016900f6a4cb1dff1f21aeafc5a";
-  let rootAddr = await directSaleService.deployDirectSaleRoot(addressRootNft, addrRoyaltyAgent, 5);
-  console.log(rootAddr);        // 0:eb1e65768afad81c7487e15b1bd778b0e9df6fdf9e2e9a0a6c796328f88e87ac
-  let addressNft = "0:4e3d32c91ee449af6ac782ea89ae0893cbec04fc1262dea64f634cd3513d9cd7";
+  let directSaleRootAddr = await directSaleService.deployDirectSaleRoot(RootNftAddr, addrRoyaltyAgent, 5);
+  console.log("DirectSaleRoot address: " + directSaleRootAddr);
   
-  await directSaleService.deployDirectSale(addressRootNft, addressNft);
+  // создание продажи
+  let NftAddr = "0:8d4dcf35bf935400d9e169ac4aa62a666015e518648aab6b1b15cdc75d37ce92";
+  let directSaleAddr = await directSaleService.deployDirectSale(RootNftAddr, NftAddr);
+  console.log("DirectSale address: " + directSaleAddr);
+  
+  // страт продаж
+  let nftPrise = 500000;
+  await directSaleService.startSale(RootNftAddr, directSaleAddr, nftPrise, false, 0);
+
 });
 
 export { router as sampleRouter };

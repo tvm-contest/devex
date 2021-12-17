@@ -27,11 +27,11 @@ export class DirectSaleService {
         let directSaleAcc = await this.createDirectSaleAccount(collectionPath);
         let initInput = await this.buildInitInputForDeployDirectSaleRoot(collectionPath, addrRoyaltyAgent, royaltyPercent);
         await this.deployService.deploy(directSaleRootAcc, initInput);
-         
+        
         return await directSaleRootAcc.getAddress();
     }
     
-    async deployDirectSale(collectionPath: string, nftAddr: string) : Promise<void> {
+    async deployDirectSale(collectionPath: string, nftAddr: string) : Promise<string> {
         let nftAbi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, collectionPath, "Data.abi.json")).toString());
         let nftTvc = fs.readFileSync(path.resolve(path.join(globals.RESULT_COLLECTION, collectionPath, "Data.tvc")), {encoding: 'base64'});
         let nftAcc = new Account({
@@ -54,7 +54,7 @@ export class DirectSaleService {
         await this.createSale(directSaleRootAcc, walletAcc, directSaleRootAddr, nftAddr);
         console.log("createSale");
         let saleAddr = await this.getSaleAddr(directSaleRootAcc, nftAddr);
-        console.log(saleAddr);
+        return saleAddr;
     }
     
     async getSaleAddr(directSaleRootAcc: Account, nftAddr) : Promise<any> {
@@ -68,7 +68,43 @@ export class DirectSaleService {
                 return saleAddr.decoded.output.addrSale;
             }
         }
-        else return ""
+        else return "0";
+    }
+
+    async startSale(collectionPath: string, directSaleAddr: string, nftPrise: number, isDurationLimited: boolean, saleDuration: number) {
+        let directSaleAcc = await this.createDirectSaleAccount(collectionPath);
+        let walletAcc = await this.getWalletAcc();
+        let { body } = await this.client.abi.encode_message_body({
+            abi: directSaleAcc.abi,
+            signer: {
+                type: "Keys",
+                keys: everscale_settings.SAFE_MULTISIG_KEYS
+            },
+            is_internal: true,
+            call_set: {
+                function_name: "start",
+                input: {
+                    nftPrice: 50000,
+                    isDurationLimited: false,
+                    saleDuration: 10
+                }
+            },
+        });
+        try {
+            await walletAcc.run(
+                "sendTransaction",
+                {
+                    dest: directSaleAddr,
+                    value: 100_000_000,
+                    flags: 3,
+                    bounce: true,
+                    payload: body,
+                }
+            );
+            console.log("Start sale token, address sale: " + directSaleAddr);
+        } catch(err) {
+            console.log(err);
+        }
     }
     
     private async createDirectSaleRootAccount(collectionPath: string) : Promise<Account> {
@@ -123,7 +159,7 @@ export class DirectSaleService {
                 }
             );
         } catch(err) {
-            console.log("landOwnership error");
+            console.log(err);
         }
     }
 
@@ -143,7 +179,7 @@ export class DirectSaleService {
             },
         });
         try {
-            let { transaction } = await walletAcc.run(
+            await walletAcc.run(
                 "sendTransaction",
                 {
                     dest: directSaleRootAddr,
@@ -153,21 +189,9 @@ export class DirectSaleService {
                     payload: body,
                 }
             );
-            let { result } = await this.client.net.wait_for_collection({
-                collection: "transactions",
-                filter: {
-                    account_addr: { eq: directSaleRootAddr },
-                    now: { ge: transaction.now },
-                    aborted: { eq: false },
-                },
-                result: "now aborted",
-                timeout: 200000,
-            });
-            console.log(result);
         } catch(err) {
-            console.log("CreateSale error")
+            console.log(err)
         }
-        
     }
 
     private async getWalletAcc() : Promise<Account> {
