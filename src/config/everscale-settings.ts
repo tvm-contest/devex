@@ -10,7 +10,10 @@ export const everscale_settings = {
         secret: "73b60dc6a5b1d30a56a81ea85e0e453f6957dbfbeefb57325ca9f7be96d3fe1a"
     },
     AUTHOR_GENERATOR_ADDRESS: "0:d5f5cfc4b52d2eb1bd9d3a8e51707872c7ce0c174facddd0e06ae5ffd17d2fcd",
-    TIMEOUT: 10000
+    TIMEOUT: 10000,
+    SEED_PHRASE_WORD_COUNT: 12,
+    SEED_PHRASE_DICTIONARY_ENGLISH: 1,
+    HD_PATH: "m/44'/396'/0'/0/0"
 };
 // export const everscale_settings = {
 //     KEYS: {
@@ -24,5 +27,8 @@ export const everscale_settings = {
 //         secret: "186b279cf353c7193536077fba9cd07e9df65ff6d436efdd597c8fafdac0d7d5"
 //     },
 //     AUTHOR_GENERATOR_ADDRESS: "0:86735f47ea300c13826ae26e83e264311607095eb877c7d23b9516e4e95712b8",
-//     TIMEOUT: 50000
+//     TIMEOUT: 50000,
+//     SEED_PHRASE_WORD_COUNT: 12,
+//     SEED_PHRASE_DICTIONARY_ENGLISH: 1,
+//     HD_PATH: "m/44'/396'/0'/0/0"
 // };

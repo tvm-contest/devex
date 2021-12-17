@@ -29,11 +29,11 @@ router.post('/minting', async function (req, res, next) {
     try {
         const mintService = new MintNftService(req.body.rootAddress);
         await mintService.mintNft(req);
+        res.redirect('/tokens-data-info?rootNftAddress=' + req.body.rootAddress);
     } catch (error) {
         console.log(error);
+        //Нужно как то сообщить об ошибке 
     }
-    
-    res.redirect('/tokens-data-info?rootNftAddress=' + req.body.rootAddress);
 })
 
 export { router as MintingTokens };
