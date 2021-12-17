@@ -254,16 +254,26 @@ label {
 .btn-block+.btn-block {
     margin-top: 1rem;
 }
-/* minting token */
 .sub-mint-btn{
     padding: 20px;
     display: flex;
     justify-content: left;
 }
 #sub-mint{
-    
+    padding: 10px;
+    width: 30%;
+}
+.btr-info-token{
     width: 40%;
-    
+}
+.block-for-btr-info-token{
+    padding-left: 30px;
+    display: flex;
+    justify-content: left;
+}
+#btr-find{
+    width: 30%;
+    font-size: 18px !important;
 }
 .btn-submit{
     background-color:var(--btr-color);
