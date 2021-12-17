@@ -6,8 +6,8 @@ block content
             form.row.g-3.form-contract#form-param(action="/sale-token/sale-token-form" method="post") 
                 input(name="rootAddress" value=rootAddress type="hidden")
                 input(name="tokenAddress" value=tokenAddress type="hidden")
-                label.text.form-label() Token Price
-                input.text.form-control.param-enum(name ="tokenPrice" type="number")
-                button.text.btn-find.submit-button.btn.btn-blue.btn-block#sub-mint(type="submit")="To sell"
+                label.text.form-label() Token Price (ton)
+                input.text.form-control.param-enum(name ="tokenPrice" type="number" placeholder = "ton")
+                button.text.btn-find.submit-button.btn.btn-blue.btn-block#sub-mint(type="submit") To sell 
 
 
