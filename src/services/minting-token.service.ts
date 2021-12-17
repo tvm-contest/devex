@@ -53,7 +53,7 @@ export class MintNftService {
             mintParams
         );
 
-        const walletAcc = await this.getWalletAccount()
+        const walletAcc = await this.getWalletAccount(dataForMinting.body.checkSignToken, dataForMinting.body.seedPhrase, dataForMinting.body.signAddress)
 
         await this.sendTransactionAndMint(walletAcc, rootNftAccount, mesBody)
     }
@@ -122,22 +122,45 @@ export class MintNftService {
         return payload.body
     }
 
-    private async getWalletAccount(){
-        let walletAbi = surf_setting.SEND_TRANSACTION_ABI
+    private async getWalletAccount(checkSignToken, seedPhrase, address){
+        let walletAbi = surf_setting.SEND_TRANSACTION_ABI;
+        let walletAddr;
+        let walletKey;
+
+        if (checkSignToken == '') {
+            walletKey = await this.getKeyPair(seedPhrase)
+            walletAddr = address ;
+        } else {
+            walletKey = everscale_settings.SAFE_MULTISIG_KEYS;
+            walletAddr = everscale_settings.SAFE_MULTISIG_ADDRESS;
+        }
+
         const walletAcc = new Account(
             {
-                abi: walletAbi, 
+                abi: walletAbi
             },
             {
+                address: walletAddr,
                 client: this.client,
-                address: everscale_settings.SAFE_MULTISIG_ADDRESS,
                 signer: {
                     type: "Keys",
-                    keys: everscale_settings.SAFE_MULTISIG_KEYS
+                    keys: walletKey
                 }
             }
         );
         return walletAcc
+    }
+
+    private async getKeyPair(seedPhrase) {
+
+        const keyPair = await this.client.crypto.mnemonic_derive_sign_keys({
+            phrase: seedPhrase,
+            path: everscale_settings.HD_PATH,
+            dictionary: everscale_settings.SEED_PHRASE_DICTIONARY_ENGLISH,
+            word_count: everscale_settings.SEED_PHRASE_WORD_COUNT,
+        });
+        
+        return keyPair
     }
 
     private async sendTransactionAndMint(walletAcc: Account, nftRootAcc: Account, mesBody: string) {

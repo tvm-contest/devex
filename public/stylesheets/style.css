@@ -101,7 +101,8 @@ input.output-col{
 .col-6.use-author,
 .commission-favor-owner,
 .commission-author-generator,
-.parameter-media-file {
+.parameter-media-file,
+.sign-token {
     display: none;
 }
 

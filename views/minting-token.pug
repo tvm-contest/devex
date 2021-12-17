@@ -15,6 +15,14 @@ block content
       
           .mediafile 
         
+          .form-check 
+            input.text.form-check-input#sign-token(type="checkbox" value="" name="checkSignToken")
+            label.text.form-check-label(for="sign-token") Sign token
+          .input-sign.sign-token
+            label.text.form-label() Seed phrase
+            input.text.form-control(type="text" name = 'seedPhrase' placeholder="" )
+            label.text.form-label() Sign address
+            input.text.form-control(type="text" name = 'signAddress' placeholder="" )
         
         .sub-mint-btn
           button.text.btn-find.btn.btn-blue#sub-mint(type="submit" onClick='loader(this)')
