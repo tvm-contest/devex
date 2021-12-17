@@ -11,12 +11,14 @@ import {addParamsRouter} from './routes/add-params-to-nft-root';
 import {rootContractForm} from './routes/root-contract-form';
 import {saveJsonRouter} from './routes/save-json';
 import {MintingTokens} from './routes/minting-tokens';
+import {SaleToken} from './routes/sale-token';
 import {tokensDataInfo} from './routes/tokens-data-info';
 import {generateContractRouter} from './routes/generate-contract';
 import { oneTokenInfoRouter } from './routes/one-token-info';
 import { parameterForm } from './routes/parameter-form'
 import { collectionListRouter } from './routes/collection-list'
 import { deployFromFile } from './routes/deploy-from-file';
+import { demoMinting } from './routes/demo-minting';
 
 const app = express();
 
@@ -39,12 +41,14 @@ app.use('/add-params', addParamsRouter);
 app.use('/root-contract-form', rootContractForm);
 app.use('/save-json', saveJsonRouter);
 app.use('/one-token-info', oneTokenInfoRouter);
+app.use('/sale-token', SaleToken);
 app.use('/minting-tokens', MintingTokens);
 app.use('/tokens-data-info', tokensDataInfo);
 app.use('/generate-contract', generateContractRouter);
 app.use('/parameter-form', parameterForm);
 app.use('/collection-list', collectionListRouter);
-app.use('/deploy-from-file', deployFromFile)
+app.use('/deploy-from-file', deployFromFile);
+app.use('/demo-minting', demoMinting);
 
 app.use((req: Request, res: Response) => {
     res.status(404);

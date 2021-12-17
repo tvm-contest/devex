@@ -13,9 +13,9 @@ unittest.TestLoader.sortTestMethodsUsing = lambda _, x, y: randint(-1, 1)
 ts4.init('test_build', verbose = False)
 
 ZERO_ADDRES = ts4.Address.zero_addr(0)
-MINT_PRICE = 20 * ts4.GRAM
 MINT_COMMISSION = 5 * ts4.GRAM
-MIN_FOR_NFT_DEPLOY = 1.5 * ts4.GRAM
+MIN_FOR_MINTING = 1_700_000_000
+MIN_FOR_DATA_DEPLOY = 1_500_000_000
 
 # error codes
 NOT_ENOUGH_VALUE_TO_MINT = 107
@@ -42,7 +42,8 @@ class TestNftMinting(unittest.TestCase):
     def test_wallet_can_mint_nft(self):
         wallet_minter, nft_root = itemgetter('minter', 'root')(prepare_for_minting())
 
-        mint_nft(nft_root, wallet_minter, MINT_PRICE)
+        MINT_PRICE = MINT_COMMISSION + MIN_FOR_MINTING
+        mint_nft(nft_root, wallet_minter, MINT_COMMISSION + MINT_PRICE)
         nft = restore_nft_by_addr(get_nft_addr(nft_root, 0))
 
         nft_info = get_nft_info(nft)
@@ -53,9 +54,13 @@ class TestNftMinting(unittest.TestCase):
         wallet_minter, wallet_commission_agent, nft_root = \
             itemgetter('minter', 'commission_agent', 'root')(prepare_for_minting())
 
+        MINT_PRICE = 2*MINT_COMMISSION + MIN_FOR_MINTING
         mint_nft(nft_root, wallet_minter, MINT_PRICE)
+        nft = restore_nft_by_addr(get_nft_addr(nft_root, 0))
+        nft_info = get_nft_info(nft)
 
-        self.assertEqual(wallet_minter.balance, DEFAULT_WALLET_BALANCE - MIN_FOR_NFT_DEPLOY - MINT_COMMISSION)
+        self.assertEqual(nft_info['addrOwner'], wallet_minter.address.str())
+        self.assertEqual(wallet_minter.balance, DEFAULT_WALLET_BALANCE - MIN_FOR_DATA_DEPLOY - MINT_COMMISSION)
         self.assertEqual(wallet_commission_agent.balance, MINT_COMMISSION + DEFAULT_WALLET_BALANCE)
         self.assertEqual(nft_root.balance, DEFAULT_NFT_ROOT_BALANCE)
 
@@ -63,25 +68,34 @@ class TestNftMinting(unittest.TestCase):
     def test_agent_wallet_withdraw_with_commission(self):
         wallet_commission_agent, nft_root = itemgetter('commission_agent', 'root')(prepare_for_minting())
 
+        MINT_PRICE = 2*MINT_COMMISSION + MIN_FOR_MINTING
         mint_nft(nft_root, wallet_commission_agent, MINT_PRICE)
+        nft = restore_nft_by_addr(get_nft_addr(nft_root, 0))
+        nft_info = get_nft_info(nft)
 
-        self.assertEqual(wallet_commission_agent.balance, DEFAULT_WALLET_BALANCE - MIN_FOR_NFT_DEPLOY)
+        self.assertEqual(nft_info['addrOwner'], wallet_commission_agent.address.str())
+        self.assertEqual(wallet_commission_agent.balance, DEFAULT_WALLET_BALANCE - MIN_FOR_DATA_DEPLOY)
         self.assertEqual(nft_root.balance, DEFAULT_NFT_ROOT_BALANCE)
 
     # checking the withdraw from nft root balance if commission agent sent not enought
     def test_agent_can_mint_using_nft_root_balance(self):
         wallet_commission_agent, nft_root = itemgetter('commission_agent', 'root')(prepare_for_minting())
 
-        mint_nft(nft_root, wallet_commission_agent, 0)
+        MINT_PRICE = MIN_FOR_MINTING - 1
+        mint_nft(nft_root, wallet_commission_agent, MINT_PRICE)
+        nft = restore_nft_by_addr(get_nft_addr(nft_root, 0))
+        nft_info = get_nft_info(nft)
 
-        self.assertEqual(DEFAULT_WALLET_BALANCE, wallet_commission_agent.balance)
-        self.assertEqual(nft_root.balance, DEFAULT_NFT_ROOT_BALANCE - MIN_FOR_NFT_DEPLOY)
+        self.assertEqual(nft_info['addrOwner'], wallet_commission_agent.address.str())
+        self.assertEqual(wallet_commission_agent.balance, DEFAULT_WALLET_BALANCE)
+        self.assertEqual(nft_root.balance, DEFAULT_NFT_ROOT_BALANCE - MIN_FOR_DATA_DEPLOY)
 
     #  checking error throw if minter tries to mint nft without enough money
     def test_error_throw_if_minting_with_low_balance(self):
         wallet_minter, nft_root = itemgetter('minter', 'root')(prepare_for_minting())
 
-        mint_nft(nft_root, wallet_minter, ts4.GRAM, expected_err=107)
+        MINT_PRICE = MINT_COMMISSION + MIN_FOR_MINTING - 1
+        mint_nft(nft_root, wallet_minter, MINT_PRICE, expected_err=107)
 
 
 if __name__ == '__main__':
