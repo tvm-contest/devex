@@ -2,8 +2,8 @@ import { ResultOfDecodeAccountData, TonClient } from "@tonclient/core";
 import { networks } from '../config/networks';
 import fs from "fs";
 import { globals } from '../config/globals';
-
-const { abiContract } = require("@tonclient/core");
+import path from "path/posix";
+import { Account } from "@tonclient/appkit";
 
 export class TokenInfoGetter {
 
@@ -17,11 +17,9 @@ export class TokenInfoGetter {
         });
     }
 
-    async getTokenInfo(tokenAddress: string, dirName: string): Promise<ResultOfDecodeAccountData> {
-        const tokenData = await this.getTokenData(tokenAddress);
+    async getTokenInfo(tokenAddress: string, dirName: string) {
+        const tokenDecodedInfo = await this.getTokenDecodedInfo(tokenAddress, dirName);
 
-        const tokenDecodedInfo: ResultOfDecodeAccountData = await this.getTokenDecodedInfo(tokenData, dirName);
-      
         return tokenDecodedInfo;
     }
 
@@ -39,14 +37,26 @@ export class TokenInfoGetter {
         return tokenData;
     }
 
-    async getTokenDecodedInfo(tokenData: string,  dirName: string): Promise<ResultOfDecodeAccountData> {
-        let dataAbi = await JSON.parse(fs.readFileSync(globals.TEMP_PATH + "\\" + dirName + "\\Data.abi.json").toString());
+    async getTokenDecodedInfo(tokenAddress: string, dirName: string) {
+        const abiPath = path.join(globals.TEMP_PATH, dirName, "Data.abi.json");
+        let dataAbi = JSON.parse(fs.readFileSync(abiPath).toString());
 
-        const decodedDataOfToken = await this.client.abi.decode_account_data({
-            abi: await abiContract(dataAbi),  
-            data: tokenData,
-        });
+        const dataAcc = new Account(
+            {
+                abi: dataAbi
+            },
+            {
+                address: tokenAddress,
+                client: this.client
+            }
+        );
 
-        return  decodedDataOfToken;
+        const tokenInfo = await dataAcc.runLocal('getInfo', {});
+        const rarity = await dataAcc.runLocal('getRarity', {});
+
+        return {
+            addresses: tokenInfo.decoded?.output,
+            rarity: rarity.decoded?.output.rarityName
+        };
     }
 }

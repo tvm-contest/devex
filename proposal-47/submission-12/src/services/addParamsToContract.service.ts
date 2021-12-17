@@ -2,17 +2,12 @@ import { Param } from "../models/param-model";
 
 class AddParamsToNftRootConstructor {
 
-    insertAbi(codeSource: string, abi: string) {
-        const abiTeg = '/*ABI*/';
-        codeSource = codeSource.replace(abiTeg, abi);
-
-        return codeSource;
-    }
-
     addSingleParamToData(codeSource: string, newData: Param): string {
 
         const defenition = '/*PARAM_DEFENITION*/';
         const constructor = '/*PARAM_CONSTRUCTOR*/';
+        const assignmentGETINFO = '/*PARAM_ASSIGNMENT_GETINFO*/';
+        const constructorGETINFO = '/*PARAM_GETINFO*/';
         const assignment = '/*PARAM_SET*/';
         const limit = '/*PARAM_LIMIT*/';
         const require = '/*PARAM_REQUIRE*/';
@@ -34,9 +29,13 @@ class AddParamsToNftRootConstructor {
         const paramConstructor =  ', ' + paramType + ' ' + paramName + constructor;
         const paramAssignment = assignment + '\n\t\t_' + paramName + ' = ' + paramName + ';';
 
+        const paramConstructorGETINFO =  ', ' + paramType + ' ' + paramName + constructorGETINFO;
+        const paramAssignmentGETINFO = paramName + ' = ' + '_' + paramName + ';' + '\n\t\t' + assignmentGETINFO;
         
         codeSource = codeSource.replace(defenition, paramDefenition);
         codeSource = codeSource.replace(constructor, paramConstructor);
+        codeSource = codeSource.replace(assignmentGETINFO, paramAssignmentGETINFO);
+        codeSource = codeSource.replace(constructorGETINFO, paramConstructorGETINFO);
         codeSource = codeSource.replace(assignment, paramAssignment);
 
         if (newData.minValue != undefined && newData.maxValue != undefined  && newData.isRequired != undefined) {
@@ -170,7 +169,7 @@ class AddParamsToNftRootConstructor {
 
 }
 
-export const { insertAbi } = new AddParamsToNftRootConstructor();
+
 
 export const { addSingleParamToData } = new AddParamsToNftRootConstructor();
 export const { addSeveralParamsToData } = new AddParamsToNftRootConstructor();

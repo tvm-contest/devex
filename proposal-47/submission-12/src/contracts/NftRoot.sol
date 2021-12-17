@@ -21,8 +21,6 @@ contract NftRoot is DataResolver, IndexResolver {
     uint8 constant ONLY_ADMIN = 114;
     uint8 constant MESSAGE_WITHOUT_MONEY = 115;
 
-    string abiString;
-    
     uint _totalMinted;
     address _addrBasis;
 
@@ -66,8 +64,6 @@ contract NftRoot is DataResolver, IndexResolver {
             "The number of tokens does not correspond to the total number of their types"
         );
         tvm.accept();
-
-        abiString =  '/*ABI*/';
 
         createRarityTypes(raritiesList);
 

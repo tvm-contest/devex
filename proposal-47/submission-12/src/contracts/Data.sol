@@ -144,6 +144,25 @@ contract Data is IData, IndexResolver {
         addrTrusted = _addrTrusted;
     }
 
+    function getParamsInfo() public view  returns (
+        string rarityName,
+        string url
+        /*PARAM_GETINFO*/
+    ) {
+        rarityName = _rarityName;
+        url = _url;
+        /*PARAM_ASSIGNMENT_GETINFO*/
+        
+    }
+    
+      function getRarity() public returns(
+        string rarityName
+    ) {
+        rarityName = _rarityName;
+    }
+
+
+
     function rightsTransferabilityStatus() public view override onlyOwnerOrTrusted returns(bool status) {
         status = _isRightsTransferable;
     }
