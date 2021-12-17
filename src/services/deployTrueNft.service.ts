@@ -36,7 +36,7 @@ export class DeployTrueNftService {
             if (!fs.existsSync(path.join(globals.RESULT_COLLECTION, address.slice(2)))) {
                 fs.renameSync(pathWithContracts, path.join(globals.RESULT_COLLECTION, address.slice(2)))
             }
-            console.log("RootNft address: " + await rootNftAccount.getAddress());
+            console.log("RootNft address: " + address);
             await this.deployBasis(rootNftAccount, indexBasisAccount);
         } catch(err) {
 

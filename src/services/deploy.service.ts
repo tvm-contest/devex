@@ -60,7 +60,7 @@ export class DeployService {
         const hash = await this.compileContract(contractDotSolCode, relative_path, fileName);
 
         let abi = await JSON.parse(fs.readFileSync(path.resolve(relative_path || globals.TEMP_ROOT, hash + ".abi.json")).toString());
-        let tvc = fs.readFileSync(path.resolve(relative_path || globals.TEMP_ROOT, hash + ".tvc"), {encoding: 'base64'});
+        let tvc = Buffer.from(fs.readFileSync(path.join(relative_path || globals.TEMP_ROOT, hash + ".tvc"))).toString("base64");
         
         const ContractAcc = new Account({
             abi: abi,
@@ -81,12 +81,24 @@ export class DeployService {
     async deploy(ContractAcc: Account, initInput?: object) : Promise<void> {
         const address = await ContractAcc.getAddress();
         try {
-            await ContractAcc.deploy({
-                initInput: initInput,
-                useGiver: true
-            });
+            let walletAcc = await this.getWalletAcc();
+            if (!(await this.isContractDeploy(address))) {
+                await walletAcc.run(
+                    "sendTransaction",
+                    {
+                        dest: address,
+                        value: 2_000_000_000,
+                        flags: 2,
+                        bounce: false,
+                        payload: "",
+                    }
+                );
+                ContractAcc.deploy({
+                    initInput: initInput
+                });
+            }
         } catch(err) {
-            console.error(err);
+            console.log(err);
         }
     }
 
@@ -101,6 +113,19 @@ export class DeployService {
 
     getDabi(ContractAcc: Account) : string {
         return Buffer.from(JSON.stringify(ContractAcc.contract.abi)).toString('base64');
+    }
+
+    async isContractDeploy(contractAddress: string) : Promise<boolean> {
+        let { result } = await this.client.net.query({
+            query: "{accounts(filter:{id:{eq:\"" + contractAddress + "\"}}){acc_type}}"
+        });
+        if (result.data.accounts[0] !== undefined) {
+            let deployStatus = result.data.accounts[0].acc_type;
+            if (deployStatus == 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private async deleteFiles(hash: string) : Promise<void> {
@@ -125,5 +150,25 @@ export class DeployService {
         let contractName = solString.substring(solString.indexOf("contract ") + 9, solString.indexOf("{")).split(" ")[0];
         contractName = contractName.charAt(0).toUpperCase() + contractName.slice(1);
         return contractName;
+    }
+
+    private async getWalletAcc() : Promise<Account> {
+        let walletAbi = await JSON.parse(fs.readFileSync(path.resolve(globals.SAMPLE_DATA_PATH, "safeMultisigWallet", "SafeMultisigWallet.abi.json")).toString());
+        let walletTvc = fs.readFileSync(path.resolve(globals.SAMPLE_DATA_PATH, "safeMultisigWallet", "SafeMultisigWallet.tvc"), {encoding: 'base64'});
+        const walletAcc = new Account(
+            {
+                abi: walletAbi, 
+                tvc: walletTvc
+            },
+            {
+                client: this.client,
+                address: everscale_settings.SAFE_MULTISIG_ADDRESS,
+                signer: {
+                    type: "Keys",
+                    keys: everscale_settings.SAFE_MULTISIG_KEYS
+                }
+            }
+        );
+        return walletAcc;
     }
 }

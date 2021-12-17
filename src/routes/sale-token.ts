@@ -19,12 +19,12 @@ router.post('/sale-token-form', async function(req, res, next) {
     let directSaleAddr = await directSaleService.deployDirectSale(RootNftAddr, NftAddr);
     console.log("DirectSale address: " + directSaleAddr);
   
-    let nftPrise = req.body.tokenPrice;
+    let nftPrise = req.body.tokenPrice * Math.pow(10, 9);
     let isDurationLimited = false;
     let saleDuration = 0;
     await directSaleService.startSale(RootNftAddr, directSaleAddr, nftPrise, isDurationLimited, saleDuration);
     
-    res.send("token-sale")
+    res.redirect("/collection-list");
   });
 
   export {router as SaleToken};
