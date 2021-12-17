@@ -5,6 +5,10 @@ import fs from 'fs'
 import { MintNftService } from '../services/minting-token.service';
 
 const router = express.Router();
+//const multipartMiddleware = multipart()
+//router.use(multipart())
+
+
 
 router.post('/', async function (req, res, next) {
     console.log(req.body.colName, req.body.colAdd)
@@ -23,9 +27,8 @@ router.post('/', async function (req, res, next) {
 
 router.post('/minting', async function (req, res, next) {
     try {
-        console.log("BODY IS ", req.body);
         const mintService = new MintNftService(req.body.rootAddress);
-        await mintService.mintNft(req.body);
+        await mintService.mintNft(req);
     } catch (error) {
         console.log(error);
     }

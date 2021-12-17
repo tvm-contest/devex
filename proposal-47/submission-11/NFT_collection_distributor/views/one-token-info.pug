@@ -8,26 +8,43 @@ block content
         .search
           .row.row_init
             .col
-              label.form-label() Token address
-              input.form-control(name="tokenAddress" onInput="checkAddressInput(this)" type="text" pattern="[A-Za-z0-9:]+" placeholder="Token address" aria-label="Token address")
+              label.text.form-label() Token address
+              input.text.form-control(name="tokenAddress" onInput="checkAddressInput(this)" type="text" pattern="[A-Za-z0-9:]+" placeholder="Token address" aria-label="Token address")
             
-            input.btn.btn-blue(type="submit" value="Find")
+            input.btn.btn-blue.btn-find(type="submit" value="Find")
     .collection-container
       .token-info-container
         if tokenInfo        
           each line in tokenInfo
             if line.tag == 'p'
-              p= line.title + ': ' + line.value
+              .row 
+                .col-3
+                  p.text.text-main= line.title
+                .col-9
+                  p.text=line.value
+        
             else if line.tag == 'img'
-              p= line.title 
-              img(src=line.value)
+              .row 
+                .col-3
+                  p.text.text-main= line.title
+                .col-9
+                  img(src=line.value style="max-width: -webkit-fill-available;")
             else if line.tag == 'video'
-              p= line.title 
-              video(src=line.value)
+              .row 
+                .col-3
+                  p.text.text-main= line.title
+                .col-9
+                  video(src=line.value controls="controls" style="max-width: -webkit-fill-available;")
             else if line.tag == 'a'
-              p= line.title 
-              a(href=line.value target="_blank")= line.value
-          
+              .row 
+                .col-3
+                  p.text.text-main= line.title
+                .col-9
+                  a(href=line.value target="_blank")= line.value
+          form.row.g-3.form-contract#form-param(action="/sale-token" method="post")
+            input(name="rootAddress" value=tokenInfo[0].value type="hidden")
+            input(name="tokenAddress" value=p=tokenInfo[3].value type="hidden")
+            button.text.btn-find.submit-button.btn.btn-blue.btn-block#sub-mint(type="submit")="Sale token"
   script(src="/scripts/input-validation.js")
     
 

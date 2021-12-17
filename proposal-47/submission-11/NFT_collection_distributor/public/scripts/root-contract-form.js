@@ -45,6 +45,7 @@ $(".submit-button").on("click",(function(event){
     } else if ($(this).attr("id") === "form-contracts"){
         $('#form-contract').attr("action","/root-contract-form/form-contracts")
     } else if ($(this).attr("id") === "deploy-contracts"){
+        loader(this)
         $('#form-contract').attr("action","/root-contract-form/deploy-contracts")
     }
     $('#form-contract').submit()

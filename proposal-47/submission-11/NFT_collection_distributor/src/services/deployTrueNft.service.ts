@@ -32,7 +32,7 @@ export class DeployTrueNftService {
         let indexBasisAccount = await this.deployService.createContractAccount(indexBasisContract, pathWithContracts);
         let address = "0";
         try {
-            address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection, commissionAuthorGenerator);
+            address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection, commissionAuthorGenerator*1000000000);
             if (!fs.existsSync(path.join(globals.RESULT_COLLECTION, address.slice(2)))) {
                 fs.renameSync(pathWithContracts, path.join(globals.RESULT_COLLECTION, address.slice(2)))
             }
@@ -151,7 +151,7 @@ export class DeployTrueNftService {
             codeIndex: (await this.deployService.getDecodeTVC(indexAccount)).code,
             codeData: (await this.deployService.getDecodeTVC(dataAccount)).code,
             addrCommissionAgent: everscale_settings.AUTHOR_GENERATOR_ADDRESS,
-            mintingCommission: commissionAuthorGenerator,
+            mintingCommission: String(commissionAuthorGenerator),
             nftTypes: _nftTypes,
             limit: _limit,
             icon: _icon
