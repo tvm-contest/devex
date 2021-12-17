@@ -33,61 +33,62 @@ export class DeployDebotService {
         let walletAcc = await this.getWalletAcc();
         let debotTvc = fs.readFileSync(path.resolve(contractsDir, "debots", "MintingDebot.tvc"), {encoding: 'base64'});
         let debotAddress = await debotAcc.getAddress();
-        await walletAcc.run(
-            "sendTransaction",
-            {
-                dest: debotAddress,
-                value: 2_000_000_000,
-                flags: 2,
-                bounce: false,
-                payload: "",
+        if (!(await this.deployService.isContractDeploy(debotAddress))) {
+            await walletAcc.run(
+                "sendTransaction",
+                {
+                    dest: debotAddress,
+                    value: 2_000_000_000,
+                    flags: 2,
+                    bounce: false,
+                    payload: "",
+                }
+            );
+            try {
+                await this.client.processing.process_message({
+                    message_encode_params: {
+                        abi: debotAcc.abi,
+                        signer: {
+                            type: "Keys",
+                            keys: everscale_settings.KEYS
+                        },
+                        deploy_set: {
+                            initial_data: initData,
+                            tvc: debotTvc
+                        },
+                        call_set: {
+                            function_name: "constructor",
+                            input: {}
+                        },
+                        address: debotAddress
+                    },
+                    send_events: false
+                });
+                let abi = fs.readFileSync(path.join(contractsDir, 'debots', 'MintingDebot.abi.json'), "utf8");
+                const buf = Buffer.from(abi, "ascii");
+                const hexvalue = buf.toString("hex");
+                await this.client.processing.process_message({
+                    message_encode_params: {
+                        abi: debotAcc.abi,
+                        address: debotAddress,
+                        signer: {
+                            type: "Keys",
+                            keys: everscale_settings.KEYS
+                        },
+                        call_set: {
+                            function_name: "setABI",
+                            input: {
+                                dabi: hexvalue
+                            }
+                        },
+                    },
+                    send_events: true,
+                });
+            } catch(err) {
+                console.log(err);
             }
-        );
-        try {
-            await this.client.processing.process_message({
-                message_encode_params: {
-                    abi: debotAcc.abi,
-                    signer: {
-                        type: "Keys",
-                        keys: everscale_settings.KEYS
-                    },
-                    deploy_set: {
-                        initial_data: initData,
-                        tvc: debotTvc
-                    },
-                    call_set: {
-                        function_name: "constructor",
-                        input: {}
-                    },
-                    address: debotAddress
-                },
-                send_events: false
-            });
-            let abi = fs.readFileSync(path.join(contractsDir, 'debots', 'MintingDebot.abi.json'), "utf8");
-            const buf = Buffer.from(abi, "ascii");
-            const hexvalue = buf.toString("hex");
-            await this.client.processing.process_message({
-                message_encode_params: {
-                    abi: debotAcc.abi,
-                    address: debotAddress,
-                    signer: {
-                        type: "Keys",
-                        keys: everscale_settings.KEYS
-                    },
-                    call_set: {
-                        function_name: "setABI",
-                        input: {
-                            dabi: hexvalue
-                        }
-                    },
-                },
-                send_events: true,
-            });
-            
-            console.log("Debot address: " + debotAddress);
-        } catch(err) {
-            console.log(err);
         }
+        console.log("Debot address: " + debotAddress);
         return debotAddress;
     }
 

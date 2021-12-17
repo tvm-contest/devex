@@ -87,7 +87,7 @@ export class DeployService {
                     "sendTransaction",
                     {
                         dest: address,
-                        value: 2_000_000_000,
+                        value: 5_000_000_000,
                         flags: 2,
                         bounce: false,
                         payload: "",
