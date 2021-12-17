@@ -33,7 +33,7 @@ export class DirectSaleService {
     
     async deployDirectSale(collectionPath: string, nftAddr: string) : Promise<string> {
         let nftAbi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, collectionPath, "Data.abi.json")).toString());
-        let nftTvc = fs.readFileSync(path.resolve(path.join(globals.RESULT_COLLECTION, collectionPath, "Data.tvc")), {encoding: 'base64'});
+        let nftTvc = Buffer.from(fs.readFileSync(path.join(globals.RESULT_COLLECTION, collectionPath, "Data.tvc"))).toString("base64");
         let nftAcc = new Account({
             abi: nftAbi,
             tvc: nftTvc
