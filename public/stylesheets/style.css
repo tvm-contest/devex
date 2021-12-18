@@ -419,7 +419,7 @@ input {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    max-width: 300px;
+    max-width: 350px;
     margin: 0 auto;
     border-radius: 20px;
     background-color: var(--form-color);

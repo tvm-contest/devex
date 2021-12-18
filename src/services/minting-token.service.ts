@@ -169,7 +169,7 @@ export class MintNftService {
             "sendTransaction",
             {
                 dest: await nftRootAcc.getAddress(),
-                value: 2_000_000_000,
+                value: await this.getPrice(await walletAcc.getAddress()),
                 flags: 3,
                 bounce: true,
                 payload: mesBody,
@@ -180,6 +180,28 @@ export class MintNftService {
             console.error("Nft root address: " + await nftRootAcc.getAddress());
             console.error("Call function \"mintNft\" error: " + code_error);
         }
+    }
+
+    private async getPrice(adderess: string) : Promise<number> {
+        const collectionInfo = fs.readFileSync(
+            path.resolve(this.collectionFolder, 'collectionInfo.json')
+        ).toString();
+        const collectionInfoJSON = JSON.parse(collectionInfo);
+        
+        let mintingPriceUsers = collectionInfoJSON.commissions.mintingPriceUsers
+        let price : number
+
+        if ( 
+            adderess != everscale_settings.SAFE_MULTISIG_ADDRESS &&
+            mintingPriceUsers && 
+            Number(mintingPriceUsers) > everscale_settings.MIN_MINTING_PRICE
+        ) {
+            price = Number(mintingPriceUsers) * 1_000_000_000
+        } else {
+            price = everscale_settings.MIN_MINTING_PRICE * 1_000_000_000
+        }
+
+        return price
     }
 
     private async getIpfsURL(file) : Promise<string>{
