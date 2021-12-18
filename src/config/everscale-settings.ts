@@ -14,19 +14,20 @@ export const everscale_settings = {
     TIMEOUT: 10000,
 
     //dev net
-    // KEYS: {
-    //     public: "8b523c8d69cfdfb37f3cee3cf8514dd7e0820f8032ab737139ea6f31ad67872d",
-    //     secret: "186b279cf353c7193536077fba9cd07e9df65ff6d436efdd597c8fafdac0d7d5"  
-    // },
-    // ENDPOINTS: "https://net.ton.dev",
-    // SAFE_MULTISIG_ADDRESS: "0:86735f47ea300c13826ae26e83e264311607095eb877c7d23b9516e4e95712b8",
-    // SAFE_MULTISIG_KEYS: {
-    //     public: "8b523c8d69cfdfb37f3cee3cf8514dd7e0820f8032ab737139ea6f31ad67872d",
-    //     secret: "186b279cf353c7193536077fba9cd07e9df65ff6d436efdd597c8fafdac0d7d5"
-    // },
-    // AUTHOR_GENERATOR_ADDRESS: "0:86735f47ea300c13826ae26e83e264311607095eb877c7d23b9516e4e95712b8",
-    // TIMEOUT: 50000,
-
+    /*
+    KEYS: {
+        public: "8b523c8d69cfdfb37f3cee3cf8514dd7e0820f8032ab737139ea6f31ad67872d",
+        secret: "186b279cf353c7193536077fba9cd07e9df65ff6d436efdd597c8fafdac0d7d5"  
+    },
+    ENDPOINTS: "http://net.ton.dev",
+    SAFE_MULTISIG_ADDRESS: "0:919e875110231ef2e3c60bb2cf48314d150ecf4bfaa46f90a9d22a64c5bd7d92",
+    SAFE_MULTISIG_KEYS: {
+        public: "a08cdc5e0b83b083b5b5402b5a2e0aa74d79c0856fa4434ad924d91a04f0a17b",
+        secret: "a84c21012d91a386c3c14759ca11968f06806367c9dadb2fe44723634a147bb0"
+    },
+    AUTHOR_GENERATOR_ADDRESS: "0:919e875110231ef2e3c60bb2cf48314d150ecf4bfaa46f90a9d22a64c5bd7d92",
+    TIMEOUT: 50000,
+    */
     //general
     SEED_PHRASE_WORD_COUNT: 12,
     SEED_PHRASE_DICTIONARY_ENGLISH: 1,

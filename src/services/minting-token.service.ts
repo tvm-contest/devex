@@ -6,6 +6,7 @@ import { DeployService } from './deploy.service';
 import { TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
 import { addFileToIPFS } from './add-ipfs.service';
+import { checkErrorMessage } from './contractError.service';
 import { ipfs_setting } from '../config/ipfs-setting';
 import { surf_setting } from '../config/surf_setting';
 
@@ -164,7 +165,7 @@ export class MintNftService {
     }
 
     private async sendTransactionAndMint(walletAcc: Account, nftRootAcc: Account, mesBody: string) {
-        await walletAcc.run(
+        let { transaction } = await walletAcc.run(
             "sendTransaction",
             {
                 dest: await nftRootAcc.getAddress(),
@@ -174,6 +175,11 @@ export class MintNftService {
                 payload: mesBody,
             }
         );
+        let code_error = await checkErrorMessage(transaction, walletAcc.client);
+        if (code_error !== 0) {
+            console.error("Nft root address: " + await nftRootAcc.getAddress());
+            console.error("Call function \"mintNft\" error: " + code_error);
+        }
     }
 
     private async getPrice(adderess: string) : Promise<number> {

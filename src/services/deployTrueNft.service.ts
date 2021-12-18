@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { DeployService } from './deploy.service';
+import { checkErrorMessage } from './contractError.service';
 import { Account } from '@tonclient/appkit';
 import { Collection } from '../models/collection';
 import { globals } from '../config/globals';
@@ -51,7 +52,8 @@ export class DeployTrueNftService {
         try {
             await this.deployService.deploy(
                 rootNftAccount,
-                initInput
+                initInput,
+                2_000_000_000
             );
             return rootNftAccount.getAddress();
         } catch(err) {
@@ -94,6 +96,10 @@ export class DeployTrueNftService {
                 payload: body,
             }
         );
+        let code_error = await checkErrorMessage(transaction, walletAcc.client);
+        if (code_error !== 0) {
+            console.error("Call function \"deployBasis\" error: " + code_error);
+        }
         return transaction;
     }
 
