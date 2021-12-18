@@ -3,7 +3,7 @@ import fs from 'fs';
 import { Account } from '@tonclient/appkit';
 import { globals } from '../config/globals';
 import { DeployService } from './deploy.service';
-import { signerKeys, TonClient } from '@tonclient/core';
+import { TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
 import { addFileToIPFS } from './add-ipfs.service';
 import { ipfs_setting } from '../config/ipfs-setting';
