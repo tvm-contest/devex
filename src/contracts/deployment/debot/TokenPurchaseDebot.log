@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: ../debots/TokenPurchaseDebot.tvc
+      wc: None
+    keys: debot/TokenPurchaseDebot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "economy satoshi pupil hollow educate unaware brisk laundry carry creek cause dismiss"
+Raw address: 0:a4ab4a4bd48054551c973524dfea09fbfc1e872b7c91fc3cf03d9436ebc6c78e
+testnet:
+Non-bounceable address (for init): 0QCkq0pL1IBUVRyXNSTf6gn7_B6HK3yR_DzwPZQ268bHjuu_
+Bounceable address (for later access): kQCkq0pL1IBUVRyXNSTf6gn7_B6HK3yR_DzwPZQ268bHjrZ6
+mainnet:
+Non-bounceable address (for init): UQCkq0pL1IBUVRyXNSTf6gn7_B6HK3yR_DzwPZQ268bHjlA1
+Bounceable address (for later access): EQCkq0pL1IBUVRyXNSTf6gn7_B6HK3yR_DzwPZQ268bHjg3w
+Succeeded
