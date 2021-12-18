@@ -9,6 +9,14 @@ block content
         input(name="contractName" value=collectionName type="hidden")
         span(class="" role="status" aria-hidden="true") 
         .content
+          .error-messege
+            if error == 'invalidPhrase'
+              .messege Invalid seed phrase
+            if error == 'invalidAddress'
+              .messege Invalid address
+            if error == 'accountError'
+              .messege Wallet does not exist
+
           .rarities
         
           .parameters 
