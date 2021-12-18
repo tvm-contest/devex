@@ -3,6 +3,14 @@ import { TonClient } from "@tonclient/core";
 class ContractErrorService {
 
     async checkErrorMessage(transaction: any, client: TonClient) : Promise<number> {
+        while(true) {
+            let { result } = await client.net.query({
+                query: "{transactions(filter:{in_msg:{eq:\"" + transaction.out_msgs[0] + "\"}}) {id}}"
+            });
+            if (result.data.transactions[0] !== undefined) {
+                break;
+            }
+        }
         let { result } = await client.net.query({
             query: "{transactions(filter:{in_msg:{eq:\"" + transaction.out_msgs[0] + "\"}}) {id}}"
         });
