@@ -53,10 +53,26 @@ export class MintNftService {
             'mintNft',
             mintParams
         );
-
         const walletAcc = await this.getWalletAccount(dataForMinting.body.checkSignToken, dataForMinting.body.seedPhrase, dataForMinting.body.signAddress)
 
-        await this.sendTransactionAndMint(walletAcc, rootNftAccount, mesBody)
+        
+        let res = await rootNftAccount.runLocal('getFutureAddress', {})
+        const tokenFutureAddress = res.decoded?.output.tokenFutureAddress
+
+        await this.sendTransactionAndMint(walletAcc, rootNftAccount, mesBody);
+        
+        // Part for preventing root page loading before minting token ****
+        let status = 0
+        while(status != 1) {
+            const delay = (ms : number) => new Promise(resolve => setTimeout(resolve, ms));
+            await delay(500);
+            let { result } = await this.client.net.query({
+                query: "{accounts(filter:{id:{eq:\"" + tokenFutureAddress + "\"}}){acc_type}}"
+            });
+            if (result.data.accounts[0] !== undefined) {
+                status = result.data.accounts[0].acc_type;
+            }
+        }
     }
 
     async getMintParams(mintigData): Promise<object> {
