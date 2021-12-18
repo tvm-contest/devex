@@ -93,6 +93,9 @@ input.output-col{
     z-index: 100;
 }
 
+.error-messege {
+    color: red;
+}
 
 .row.parameter-number,
 .row.parameter-string,
