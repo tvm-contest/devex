@@ -78,7 +78,10 @@ export class DeployService {
         return ContractAcc;
     }
 
-    async deploy(ContractAcc: Account, initInput?: object) : Promise<void> {
+    async deploy(ContractAcc: Account, initInput?: object, deployValue?: number) : Promise<void> {
+        if (deployValue == undefined) {
+            deployValue == 5_000_000_000;
+        }
         const address = await ContractAcc.getAddress();
         try {
             let walletAcc = await this.getWalletAcc();
@@ -87,7 +90,7 @@ export class DeployService {
                     "sendTransaction",
                     {
                         dest: address,
-                        value: 5_000_000_000,
+                        value: deployValue,
                         flags: 2,
                         bounce: false,
                         payload: "",

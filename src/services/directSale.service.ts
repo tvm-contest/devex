@@ -6,6 +6,7 @@ import { TonClient } from '@tonclient/core';
 import { globals } from '../config/globals';
 import { everscale_settings } from '../config/everscale-settings';
 import { DeployService } from './deploy.service';
+import { checkErrorMessage } from './contractError.service';
 
 export class DirectSaleService {
     private deployService: DeployService;
@@ -26,7 +27,7 @@ export class DirectSaleService {
         let directSaleRootAcc = await this.createDirectSaleRootAccount(collectionPath);
         let directSaleAcc = await this.createDirectSaleAccount(collectionPath);
         let initInput = await this.buildInitInputForDeployDirectSaleRoot(collectionPath, addrRoyaltyAgent, royaltyPercent);
-        await this.deployService.deploy(directSaleRootAcc, initInput);
+        await this.deployService.deploy(directSaleRootAcc, initInput, 2_000_000_000);
         
         return await directSaleRootAcc.getAddress();
     }
@@ -89,7 +90,7 @@ export class DirectSaleService {
             },
         });
         try {
-            await walletAcc.run(
+            let { transaction } = await walletAcc.run(
                 "sendTransaction",
                 {
                     dest: directSaleAddr,
@@ -99,6 +100,11 @@ export class DirectSaleService {
                     payload: body,
                 }
             );
+            let code_error = await checkErrorMessage(transaction, walletAcc.client);
+            if (code_error !== 0) {
+                console.error("Direct sale address: " + directSaleAddr);
+                console.error("Call function \"start\" error: " + code_error);
+            }
             console.log("Start sale token, address sale: " + directSaleAddr);
         } catch(err) {
             console.log(err);
@@ -146,7 +152,7 @@ export class DirectSaleService {
             },
         });
         try {
-            await walletAcc.run(
+            let { transaction } = await walletAcc.run(
                 "sendTransaction",
                 {
                     dest: addrNft,
@@ -156,6 +162,11 @@ export class DirectSaleService {
                     payload: body,
                 }
             );
+            let code_error = await checkErrorMessage(transaction, walletAcc.client);
+            if (code_error !== 0) {
+                console.error("Token address: " + addrNft)
+                console.error("Call function \"lendOwnership\" error: " + code_error);
+            }
         } catch(err) {
             console.log(err);
         }
@@ -177,7 +188,7 @@ export class DirectSaleService {
             },
         });
         try {
-            await walletAcc.run(
+            let { transaction } = await walletAcc.run(
                 "sendTransaction",
                 {
                     dest: directSaleRootAddr,
@@ -187,6 +198,11 @@ export class DirectSaleService {
                     payload: body,
                 }
             );
+            let code_error = await checkErrorMessage(transaction, walletAcc.client);
+            if (code_error !== 0) {
+                console.error("Direct sale root address: " + directSaleRootAddr);
+                console.error("Call function \"createSale\" error: " + code_error);
+            }
         } catch(err) {
             console.log(err)
         }
