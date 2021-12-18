@@ -3,7 +3,7 @@ import fs from 'fs';
 import { Account } from '@tonclient/appkit';
 import { globals } from '../config/globals';
 import { DeployService } from './deploy.service';
-import { TonClient } from '@tonclient/core';
+import { signerKeys, TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
 import { addFileToIPFS } from './add-ipfs.service';
 import { ipfs_setting } from '../config/ipfs-setting';
@@ -52,10 +52,24 @@ export class MintNftService {
             'mintNft',
             mintParams
         );
-
         const walletAcc = await this.getWalletAccount(dataForMinting.body.checkSignToken, dataForMinting.body.seedPhrase, dataForMinting.body.signAddress)
 
-        await this.sendTransactionAndMint(walletAcc, rootNftAccount, mesBody)
+        
+        let res = await rootNftAccount.runLocal('getFutureAddress', {})
+        const tokenFutureAddress = res.decoded?.output.tokenFutureAddress
+
+        await this.sendTransactionAndMint(walletAcc, rootNftAccount, mesBody);
+        
+        // Part for preventing root page loading before minting token ****
+        let status = 0
+        while(status != 1) {
+            const delay = (ms : number) => new Promise(resolve => setTimeout(resolve, ms));
+            await delay(500);
+            let { result } = await this.client.net.query({
+                query: "{accounts(filter:{id:{eq:\"" + tokenFutureAddress + "\"}}){acc_type}}"
+            });
+            status = result.data.accounts[0].acc_type;
+        }
     }
 
     async getMintParams(mintigData): Promise<object> {
