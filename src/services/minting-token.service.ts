@@ -68,7 +68,9 @@ export class MintNftService {
             let { result } = await this.client.net.query({
                 query: "{accounts(filter:{id:{eq:\"" + tokenFutureAddress + "\"}}){acc_type}}"
             });
-            status = result.data.accounts[0].acc_type;
+            if (result.data.accounts[0] !== undefined) {
+                status = result.data.accounts[0].acc_type;
+            }
         }
     }
 
