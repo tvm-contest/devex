@@ -48,7 +48,7 @@ You can set some commission will be held when creating and selling tokens, If yo
 ## Parameters
 You can add any parameters for each token, to do this, click on the `Token Parameters` tab.
 Enter the parameter name to the `Parameter name` field and select the parameter type in the drop-down `Choose parameter type` list. You can add several parameters of different types.
-![[token-params.png]]
+![token-params-img](./public/readme-photos/token-params.png)
 
 
 # How to create token generator from JSON file
