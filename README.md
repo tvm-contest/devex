@@ -1,8 +1,8 @@
 #  NFT_collection_distributor
 
 # Table of content
-- [[#How to use]]
-- [[#How to create a token generator]]
+- [How to use](#how-to-use)
+- [How to create a token generator](#how-to-create-a-token-generator)
 	- [[##General information about collection]]
 	- [[##Add rarity to the tokens]]
 	- [[##Commisions]]
@@ -27,7 +27,7 @@ First of all you need to create a token generator.
 # How to create a token generator
 
 After you went to the main page, click on the button `Root contract form` to go to the page for creating a token generator.
-![main-page](./public/readme-photos/main-page 1.png)
+![main-page](./public/readme-photos/main-page.png)
 ## General information about collection
 In the `Collection Name` field (marked 1), enter the name of the collection you create. And in the `Maximum number of tokenes` field (marked 2) enter  maximum number of tokenes you want to create.
 After filling out data about your collection you  can click on one of the buttons: 
