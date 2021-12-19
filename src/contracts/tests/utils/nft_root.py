@@ -12,7 +12,8 @@ NFT_TYPES = [Bytes(str2bytes('common')),
 TYPES_LIMIT = [100, 50, 5]
 DEFAULT_COMMISSION = 1 * ts4.GRAM
 DEFAULT_MESSAGE_VALUE = 0.5 * ts4.GRAM
-DEFAULT_AUTHOR_ROYALTY = 25
+DEFAULT_AUTHOR_ROYALTY_PERCENT = 25
+DEFAULT_AGENT_ROYALTY_PERCENT = 0
 
 ts4.init('test_build', verbose = False)
 
@@ -22,7 +23,9 @@ code_data = ts4.load_code_cell('Data.tvc')
 
 def create_nft_root(
     commission_agent: BaseContract,
+    royalty_agent: BaseContract,
     commission: int = DEFAULT_COMMISSION,
+    royalty_agent_percent: int = DEFAULT_AGENT_ROYALTY_PERCENT,
     init_balance: int = DEFAULT_NFT_ROOT_BALANCE):
 
     (private_key, public_key) = ts4.make_keypair()
@@ -38,6 +41,8 @@ def create_nft_root(
             'limit': TYPES_LIMIT,
             'name': Bytes(str2bytes('some_name')),
             'icon': Bytes(str2bytes('some_image')),
+            'addrNftRootRoyaltyAgent': royalty_agent.address,
+            'nftRootRoyaltyPercent': royalty_agent_percent,
         },
         pubkey = public_key, 
         private_key = private_key,
@@ -50,7 +55,7 @@ def mint_nft(
     nft_root: BaseContract,
     wallet: BaseContract,
     message_value: int,
-    royalty: int = DEFAULT_AUTHOR_ROYALTY,
+    royalty_author_percent: int = DEFAULT_AUTHOR_ROYALTY_PERCENT,
     expected_err: int = 0):
 
     payload_mint_nft = ts4.encode_message_body(
@@ -62,7 +67,7 @@ def mint_nft(
             'editionNumber': 1,
             'editionAmount': 1,
             'managersList': [],
-            'royalty': royalty,
+            'royalty': royalty_author_percent,
 
             'nftType': NFT_TYPES[0],
             'additionalEnumParameter': 1,

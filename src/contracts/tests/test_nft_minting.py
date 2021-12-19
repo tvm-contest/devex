@@ -23,7 +23,8 @@ NOT_ENOUGH_VALUE_TO_MINT = 107
 def prepare_for_minting():
     wallet_minter = create_wallet()
     wallet_commission_agent = create_wallet()
-    nft_root = create_nft_root(wallet_commission_agent, MINT_COMMISSION)
+    wallet_royalty_agent = create_wallet()
+    nft_root = create_nft_root(wallet_commission_agent, wallet_royalty_agent, MINT_COMMISSION)
 
     prepared_info = {
         'minter': wallet_minter,

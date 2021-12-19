@@ -29,7 +29,7 @@ abstract contract DataCore is IDataCore, IndexResolver {
 
 
     function transferOwnership(address addrTo)
-        public override
+        public virtual override
         enoughValueToTransferOwnership
     {
         require(isTrusted(msg.sender) || (!isTrustedExists() && isOwner(msg.sender)),
@@ -53,11 +53,6 @@ abstract contract DataCore is IDataCore, IndexResolver {
         delete managersListArr;
 
         deployIndex(addrTo);
-
-        if (!isTrusted(msg.sender)) {
-            tvm.rawReserve(1 ton, 0);
-            msg.sender.transfer({value: 0, flag: 128});
-        }
     }
 
     function lendOwnership(address _addr)
@@ -140,19 +135,19 @@ abstract contract DataCore is IDataCore, IndexResolver {
         new Index{stateInit: stateIndexOwnerRoot, value: Fees.MIN_FOR_INDEX_DEPLOY}(_addrRoot);
     }
     
-    function isOwner(address addrPossibleOwner) inline private view returns (bool) {
+    function isOwner(address addrPossibleOwner) inline internal view returns (bool) {
         return _addrOwner == addrPossibleOwner;
     }
 
-    function isTrusted(address addrPossibleTrusted) inline private view returns (bool) {
+    function isTrusted(address addrPossibleTrusted) inline internal view returns (bool) {
         return _addrTrusted == addrPossibleTrusted;
     }
 
-    function isManager(address addrPossibleManager) inline private view returns (bool) {
+    function isManager(address addrPossibleManager) inline internal view returns (bool) {
         return managersList.exists(addrPossibleManager);
     }
 
-    function isTrustedExists() inline private view returns (bool) {
+    function isTrustedExists() inline internal view returns (bool) {
         return _addrTrusted != address(0);
     }
 
