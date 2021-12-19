@@ -9,6 +9,8 @@
 				{"name":"codeData","type":"cell"},
 				{"name":"addrCommissionAgent","type":"address"},
 				{"name":"mintingCommission","type":"uint128"},
+				{"name":"addrNftRootRoyaltyAgent","type":"address"},
+				{"name":"nftRootRoyaltyPercent","type":"uint8"},
 				{"name":"nftTypes","type":"bytes[]"},
 				{"name":"limit","type":"uint256[]"},
 				{"name":"icon","type":"bytes"}
@@ -60,6 +62,14 @@
 			"outputs": [
 				{"name":"code","type":"cell"},
 				{"name":"totalMinted","type":"uint256"}
+			]
+		},
+		{
+			"name": "getFutureAddress",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"tokenFutureAddress","type":"address"}
 			]
 		},
 		{

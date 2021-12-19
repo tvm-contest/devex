@@ -13,6 +13,8 @@
 				{"name":"_editionAmount","type":"uint8"},
 				{"name":"_managersList","type":"address[]"},
 				{"name":"_royalty","type":"uint8"},
+				{"name":"addrNftRootRoyaltyAgent","type":"address"},
+				{"name":"nftRootRoyaltyPercent","type":"uint8"},
 				{"name":"nftType","type":"bytes"}
 			],
 			"outputs": [

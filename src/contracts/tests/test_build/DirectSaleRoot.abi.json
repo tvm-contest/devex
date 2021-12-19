@@ -57,6 +57,14 @@
 			]
 		},
 		{
+			"name": "getCodeSale",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"codeSale","type":"cell"}
+			]
+		},
+		{
 			"name": "changeRoyaltyAgent",
 			"inputs": [
 				{"name":"addrRoyaltyAgent","type":"address"}

@@ -32,15 +32,16 @@ def prepare_sale():
     wallet_seller = create_wallet()
     wallet_buyer = create_wallet()
     wallet_commission_agent = create_wallet()
-    wallet_royalty_agent = create_wallet()
+    wallet_nft_royalty_agent = create_wallet()
+    wallet_sale_royalty_agent = create_wallet()
 
-    nft_root = create_nft_root(wallet_commission_agent)
+    nft_root = create_nft_root(wallet_commission_agent, wallet_nft_royalty_agent)
     mint_nft(nft_root, wallet_author, MINT_PRICE, 20)
     nft = restore_nft_by_addr(get_nft_addr(nft_root, 0))
 
     transfer_nft(wallet_author, wallet_seller, nft, TRANSFER_PRICE)
 
-    sale_root = create_sale_root(wallet_royalty_agent, 10)
+    sale_root = create_sale_root(wallet_sale_royalty_agent, 10)
     lend_ownership(wallet_seller, sale_root, nft, LEND_PRICE)
     create_sale(sale_root, wallet_seller, nft)
     sale = restore_sale_by_addr(get_sale_addr(sale_root, wallet_seller, nft))
@@ -54,10 +55,10 @@ def prepare_sale():
         'nft': nft,
         'sale': sale,
         'sale_root': sale_root,
-        'royalty_agent': wallet_royalty_agent,
+        'sale_royalty_agent': wallet_sale_royalty_agent,
         'commission_agent': wallet_commission_agent,
         'author_balance_before': wallet_author.balance,
-        'royalty_agent_balance_before': wallet_royalty_agent.balance
+        'sale_royalty_agent_balance_before': wallet_sale_royalty_agent.balance
     }
     return prepared_info
 
@@ -78,14 +79,14 @@ class TestSale(unittest.TestCase):
 
         buy_from_sale(sale, wallet_buyer, NFT_SALE_PRICE + MIN_FOR_TRANSFER_OWNERSHIP + 3 * MIN_FOR_MESSAGE)
 
-        royalty_agent_revenue = prepared_info['royalty_agent'].balance - prepared_info['royalty_agent_balance_before']
+        sale_royalty_agent_revenue = prepared_info['sale_royalty_agent'].balance - prepared_info['sale_royalty_agent_balance_before']
         author_revenue = prepared_info['author'].balance - prepared_info['author_balance_before'] - 2 * MIN_FOR_MESSAGE
 
         nft_info = get_nft_info(nft)
 
-        self.assertEqual(royalty_agent_revenue, NFT_SALE_PRICE*0.1)
-        self.assertEqual(royalty_agent_revenue, NFT_SALE_PRICE*0.1)
-        self.assertEqual(wallet_seller.balance - DEFAULT_WALLET_BALANCE + royalty_agent_revenue + author_revenue, NFT_SALE_PRICE)
+        self.assertEqual(sale_royalty_agent_revenue, NFT_SALE_PRICE*0.1)
+        self.assertEqual(sale_royalty_agent_revenue, NFT_SALE_PRICE*0.1)
+        self.assertEqual(wallet_seller.balance - DEFAULT_WALLET_BALANCE + sale_royalty_agent_revenue + author_revenue, NFT_SALE_PRICE)
         self.assertEqual(nft_info['addrOwner'], wallet_buyer.address.str())
         
         self.assertIsNone(sale.balance)

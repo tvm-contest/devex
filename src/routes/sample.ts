@@ -51,7 +51,7 @@ router.get('/directSale', async function (req, res, next) {
   let RootNftAddr = "270e3c5bddc9a3e0863226b5921a8ff573a8a016900f6a4cb1dff1f21aeafc5a";
 
   // создание рута продаж
-  let addrRoyaltyAgent = everscale_settings.AUTHOR_GENERATOR_ADDRESS;
+  let addrRoyaltyAgent = everscale_settings.ADDRESS_ROYALTY_AGENT;
   let directSaleRootAddr = await directSaleService.deployDirectSaleRoot(RootNftAddr, addrRoyaltyAgent, 5);
   console.log("DirectSaleRoot address: " + directSaleRootAddr);
   

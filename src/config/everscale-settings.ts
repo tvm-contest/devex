@@ -10,7 +10,10 @@ export const everscale_settings = {
         public: "99c84f920c299b5d80e4fcce2d2054b05466ec9df19532a688c10eb6dd8d6b33",
         secret: "73b60dc6a5b1d30a56a81ea85e0e453f6957dbfbeefb57325ca9f7be96d3fe1a"
     },
-    AUTHOR_GENERATOR_ADDRESS: "0:d5f5cfc4b52d2eb1bd9d3a8e51707872c7ce0c174facddd0e06ae5ffd17d2fcd",
+    COMMISSION_AGENT_ADDRESS: "0:d5f5cfc4b52d2eb1bd9d3a8e51707872c7ce0c174facddd0e06ae5ffd17d2fcd",
+    NFT_ROOT_ROYALTY_AGENT_ADDRESS: "0:d5f5cfc4b52d2eb1bd9d3a8e51707872c7ce0c174facddd0e06ae5ffd17d2fcd",
+    ADDRESS_ROYALTY_AGENT: "0:d5f5cfc4b52d2eb1bd9d3a8e51707872c7ce0c174facddd0e06ae5ffd17d2fcd",
+    ROYALTY_PERCENT: 0,
     TIMEOUT: 10000,
 
     //dev net
@@ -25,7 +28,10 @@ export const everscale_settings = {
         public: "a08cdc5e0b83b083b5b5402b5a2e0aa74d79c0856fa4434ad924d91a04f0a17b",
         secret: "a84c21012d91a386c3c14759ca11968f06806367c9dadb2fe44723634a147bb0"
     },
-    AUTHOR_GENERATOR_ADDRESS: "0:919e875110231ef2e3c60bb2cf48314d150ecf4bfaa46f90a9d22a64c5bd7d92",
+    COMMISSION_AGENT_ADDRESS: "0:919e875110231ef2e3c60bb2cf48314d150ecf4bfaa46f90a9d22a64c5bd7d92",
+    NFT_ROOT_ROYALTY_AGENT_ADDRESS: "0:919e875110231ef2e3c60bb2cf48314d150ecf4bfaa46f90a9d22a64c5bd7d92",
+    ADDRESS_ROYALTY_AGENT: "0:919e875110231ef2e3c60bb2cf48314d150ecf4bfaa46f90a9d22a64c5bd7d92",
+    ROYALTY_PERCENT: 0,
     TIMEOUT: 50000,
     */
     //general
