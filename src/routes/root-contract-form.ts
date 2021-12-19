@@ -32,6 +32,10 @@ router.post('/save-data', async function(req, res, next) {
         fs.rmSync(tepmDir, {recursive: true, force: true});
     });
 });
+//checkCommissionFavorOwner - checkbox  Commission to Collection Owner
+//commissionFavorOwner - Commission to Collection Owner
+//MintingPriceForUsers - Minting price for users (EVERs)
+
 
 router.post('/form-contracts', async function(req, res, next) {
     let jsonCollectionService = new JsonCollectionSevice()
