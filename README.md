@@ -41,11 +41,15 @@ To do this, click on the tick `Use Rarity Types for tokens`.
  - In the `Collection type` and  `Number of tokens` fields, enter the name of the type and the tokens number of this type respectively.
  - You can add and delete the type of tokens with buttons `Add type` and `Delete type` respectively.
  ![rarity-tab](./public/readme-photos/rarity-tab.png)
+## Commisions
+You can set some commission will be held when creating and selling tokens, If you press the corresponding ticks in the `Comission` tab. 
+- The `Commision to Collection Owner` checkmark is responsible for determining the commission for the author who created this collection.
+- In the `Minting prices for user` field you can specify the price that the user will pay when creating a token from your collection.
+![commision](./public/readme-photos/commision.png)
 ## Parameters
 You can add any parameters for each token, to do this, click on the `Token Parameters` tab.
 Enter the parameter name to the `Parameter name` field and select the parameter type in the drop-down `Choose parameter type` list. You can add several parameters of different types.
 ![token-params](./public/readme-photos/token-params.png)
-
 
 # How to create token generator from JSON file
 ---
