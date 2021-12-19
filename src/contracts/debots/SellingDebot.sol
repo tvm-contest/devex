@@ -26,34 +26,13 @@ contract SellingDebot is Debot {
     address _addrNft;
     address _addrSale;
     bool _isRootTrusted;
+    bool _isSaleStarted;
     uint128 _nftPrice;
-    bool _isDurationLimited;
     uint64 _saleDuration;
 
 
-    /// @notice Returns Metadata about DeBot.
-    function getDebotInfo() public functionID(0xDEB) override view returns(
-        string name, string version, string publisher, string key, string author,
-        address support, string hello, string language, string dabi, bytes icon
-    ) {
-        name = "NFT selling DeBot";
-        version = "0.0.1";
-        publisher = "";
-        key = "";
-        author = "";
-        support = address(0);
-        hello = "Hi, i'm a Nft Selling DeBot.";
-        language = "en";
-        dabi = m_debotAbi.get();
-        icon = "";
-    }
-
-    function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
-        return [ Terminal.ID, Menu.ID, AddressInput.ID, SigningBoxInput.ID, ConfirmInput.ID, NumberInput.ID ];
-    }
-
     function start() public override {
-        Terminal.print(0, 'You need to attach wallet that will be used to pay for all transactions.');
+        Terminal.print(0, "You need to attach wallet that will be used to pay for all transactions.");
         attachWallet();
     }
 
@@ -64,14 +43,20 @@ contract SellingDebot is Debot {
 
         if (_isRootTrusted) {
             _items.push(MenuItem("Create sale", "", tvm.functionId(createSale)));
+            _items.push(MenuItem("Get transfer rights back", "", tvm.functionId(revokeRights)));
         } else {
+            Terminal.print(0, format( "Sale address is {}", _addrSale));
             _items.push(MenuItem("Cancel sale", "", tvm.functionId(cancelSale)));
-            _items.push(MenuItem("Show sale info", "", tvm.functionId(showSaleInfo)));
+            if (_isSaleStarted) {
+                _items.push(MenuItem("Show sale info", "", tvm.functionId(showSaleInfo)));
+            } else {
+                _items.push(MenuItem("Start sale", "", tvm.functionId(setSaleParams)));
+            }
         }
         
         _items.push(MenuItem("Change NFT", "", tvm.functionId(enterNft)));
         
-        Menu.select("Choose option=", "", _items);
+        Menu.select("Choose option", "", _items);
     }
 
     /*
@@ -79,12 +64,10 @@ contract SellingDebot is Debot {
     */
 
     function attachWallet() public {
-        tvm.accept();
         AddressInput.get(tvm.functionId(saveMultisig), "Enter your wallet address:");
     }
 
     function saveMultisig(address value) public {
-        tvm.accept();
         _addrWallet = value;
         enterKeys();
     }
@@ -95,7 +78,6 @@ contract SellingDebot is Debot {
     }
     
     function setKeyHandle(uint32 handle) public {
-        tvm.accept();
         _keyHandle = handle;
         enterNft();    
     } 
@@ -105,12 +87,10 @@ contract SellingDebot is Debot {
     */
 
     function enterNft() public {
-        tvm.accept();
-        AddressInput.get(tvm.functionId(setNFT), "Enter NFT address:");
+        AddressInput.get(tvm.functionId(setNftAddress), "Enter NFT address:");
     }
 
-    function setNFT(address value) public {
-        tvm.accept();
+    function setNftAddress(address value) public {
         _addrNft = value;
         
         DataCore(_addrNft).getOwner{
@@ -125,11 +105,11 @@ contract SellingDebot is Debot {
     }
 
     function checkOwnership(address addrOwner) public {
-        tvm.accept();
         if (_addrWallet == addrOwner) {
             getTrusted();
         } else {
-            Terminal.print(tvm.functionId(enterNft), format("This NFT has a different owner"));
+            Terminal.print(0, format("This NFT has a different owner"));
+            enterNft();
         }
     }
 
@@ -137,8 +117,7 @@ contract SellingDebot is Debot {
     * TRUSTED
     */
 
-    function getTrusted() public {
-        tvm.accept();
+    function getTrusted() public view {
         DataCore(_addrNft).getAllowance{
             abiVer: 2,
             extMsg: true,
@@ -151,20 +130,19 @@ contract SellingDebot is Debot {
     }
 
     function checkTrusted(address addr) public {
-        tvm.accept();
         if (addr == _addrDirectSaleRoot) {
             _isRootTrusted = true;
+            _isSaleStarted = false;
             menu();
         } else if (addr == address(0)) {
-            ConfirmInput.get(tvm.functionId(grantOwnership), "DirectSaleRoot is not trusted yet. Give it rights to sell?");
+            ConfirmInput.get(tvm.functionId(grantOwnership), "Trader is not set as trusted yet. Give it rights to sell your NFT?");
         } else {
             _addrSale = addr;
-            getSaleInfo(_addrSale, tvm.functionId(isNftOnSale));
+            getSaleInfo(tvm.functionId(isNftOnSale));
         }
     }
 
-    function grantOwnership(bool value) public {
-        tvm.accept();
+    function grantOwnership(bool value) public view {
         if (value) {
             TvmCell payload = tvm.encodeBody(DataCore.lendOwnership, _addrDirectSaleRoot);
             optional(uint256) none;
@@ -186,10 +164,9 @@ contract SellingDebot is Debot {
     * CREATE NEW SALE
     */
 
-    function createSale(uint32 index) public {
-        tvm.accept();
+    function createSale(uint32 index) public view {
         TvmCell payload = tvm.encodeBody(
-            IDirectSaleRoot.createSale,
+            DirectSaleRoot.createSale,
             _addrNft
         );
         optional(uint256) none;
@@ -206,9 +183,8 @@ contract SellingDebot is Debot {
         }(_addrDirectSaleRoot, 2 ton, true, 3, payload);
     }
 
-    function getSaleAddress() public {
-        tvm.accept();
-        IDirectSaleRoot(_addrDirectSaleRoot).getSaleAddress{
+    function getSaleAddress() public view {
+        DirectSaleRoot(_addrDirectSaleRoot).getSaleAddress{
             abiVer: 2,
             extMsg: true,
             callbackId: tvm.functionId(setSaleAddress),
@@ -220,32 +196,35 @@ contract SellingDebot is Debot {
     }
 
     function setSaleAddress(address addrSale) public {
+        _isRootTrusted = false;
         _addrSale = addrSale;
-        NumberInput.get(tvm.functionId(setPrice), "Enter NFT price:", 1, 999999999999999);
+        Terminal.print(0, "Sale successfully created");
+        menu();
     }
 
     /*
     * SET SALE PARAMS
     */
 
+    function setSaleParams(uint32 index) public {
+        NumberInput.get(tvm.functionId(setPrice), "Enter NFT price:", 1, 999999999999999);
+    }
+
     function setPrice(int256 value) public {
         _nftPrice = uint128(value);
         ConfirmInput.get(tvm.functionId(setLimitation), "Is sale duration limited?");
     }
 
-
     function setLimitation(bool value) public {
-        _isDurationLimited = value;
-        if (_isDurationLimited) {
-            startSale();
+        if (value) {
+            NumberInput.get(tvm.functionId(setDuration), "Enter sale duration (in seconds):", 1, 999999999999999);
         } else {
-            NumberInput.get(tvm.functionId(setDuration), "Enter sale duration:", 1, 999999999999999);
+            startSale();
         }
     }
 
     function setDuration(int256 value) public {
         _saleDuration = uint64(value);
-        _isRootTrusted = false;
         startSale();
     }
 
@@ -253,12 +232,11 @@ contract SellingDebot is Debot {
     * START SALE
     */
 
-    function startSale() private {
-        tvm.accept();
+    function startSale() private view {
         TvmCell payload = tvm.encodeBody(
             DirectSale.start,
             _nftPrice,
-            _isDurationLimited,
+            _saleDuration > 0,
             _saleDuration
         );
         optional(uint256) none;
@@ -269,10 +247,16 @@ contract SellingDebot is Debot {
             pubkey: none,
             time: 0,
             expire: 0,
-            callbackId: tvm.functionId(menu),
+            callbackId: tvm.functionId(onSaleStarted),
             onErrorId: 0,
             signBoxHandle: _keyHandle
         }(_addrSale, 2 ton, true, 3, payload);
+    }
+
+    function onSaleStarted() public {
+        _isSaleStarted = true;
+        Terminal.print(0, "Sale successfully started");
+        menu();
     }
 
     /*
@@ -280,7 +264,6 @@ contract SellingDebot is Debot {
     */
 
     function cancelSale() public view {
-        tvm.accept();
         TvmCell payload = tvm.encodeBody(
             DirectSale.cancel
         );
@@ -292,18 +275,50 @@ contract SellingDebot is Debot {
             pubkey: none,
             time: 0,
             expire: 0,
-            callbackId: tvm.functionId(enterNft),
+            callbackId: tvm.functionId(onSaleCanceled),
             onErrorId: 0,
             signBoxHandle: _keyHandle
         }(_addrSale, 2 ton, true, 3, payload);
     }
 
+    function onSaleCanceled() public {
+        Terminal.print(0, "Sale successfully canceled");
+        enterNft();
+    }
+
     /*
-    * CHECK SALE INFO
+    * REVOKE TRANSFER RIGHTS
     */
 
-    function getSaleInfo(address addrSale, uint32 answerId) public {
-        tvm.accept();
+    function revokeRights() public view {
+        TvmCell payload = tvm.encodeBody(
+            DirectSaleRoot.returnRights,
+            _addrNft
+        );
+        optional(uint256) none;
+        IMultisig(_addrWallet).sendTransaction {
+            abiVer: 2,
+            extMsg: true,
+            sign: true,
+            pubkey: none,
+            time: 0,
+            expire: 0,
+            callbackId: tvm.functionId(onRightsRevoked),
+            onErrorId: 0,
+            signBoxHandle: _keyHandle
+        }(_addrDirectSaleRoot, 2 ton, true, 3, payload);
+    }
+
+    function onRightsRevoked() public {
+        Terminal.print(0, "Transfer rights successfully returned");
+        enterNft();
+    }
+
+    /*
+    * SALE INFO
+    */
+
+    function getSaleInfo(uint32 answerId) public view {
         DirectSale(_addrSale).getInfo{
             abiVer: 2,
             extMsg: true,
@@ -323,13 +338,14 @@ contract SellingDebot is Debot {
         uint64 saleStartTime,
         uint64 saleEndTime
     ) public {
-        tvm.accept();
         if (addrRoot == _addrDirectSaleRoot &&
             addrNft == _addrNft &&
             addrOwner == _addrWallet) {
+            _isSaleStarted = (saleStartTime != 0);
             menu();
         } else {
-            onErrorSale(0,0);
+            Terminal.print(0, "Transfer rights of this NFT have already been granted to another address");
+            enterNft();
         }
     }
 
@@ -341,19 +357,47 @@ contract SellingDebot is Debot {
         uint64 saleStartTime,
         uint64 saleEndTime
     ) public {
-        Terminal.print(0, format("addrRoot: {}", addrRoot));
-        Terminal.print(0, format("addrOwner: {}", addrOwner));
-        Terminal.print(0, format("addrNft: {}", addrNft));
-        Terminal.print(0, format("nftPrice: {}", nftPrice));
-        Terminal.print(0, format("saleStartTime: {}", saleStartTime));
-        Terminal.print(tvm.functionId(menu), format("saleEndTime: {}", saleEndTime));
+        Terminal.print(0, "Sale Info:");
+        Terminal.print(0, format("Price: {}", nftPrice));
+        if (saleEndTime == 0) {
+            Terminal.print(0, "Sale duration is unlimited");
+        } else {
+            if (saleEndTime > now) {
+                Terminal.print(0, format("Seconds left until the end of sale: {}", saleEndTime - now));
+            } else {
+                Terminal.print(0, "Sale duration expired");
+            }
+        }
+        menu();
     }
 
-    function showSaleInfo() public {
-        getSaleInfo(_addrSale, tvm.functionId(printSaleInfo));
+    function showSaleInfo() public view {
+        getSaleInfo(tvm.functionId(printSaleInfo));
     }
 
     function onErrorSale(uint32 sdkError, uint32 exitCode) public {
-        Terminal.print(tvm.functionId(enterNft), format("This NFT cannot be put up for sale (sdkError: {}, exitCode: {})", sdkError, exitCode));
+        Terminal.print(0, format("This NFT cannot be put up for sale (sdkError: {}, exitCode: {})", sdkError, exitCode));
+        enterNft();
+    }
+
+    /// @notice Returns Metadata about DeBot.
+    function getDebotInfo() public functionID(0xDEB) override view returns(
+        string name, string version, string publisher, string key, string author,
+        address support, string hello, string language, string dabi, bytes icon
+    ) {
+        name = "NFT selling DeBot";
+        version = "0.0.1";
+        publisher = "";
+        key = "";
+        author = "";
+        support = address(0);
+        hello = "Hi, i'm a Nft Selling DeBot.";
+        language = "en";
+        dabi = m_debotAbi.get();
+        icon = "";
+    }
+
+    function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
+        return [ Terminal.ID, Menu.ID, AddressInput.ID, SigningBoxInput.ID, ConfirmInput.ID, NumberInput.ID ];
     }
 }

@@ -3,32 +3,6 @@
 	"header": ["pubkey", "time", "expire"],
 	"functions": [
 		{
-			"name": "getDebotInfo",
-			"id": "0xDEB",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"name","type":"bytes"},
-				{"name":"version","type":"bytes"},
-				{"name":"publisher","type":"bytes"},
-				{"name":"key","type":"bytes"},
-				{"name":"author","type":"bytes"},
-				{"name":"support","type":"address"},
-				{"name":"hello","type":"bytes"},
-				{"name":"language","type":"bytes"},
-				{"name":"dabi","type":"bytes"},
-				{"name":"icon","type":"bytes"}
-			]
-		},
-		{
-			"name": "getRequiredInterfaces",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"interfaces","type":"uint256[]"}
-			]
-		},
-		{
 			"name": "start",
 			"inputs": [
 			],
@@ -80,7 +54,7 @@
 			]
 		},
 		{
-			"name": "setNFT",
+			"name": "setNftAddress",
 			"inputs": [
 				{"name":"value","type":"address"}
 			],
@@ -142,6 +116,14 @@
 			]
 		},
 		{
+			"name": "setSaleParams",
+			"inputs": [
+				{"name":"index","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "setPrice",
 			"inputs": [
 				{"name":"value","type":"int256"}
@@ -166,7 +148,35 @@
 			]
 		},
 		{
+			"name": "onSaleStarted",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "cancelSale",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onSaleCanceled",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "revokeRights",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "onRightsRevoked",
 			"inputs": [
 			],
 			"outputs": [
@@ -175,7 +185,6 @@
 		{
 			"name": "getSaleInfo",
 			"inputs": [
-				{"name":"addrSale","type":"address"},
 				{"name":"answerId","type":"uint32"}
 			],
 			"outputs": [
@@ -221,6 +230,32 @@
 				{"name":"exitCode","type":"uint32"}
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "getDebotInfo",
+			"id": "0xDEB",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"version","type":"bytes"},
+				{"name":"publisher","type":"bytes"},
+				{"name":"key","type":"bytes"},
+				{"name":"author","type":"bytes"},
+				{"name":"support","type":"address"},
+				{"name":"hello","type":"bytes"},
+				{"name":"language","type":"bytes"},
+				{"name":"dabi","type":"bytes"},
+				{"name":"icon","type":"bytes"}
+			]
+		},
+		{
+			"name": "getRequiredInterfaces",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"interfaces","type":"uint256[]"}
 			]
 		},
 		{
