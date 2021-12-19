@@ -95,27 +95,25 @@ block content
                 input.text.btn.btn-blue.btn-block.btn-sub(class="btn btn-blue" type="button" value="- Delete parameter" onclick="deleteParam();")
           .tab-pane.fade#comissions(role="tabpanel" aria-labelledby="comissions-tab")
             .checkbox-for-commissions
+              //- .form-check 
+              //-   input.text.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor" )
+              //-   label.text.form-check-label(for="use-author") Add token author and his comission
+              //- .col-6.input-commission.use-author
+              //-   label.text.form-label() Commission (ton)
+              //-   input.text.form-control.commission(type="number" name = 'commissionAuthor' step="any"  placeholder="ton")
               .form-check 
-                input.text.form-check-input#use-author(type="checkbox" value="" name="checkUseAuthor" )
-                label.text.form-check-label(for="use-author") Add token author and his comission
-              .col-6.input-commission.use-author
-                label.text.form-label() Commission (ton)
-                input.text.form-control.commission(type="number" name = 'commissionAuthor' step="any"  placeholder="ton")
-              .form-check 
-                input.text.form-check-input#commission-favor-owner(type="checkbox" value="" name="checkCommissionFavorOwner" disabled)
+                input.text.form-check-input#commission-favor-owner(type="checkbox" value="" name="checkCommissionFavorOwner")
                 label.text.form-check-label(for="commission-favor-owner") Commission to Collection Owner
-              .col-6.input-commission.commission-favor-owner
-                label.text.form-label() Commission (%)
-                input.text.form-control(type="text" name = 'commissionFavorOwner' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="" )
-              .form-check 
-                input.text.form-check-input#commission-author-generator(type="checkbox" value="" name="checkCommissionAuthorGenerator")
-                label.text.form-check-label(for="commission-author-generator") Commission to Service Creator
-              .col-6.input-commission.commission-author-generator
-                label.text.form-label() Commission (ton)
-                input.text.form-control(type="number" step="any"  placeholder="ton" name = 'commissionAuthorGenerator' )
-            .col-6.MintingPriceUsers
-              label.text.form-label() Minting price for users
-              input.text.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users")
+            .col-6.input-commission.commission-favor-owner
+              label.text.form-label() Commission (%)
+              input.text.form-control(type="text" name = 'commissionFavorOwner' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="" )
+            .col-6.input-commission.commission-author-generator
+              label.text.form-label() Minting price for users (EVERs)
+              input.text.form-control(type="number" step="any"  placeholder="EVERs" name = 'MintingPriceForUsers' )
+  
+            //- .col-6.MintingPriceUsers
+            //-   label.text.form-label() Minting price for users
+            //-   input.text.form-control(type="text" name = 'MintingPriceUsers' pattern="[0-9]+" onInput="checkNumberInput(this)" placeholder="Minting price for users" disabled)
         .row.button-main-3
           .col-lg-4.button-main
             button.text.submit-button.btn.btn-blue.btn-block.btn-find#save-data(type="submit") 
