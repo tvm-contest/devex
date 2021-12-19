@@ -26,7 +26,7 @@ export class JsonCollectionSevice {
       commissionAuthor : { check: false, value: 0 },
       commissionFavorOwner : { check: false, value: 0 },
       commissionAuthorGenerator : { check: false, value: 0 },
-      mintingPriceUsers: Number(req.body.MintingPriceUsers)
+      mintingPriceUsers: Number(req.body.MintingPriceForUsers)
     }
     
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
