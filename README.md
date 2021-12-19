@@ -3,16 +3,15 @@
 # Table of content
 - [How to use](#how-to-use)
 - [How to create a token generator](#how-to-create-a-token-generator)
-	- [[##General information about collection]]
-	- [[##Add rarity to the tokens]]
-	- [[##Commisions]]
-	- [[##Parameters]]
-- [[#How to create token generator from JSON file]]
-- [[#How to create your tokens]]
-	- [[##Token minting]]
-	- [[##Information about token]]
-	- [[#Sale tokens]]
-- [[#How to run tests]]
+	- [General information about collection](#general-information-about-collection)
+	- [[Add rarity to the tokens](#add-rarity-to-the-tokens)
+	- [Parameters](#parameters)
+- [How to create token generator from JSON file](#how-to-create-token-generator-from-JSON-file)
+- [How to create your tokens](#how-to-create-your-tokens)
+	- [Token minting](#token-minting)
+	- [Information about token](#information-about-token)
+	- [Sale tokens](#sale-tokens)
+- [How to run tests](#how-to-run-tests)
 
 ## How to use
 1. Clone repository
