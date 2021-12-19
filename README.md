@@ -19,6 +19,7 @@
 3. Go to */src/config/everscale-settings.ts* and set your parameters
 4. Run `npm run build`
 5. Run `npm run start`
+6. Go to the `localhost:3001`
 
 ## Detailed description
 ---
@@ -35,9 +36,10 @@ After filling out data about your collection you  can click on one of the button
  - `Deploy contracts` button (marked 5) to deploy your collection in the blockchain. **The token generator and debot contracts will be created and deployed.**
 ![root-contract-form](./public/readme-photos/root-contract-form.png)
 ## Add rarity to the tokens
-When you clicked on the `Rarity` tab, you can add the degree of value to the tokens from your collection.  To do this, click on the tick `Use Rarity Types for tokens`. 
-In the `Collection type` and  `Number of tokens` fields, enter the name of the type and the tokens number of this type respectively.
-You can add and delete the type of tokens with buttons `Add type` and `Delete type` respectively.
+When you clicked on the `Rarity` tab, you can add the degree of value to the tokens from your collection. 
+To do this, click on the tick `Use Rarity Types for tokens`. 
+ - In the `Collection type` and  `Number of tokens` fields, enter the name of the type and the tokens number of this type respectively.
+ - You can add and delete the type of tokens with buttons `Add type` and `Delete type` respectively.
  ![rarity-tab](./public/readme-photos/rarity-tab.png)
 ## Parameters
 You can add any parameters for each token, to do this, click on the `Token Parameters` tab.
