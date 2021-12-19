@@ -135,6 +135,19 @@ contract NftRoot is DataResolver, IndexResolver {
         code = _codeData;
     }
 
+    function getFutureAddress() public view returns(address tokenFutureAddress) {
+        TvmBuilder salt;
+        salt.store(address(this));
+        TvmCell codeData = tvm.setCodeSalt(_codeData, salt.toCell());
+        TvmCell stateNftData = tvm.buildStateInit({
+            contr: Data,
+            varInit: {_id: _totalMinted},
+            code: codeData
+        });
+        uint256 hashStateNftData = tvm.hash(stateNftData);
+        tokenFutureAddress = address.makeAddrStd(0, hashStateNftData);
+    }
+    
     function getName() external view returns (string name) {
         name = _name;
     }

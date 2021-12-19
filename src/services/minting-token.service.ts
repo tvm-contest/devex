@@ -6,6 +6,7 @@ import { DeployService } from './deploy.service';
 import { TonClient } from '@tonclient/core';
 import { everscale_settings } from '../config/everscale-settings';
 import { addFileToIPFS } from './add-ipfs.service';
+import { checkErrorMessage } from './contractError.service';
 import { ipfs_setting } from '../config/ipfs-setting';
 import { surf_setting } from '../config/surf_setting';
 
@@ -52,10 +53,26 @@ export class MintNftService {
             'mintNft',
             mintParams
         );
-
         const walletAcc = await this.getWalletAccount(dataForMinting.body.checkSignToken, dataForMinting.body.seedPhrase, dataForMinting.body.signAddress)
 
-        await this.sendTransactionAndMint(walletAcc, rootNftAccount, mesBody)
+        
+        let res = await rootNftAccount.runLocal('getFutureAddress', {})
+        const tokenFutureAddress = res.decoded?.output.tokenFutureAddress
+
+        await this.sendTransactionAndMint(walletAcc, rootNftAccount, mesBody);
+        
+        // Part for preventing root page loading before minting token ****
+        let status = 0
+        while(status != 1) {
+            const delay = (ms : number) => new Promise(resolve => setTimeout(resolve, ms));
+            await delay(500);
+            let { result } = await this.client.net.query({
+                query: "{accounts(filter:{id:{eq:\"" + tokenFutureAddress + "\"}}){acc_type}}"
+            });
+            if (result.data.accounts[0] !== undefined) {
+                status = result.data.accounts[0].acc_type;
+            }
+        }
     }
 
     async getMintParams(mintigData): Promise<object> {
@@ -164,16 +181,43 @@ export class MintNftService {
     }
 
     private async sendTransactionAndMint(walletAcc: Account, nftRootAcc: Account, mesBody: string) {
-        await walletAcc.run(
+        let { transaction } = await walletAcc.run(
             "sendTransaction",
             {
                 dest: await nftRootAcc.getAddress(),
-                value: 2_000_000_000,
+                value: await this.getPrice(await walletAcc.getAddress()),
                 flags: 3,
                 bounce: true,
                 payload: mesBody,
             }
         );
+        let code_error = await checkErrorMessage(transaction, walletAcc.client);
+        if (code_error !== 0) {
+            console.error("Nft root address: " + await nftRootAcc.getAddress());
+            console.error("Call function \"mintNft\" error: " + code_error);
+        }
+    }
+
+    private async getPrice(adderess: string) : Promise<number> {
+        const collectionInfo = fs.readFileSync(
+            path.resolve(this.collectionFolder, 'collectionInfo.json')
+        ).toString();
+        const collectionInfoJSON = JSON.parse(collectionInfo);
+        
+        let mintingPriceUsers = collectionInfoJSON.commissions.mintingPriceUsers
+        let price : number
+
+        if ( 
+            adderess != everscale_settings.SAFE_MULTISIG_ADDRESS &&
+            mintingPriceUsers && 
+            Number(mintingPriceUsers) > everscale_settings.MIN_MINTING_PRICE
+        ) {
+            price = Number(mintingPriceUsers) * 1_000_000_000
+        } else {
+            price = everscale_settings.MIN_MINTING_PRICE * 1_000_000_000
+        }
+
+        return price
     }
 
     private async getIpfsURL(file) : Promise<string>{
