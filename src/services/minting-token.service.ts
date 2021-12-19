@@ -212,7 +212,7 @@ export class MintNftService {
             mintingPriceUsers && 
             Number(mintingPriceUsers) > everscale_settings.MIN_MINTING_PRICE
         ) {
-            price = Number(mintingPriceUsers) * 1_000_000_000
+            price = (Number(mintingPriceUsers) + everscale_settings.MIN_MINTING_PRICE) * 1_000_000_000
         } else {
             price = everscale_settings.MIN_MINTING_PRICE * 1_000_000_000
         }
