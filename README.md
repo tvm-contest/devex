@@ -4,7 +4,7 @@
 - [How to use](#how-to-use)
 - [How to create a token generator](#how-to-create-a-token-generator)
 	- [General information about collection](#general-information-about-collection)
-	- [[Add rarity to the tokens](#add-rarity-to-the-tokens)
+	- [Add rarity to the tokens](#add-rarity-to-the-tokens)
 	- [Parameters](#parameters)
 - [How to create token generator from JSON file](#how-to-create-token-generator-from-JSON-file)
 - [How to create your tokens](#how-to-create-your-tokens)
@@ -31,8 +31,8 @@ After you went to the main page, click on the button `Root contract form` to go 
 In the `Collection Name` field (marked 1), enter the name of the collection you create. And in the `Maximum number of tokenes` field (marked 2) enter  maximum number of tokenes you want to create.
 After filling out data about your collection you  can click on one of the buttons: 
  - `Save data` button (marked 3) to create a data about you collection in JSON format.
- - `Generate contract code` button (marked 4) to generate code of your collection, __without contracts deployment__,  wich will be saved in the `*/results/collections/collection_address/` folder, where `collection_address` is the address of your token generator.
- - `Deploy contracts` button (marked 5) to deploy your collection in the blockchain. __The token generator and debot contracts will be created and deployed. __
+ - `Generate contract code` button (marked 4) to generate code of your collection, **without contracts deployment**,  wich will be saved in the `*/results/collections/collection_address/` folder, where `collection_address` is the address of your token generator.
+ - `Deploy contracts` button (marked 5) to deploy your collection in the blockchain. **The token generator and debot contracts will be created and deployed.**
 ![root-contract-form](./public/readme-photos/root-contract-form.png)
 ## Add rarity to the tokens
 When you clicked on the `Rarity` tab, you can add the degree of value to the tokens from your collection.  To do this, click on the tick `Use Rarity Types for tokens`. 
