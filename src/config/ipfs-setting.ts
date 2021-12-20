@@ -1,6 +1,6 @@
 export const ipfs_setting = {
-    GATEWAY: "http://ipfs.io",
-    HOST: '127.0.0.1',
-    PORT: '5002',
-    PROTOCOL: 'http'
+    GATEWAY: "http://ipfs.infura.io",
+    HOST: 'ipfs.infura.io',
+    PORT: '5001',
+    PROTOCOL: 'https'
 }
