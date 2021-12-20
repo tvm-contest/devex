@@ -38,7 +38,10 @@ export class MintNftService {
     }
 
     async mintNft(dataForMinting) {
+        console.log('DATA: ', dataForMinting.body);
+        
         const rootNftContract = fs.readFileSync(path.resolve(this.getCollectionSourceFolder(), "NftRoot.sol")).toString();
+
         const rootNftAccount = await this.deployService.createContractAccount(
             rootNftContract,
             this.collectionFolder,
@@ -55,16 +58,16 @@ export class MintNftService {
         );
         const walletAcc = await this.getWalletAccount(dataForMinting.body.checkSignToken, dataForMinting.body.seedPhrase, dataForMinting.body.signAddress)
 
-        
+
         let res = await rootNftAccount.runLocal('getFutureAddress', {})
         const tokenFutureAddress = res.decoded?.output.tokenFutureAddress
 
         await this.sendTransactionAndMint(walletAcc, rootNftAccount, mesBody);
-        
+
         // Part for preventing root page loading before minting token ****
         let status = 0
-        while(status != 1) {
-            const delay = (ms : number) => new Promise(resolve => setTimeout(resolve, ms));
+        while (status != 1) {
+            const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
             await delay(500);
             let { result } = await this.client.net.query({
                 query: "{accounts(filter:{id:{eq:\"" + tokenFutureAddress + "\"}}){acc_type}}"
@@ -134,19 +137,19 @@ export class MintNftService {
             is_internal: true,
             signer: account.signer
         };
-        let payload =  await this.client.abi.encode_message_body(messageParams);
+        let payload = await this.client.abi.encode_message_body(messageParams);
 
         return payload.body
     }
 
-    private async getWalletAccount(checkSignToken, seedPhrase, address){
+    private async getWalletAccount(checkSignToken, seedPhrase, address) {
         let walletAbi = surf_setting.SEND_TRANSACTION_ABI;
         let walletAddr;
         let walletKey;
 
         if (checkSignToken == '') {
             walletKey = await this.getKeyPair(seedPhrase)
-            walletAddr = address ;
+            walletAddr = address;
         } else {
             walletKey = everscale_settings.SAFE_MULTISIG_KEYS;
             walletAddr = everscale_settings.SAFE_MULTISIG_ADDRESS;
@@ -176,7 +179,7 @@ export class MintNftService {
             dictionary: everscale_settings.SEED_PHRASE_DICTIONARY_ENGLISH,
             word_count: everscale_settings.SEED_PHRASE_WORD_COUNT,
         });
-        
+
         return keyPair
     }
 
@@ -198,18 +201,18 @@ export class MintNftService {
         }
     }
 
-    private async getPrice(adderess: string) : Promise<number> {
+    private async getPrice(adderess: string): Promise<number> {
         const collectionInfo = fs.readFileSync(
             path.resolve(this.collectionFolder, 'collectionInfo.json')
         ).toString();
         const collectionInfoJSON = JSON.parse(collectionInfo);
-        
-        let mintingPriceUsers = collectionInfoJSON.commissions.mintingPriceUsers
-        let price : number
 
-        if ( 
+        let mintingPriceUsers = collectionInfoJSON.commissions.mintingPriceUsers
+        let price: number
+
+        if (
             adderess != everscale_settings.SAFE_MULTISIG_ADDRESS &&
-            mintingPriceUsers && 
+            mintingPriceUsers &&
             Number(mintingPriceUsers) > everscale_settings.MIN_MINTING_PRICE
         ) {
             price = (Number(mintingPriceUsers) + everscale_settings.MIN_MINTING_PRICE) * 1_000_000_000
@@ -220,8 +223,8 @@ export class MintNftService {
         return price
     }
 
-    private async getIpfsURL(file) : Promise<string>{
-        let cid = await addFileToIPFS(file.data) 
+    private async getIpfsURL(file): Promise<string> {
+        let cid = await addFileToIPFS(file.data)
         return `${ipfs_setting.GATEWAY}/ipfs/${cid}`
     }
 }
