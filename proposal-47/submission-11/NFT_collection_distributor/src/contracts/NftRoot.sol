@@ -21,6 +21,8 @@ contract NftRoot is DataResolver, IndexResolver {
 
     address _addrCommissionAgent;
     uint128 _mintingCommission;
+    address _addrNftRootRoyaltyAgent;
+    uint8 _nftRootRoyaltyPercent;
     uint256 _totalMinted;
     address _addrBasis;
     bytes _icon;
@@ -33,11 +35,15 @@ contract NftRoot is DataResolver, IndexResolver {
         TvmCell codeData,
         address addrCommissionAgent,
         uint128 mintingCommission,
+        address addrNftRootRoyaltyAgent,
+        uint8 nftRootRoyaltyPercent,
         string[] nftTypes,
         uint[] limit,
         bytes icon
     )
         public
+        validRoyalty(nftRootRoyaltyPercent)
+        validRoyaltyAgent(addrNftRootRoyaltyAgent)
     {
         tvm.accept();
 
@@ -45,6 +51,8 @@ contract NftRoot is DataResolver, IndexResolver {
         _codeIndex = codeIndex;
         _addrCommissionAgent = addrCommissionAgent;
         _mintingCommission = mintingCommission;
+        _addrNftRootRoyaltyAgent = addrNftRootRoyaltyAgent;
+        _nftRootRoyaltyPercent = nftRootRoyaltyPercent;
         _icon = icon;
 
         for(uint i = 0; i < nftTypes.length; i++) {
@@ -91,6 +99,8 @@ contract NftRoot is DataResolver, IndexResolver {
             editionAmount,
             managersList,
             royalty,
+            _addrNftRootRoyaltyAgent,
+            _nftRootRoyaltyPercent,
             nftType/*%PARAM_TO_DATA%*/
         );
 
@@ -135,6 +145,19 @@ contract NftRoot is DataResolver, IndexResolver {
         code = _codeData;
     }
 
+    function getFutureAddress() public view returns(address tokenFutureAddress) {
+        TvmBuilder salt;
+        salt.store(address(this));
+        TvmCell codeData = tvm.setCodeSalt(_codeData, salt.toCell());
+        TvmCell stateNftData = tvm.buildStateInit({
+            contr: Data,
+            varInit: {_id: _totalMinted},
+            code: codeData
+        });
+        uint256 hashStateNftData = tvm.hash(stateNftData);
+        tokenFutureAddress = address.makeAddrStd(0, hashStateNftData);
+    }
+    
     function getName() external view returns (string name) {
         name = _name;
     }
@@ -156,6 +179,18 @@ contract NftRoot is DataResolver, IndexResolver {
     modifier onlyCommissionAgent {
         require(isCommissionAgent(msg.sender),
                NftRootErr.ONLY_COMMISSION_AGENT);       
+        _;
+    }
+
+    modifier validRoyalty(uint8 royaltyPercent) {
+        require(royaltyPercent < 100,
+                NftRootErr.INVALID_ROYALTY_VALUE);
+        _;
+    }
+
+    modifier validRoyaltyAgent(address addrRoyaltyAgent) {
+        require(addrRoyaltyAgent != address(0),
+                NftRootErr.INVALID_ROYALTY_AGENT_ADDRESS);
         _;
     }
 }

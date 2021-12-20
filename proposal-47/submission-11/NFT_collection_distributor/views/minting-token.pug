@@ -9,12 +9,28 @@ block content
         input(name="contractName" value=collectionName type="hidden")
         span(class="" role="status" aria-hidden="true") 
         .content
+          .error-messege
+            if error == 'invalidPhrase'
+              .messege Invalid seed phrase
+            if error == 'invalidAddress'
+              .messege Invalid address
+            if error == 'accountError'
+              .messege Wallet does not exist
+
           .rarities
         
           .parameters 
       
           .mediafile 
         
+          .form-check 
+            input.text.form-check-input#sign-token(type="checkbox" value="" name="checkSignToken")
+            label.text.form-check-label(for="sign-token") Sign token
+          .input-sign.sign-token
+            label.text.form-label() Seed phrase
+            input.text.form-control(type="text" name = 'seedPhrase' placeholder="" )
+            label.text.form-label() Sign address
+            input.text.form-control(type="text" name = 'signAddress' placeholder="" )
         
         .sub-mint-btn
           button.text.btn-find.btn.btn-blue#sub-mint(type="submit" onClick='loader(this)')

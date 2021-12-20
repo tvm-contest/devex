@@ -30,13 +30,13 @@ $("#commission-favor-owner").on("click", function(){
         $(`.commission-favor-owner`).css('display','none');
     }
 })
-$("#commission-author-generator").on("click", function(){
-    if($(this).prop('checked')){
-        $(`.commission-author-generator`).css('display','block');
-    } else{
-        $(`.commission-author-generator`).css('display','none');
-    }
-})
+// $("#commission-author-generator").on("click", function(){
+//     if($(this).prop('checked')){
+//         $(`.commission-author-generator`).css('display','block');
+//     } else{
+//         $(`.commission-author-generator`).css('display','none');
+//     }
+// })
 
 $(".submit-button").on("click",(function(event){
     event.preventDefault()

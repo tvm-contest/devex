@@ -66,7 +66,15 @@ if (obj.enums.length > 0){
         //$(`#parametersE${keyIdColEnum}`).append($(`<input class="form-control" name="paramener[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`)) 
         //listEnum = []
     }
+}
+
+$("#sign-token").on("click", function(){
+    if($(this).prop('checked')){
+        $(`.sign-token`).css('display','block');
+    } else{
+        $(`.sign-token`).css('display','none');
     }
+})
 // $("#sub-mint").on("click",(function(event){
 //     event.preventDefault()
 //     $("#form-param").submit()

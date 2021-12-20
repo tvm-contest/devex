@@ -101,6 +101,10 @@ contract DirectSaleRoot is IDirectSaleRoot, ARoyaltyRecipient {
         addrSale = address(tvm.hash(stateSale));
     }
 
+    function getCodeSale() external view returns (TvmCell codeSale) {
+        codeSale = _codeSale;
+    }
+
     // MODIFIERS
 
     modifier enoughValueToCreateSale {

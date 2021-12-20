@@ -32,6 +32,10 @@ router.post('/save-data', async function(req, res, next) {
         fs.rmSync(tepmDir, {recursive: true, force: true});
     });
 });
+//checkCommissionFavorOwner - checkbox  Commission to Collection Owner
+//commissionFavorOwner - Commission to Collection Owner
+//MintingPriceForUsers - Minting price for users (EVERs)
+
 
 router.post('/form-contracts', async function(req, res, next) {
     let jsonCollectionService = new JsonCollectionSevice()
@@ -40,12 +44,12 @@ router.post('/form-contracts', async function(req, res, next) {
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
     let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromReq(req)
-    let commissionAuthorGenerator = 0;
-    if (req.body.checkCommissionAuthorGenerator == '') {
-        commissionAuthorGenerator = req.body.commissionAuthorGenerator;
+    let MintingPriceForUsers = 0;
+    if (req.body.MintingPriceForUsers !== '') {
+        MintingPriceForUsers = req.body.MintingPriceForUsers;
     }
     // TODO: Passing comissionAuthorGenerator to generateContract is very bad decision, but to do it properly there are so many to change
-    let contractDir = await generateContract(collection, jsonCollection, enums, mediafiles, commissionAuthorGenerator)
+    let contractDir = await generateContract(collection, jsonCollection, enums, mediafiles, MintingPriceForUsers)
 
     res.render('success-page', { pageText: "Файлы сгенерированы в директорию: " + path.basename(contractDir) })
 });
@@ -61,14 +65,20 @@ router.post('/deploy-contracts', async function(req, res, next) {
     let collection : Collection = contractObjectCreator.makeRootContractObjectFromReq(req)
     let enums : EnumParameter[] = contractObjectCreator.makeEnumsFromReq(req)
     let mediafiles : MediaFile[] = contractObjectCreator.makeMediaFilesFromReq(req);
-    let commissionAuthorGenerator = 0;
-    if (req.body.checkCommissionAuthorGenerator == '') {
-        commissionAuthorGenerator = req.body.commissionAuthorGenerator;
+    let MintingPriceForUsers = 0;
+    if (req.body.MintingPriceForUsers !== '') {
+        MintingPriceForUsers = req.body.MintingPriceForUsers;
+    }
+    let commissionFavorOwner = 0;
+    if (req.body.checkCommissionFavorOwner == '') {
+        if (req.body.commissionFavorOwner !== '') {
+            commissionFavorOwner = req.body.commissionFavorOwner;
+        }
     }
     // TODO: Passing comissionAuthorGenerator to generateContract is very bad decision, but to do it properly there are so many to change
-    let contractDir = await generateContract(collection, jsonCollection, enums, mediafiles, commissionAuthorGenerator);
-    let deployTrueNftService = new DeployTrueNftService()
-    let rootAddress = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
+    let contractDir = await generateContract(collection, jsonCollection, enums, mediafiles, MintingPriceForUsers);
+    let deployTrueNftService = new DeployTrueNftService();
+    let rootAddress = await deployTrueNftService.deployTrueNft(contractDir, collection, MintingPriceForUsers, commissionFavorOwner)
     contractDir = path.join(globals.RESULT_COLLECTION, rootAddress.slice(2))
     let deployDebotService = new DeployDebotService();
     let debotAddress = await deployDebotService.deployDebot(contractDir, rootAddress);

@@ -93,6 +93,9 @@ input.output-col{
     z-index: 100;
 }
 
+.error-messege {
+    color: red;
+}
 
 .row.parameter-number,
 .row.parameter-string,
@@ -100,8 +103,8 @@ input.output-col{
 .complete-block-collections-types,
 .col-6.use-author,
 .commission-favor-owner,
-.commission-author-generator,
-.parameter-media-file {
+.parameter-media-file,
+.sign-token {
     display: none;
 }
 
@@ -140,7 +143,7 @@ label {
     padding: 0 0 10px 0;
 }
 
-.col.button-main {
+.button-main {
     padding: 6px;
 }
 
@@ -198,9 +201,6 @@ label {
 }
 
 /* NAVBAR */
-.navbar {
-    background: #fff;
-}
 
 .navbar-brand,
 .navbar-nav .nav-link {
@@ -213,6 +213,10 @@ label {
     color: #000;
     transform: scale(1.05);
 }
+
+/* .navbar-toggler-icon{
+    color: #333;
+} */
 /* TEXT */
 .text{
     word-break: break-all;
@@ -254,16 +258,27 @@ label {
 .btn-block+.btn-block {
     margin-top: 1rem;
 }
-/* minting token */
 .sub-mint-btn{
     padding: 20px;
     display: flex;
     justify-content: left;
 }
 #sub-mint{
-    
+    padding: 10px;
+    width: 30%;
+}
+.btr-info-token{
     width: 40%;
-    
+}
+
+.block-for-btr-info-token{
+    padding-left: 30px;
+    display: flex;
+    justify-content: left;
+}
+#btr-find{
+    width: 30%;
+    font-size: 18px !important;
 }
 .btn-submit{
     background-color:var(--btr-color);
@@ -340,6 +355,7 @@ label {
 
 .button-main-3 {
     margin: 20px 0 0 0;
+    position: relative;
 }
 
 /* INPUTS */
@@ -405,7 +421,7 @@ input {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    max-width: 300px;
+    max-width: 350px;
     margin: 0 auto;
     border-radius: 20px;
     background-color: var(--form-color);

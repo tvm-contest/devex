@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { DeployService } from './deploy.service';
+import { checkErrorMessage } from './contractError.service';
 import { Account } from '@tonclient/appkit';
 import { Collection } from '../models/collection';
 import { globals } from '../config/globals';
@@ -13,7 +14,7 @@ export class DeployTrueNftService {
         this.deployService = new DeployService();
     }
     
-    async deployTrueNft(pathWithContracts : string, collection: Collection, commissionAuthorGenerator: number) : Promise<string> {
+    async deployTrueNft(pathWithContracts : string, collection: Collection, commissionAuthorGenerator: number, commissionFavorOwner: number) : Promise<string> {
         
         let indexBasisContract = fs.readFileSync(path.resolve(pathWithContracts, "IndexBasis.sol")).toString();
         let dataContract = fs.readFileSync(path.resolve(pathWithContracts, "Data.sol")).toString();
@@ -32,11 +33,11 @@ export class DeployTrueNftService {
         let indexBasisAccount = await this.deployService.createContractAccount(indexBasisContract, pathWithContracts);
         let address = "0";
         try {
-            address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection, commissionAuthorGenerator*1000000000);
+            address = await this.deployRootNft(rootNftAccount, indexAccount, dataAccount, collection, commissionAuthorGenerator*1000000000, commissionFavorOwner);
             if (!fs.existsSync(path.join(globals.RESULT_COLLECTION, address.slice(2)))) {
                 fs.renameSync(pathWithContracts, path.join(globals.RESULT_COLLECTION, address.slice(2)))
             }
-            console.log("RootNft address: " + await rootNftAccount.getAddress());
+            console.log("RootNft address: " + address);
             await this.deployBasis(rootNftAccount, indexBasisAccount);
         } catch(err) {
 
@@ -46,12 +47,13 @@ export class DeployTrueNftService {
         return address;
     }
     
-    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, collection: Collection, commissionAuthorGenerator: number) : Promise<string> {
-        let initInput = await this.buildInitInput(indexAccount, dataAccount, collection, commissionAuthorGenerator)
+    private async deployRootNft(rootNftAccount: Account, indexAccount: Account, dataAccount: Account, collection: Collection, commissionAuthorGenerator: number, commissionFavorOwner: number) : Promise<string> {
+        let initInput = await this.buildInitInput(indexAccount, dataAccount, collection, commissionAuthorGenerator, commissionFavorOwner)
         try {
             await this.deployService.deploy(
                 rootNftAccount,
-                initInput
+                initInput,
+                2_000_000_000
             );
             return rootNftAccount.getAddress();
         } catch(err) {
@@ -94,6 +96,10 @@ export class DeployTrueNftService {
                 payload: body,
             }
         );
+        let code_error = await checkErrorMessage(transaction, walletAcc.client);
+        if (code_error !== 0) {
+            console.error("Call function \"deployBasis\" error: " + code_error);
+        }
         return transaction;
     }
 
@@ -134,7 +140,7 @@ export class DeployTrueNftService {
         return walletAcc;
     }
     
-    private async buildInitInput(indexAccount: Account, dataAccount: Account, collection: Collection, commissionAuthorGenerator: number) : Promise<object> {
+    private async buildInitInput(indexAccount: Account, dataAccount: Account, collection: Collection, commissionAuthorGenerator: number, commissionFavorOwner: number) : Promise<object> {
 
         let _nftTypes : string[] = [];
         let _limit : number[] = [];
@@ -150,8 +156,10 @@ export class DeployTrueNftService {
         let initInput = {
             codeIndex: (await this.deployService.getDecodeTVC(indexAccount)).code,
             codeData: (await this.deployService.getDecodeTVC(dataAccount)).code,
-            addrCommissionAgent: everscale_settings.AUTHOR_GENERATOR_ADDRESS,
+            addrCommissionAgent: everscale_settings.COMMISSION_AGENT_ADDRESS,
             mintingCommission: String(commissionAuthorGenerator),
+            addrNftRootRoyaltyAgent: everscale_settings.NFT_ROOT_ROYALTY_AGENT_ADDRESS,
+            nftRootRoyaltyPercent: commissionFavorOwner,
             nftTypes: _nftTypes,
             limit: _limit,
             icon: _icon

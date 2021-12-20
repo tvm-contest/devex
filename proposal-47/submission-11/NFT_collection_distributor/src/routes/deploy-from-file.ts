@@ -38,8 +38,12 @@ router.post('/', async function (req, res, next) {
   if (jsonCollection.commissions.commissionAuthorGenerator.check) {
     commissionAuthorGenerator = jsonCollection.commissions.commissionAuthorGenerator.value;
   }
+  let commissionFavorOwner = 0;
+  if (jsonCollection.commissions.commissionFavorOwner.check) {
+    commissionAuthorGenerator = jsonCollection.commissions.commissionFavorOwner.value;
+  }
 
-  let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator)
+  let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator, commissionFavorOwner)
   contractDir = path.join(globals.RESULT_COLLECTION, address.slice(2))
   if (!fs.existsSync(contractDir)) {
     let deployDebotService = new DeployDebotService();
