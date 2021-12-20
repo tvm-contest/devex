@@ -24,14 +24,11 @@ export class DeployDebotService {
         this.deployService = new DeployService();
     }
 
-    async deployDebot(contractsDir, rootNftAddress: string) : Promise<string> {
-        let debotCode = fs.readFileSync(path.resolve(contractsDir, "debots", "MintingDebot.sol")).toString();
-        let initData = {
-            _addrNFTRoot: rootNftAddress
-        };
-        let debotAcc = await this.deployService.createContractAccount(debotCode, path.resolve(contractsDir, "debots"), "MintingDebot", initData);
+    async deployDebot(contractsDir, debotName: string, initData?: object) : Promise<string> {
+        let debotCode = fs.readFileSync(path.resolve(contractsDir, "debots", debotName + ".sol")).toString();
+        let debotAcc = await this.deployService.createContractAccount(debotCode, path.resolve(contractsDir, "debots"), debotName, initData);
         let walletAcc = await this.getWalletAcc();
-        let debotTvc = fs.readFileSync(path.resolve(contractsDir, "debots", "MintingDebot.tvc"), {encoding: 'base64'});
+        let debotTvc = fs.readFileSync(path.resolve(contractsDir, "debots", debotName + ".tvc"), {encoding: 'base64'});
         let debotAddress = await debotAcc.getAddress();
         if (!(await this.deployService.isContractDeploy(debotAddress))) {
             await walletAcc.run(
@@ -64,7 +61,7 @@ export class DeployDebotService {
                     },
                     send_events: false
                 });
-                let abi = fs.readFileSync(path.join(contractsDir, 'debots', 'MintingDebot.abi.json'), "utf8");
+                let abi = fs.readFileSync(path.join(contractsDir, 'debots', debotName + '.abi.json'), "utf8");
                 const buf = Buffer.from(abi, "ascii");
                 const hexvalue = buf.toString("hex");
                 await this.client.processing.process_message({
@@ -88,7 +85,7 @@ export class DeployDebotService {
                 console.log(err);
             }
         }
-        console.log("Debot address: " + debotAddress);
+        console.log(debotName + " address: " + debotAddress);
         return debotAddress;
     }
 
