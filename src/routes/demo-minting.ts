@@ -22,16 +22,14 @@ router.post('/', async function (req, res, next) {
         for (let tokenItem = 0; tokenItem < DEMO_MINTED_TOKENS; tokenItem++) {
             const mintService = new MintNftService(req.body.rootAddress);
             await mintService.mintNft({
-                // It's as req.body
-                contractName: 'DemoWarriorTokens',
-                rarities: "rarity",
-                parameters: {
-                    // shield for different tokens
+                body:
+                {
+                    // It's as req.body
+                    contractName: 'DemoWarriorTokens',
+                    rarities: "rarity",
                     token_name: "token_demo_name",
                     warrior_shield: getRandomShield(1, 100),
-                    enum: {
-                        warrior_arm: 0
-                    }
+                    warrior_arm: 0
                 }
             });
             await imageCreator.createTokenImage(DEMO_COLLECTION_IMAGES_PATH);
