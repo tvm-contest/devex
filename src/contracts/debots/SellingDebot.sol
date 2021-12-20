@@ -9,7 +9,8 @@ import "../debotLib/Menu.sol";
 import "../debotLib/AddressInput.sol";
 import "../debotLib/ConfirmInput.sol";
 import "../debotLib/SigningBoxInput.sol";
-import "../debotLib//NumberInput.sol";
+import "../debotLib/DateTimeInput.sol";
+import "../debotLib/AmountInput.sol";
 
 import "../interfaces/IMultisig.sol";
 import "../ADataCore.sol";
@@ -28,6 +29,7 @@ contract SellingDebot is Debot {
     bool _isRootTrusted;
     bool _isSaleStarted;
     uint128 _nftPrice;
+    int128 _currentTime;
     uint64 _saleDuration;
 
 
@@ -50,7 +52,7 @@ contract SellingDebot is Debot {
             if (_isSaleStarted) {
                 _items.push(MenuItem("Show sale info", "", tvm.functionId(showSaleInfo)));
             } else {
-                _items.push(MenuItem("Start sale", "", tvm.functionId(setSaleParams)));
+                _items.push(MenuItem("Start sale", "", tvm.functionId(enterSaleParams)));
             }
         }
         
@@ -97,7 +99,7 @@ contract SellingDebot is Debot {
             abiVer: 2,
             extMsg: true,
             callbackId: tvm.functionId(checkOwnership),
-            onErrorId: 0,
+            onErrorId: tvm.functionId(onErrorOwnership),
             time: 0,
             expire: 0,
             sign: false
@@ -111,6 +113,11 @@ contract SellingDebot is Debot {
             Terminal.print(0, format("This NFT has a different owner"));
             enterNft();
         }
+    }
+
+    function onErrorOwnership(uint32 sdkError, uint32 exitCode) public {
+        Terminal.print(0, "There is no NFT at this address");
+        enterNft();
     }
 
     /*
@@ -206,25 +213,28 @@ contract SellingDebot is Debot {
     * SET SALE PARAMS
     */
 
-    function setSaleParams(uint32 index) public {
-        NumberInput.get(tvm.functionId(setPrice), "Enter NFT price:", 1, 999999999999999);
+    function enterSaleParams(uint32 index) public {
+        AmountInput.get(tvm.functionId(setPrice), "Enter NFT price (in EVERs):",  9, 1e9, 1e20);
     }
 
-    function setPrice(int256 value) public {
+    function setPrice(uint128 value) public {
         _nftPrice = uint128(value);
-        ConfirmInput.get(tvm.functionId(setLimitation), "Is sale duration limited?");
+        ConfirmInput.get(tvm.functionId(enterEndDate), "Is sale duration limited?");
     }
 
-    function setLimitation(bool value) public {
+    function enterEndDate(bool value) public {
         if (value) {
-            NumberInput.get(tvm.functionId(setDuration), "Enter sale duration (in seconds):", 1, 999999999999999);
+            _currentTime = int128(now);
+            DateTimeInput.getDate(tvm.functionId(setDuration),
+            "Choose date of the sale's end", 
+            _currentTime + 43200, _currentTime + 43200, _currentTime + 31536000);
         } else {
             startSale();
         }
     }
 
-    function setDuration(int256 value) public {
-        _saleDuration = uint64(value);
+    function setDuration(int128 date) public {
+        _saleDuration = uint64(date) - uint64(_currentTime);
         startSale();
     }
 
@@ -398,6 +408,6 @@ contract SellingDebot is Debot {
     }
 
     function getRequiredInterfaces() public view override returns (uint256[] interfaces) {
-        return [ Terminal.ID, Menu.ID, AddressInput.ID, SigningBoxInput.ID, ConfirmInput.ID, NumberInput.ID ];
+        return [ Terminal.ID, Menu.ID, AddressInput.ID, SigningBoxInput.ID, ConfirmInput.ID, DateTimeInput.ID, AmountInput.ID ];
     }
 }

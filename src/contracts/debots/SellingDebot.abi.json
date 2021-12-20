@@ -70,6 +70,15 @@
 			]
 		},
 		{
+			"name": "onErrorOwnership",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "getTrusted",
 			"inputs": [
 			],
@@ -116,7 +125,7 @@
 			]
 		},
 		{
-			"name": "setSaleParams",
+			"name": "enterSaleParams",
 			"inputs": [
 				{"name":"index","type":"uint32"}
 			],
@@ -126,13 +135,13 @@
 		{
 			"name": "setPrice",
 			"inputs": [
-				{"name":"value","type":"int256"}
+				{"name":"value","type":"uint128"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "setLimitation",
+			"name": "enterEndDate",
 			"inputs": [
 				{"name":"value","type":"bool"}
 			],
@@ -142,7 +151,7 @@
 		{
 			"name": "setDuration",
 			"inputs": [
-				{"name":"value","type":"int256"}
+				{"name":"date","type":"int128"}
 			],
 			"outputs": [
 			]
