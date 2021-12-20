@@ -1,20 +1,15 @@
 
 var obj = JSON.parse(address)
-if(obj.collection.rarities != []){
+if(obj.collection.rarities.length != 0){
     $(".rarities ").append($(`<label class="text"> Rarities<label>`))
     $(".rarities").append($(`<div class="col"id="rarities">`))
     
     $(`#rarities`).append($(`<select class="form-select text select-param-token select-list" id ="select-rarities" name='rarities'>`))
-    //var listRar = []
     
     for(var keyID in obj.collection.rarities){
         console.log("!")
         $(`#select-rarities`).append($(`<option class="text" value=${obj.collection.rarities[keyID].name}> ${obj.collection.rarities[keyID].name}</option>`))
-        //listRar.push(obj.collection.rarities[keyID].name)
     }
-
-    //$("#rarities ").append($(`<label>( ${listRar})<label>`))
-    //$(`#rarities`).append($(`<input class="form-control" name="rarities">`)) 
 }
 
 if(obj.mediafiles != []){
@@ -52,19 +47,14 @@ if(obj.collection.parameters != []){
 if (obj.enums.length > 0){
     $(".parameters").append($(`<br><label class="text">  Enum <label>`))
 
-    //var listEnum = []
     for(var keyIdColEnum in obj.enums){
         $(".parameters").append($(`<div class="col" id="parametersE${keyIdColEnum}">`))
         $(`#parametersE${keyIdColEnum}`).append($(`<label class="form-label text"> ${obj.enums[keyIdColEnum].name}<label>`))
         $(`#parametersE${keyIdColEnum}`).append($(`<select class="form-select select-param-enum select-list text" id ="select-enum${keyIdColEnum}" name="${obj.enums[keyIdColEnum].name}">`))
         for(var keyIDenum in obj.enums[keyIdColEnum].enumVariants){
-            //listEnum.push(obj.enums[keyIdColEnum].enumVariants[keyIDenum])
             $(`#select-enum${keyIdColEnum}`).append($(`<option class="text" value=${keyIDenum}> ${obj.enums[keyIdColEnum].enumVariants[keyIDenum]}</option>`))
 
         }
-        //$(`#parametersE${keyIdColEnum}`).append($(`<label class="form-label"> (${listEnum})<label>`))
-        //$(`#parametersE${keyIdColEnum}`).append($(`<input class="form-control" name="paramener[enum][${obj.enums[keyIdColEnum].name}]${keyIDenum}">`)) 
-        //listEnum = []
     }
 }
 
@@ -75,34 +65,3 @@ $("#sign-token").on("click", function(){
         $(`.sign-token`).css('display','none');
     }
 })
-// $("#sub-mint").on("click",(function(event){
-//     event.preventDefault()
-//     $("#form-param").submit()
-//     $("#form-for-file").submit()
-// }))
-// $("#sub-mint").on("click",(function(event){
-//     event.preventDefault()
-//     var formData = new FormData($('#form-param').get(0));
-
-//     $.ajax({
-//      type: "POST",
-//      url: $('#form-param').attr('action'),
-//      //dataType: 'json',
-//      data: formData,
-//      success: function( response ) {
-//        console.log( response );
-//      }
-//    });
-//    $("#form-for-file").submit()
-// }));
-//
-// for(var keyID in obj.mediafiles){
-//     if(obj.mediafiles != []){
-//         $(".mediafile ").append($(`<label> MediaFile<label>`))
-//         $(".mediafile ").append($(`<div class="col"id="mediafile${keyID}">`))
-//         $(`#mediafile${keyID}`).append($(`<label class="form-label"> ${obj.mediafiles[keyID].name}<label>`))
-//         $(`#mediafile${keyID}`).append($(`<input class="form-control name="mediafile[${keyID}]">`))   
-//         console.log(obj.mediafiles[keyID].name)
-//     }
-    
-// }

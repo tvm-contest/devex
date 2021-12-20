@@ -11,6 +11,8 @@ import { DeployDebotService } from '../services/deployDebot.service';
 import { globals } from '../config/globals';
 import { MediaFile } from '../models/mediafile';
 import { ContractObjectCreator } from '../services/contract-object-creator.service';
+import { DirectSaleService } from '../services/directSale.service';
+import { everscale_settings } from '../config/everscale-settings';
 
 const router = express.Router();
 
@@ -31,8 +33,6 @@ router.post('/', async function (req, res, next) {
   let enums: EnumParameter[] = contractObjectCreator.makeEnumsFromJson(jsonCollection.enums)
   let mediafiles: MediaFile[] = contractObjectCreator.makeMediaFilesFromJson(jsonCollection.mediafiles);
 
-  let contractDir = await generateContract(collection, JSON.stringify(jsonCollection, null, '\t'), enums, mediafiles)
-
   let deployTrueNftService = new DeployTrueNftService();
   let commissionAuthorGenerator = 0;
   if (jsonCollection.commissions.commissionAuthorGenerator.check) {
@@ -43,11 +43,28 @@ router.post('/', async function (req, res, next) {
     commissionAuthorGenerator = jsonCollection.commissions.commissionFavorOwner.value;
   }
 
-  let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator, commissionFavorOwner)
+  let mintingPriceUsers = Number(jsonCollection.commissions.mintingPriceUsers);
+
+  let contractDir = await generateContract(collection, JSON.stringify(jsonCollection, null, '\t'), enums, mediafiles, mintingPriceUsers)
+
+  let address = await deployTrueNftService.deployTrueNft(contractDir, collection, mintingPriceUsers, commissionFavorOwner)
   contractDir = path.join(globals.RESULT_COLLECTION, address.slice(2))
   if (!fs.existsSync(contractDir)) {
+    const directSaleService = new DirectSaleService();
+    let addrRoyaltyAgent = everscale_settings.ADDRESS_ROYALTY_AGENT;
+    let royaltyPercent = everscale_settings.ROYALTY_PERCENT;
+    let directSaleRootAddr = await directSaleService.deployDirectSaleRoot(address.slice(2), addrRoyaltyAgent, royaltyPercent);
+    console.log("DirectSaleRoot address: " + directSaleRootAddr);
     let deployDebotService = new DeployDebotService();
-    await deployDebotService.deployDebot(contractDir, address);
+    let initDataForMintingDebot = {
+        _addrNFTRoot: address
+    };
+    let mintingDebotAddress = await deployDebotService.deployDebot(contractDir, "MintingDebot", initDataForMintingDebot);
+    let initDataForSellingDebot = {
+        _addrDirectSaleRoot: directSaleRootAddr
+    };
+    let sellingDebotAddress = await deployDebotService.deployDebot(contractDir, "SellingDebot", initDataForSellingDebot);
+    let tokenPurchaseDebot = await deployDebotService.deployDebot(contractDir, "TokenPurchaseDebot");
   }
 
   res.render('demo-mint', {
