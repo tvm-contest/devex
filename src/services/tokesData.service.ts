@@ -37,12 +37,9 @@ export class TokensData {
         }
     }
 
-    async getDebotAddress(rootNftAddress: string) : Promise<string>{
-        let debotAbi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress.slice(2), 'debots', 'MintingDebot.abi.json')).toString());
-        let debotTvc = fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress.slice(2), 'debots', 'MintingDebot.tvc'), {encoding: 'base64'});
-        let initData = {
-            _addrNFTRoot: rootNftAddress
-        };
+    async getDebotAddress(rootNftAddress: string, debotName: string, initData?: object) : Promise<string>{
+        let debotAbi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress.slice(2), 'debots', debotName + '.abi.json')).toString());
+        let debotTvc = fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress.slice(2), 'debots', debotName + '.tvc'), {encoding: 'base64'});
         const debotAccount = new Account({
             abi: debotAbi,
             tvc: debotTvc
@@ -53,6 +50,21 @@ export class TokensData {
         });
 
         return debotAccount.getAddress()
+    }
+
+    async getContractAddress(rootNftAddress: string, contractName: string, initData?: object) {
+        let abi = await JSON.parse(fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress.slice(2), contractName + ".abi.json")).toString());
+        let tvc = Buffer.from(fs.readFileSync(path.join(globals.RESULT_COLLECTION, rootNftAddress.slice(2), contractName + ".tvc"))).toString("base64");
+        let contractAcc = new Account({
+            abi: abi,
+            tvc: tvc
+        }, {
+            signer: signerKeys(everscale_settings.SAFE_MULTISIG_KEYS),
+            client: this.client,
+            initData: initData
+        });
+
+        return await contractAcc.getAddress();
     }
     
     async getTokensData(rootNftAddress: string) : Promise<any[]>{
