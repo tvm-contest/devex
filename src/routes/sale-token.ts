@@ -10,11 +10,6 @@ router.post('/sale-token-form', async function(req, res, next) {
     const directSaleService = new DirectSaleService();
     let RootNftAddr = new String(req.body.rootAddress).slice(2);
     console.log("path collection" + RootNftAddr)
-
-    let addrRoyaltyAgent = everscale_settings.ADDRESS_ROYALTY_AGENT;
-    let royaltyPercent = everscale_settings.ROYALTY_PERCENT;
-    let directSaleRootAddr = await directSaleService.deployDirectSaleRoot(RootNftAddr, addrRoyaltyAgent, royaltyPercent);
-    console.log("DirectSaleRoot address: " + directSaleRootAddr);
   
     let NftAddr = req.body.tokenAddress;
     let directSaleAddr = await directSaleService.deployDirectSale(RootNftAddr, NftAddr);

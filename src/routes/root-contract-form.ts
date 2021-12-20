@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs'
 
 import { globals } from '../config/globals';
+import { everscale_settings } from '../config/everscale-settings';
 import { Collection } from '../models/collection';
 import { generateContract } from '../services/contract-generator.service';
 import { ContractObjectCreator } from '../services/contract-object-creator.service';
@@ -11,6 +12,7 @@ import { EnumParameter } from '../models/enum';
 import { DeployDebotService } from '../services/deployDebot.service';
 import { MediaFile } from '../models/mediafile';
 import { JsonCollectionSevice } from '../services/json-collection.service';
+import { DirectSaleService } from '../services/directSale.service';
 
 const router = express.Router();
 
@@ -78,12 +80,25 @@ router.post('/deploy-contracts', async function(req, res, next) {
     // TODO: Passing comissionAuthorGenerator to generateContract is very bad decision, but to do it properly there are so many to change
     let contractDir = await generateContract(collection, jsonCollection, enums, mediafiles, MintingPriceForUsers);
     let deployTrueNftService = new DeployTrueNftService();
-    let rootAddress = await deployTrueNftService.deployTrueNft(contractDir, collection, MintingPriceForUsers, commissionFavorOwner)
-    contractDir = path.join(globals.RESULT_COLLECTION, rootAddress.slice(2))
+    let rootNftAddress = await deployTrueNftService.deployTrueNft(contractDir, collection, MintingPriceForUsers, commissionFavorOwner)
+    contractDir = path.join(globals.RESULT_COLLECTION, rootNftAddress.slice(2));
+    const directSaleService = new DirectSaleService();
+    let addrRoyaltyAgent = everscale_settings.ADDRESS_ROYALTY_AGENT;
+    let royaltyPercent = everscale_settings.ROYALTY_PERCENT;
+    let directSaleRootAddr = await directSaleService.deployDirectSaleRoot(rootNftAddress.slice(2), addrRoyaltyAgent, royaltyPercent);
+    console.log("DirectSaleRoot address: " + directSaleRootAddr);
     let deployDebotService = new DeployDebotService();
-    let debotAddress = await deployDebotService.deployDebot(contractDir, rootAddress);
+    let initDataForMintingDebot = {
+        _addrNFTRoot: rootNftAddress
+    };
+    let mintingDebotAddress = await deployDebotService.deployDebot(contractDir, "MintingDebot", initDataForMintingDebot);
+    let initDataForSellingDebot = {
+        _addrDirectSaleRoot: directSaleRootAddr
+    };
+    let sellingDebotAddress = await deployDebotService.deployDebot(contractDir, "SellingDebot", initDataForSellingDebot);
+    let tokenPurchaseDebot = await deployDebotService.deployDebot(contractDir, "TokenPurchaseDebot");
     
-    res.redirect('/tokens-data-info?rootNftAddress=' + rootAddress)
+    res.redirect('/tokens-data-info?rootNftAddress=' + rootNftAddress)
 });
   
 router.post('/', async function(req, res, next) {

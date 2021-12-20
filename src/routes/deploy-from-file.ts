@@ -47,7 +47,10 @@ router.post('/', async function (req, res, next) {
   contractDir = path.join(globals.RESULT_COLLECTION, address.slice(2))
   if (!fs.existsSync(contractDir)) {
     let deployDebotService = new DeployDebotService();
-    await deployDebotService.deployDebot(contractDir, address);
+    let initDataForMintingDebot = {
+      _addrNFTRoot: address
+    };
+    let debotAddress = await deployDebotService.deployDebot(contractDir, "MintingDebot", initDataForMintingDebot);
   }
 
   res.render('demo-mint', {
