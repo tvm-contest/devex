@@ -31,8 +31,6 @@ router.post('/', async function (req, res, next) {
   let enums: EnumParameter[] = contractObjectCreator.makeEnumsFromJson(jsonCollection.enums)
   let mediafiles: MediaFile[] = contractObjectCreator.makeMediaFilesFromJson(jsonCollection.mediafiles);
 
-  let contractDir = await generateContract(collection, JSON.stringify(jsonCollection, null, '\t'), enums, mediafiles)
-
   let deployTrueNftService = new DeployTrueNftService();
   let commissionAuthorGenerator = 0;
   if (jsonCollection.commissions.commissionAuthorGenerator.check) {
@@ -43,7 +41,11 @@ router.post('/', async function (req, res, next) {
     commissionAuthorGenerator = jsonCollection.commissions.commissionFavorOwner.value;
   }
 
-  let address = await deployTrueNftService.deployTrueNft(contractDir, collection, commissionAuthorGenerator, commissionFavorOwner)
+  let mintingPriceUsers = Number(jsonCollection.commissions.mintingPriceUsers);
+
+  let contractDir = await generateContract(collection, JSON.stringify(jsonCollection, null, '\t'), enums, mediafiles, mintingPriceUsers)
+
+  let address = await deployTrueNftService.deployTrueNft(contractDir, collection, mintingPriceUsers, commissionFavorOwner)
   contractDir = path.join(globals.RESULT_COLLECTION, address.slice(2))
   if (!fs.existsSync(contractDir)) {
     let deployDebotService = new DeployDebotService();
