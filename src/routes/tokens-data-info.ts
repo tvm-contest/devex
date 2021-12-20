@@ -36,7 +36,9 @@ router.get('/', async function(req, res, next) {
         } else {
             net = 'net' //для локальной сети вроде нет адреса
         }
-        let tonSurfDebot = `https://web.ton.surf/debot?address=${mintingDebotAddress}&net=${net}`
+        let tonSurfMintingDebot = `https://web.ton.surf/debot?address=${mintingDebotAddress}&net=${net}`
+        let tonSurfSellingDebot = `https://web.ton.surf/debot?address=${sellingDebotAddress}&net=${net}`
+        let tonSurfTokenPurchaseDebot = `https://web.ton.surf/debot?address=${tokenPurchaseDebotAddrress}&net=${net}`
         res.render('tokens-data-info', {
             rootAddress: req.query.rootNftAddress,
             rootNftName: rootNftInfo.name,
@@ -44,7 +46,10 @@ router.get('/', async function(req, res, next) {
             mintingDebotAddress: mintingDebotAddress,
             sellingDebotAddress: sellingDebotAddress,
             tokenPurchaseDebotAddrress: tokenPurchaseDebotAddrress,
-            tonSurfDebot: tonSurfDebot
+
+            tonSurfMintingDebot: tonSurfMintingDebot,
+            tonSurfSellingDebot: tonSurfSellingDebot,
+            tonSurfTokenPurchaseDebot: tonSurfTokenPurchaseDebot
         });
     } else {
         res.render('getRootForGetTokensData');

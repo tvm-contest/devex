@@ -59,7 +59,7 @@ export class TokensData {
             abi: abi,
             tvc: tvc
         }, {
-            signer: signerKeys(everscale_settings.SAFE_MULTISIG_KEYS),
+            signer: signerKeys(everscale_settings.KEYS),
             client: this.client,
             initData: initData
         });
