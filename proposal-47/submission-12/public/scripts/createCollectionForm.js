@@ -1,7 +1,6 @@
 const paramOptions = {
     Integer: "Integer",
-    Str: "String",
-    Enum: "Enum" 
+    Str: "String"
 }
 
 const defaultValues = {
@@ -317,8 +316,31 @@ const addParam = () => {
     $(".param-container").append(paramSelect)
 }
 
+const checkNames = () => {
+    const nameSet = new Set();
+    for (let param of params) {
+        if (nameSet.has(param.name)) {
+            return false
+        }
+
+        nameSet.add(param.name)
+    }
+
+    return true
+}
+
 const onSubmit = async () => {
     if (!document.getElementById("collection-form").checkValidity()) {
+        return
+    }
+
+    if (tokens.length < 1) {
+        alert("Create at least one token")
+        return
+    }
+
+    if (!checkNames()) {
+        alert("Parameters can't have the same name")
         return
     }
 
@@ -327,7 +349,7 @@ const onSubmit = async () => {
 
     for (let param of params) {
         if (keywords.has(param.name)) {
-            alert("Param has a forbidden word in it's name")
+            alert("Param has a forbidden word in its name")
             $("#collection-form").submit((e) => e.preventDefault())
             return
         }
@@ -366,6 +388,16 @@ const onSubmit = async () => {
 
 const save = async () => {
     if (!document.getElementById("collection-form").checkValidity()) {
+        return
+    }
+
+    if (tokens.length < 1) {
+        alert("Create at least one token")
+        return
+    }
+
+    if (!checkNames()) {
+        alert("Parameters can't have the same name")
         return
     }
 
@@ -426,7 +458,6 @@ function download(fileUrl, fileName) {
 
 $("#image-input").on("change", async (e) => {
     if (e.target.files) {
-
         const fileObject = e.target.files[0]
         const reader = new FileReader()
         reader.onload = async () => {
@@ -448,7 +479,6 @@ $("#image-input").on("change", async (e) => {
 
         reader.readAsDataURL(fileObject)
         document.getElementById("upload-text").style = "display: block;"
-
     }
 })
 

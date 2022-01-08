@@ -1,8 +1,7 @@
-import { ResultOfDecodeAccountData, TonClient } from "@tonclient/core";
-import { networks } from '../config/networks';
+import { TonClient } from "@tonclient/core";
 import fs from "fs";
 import { globals } from '../config/globals';
-import path from "path/posix";
+import path from "path";
 import { Account } from "@tonclient/appkit";
 
 export class TokenInfoGetter {
@@ -10,16 +9,16 @@ export class TokenInfoGetter {
     private readonly client: TonClient;
 
     constructor() {
+        let settings = JSON.parse(fs.readFileSync(globals.SETTINGS_PATH).toString());
         this.client = new TonClient({
             network: {
-                server_address: networks.LOCALHOST
+                server_address: settings.NETWORK
             }
         });
     }
 
     async getTokenInfo(tokenAddress: string, dirName: string) {
         const tokenDecodedInfo = await this.getTokenDecodedInfo(tokenAddress, dirName);
-
         return tokenDecodedInfo;
     }
 
@@ -52,11 +51,10 @@ export class TokenInfoGetter {
         );
 
         const tokenInfo = await dataAcc.runLocal('getInfo', {});
-        const rarity = await dataAcc.runLocal('getRarity', {});
-
+        const paramsInfo = await dataAcc.runLocal('getParamsInfo', {});
         return {
             addresses: tokenInfo.decoded?.output,
-            rarity: rarity.decoded?.output.rarityName
+            params: paramsInfo.decoded?.output
         };
     }
 }

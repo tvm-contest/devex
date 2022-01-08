@@ -31,7 +31,7 @@
 		{
 			"name": "setSellRootContractAddr",
 			"inputs": [
-				{"name":"addr","type":"address"}
+				{"name":"value","type":"address"}
 			],
 			"outputs": [
 			]
@@ -108,6 +108,15 @@
 			]
 		},
 		{
+			"name": "onError",
+			"inputs": [
+				{"name":"sdkError","type":"uint32"},
+				{"name":"exitCode","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "setNftItemDetails",
 			"inputs": [
 				{"name":"addrData","type":"address"},
@@ -131,6 +140,28 @@
 			"name": "_getWalletAddress",
 			"inputs": [
 				{"name":"value","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getWalletKeys",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setKeyHandle",
+			"inputs": [
+				{"name":"handle","type":"uint32"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getSellRootContractAddr",
+			"inputs": [
 			],
 			"outputs": [
 			]

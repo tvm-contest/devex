@@ -20,7 +20,7 @@ contract Data is IData, IndexResolver {
 
     uint256 static _id;
 
-    address _addrRoot;
+    address years;
     address _addrAuthor;
     address _addrOwner;
     address _addrTrusted;
@@ -64,9 +64,9 @@ contract Data is IData, IndexResolver {
 
     function transferOwnership(address addrTo)
         public override
-        deploymentSolvency
         onlyOwnerWithoutTrustedOrOnlyTrusted
     {
+        require (addrTo.value != 0, DataErr.NOT_OWNER, "Owner address is empty");
         address oldIndexOwner = resolveIndex(_addrRoot, address(this), _addrOwner);
         IIndex(oldIndexOwner).destruct();
         address oldIndexOwnerRoot = resolveIndex(address(0), address(this), _addrOwner);
@@ -136,12 +136,16 @@ contract Data is IData, IndexResolver {
         address addrData,
         address addrRoot,
         address addrOwner,
-        address addrTrusted
+        address addrTrusted,
+        string rarityName,
+        string url
     ) {
         addrData = address(this);
         addrRoot = _addrRoot;
         addrOwner = _addrOwner;
         addrTrusted = _addrTrusted;
+        rarityName = _rarityName;
+        url = _url;
     }
 
     function getParamsInfo() public view  returns (
@@ -155,13 +159,6 @@ contract Data is IData, IndexResolver {
         
     }
     
-      function getRarity() public returns(
-        string rarityName
-    ) {
-        rarityName = _rarityName;
-    }
-
-
 
     function rightsTransferabilityStatus() public view override onlyOwnerOrTrusted returns(bool status) {
         status = _isRightsTransferable;
@@ -229,8 +226,4 @@ contract Data is IData, IndexResolver {
         _;
     }
 
-    modifier deploymentSolvency {
-        require(msg.value >= Constants.MIN_FOR_DEPLOY, DataErr.LOW_VALUE_TO_DEPLOY);       
-        _;
-    }
 }

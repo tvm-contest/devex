@@ -5,6 +5,8 @@
 		{
 			"name": "constructor",
 			"inputs": [
+				{"name":"price","type":"uint128"},
+				{"name":"endUnixtime","type":"uint64"}
 			],
 			"outputs": [
 			]
@@ -17,23 +19,21 @@
 			]
 		},
 		{
-			"name": "putUpForSale",
-			"inputs": [
-				{"name":"price","type":"uint128"},
-				{"name":"duration","type":"uint64"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "buyNftToken",
+			"name": "buy",
 			"inputs": [
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "withdrawnNftToken",
+			"name": "cancel",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "destroy",
 			"inputs": [
 			],
 			"outputs": [

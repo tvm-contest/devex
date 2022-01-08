@@ -157,7 +157,9 @@
 				{"name":"addrData","type":"address"},
 				{"name":"addrRoot","type":"address"},
 				{"name":"addrOwner","type":"address"},
-				{"name":"addrTrusted","type":"address"}
+				{"name":"addrTrusted","type":"address"},
+				{"name":"rarityName","type":"bytes"},
+				{"name":"url","type":"bytes"}
 			],
 			"outputs": [
 			]

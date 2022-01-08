@@ -1,10 +1,11 @@
 import { consoleTerminal, runCommand } from 'tondev';
-import { Account } from '@tonclient/appkit';
+import { Account} from '@tonclient/appkit';
 import { TonClient, signerKeys, ResultOfDecodeTvc } from '@tonclient/core';
+import { walletSettings } from '../config/walletKey';
 import { libNode } from '@tonclient/lib-node';
 import fs from 'fs';
 import path from 'path';
-import { networks } from '../config/networks';
+import { globals } from '../config/globals';
 
 TonClient.useBinaryLibrary(libNode);
 
@@ -14,13 +15,34 @@ export class DeployContractService {
 
     constructor() {
 
+        let settings = JSON.parse(fs.readFileSync(globals.SETTINGS_PATH).toString());
         this.client = new TonClient({
             network: {
-                endpoints: [networks.LOCALHOST]
+                server_address: settings.NETWORK
             }
         });
 
     }
+
+    async getCurrentWallet() : Promise<Account> {
+
+        const giverContract = {
+            abi: await JSON.parse(walletSettings.ABI),
+            tvc: walletSettings.TVC,
+        };
+
+        let settings = JSON.parse(fs.readFileSync(globals.SETTINGS_PATH).toString());
+        const signer = signerKeys(settings.KEYS); 
+        let client = this.client;
+
+        const giverAccount = new Account(giverContract, {
+            address: settings.WALLETADDRESS, 
+            signer,
+            client});
+ 
+        return giverAccount;
+    }
+
 
     async compileContract(
         contractCode: string,
@@ -69,16 +91,35 @@ export class DeployContractService {
 
     async deployContract({
         initInput, 
-        account, 
-        useGiver }) : Promise<void> {
+        account,
+        valueTON }) : Promise<void> {
 
-        const { acc_type } = await account.getAccount();
-        if (acc_type !== 1) {
-          await account.deploy({
-            initFunctionName: "constructor",
-            initInput,
-            useGiver,
-          });
+        const walletAcc = await this.getCurrentWallet();
+        const addressAccount = await account.getAddress();
+
+        try {
+            
+            walletAcc.run(
+                "sendTransaction",
+                {
+                    dest: addressAccount,
+                    value: valueTON,
+                    flags: 2,
+                    bounce: false,
+                    payload: "",
+                }
+            );
+
+
+            const { acc_type } = await account.getAccount();
+            if (acc_type !== 1) {
+            await account.deploy({
+                initFunctionName: "constructor",
+                initInput
+            });
+            }
+        } catch(error) {
+            console.log(error)
         }
 
     }
@@ -109,6 +150,6 @@ export class DeployContractService {
             decodedTvc = await contractAcc.client.boc.decode_tvc({tvc: tvc});
         }
         return decodedTvc;
-        
     }
+
 }

@@ -95,7 +95,7 @@ contract NftRoot is DataResolver, IndexResolver {
         uint128 value = Constants.MIN_FOR_DATA_DEPLOY;
         if (isAdmin(msg.sender)) { 
             flag = 1;
-            value += _mintingFee;
+            value -= _mintingFee;
         }
 
         new Data{

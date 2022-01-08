@@ -6,12 +6,13 @@ Input arguments:
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "tray harvest number panic neither access loud wise medal local dove curious"
-Raw address: 0:d904b8e6b23f23349ef63a3ea9ccd7b415e2bbbe80eae49dd89e3ed99e5cf427
+Seed phrase: "during drastic cage cupboard gate million excite quit brain strategy hundred group"
+Raw address: 0:1eb3814b049a26a1bf3fb0d1dbf69e7609bbcd0f69fafc8c8553c7a0ed012fab
 testnet:
-Non-bounceable address (for init): 0QDZBLjmsj8jNJ72Oj6pzNe0FeK7voDq5J3Ynj7Znlz0JybH
-Bounceable address (for later access): kQDZBLjmsj8jNJ72Oj6pzNe0FeK7voDq5J3Ynj7Znlz0J3sC
+Non-bounceable address (for init): 0QAes4FLBJomob8_sNHb9p52CbvND2n6_IyFU8eg7QEvqz9K
+Bounceable address (for later access): kQAes4FLBJomob8_sNHb9p52CbvND2n6_IyFU8eg7QEvq2KP
 mainnet:
-Non-bounceable address (for init): UQDZBLjmsj8jNJ72Oj6pzNe0FeK7voDq5J3Ynj7Znlz0J51N
-Bounceable address (for later access): EQDZBLjmsj8jNJ72Oj6pzNe0FeK7voDq5J3Ynj7Znlz0J8CI
+Non-bounceable address (for init): UQAes4FLBJomob8_sNHb9p52CbvND2n6_IyFU8eg7QEvq4TA
+Bounceable address (for later access): EQAes4FLBJomob8_sNHb9p52CbvND2n6_IyFU8eg7QEvq9kF
 Succeeded
+0:cf62850949a73ebe90aa2f465f04f815659977eef7cccc37998ceed244456e5a

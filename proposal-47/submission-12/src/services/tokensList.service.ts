@@ -1,18 +1,18 @@
 import { TonClient } from "@tonclient/core";
 import { globals } from "../config/globals";
 import { Account } from '@tonclient/appkit';
-import { networks } from '../config/networks';
 import fs from 'fs';
-import path from "path/posix";
+import path from "path";
 
 export class GetTokensList {
 
     private readonly client: TonClient;
 
     constructor() {
+        let settings = JSON.parse(fs.readFileSync(globals.SETTINGS_PATH).toString());
         this.client = new TonClient({
             network: {
-                server_address: networks.LOCALHOST
+                server_address: settings.NETWORK
             }
         });
     }

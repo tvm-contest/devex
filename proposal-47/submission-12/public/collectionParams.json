@@ -1,30 +1,27 @@
 {
-	"rootName": "Collection Name",
+	"rootName": "Cats",
+	"rootIcon": "https://ipfs.infura.io/ipfs/QmVZvNbRVVu9gGTY18cvdmZF7iNE8RxEAMyhTaZiFjPvdv",
 	"raritiesList": [
 		{
-			"rarityName": "name",
-			"amount": 10
-		},
-		{
-			"rarityName": "Name1",
-			"amount": 10
-		},
-		{
-			"rarityName": "Name2",
-			"amount": 10
+			"rarityName": "Meinkun",
+			"amount": 15
 		}
 	],
 	"paramsData": [
 		{
-			"name": "name1",
+			"name": "age",
 			"type": "int",
 			"minValue": 0,
-			"maxValue": 100,
+			"maxValue": 20,
 			"isRequired": true
 		},
 		{
-			"type": "enum",
-			"name": "_name2{variant}"
+			"name": "nickname",
+			"type": "string",
+			"minValue": 1,
+			"maxValue": 256,
+			"isRequired": true,
+			"minLength": 20
 		}
 	]
 }

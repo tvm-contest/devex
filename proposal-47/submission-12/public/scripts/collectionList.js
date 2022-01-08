@@ -4,6 +4,7 @@
     const collections = await collectionsResponse.json()
 
     for (let collection of collections) {
+        console.log(collection)
         const collectionDiv = document.createElement("div")
         collectionDiv.classList.add("collection-container")
 
@@ -14,7 +15,7 @@
         const collectionIcon = document.createElement("p")
         collectionIcon.classList.add("test-dark")
         collectionIcon.innerText = "Collection icon: "
-
+        
         const imageDataResponse = await fetch(collection.rootIcon)
         const imageData = await imageDataResponse.text()
         const image = document.createElement("img")
@@ -34,7 +35,7 @@
             tokenName.innerText = `Token name: ${token.rarityName}`
     
             const tokenAmount = document.createElement("p")
-            tokenAmount.innerText = `Token name: ${token.amount}`
+            tokenAmount.innerText = `Token limit: ${token.amount}`
 
             tokenDiv.append(tokenName, tokenAmount)
             collectionDiv.append(tokenDiv)

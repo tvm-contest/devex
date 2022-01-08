@@ -1,7 +1,5 @@
 import { Account } from '@tonclient/appkit';
 import { DeployContractService } from './deployContract.service';
-import { walletSettings } from '../config/walletKey';
-import { signerKeys } from '@tonclient/core';
 import { RarityType } from '../models/rarity-model';
 
 export class DeployTrueNFTContractsCollection {
@@ -61,7 +59,7 @@ export class DeployTrueNFTContractsCollection {
                     tokensLimit: _tokensLimit,
                     raritiesList: _raritiesList 
                 },
-                useGiver: true,
+                valueTON: 5000000000
             });
             address = await nftRootAccount.getAddress();
             console.log("NftRoot contract was deployed at address: " + address);
@@ -80,18 +78,12 @@ export class DeployTrueNFTContractsCollection {
         let nftRootAddress = await nftRootAccount.getAddress();
         let indexBasisCode = await this.deployContractService.getContractCode(indexBasisAccount).then(code => {return code.code});
         
-        const localGiverContract = {
-            abi: await JSON.parse(walletSettings.ABI),
-            tvc: walletSettings.TVC,
-        };
+ 
 
         const client = nftRootAccount.client;
-        const signer = signerKeys(walletSettings.KEYS); 
+        const walletAcc = await  this.deployContractService.getCurrentWallet();
+       
 
-        const localGiverAccount = new Account(localGiverContract, {
-            address: walletSettings.ADDRESS, 
-            signer,
-            client });
  
         try {
             const payload = (await client.abi.encode_message_body({
@@ -106,7 +98,7 @@ export class DeployTrueNFTContractsCollection {
                 }
             })).body;
 
-            await localGiverAccount.run("sendTransaction", {
+            await walletAcc.run("sendTransaction", {
                 dest: nftRootAddress,
                 value: 600_000_000,
                 flags: 3,

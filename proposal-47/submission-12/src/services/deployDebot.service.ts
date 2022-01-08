@@ -38,7 +38,7 @@ export class DeployDebotService {
             await this.deployContractService.deployContract({
                 account: nftDebotAccount, 
                 initInput: {},
-                useGiver: true,
+                valueTON: 5000000000,
             });
             address = await nftDebotAccount.getAddress();
             console.log("NftDebot contract was deployed at address: " + address);

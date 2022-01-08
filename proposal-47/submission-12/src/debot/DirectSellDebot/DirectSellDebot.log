@@ -6,12 +6,12 @@ Input arguments:
 init_data: None
 is_update_tvc: None
 
-Seed phrase: "ginger advice hedgehog prefer slight foot swap clerk satoshi stand armed like"
-Raw address: 0:5bf4bec53f2ec741b225cdea274a50b76ad347d80e737bd29f035e4c56fabda9
+Seed phrase: "beef awful danger leisure chunk oyster immense seed upset rare cloth brave"
+Raw address: 0:24f37d9483227cffeb46cede56d328e0a256b3a1816ec4b08af80f1494c82882
 testnet:
-Non-bounceable address (for init): 0QBb9L7FPy7HQbIlzeonSlC3atNH2A5ze9KfA15MVvq9qTkb
-Bounceable address (for later access): kQBb9L7FPy7HQbIlzeonSlC3atNH2A5ze9KfA15MVvq9qWTe
+Non-bounceable address (for init): 0QAk832UgyJ8_-tGzt5W0yjgolazoYFuxLCK-A8UlMgogkdo
+Bounceable address (for later access): kQAk832UgyJ8_-tGzt5W0yjgolazoYFuxLCK-A8UlMgoghqt
 mainnet:
-Non-bounceable address (for init): UQBb9L7FPy7HQbIlzeonSlC3atNH2A5ze9KfA15MVvq9qYKR
-Bounceable address (for later access): EQBb9L7FPy7HQbIlzeonSlC3atNH2A5ze9KfA15MVvq9qd9U
+Non-bounceable address (for init): UQAk832UgyJ8_-tGzt5W0yjgolazoYFuxLCK-A8UlMgogvzi
+Bounceable address (for later access): EQAk832UgyJ8_-tGzt5W0yjgolazoYFuxLCK-A8UlMgogqEn
 Succeeded

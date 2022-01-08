@@ -5,6 +5,8 @@
 		{
 			"name": "constructor",
 			"inputs": [
+				{"name":"rootName","type":"bytes"},
+				{"name":"rootIcon","type":"bytes"},
 				{"name":"codeDirectSell","type":"cell"}
 			],
 			"outputs": [
@@ -13,7 +15,10 @@
 		{
 			"name": "deployDirectSell",
 			"inputs": [
-				{"name":"addrNFT","type":"address"}
+				{"name":"directSellCreator","type":"address"},
+				{"name":"durationInSec","type":"uint64"},
+				{"name":"addrNFT","type":"address"},
+				{"name":"price","type":"uint128"}
 			],
 			"outputs": [
 			]
@@ -26,6 +31,32 @@
 			],
 			"outputs": [
 				{"name":"addrDirectSell","type":"address"}
+			]
+		},
+		{
+			"name": "getRootName",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"}
+			]
+		},
+		{
+			"name": "getRootIcon",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"icon","type":"bytes"}
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"icon","type":"bytes"},
+				{"name":"totalSupply","type":"uint128"}
 			]
 		}
 	],

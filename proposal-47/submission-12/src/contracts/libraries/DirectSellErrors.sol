@@ -13,4 +13,5 @@ library DirectSellErr {
     uint8 constant LOW_CONTRACT_BALANCE = 110;
     uint8 constant OVERFLOW_PERC = 111;
     uint8 constant NOT_TRADABLE_NFT = 112;
+    uint8 constant NEED_TO_CANCEL_OR_BUY = 113;
 }

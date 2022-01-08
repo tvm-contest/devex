@@ -1,9 +1,25 @@
-.container {
-    margin: 0 auto;
-    width: 300px;
-    margin-top: 50px;
-}
 
+.text-muted{
+    display: flex;
+    justify-content: center;
+}
+.btn-for-load{
+    margin: 0 auto;
+    padding-top:40px;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+}
+.for-link{
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    width: 25%;
+}
+.img{
+    text-align: center;
+    padding: 30px;
+}
 button {
     width: 100%;
 }

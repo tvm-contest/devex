@@ -16,6 +16,18 @@
 			]
 		},
 		{
+			"name": "getRootInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"rootName","type":"bytes"},
+				{"name":"rootIcon","type":"bytes"},
+				{"name":"codeIndex","type":"cell"},
+				{"name":"codeData","type":"cell"},
+				{"name":"tokensLimit","type":"uint256"}
+			]
+		},
+		{
 			"name": "mintNft",
 			"inputs": [
 				{"name":"rarityName","type":"bytes"},
