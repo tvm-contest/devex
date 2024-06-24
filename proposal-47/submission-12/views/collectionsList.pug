@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  link(rel="stylesheet" href="/stylesheets/displayCollections.css")
+  div.container#root
+    
+
+      //- each collection in collections
+      //-   div.collection-container
+      //-     p.text-dark Collection name: #{collection.rootName}
+      //-     p.text-dark Collection icon:
+
+      //-     - const img = collection.rootIcon
+      //-     img(src="https://bafybeic23yr7mwihzdanso664n7x2ogck5ste2vfxrssnnsjtimfeifmfy.ipfs.infura-ipfs.io/", alt="img")
+
+      //-     p.text-dark Tokens list:
+
+      //-     each token in collection.raritiesList
+      //-       div.token-container
+      //-         p Token name: #{token.rarityName}
+      //-         p Max amount: #{token.amount}
+  
+  script(src="/scripts/collectionList.js")
+
+
+
+

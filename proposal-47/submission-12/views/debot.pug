@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    link(rel="stylesheet" href="/stylesheets/debot.css")
+    div.container
+        button.btn.btn-outline-dark.input-button(type="submit") Deploy to local network
+
+        //- - const URL = "https://web.ton.surf/debot?address=0%3A41937d8d08c7a43471a091308eda6c0d1b3ba94ed3e96407a93d374226517d83&net=devnet&restart=true"
+        //- - const encodeURL = encodeURIComponent(URL)
+        //- - const qrCodeApiImage = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURL}&amp;size=300x300`
+        //- div.link-div
+        //-     a.text-muted(href=URL) Link to debot in devnet
+            
+        //-     div.qr-div
+        //-         img#qr-code(src=qrCodeApiImage width=300 height=300)

@@ -1,0 +1,7 @@
+dist
+node_modules
+src/module/test/*
+temp/*
+!temp/.gitkeep
+.idea
+.env

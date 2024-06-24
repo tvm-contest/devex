@@ -1,0 +1,67 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"rootName","type":"bytes"},
+				{"name":"rootIcon","type":"bytes"},
+				{"name":"codeDirectSell","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployDirectSell",
+			"inputs": [
+				{"name":"directSellCreator","type":"address"},
+				{"name":"durationInSec","type":"uint64"},
+				{"name":"addrNFT","type":"address"},
+				{"name":"price","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getDirectSellAddress",
+			"inputs": [
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrNFT","type":"address"}
+			],
+			"outputs": [
+				{"name":"addrDirectSell","type":"address"}
+			]
+		},
+		{
+			"name": "getRootName",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"}
+			]
+		},
+		{
+			"name": "getRootIcon",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"icon","type":"bytes"}
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"name","type":"bytes"},
+				{"name":"icon","type":"bytes"},
+				{"name":"totalSupply","type":"uint128"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

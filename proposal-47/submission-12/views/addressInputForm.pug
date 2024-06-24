@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    link(rel="stylesheet" href="/stylesheets/addressInputForm.css")
+    form(method="post", action="/tokensList")
+        label.text-dark Input the address
+        input.form-control(name="address" pattern="^0:[a-fA-F0-9]{64}$", title="Address starts with 0") 
+        button.btn.btn-outline-dark.shadow-none.input-button(type="submit") Find

@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: NftDebot.tvc
+      wc: None
+    keys: NftDebot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "enrich fork spice void canoe second grant eight nephew used vacant behave"
+Raw address: 0:4e9535ca67e4f8c81e5be7ec963d7c52310a19ae6a53fe4afba48ea54b26bda5
+testnet:
+Non-bounceable address (for init): 0QBOlTXKZ-T4yB5b5-yWPXxSMQoZrmpT_kr7pI6lSya9pYyw
+Bounceable address (for later access): kQBOlTXKZ-T4yB5b5-yWPXxSMQoZrmpT_kr7pI6lSya9pdF1
+mainnet:
+Non-bounceable address (for init): UQBOlTXKZ-T4yB5b5-yWPXxSMQoZrmpT_kr7pI6lSya9pTc6
+Bounceable address (for later access): EQBOlTXKZ-T4yB5b5-yWPXxSMQoZrmpT_kr7pI6lSya9pWr_
+Succeeded

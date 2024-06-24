@@ -1,0 +1,28 @@
+extends layout
+
+block content
+    link(rel="stylesheet" href="/stylesheets/loadIPFS.css")
+    ul.nav.nav-tabs.nav.nav-fill(role="tablist")
+        li.nav-item(role="presentation")
+            button.nav-link.active#one-tab(data-bs-toggle="tab" data-bs-target="#one" type="button" role="tab"  aria-selected="true") Uploading images from a folder
+        li.nav-item(role="presentation")
+            button.nav-link#two-tab(data-bs-toggle="tab" data-bs-target="#two" type="button" role="tab"  aria-selected="false") Upload from folder
+    .tab-content
+        .tab-pane.fade.show.active#one(role="tabpanel" aria-labelledby="#one-tab") 
+            .tab-pane.active#one
+            .btn-for-load
+                button.btn.btn-outline-dark.shadow-none#folder(onClick="onUpload()") Upload from folder
+            .container
+                .row.for-img 
+        .tab-pane.fade#two(role="tabpanel" aria-labelledby="two-tab") 
+            .btn-for-load
+                button.btn.btn-outline-dark.shadow-none(onClick="onUpload_()") Select an image
+                input#file-input(type="file" name="file")
+            .for-link
+                #url-div
+                    
+            
+    script. 
+        var name_img = `!{arr_for_name_img}`
+    script(src="http://code.jquery.com/jquery-latest.min.js")
+    script(src="/scripts/loadIPFS.js")

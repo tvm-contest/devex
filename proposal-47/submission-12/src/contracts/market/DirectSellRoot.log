@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: DirectSellRoot.tvc
+      wc: None
+    keys: DirectSellRoot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "garden science inflict stove amateur mouse convince adjust demand fold release divide"
+Raw address: 0:2f0e20d0dfa114274ca1425c6cef75ae664ad7d40976c411c299019375c76fdb
+testnet:
+Non-bounceable address (for init): 0QAvDiDQ36EUJ0yhQlxs73WuZkrX1Al2xBHCmQGTdcdv2yA7
+Bounceable address (for later access): kQAvDiDQ36EUJ0yhQlxs73WuZkrX1Al2xBHCmQGTdcdv233-
+mainnet:
+Non-bounceable address (for init): UQAvDiDQ36EUJ0yhQlxs73WuZkrX1Al2xBHCmQGTdcdv25ux
+Bounceable address (for later access): EQAvDiDQ36EUJ0yhQlxs73WuZkrX1Al2xBHCmQGTdcdv28Z0
+Succeeded

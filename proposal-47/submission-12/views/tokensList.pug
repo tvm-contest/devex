@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    link(rel="stylesheet" href="/stylesheets/displayToken.css")
+    div.container
+        each token in tokens
+            div.token-container
+                p Token address: #{token.tokenAddress}
+                p Owner address: #{token.ownerAddress}
+                each param in token.params
+                    p #{param.name}: #{param.data}
+                

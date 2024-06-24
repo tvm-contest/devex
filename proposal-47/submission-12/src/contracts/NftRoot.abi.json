@@ -1,0 +1,156 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"rootName","type":"bytes"},
+				{"name":"rootIcon","type":"bytes"},
+				{"name":"codeIndex","type":"cell"},
+				{"name":"codeData","type":"cell"},
+				{"name":"tokensLimit","type":"uint256"},
+				{"components":[{"name":"rarityName","type":"bytes"},{"name":"amount","type":"uint256"}],"name":"raritiesList","type":"tuple[]"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getRootInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"rootName","type":"bytes"},
+				{"name":"rootIcon","type":"bytes"},
+				{"name":"codeIndex","type":"cell"},
+				{"name":"codeData","type":"cell"},
+				{"name":"tokensLimit","type":"uint256"}
+			]
+		},
+		{
+			"name": "mintNft",
+			"inputs": [
+				{"name":"rarityName","type":"bytes"},
+				{"name":"url","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployBasis",
+			"inputs": [
+				{"name":"codeIndexBasis","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "destructBasis",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addAdmin",
+			"inputs": [
+				{"name":"newAddrAdmin","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "removeAdmin",
+			"inputs": [
+				{"name":"addrAdmin","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getTokenData",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"code","type":"cell"},
+				{"name":"totalMinted","type":"uint256"}
+			]
+		},
+		{
+			"name": "getRaritiesList",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"raritiesArray","type":"bytes[]"}
+			]
+		},
+		{
+			"name": "getAddrBasis",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"addrBasis","type":"address"}
+			]
+		},
+		{
+			"name": "addRarity",
+			"inputs": [
+				{"name":"rarityName","type":"bytes"},
+				{"name":"amount","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setMintingFee",
+			"inputs": [
+				{"name":"newMintingFee","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "resolveCodeHashIndex",
+			"inputs": [
+				{"name":"addrRoot","type":"address"},
+				{"name":"addrOwner","type":"address"}
+			],
+			"outputs": [
+				{"name":"codeHashIndex","type":"uint256"}
+			]
+		},
+		{
+			"name": "resolveIndex",
+			"inputs": [
+				{"name":"addrRoot","type":"address"},
+				{"name":"addrData","type":"address"},
+				{"name":"addrOwner","type":"address"}
+			],
+			"outputs": [
+				{"name":"addrIndex","type":"address"}
+			]
+		},
+		{
+			"name": "resolveCodeHashData",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"codeHashData","type":"uint256"}
+			]
+		},
+		{
+			"name": "resolveData",
+			"inputs": [
+				{"name":"addrRoot","type":"address"},
+				{"name":"id","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"addrData","type":"address"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

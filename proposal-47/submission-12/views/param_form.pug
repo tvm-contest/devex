@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    link(rel="stylesheet", href="/param_form/css/style.css")
+    
+    div#root
+
+    script(src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin)
+    script(src="https://unpkg.com/react@17/umd/react.development.js" crossorigin)
+    script(src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin)
+
+    script(src="/param_form/globals/options.js" data-plugins="transform-es2015-modules-umd" type="text/babel")
+
+    script(src="/param_form/components/selectParamInput.js" data-plugins="transform-es2015-modules-umd" type="text/babel")
+    script(src="/param_form/components/strParamForm.js" data-plugins="transform-es2015-modules-umd" type="text/babel")
+    script(src="/param_form/components/intParamForm.js" data-plugins="transform-es2015-modules-umd" type="text/babel")
+
+    script(src="/param_form/services/paramFormRender.js" data-plugins="transform-es2015-modules-umd" type="text/babel")
+    script(src="/param_form/components/selectParamInput.js" data-plugins="transform-es2015-modules-umd" type="text/babel")
+
+    script(src="/param_form/ParamForm.js" data-plugins="transform-es2015-modules-umd" type="text/babel")
+    script(src='/param_form/index.js' data-plugins="transform-es2015-modules-umd" type="text/babel")

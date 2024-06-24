@@ -1,0 +1,97 @@
+.container-div {
+    margin: 0 auto;
+    width: 600px;
+    margin-top: 50px;
+}
+
+.buttons-div {
+    margin-top: 15px;
+}
+
+.saveButton {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.collection-settings-div {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    column-gap: 50px;
+}
+
+.collectionNameInput {
+    width: 100%;
+    height: 40px;
+    font-size: 35px;
+    border: solid;
+    border-width: 0.5px;
+    padding: 5px;
+}
+
+.collection-settings {
+    width: 275px;
+}
+
+.submitButton {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.token-input-container {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.token-input {
+    width: 100%;
+}
+
+.token-add-container {
+    border-color: black;
+    border-bottom: solid;
+}
+
+.param-input {
+    margin-top: 15px;
+    width: 275px;
+}
+
+.required-checkbox {
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.importButton {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.uploadImageButton {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.last-in-param {
+    border-color: black;
+    border-bottom: solid;
+}
+
+#model-input {
+    display: none;
+}
+
+#image-input {
+    display: none;
+}
+
+.image-div {
+    margin-top: 1px;
+    text-align: center;
+}
+
+#upload-text {
+    display: none;
+}
+

@@ -1,0 +1,19 @@
+.container {
+    margin: 0 auto;
+    width: 350px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+button {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.link-div {
+    margin: 20px;
+}
+
+.qr-div {
+    margin-top: 15px;
+}

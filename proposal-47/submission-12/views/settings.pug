@@ -1,0 +1,39 @@
+extends layout
+
+block content
+    link(rel="stylesheet" href="/stylesheets/settings.css")
+    
+    div.container
+        div.input-settings
+            label.text-muted Public key
+            input.shadow-none.form-control#pubkey-input(value=walletSettings.KEYS.public)
+
+        div.input-settings
+            label.text-muted Private key
+            div.input-group
+                input.shadow-none.form-control#privatekey-input(type="password" value=walletSettings.KEYS.secret)
+                button.btn.btn-dark.shadow-none#show-key(onClick="showPrivatekey()") Show
+
+        div.input-settings
+            label.text-muted Wallet address
+            input.shadow-none.form-control#wallet-address-input(value=walletSettings.ADDRESS)
+
+        div.input-settings
+            label.text-muted Network
+            select.shadow-none.form-control#network-select
+                each val, key in networkOptions
+                    option(value=val) #{key}
+        
+        button.btn.btn-outline-dark#submit-button(onClick="submitSettings()" data-bs-toggle="modal" data-bs-target="#success-modal") Submit settings
+
+        div(class="modal fade" id="success-modal" tabindex="-1")
+            div(class="modal-dialog")
+                div(class="modal-content")
+                    div(class="modal-header")
+                        h5(class="modal-title") Settings
+                    div(class="modal-body") Set settings successfully
+
+                    div(class="modal-footer")
+                        button(type="button" class="btn btn-dark" data-bs-dismiss="modal") Close
+
+    script(src="/scripts/settings.js") 

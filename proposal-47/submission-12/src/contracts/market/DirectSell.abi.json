@@ -1,0 +1,90 @@
+{
+	"ABI version": 2,
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"price","type":"uint128"},
+				{"name":"endUnixtime","type":"uint64"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "verifyNftTradability",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "buy",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "cancel",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "destroy",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getInfo",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"addrRoot","type":"address"},
+				{"name":"addrOwner","type":"address"},
+				{"name":"addrNFT","type":"address"},
+				{"name":"alreadyBought","type":"bool"},
+				{"name":"withdrawn","type":"bool"},
+				{"name":"isNftTradable","type":"bool"},
+				{"name":"price","type":"uint128"},
+				{"name":"endUnixtime","type":"uint64"}
+			]
+		},
+		{
+			"name": "getIsCanceled",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"isCanceled","type":"bool"}
+			]
+		},
+		{
+			"name": "getIsAlreadBought",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"isAlreadBought","type":"bool"}
+			]
+		},
+		{
+			"name": "setTradabilityStatus",
+			"inputs": [
+				{"name":"addrNftOwner","type":"address"},
+				{"name":"addrTrusted","type":"address"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"_addrRoot","type":"address"},
+		{"key":2,"name":"_addrOwner","type":"address"},
+		{"key":3,"name":"_addrNFT","type":"address"}
+	],
+	"events": [
+	]
+}
