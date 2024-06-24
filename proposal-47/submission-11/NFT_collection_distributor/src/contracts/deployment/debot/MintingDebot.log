@@ -1,0 +1,17 @@
+Config: default
+Input arguments:
+     tvc: ../debots/MintingDebot.tvc
+      wc: None
+    keys: debot/MintingDebot.keys.json
+init_data: None
+is_update_tvc: None
+
+Seed phrase: "total lion silver fine answer install tennis increase expand vacuum merit small"
+Raw address: 0:afa30bdf883c466eaa8c19cb5f2a8100fe9610c445141aaa3e5742070a386b8b
+testnet:
+Non-bounceable address (for init): 0QCvowvfiDxGbqqMGctfKoEA_pYQxEUUGqo-V0IHCjhri5sg
+Bounceable address (for later access): kQCvowvfiDxGbqqMGctfKoEA_pYQxEUUGqo-V0IHCjhri8bl
+mainnet:
+Non-bounceable address (for init): UQCvowvfiDxGbqqMGctfKoEA_pYQxEUUGqo-V0IHCjhriyCq
+Bounceable address (for later access): EQCvowvfiDxGbqqMGctfKoEA_pYQxEUUGqo-V0IHCjhri31v
+Succeeded

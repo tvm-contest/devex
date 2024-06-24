@@ -1,0 +1,59 @@
+.demo-mint-form {
+    color: #000;
+    margin: 50px auto;
+    padding: 30px 0 30px 30px;
+    max-width: 700px;
+    background-color: var(--form-color);
+    border-radius: 50px;
+}
+
+.demo-title {
+    font-size: 1.4rem;
+    margin: 0;
+    margin: 10px 0 0;
+    padding: 0;
+    font-weight: 600;
+}
+
+.demo-text {
+    font-size: 1.2rem;
+    line-height: 20px;
+}
+
+.demo-mint-form .btn-blue {
+    margin: 30px auto 0;
+}
+
+/*  */
+.demo-form__row {
+    display: flex;
+}
+
+.demo-form__col {
+    flex: 1;
+}
+
+.demo-form__col:first-child {
+    margin-right: 20px;
+}
+
+.col__title {
+    font-weight: 600;
+    font-size: 1.6rem;
+}
+
+.col__content {
+    height: 100%;
+}
+
+.col__title_img {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 10px;
+}
+
+.col__img {
+    background: url(../images/demo-token-example.png) center center / contain no-repeat;
+    height: 80%;
+}
